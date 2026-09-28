@@ -101,7 +101,7 @@ export const STARTERS: Record<IntentKey, Starter> = {
 
   fees: {
     message:
-      '💰 Fees vary by programme, centre and intake — a counsellor confirms the exact figure. Which track are you asking about? I can also explain EMI options in general.',
+      '💰 Fees vary by course, centre and intake — a counsellor confirms the exact figure. Which track are you asking about? I can also explain EMI options in general.',
     chips: COURSE_CHIPS.map((c) => ({
       label: c.label,
       query: `What are the fees and EMI options for ${c.label.replace(/^[^\w]+/, '').trim()}?`,

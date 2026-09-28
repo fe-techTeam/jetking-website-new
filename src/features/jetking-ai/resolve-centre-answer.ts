@@ -182,7 +182,7 @@ function formatBranchAnswer(branch: BranchRecord): string {
   ];
 
   if (branch.programmes.length) {
-    lines.push('### Programmes commonly offered', '');
+    lines.push('### Courses commonly offered', '');
     for (const p of branch.programmes.slice(0, 6)) {
       lines.push(`- ${p.replace(/—|–/g, ' - ')}`);
     }

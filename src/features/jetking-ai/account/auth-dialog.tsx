@@ -189,7 +189,7 @@ export function AuthDialog({
                     disabled={loc.cities.length === 0}
                     className={fieldClass}
                   >
-                    <option value="">{loc.cities.length > 0 ? 'Select city' : 'Select state first'}</option>
+                    <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
                     {loc.cities.map((c) => (
                       <option key={c.slug} value={c.slug}>
                         {c.name}
@@ -209,7 +209,7 @@ export function AuthDialog({
                   disabled={loc.centres.length === 0}
                   className={fieldClass}
                 >
-                  <option value="">{loc.centres.length > 0 ? 'No preference' : 'Select a city first'}</option>
+                  <option value="">{loc.centres.length > 0 ? 'No preference' : 'City first'}</option>
                   {loc.centres.map((c) => (
                     <option key={c.slug} value={c.slug}>
                       {c.name}

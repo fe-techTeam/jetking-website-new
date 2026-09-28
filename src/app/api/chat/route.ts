@@ -713,7 +713,7 @@ export async function POST(req: Request): Promise<Response> {
             useCoords
               ? 'Matched the nearest centre by straight-line distance from the shared location.'
               : 'Matched structured centre records in the Jetking knowledge base.',
-            'Listed verified branches and programmes — nothing invented.',
+            'Listed verified branches and courses — nothing invented.',
           ],
           followUps: buildFollowUps(false),
           session: nextSession,

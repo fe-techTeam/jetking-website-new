@@ -28,7 +28,7 @@ export interface CourseCategory {
 }
 
 export const COURSE_CATEGORIES: readonly CourseCategory[] = [
-  { id: 'degree', label: 'Degree programmes', href: '/courses?level=degree', params: { level: 'degree' }, level: 'degree' },
+  { id: 'degree', label: 'Degree courses', href: '/courses?level=degree', params: { level: 'degree' }, level: 'degree' },
   { id: 'cloud', label: 'Cloud computing', href: '/courses?tech=cloud', params: { tech: 'cloud' }, match: /cloud|\baws\b|azure/ },
   {
     id: 'cyber-security',

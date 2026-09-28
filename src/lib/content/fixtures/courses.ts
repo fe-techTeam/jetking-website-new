@@ -128,7 +128,7 @@ export const courses: Course[] = [
     duration: '12 months',
     eligibility: 'Any graduate or 10+2 student wanting a career in cloud computing, AI or cyber security.',
     summary:
-      'A career programme combining cloud infrastructure fundamentals with applied artificial intelligence. Learners deploy AI workloads in cloud environments while earning industry-recognised credentials.',
+      'A career course combining cloud infrastructure fundamentals with applied artificial intelligence. Learners deploy AI workloads in cloud environments while earning industry-recognised credentials.',
     outcomes: [
       'Enter roles such as Cloud Engineer, Network Engineer or Server Administrator',
       'Work across AWS, Azure and Google Cloud environments',
@@ -147,7 +147,7 @@ export const courses: Course[] = [
     seo: {
       title: 'Cloud Computing Engineer with AI — 12 Months | Jetking',
       description:
-        'A 12-month Jetking career programme in cloud computing with applied AI — CCNA, Windows Server, AWS and Google Cloud. Open to 10+2 and graduates.',
+        'A 12-month Jetking career course in cloud computing with applied AI — CCNA, Windows Server, AWS and Google Cloud. Open to 10+2 and graduates.',
     },
     featured: true,
     updatedAt: '2026-08-07',
@@ -161,7 +161,7 @@ export const courses: Course[] = [
     duration: '18 months',
     eligibility: 'Any graduate or 10+2 student aiming for a cloud and security support career. Suitable for working professionals entering IT.',
     summary:
-      'A comprehensive career programme combining cloud computing with cyber security — cloud architecture, service models, network security and ethical hacking with extensive hands-on labs and global certifications.',
+      'A comprehensive career course combining cloud computing with cyber security — cloud architecture, service models, network security and ethical hacking with extensive hands-on labs and global certifications.',
     outcomes: [
       'Operate as a Cloud Support, Network Support or Security Support Engineer',
       'Run SOC-style monitoring, hardening and ethical hacking workflows',
@@ -180,7 +180,7 @@ export const courses: Course[] = [
     seo: {
       title: 'Cloud Computing & Cyber Security Engineer — 18 Months | Jetking',
       description:
-        'An 18-month Jetking career programme in cloud computing and cyber security — MCSA, CCNA, RHCSA, AWS and CEH. Open to 10+2 and graduates.',
+        'An 18-month Jetking career course in cloud computing and cyber security — MCSA, CCNA, RHCSA, AWS and CEH. Open to 10+2 and graduates.',
     },
     featured: true,
     updatedAt: '2026-08-07',
@@ -194,7 +194,7 @@ export const courses: Course[] = [
     duration: '6 months',
     eligibility: 'Any graduate or 10+2 student interested in cloud computing, AI or cyber security.',
     summary:
-      'A focused professional programme blending cloud computing with AI integration — building solutions, managing large-scale data and automating intelligent systems for modern business environments.',
+      'A focused professional course blending cloud computing with AI integration — building solutions, managing large-scale data and automating intelligent systems for modern business environments.',
     outcomes: [
       'Move into Cloud Engineer or L1 Network Support roles',
       'Administer Linux servers and data-centre operations',
@@ -213,7 +213,7 @@ export const courses: Course[] = [
     seo: {
       title: 'Cloud Computing Professional with AI — 6 Months | Jetking',
       description:
-        'A 6-month Jetking professional programme in cloud computing with applied AI. CCNA, Azure, Red Hat, AWS and machine learning. Open to 10+2 pass and graduates.',
+        'A 6-month Jetking professional course in cloud computing with applied AI. CCNA, Azure, Red Hat, AWS and machine learning. Open to 10+2 pass and graduates.',
     },
     updatedAt: '2026-08-07',
   },
@@ -226,7 +226,7 @@ export const courses: Course[] = [
     duration: '12 months',
     eligibility: 'Graduates (technical or non-technical) or 10+2 students aspiring to become IT and desktop support professionals.',
     summary:
-      'A professional programme combining cloud computing and cyber security across a stack of global certifications, preparing learners to manage secure cloud environments and enterprise IT infrastructure.',
+      'A professional course combining cloud computing and cyber security across a stack of global certifications, preparing learners to manage secure cloud environments and enterprise IT infrastructure.',
     outcomes: [
       'Enter Field Support, Systems Support or Network Support Engineer roles',
       'Administer secure cloud and on-prem infrastructure',
@@ -245,7 +245,7 @@ export const courses: Course[] = [
     seo: {
       title: 'Cloud & Cyber Security Professional — 12 Months | Jetking',
       description:
-        'A 12-month Jetking professional programme in cloud and cyber security with 14 global certifications — CCNA, MCSA, RHCSA, AWS and CEH.',
+        'A 12-month Jetking professional course in cloud and cyber security with 14 global certifications — CCNA, MCSA, RHCSA, AWS and CEH.',
     },
     updatedAt: '2026-08-07',
   },
@@ -258,7 +258,7 @@ export const courses: Course[] = [
     duration: '2 years',
     eligibility: 'Open to 10+2 students and graduates with a creative interest in gaming, animation and design.',
     summary:
-      'A master programme spanning graphics and web design, motion graphics, animation, VFX, UX design and AR/VR — developing creative professionals for the gaming and metaverse industry.',
+      'A master course spanning graphics and web design, motion graphics, animation, VFX, UX design and AR/VR — developing creative professionals for the gaming and metaverse industry.',
     outcomes: [
       'Enter roles such as Metaverse Unity Developer, Game Asset Creator or Animator',
       'Build 3D environments, characters and VR backgrounds',
@@ -583,7 +583,7 @@ export const courses: Course[] = [
     duration: '6 months',
     eligibility: 'Open to 10+2 students and graduates interested in a digital marketing career.',
     summary:
-      'A master programme in digital marketing covering SEO, SEM, social media, content, email marketing and analytics, with practical learning through live industry projects.',
+      'A master course in digital marketing covering SEO, SEM, social media, content, email marketing and analytics, with practical learning through live industry projects.',
     outcomes: [
       'Enter digital marketing roles across e-commerce, IT, media and advertising',
       'Run SEO, SEM and paid social campaigns end to end',
@@ -602,7 +602,7 @@ export const courses: Course[] = [
     seo: {
       title: 'Digital Marketing Training Course — 6 Months | Jetking',
       description:
-        'A 6-month digital marketing master programme covering SEO, SEM, social media, email marketing and Google Analytics with live projects. Open to 10+2 and graduates.',
+        'A 6-month digital marketing master course covering SEO, SEM, social media, email marketing and Google Analytics with live projects. Open to 10+2 and graduates.',
     },
     updatedAt: '2026-08-07',
   },

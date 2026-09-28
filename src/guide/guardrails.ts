@@ -143,7 +143,7 @@ export function answerFeeQuestion(courses: Course[], matchedSlug?: string): Guid
     kind: 'handoff',
     reason: 'fee-specific',
     text:
-      'Fees depend on the programme, the centre and the current intake, so I do not quote a figure — I would rather connect you with a counsellor who can give you the exact number for your case, including EMI options.',
+      'Fees depend on the course, the centre and the current intake, so I do not quote a figure — I would rather connect you with a counsellor who can give you the exact number for your case, including EMI options.',
   };
 }
 
@@ -249,13 +249,13 @@ export function postCheck(
 
 export const HANDOFF_COPY: Record<HandoffReason, string> = {
   'out-of-scope':
-    'That is outside what I can help with — I only cover Jetking courses, centres and admissions. Ask me about a programme, or I can put you in touch with a counsellor.',
+    'That is outside what I can help with — I only cover Jetking courses, centres and admissions. Ask me about a course, or I can put you in touch with a counsellor.',
   'no-grounding':
     'I do not have a reliable answer to that in Jetking’s published material, and I would rather not guess. A counsellor can answer it properly.',
   'fee-specific':
-    'Fees depend on the programme, the centre and the current intake, so I do not quote a figure. A counsellor can give you the exact number, including EMI options.',
+    'Fees depend on the course, the centre and the current intake, so I do not quote a figure. A counsellor can give you the exact number, including EMI options.',
   'placement-guarantee':
-    'I cannot make claims about guaranteed placement or salary — outcomes depend on the programme, the centre and the individual. I can tell you what placement support includes, or connect you with a counsellor.',
+    'I cannot make claims about guaranteed placement or salary — outcomes depend on the course, the centre and the individual. I can tell you what placement support includes, or connect you with a counsellor.',
   unsafe:
     'I can only help with questions about Jetking courses, centres and admissions. What would you like to know?',
   unavailable:

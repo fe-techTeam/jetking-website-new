@@ -349,7 +349,7 @@ function buildBlocks(
   if (confidence === 'none') {
     blocks.push({
       type: 'courses',
-      heading: 'Popular programmes',
+      heading: 'Popular courses',
       courses: base.courses.slice(0, MAX_COURSES),
     });
     blocks.push({ type: 'contact', heading: 'Talk to Jetking', contact: base.contact });
@@ -382,7 +382,7 @@ function buildBlocks(
   }
 
   if (leadWithCourses && courses.length) {
-    blocks.push({ type: 'courses', heading: 'Matching programmes', courses });
+    blocks.push({ type: 'courses', heading: 'Matching courses', courses });
   }
 
   // The facts table is the answer for fee, duration and eligibility questions.
@@ -416,7 +416,7 @@ function buildBlocks(
   }
 
   if (!leadWithCourses && courses.length) {
-    blocks.push({ type: 'courses', heading: 'Related programmes', courses });
+    blocks.push({ type: 'courses', heading: 'Related courses', courses });
   }
 
   if (!leadWithCentres && centres.length && intent === 'about') {

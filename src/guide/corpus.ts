@@ -55,7 +55,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       url: `/courses/${course.slug}`,
       sourceSlug: course.slug,
       text: [
-        `Programme: ${course.title}.`,
+        `Course: ${course.title}.`,
         `Level: ${course.level}. Duration: ${course.duration}.`,
         `Eligibility: ${course.eligibility}`,
         course.summary,
@@ -149,7 +149,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       title: centre.name,
       url: centrePath(centre.slug),
       sourceSlug: centre.slug,
-      text: `${centre.name} is a Jetking centre in ${joinPlace(centre.locality, cityName, centre.state)}. It offers these programmes: ${centre.coursesOffered.join(', ')}.`,
+      text: `${centre.name} is a Jetking centre in ${joinPlace(centre.locality, cityName, centre.state)}. It offers these courses: ${centre.coursesOffered.join(', ')}.`,
     });
   }
 

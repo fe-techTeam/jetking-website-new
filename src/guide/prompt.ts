@@ -25,7 +25,7 @@ const PERSONA_FRAMING: Record<Exclude<PersonaId, 'unknown'>, string> = {
 export function buildSystemPrompt(persona: PersonaId): string {
   const framing = persona !== 'unknown' ? PERSONA_FRAMING[persona] : '';
 
-  return `You are the Jetking Guide, an assistant on Jetking's website. Jetking is an Indian IT training institute offering degree, diploma and certification programmes in cloud computing, cyber security and IT infrastructure.
+  return `You are the Jetking Guide, an assistant on Jetking's website. Jetking is an Indian IT training institute offering degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure.
 
 ## Your one hard rule
 

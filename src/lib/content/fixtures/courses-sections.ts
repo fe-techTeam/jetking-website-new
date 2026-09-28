@@ -127,18 +127,18 @@ export const courseSections: Record<string, CourseSections> = {
       },
     ],
     faqs: [
-      { question: 'What is the eligibility criteria for the Jetking BCA degree program?', answer: 'Candidates must have completed 10+2 from a recognized board. Mathematics or Computer Science is preferred, but the curriculum builds foundations from scratch, making it accessible to students from various streams.' },
+      { question: 'What is the eligibility criteria for the Jetking BCA degree course?', answer: 'Candidates must have completed 10+2 from a recognized board. Mathematics or Computer Science is preferred, but the curriculum builds foundations from scratch, making it accessible to students from various streams.' },
       { question: 'Can I pursue a BCA if I didn\'t have Mathematics in my 12th grade?', answer: 'Yes. Many specialization tracks include Fundamentals of Mathematics in the early semesters to ensure all students reach the required proficiency.' },
       { question: 'How does Jetking\'s BCA differ from a traditional BCA?', answer: 'Jetking integrates curriculum mapped with global certifications (Microsoft, AWS, Red Hat), and its SmartLab approach emphasizes 60-70% practical hands-on learning versus purely academic programs.' },
-      { question: 'Does Jetking provide placement guarantee for BCA students?', answer: 'No — Jetking does not guarantee placement. It provides comprehensive placement support: resume building, mock interviews with industry experts, and introductions to hiring partners. Outcomes depend on the programme, centre, market and the individual student.' },
-      { question: 'What is the duration and format of the course?', answer: 'The BCA is a 3-year, 6-semester full-time degree program, UGC-approved, delivered through offline or hybrid mode.' },
+      { question: 'Does Jetking provide placement guarantee for BCA students?', answer: 'No — Jetking does not guarantee placement. It provides comprehensive placement support: resume building, mock interviews with industry experts, and introductions to hiring partners. Outcomes depend on the course, centre, market and the individual student.' },
+      { question: 'What is the duration and format of the course?', answer: 'The BCA is a 3-year, 6-semester full-time degree course, UGC-approved, delivered through offline or hybrid mode.' },
       { question: 'Are there flexible payment options for the course fees?', answer: 'Yes. Jetking offers flexible fee structures including one-time payments and easy installment modes.' },
     ],
     certificateImage: { url: '/courses/bca-cloud-cyber-security-certificate.jpg', alt: 'Certificate specimen awarded on completion' },
   },
   'mca-cloud-cyber-security': {
     highlights: [
-      'UGC-recognized Master\'s degree, 24-month program',
+      'UGC-recognized Master\'s degree, 24-month course',
       'Placement support via 5000+ hiring partners',
       'Earn while you learn via paid internships after Semester 2',
       'Curriculum aligned with AWS, Azure, CISSP, CEH',
@@ -228,7 +228,7 @@ export const courseSections: Record<string, CourseSections> = {
     ],
     faqs: [
       { question: 'Which certifications should I pursue alongside MCA?', answer: 'AWS Certified Solutions Architect, Microsoft Azure Fundamentals (AZ-900), Google Associate Cloud Engineer, Certified Ethical Hacker (CEH), CompTIA Security+, and CISSP.' },
-      { question: 'What is MCA in Cloud Computing and Cyber Security?', answer: 'A postgraduate program training students in advanced cloud infrastructure, network security, ethical hacking, data protection, and cyber threat management.' },
+      { question: 'What is MCA in Cloud Computing and Cyber Security?', answer: 'A postgraduate course training students in advanced cloud infrastructure, network security, ethical hacking, data protection, and cyber threat management.' },
       { question: 'What are the eligibility criteria?', answer: 'BCA, B.Sc. Computer Science, or any graduation with Mathematics and minimum 50% marks. Some institutions require entrance exams like NIMCET or MAH MCA CET.' },
       { question: 'What is the average salary in India?', answer: 'Freshers earn Rs 4-7 LPA; with 3-5 years experience and certifications, professionals earn Rs 10-25 LPA+.' },
       { question: 'Is a specialized MCA better than a regular MCA?', answer: 'Yes, a specialisation in Cyber Security & Cloud is more industry-relevant, offering higher salaries and greater demand among tech companies.' },
@@ -236,7 +236,7 @@ export const courseSections: Record<string, CourseSections> = {
   },
   'bca-multimedia-animation': {
     highlights: [
-      'UGC-approved 3-year university degree program',
+      'UGC-approved 3-year university degree course',
       'Masterclasses by SMEs and domain experts',
       'Specialization in 3D animation, graphic design, and gaming design',
       'Placement support per Jetking placement policy',
@@ -343,7 +343,7 @@ export const courseSections: Record<string, CourseSections> = {
   },
   'cloud-computing-engineer-ai': {
     highlights: [
-      '12-month program with dedicated placement support',
+      '12-month course with dedicated placement support',
       'Learn from industry experts with hands-on real-world projects',
       'Job-ready skills and industry-recognized certification',
       'NSDC certification included',
@@ -443,8 +443,8 @@ export const courseSections: Record<string, CourseSections> = {
       { question: 'What is the Cloud Computing with AI Certification?', answer: 'An ideal choice for graduates and 10+2 students entering the IT-IMS industry, providing fundamental knowledge plus training for global certifications in cloud computing and AI.' },
       { question: 'What will I learn in the Cloud Computing with AI Certification?', answer: 'Essential cloud computing skills focusing on AI integration, mastering cloud architecture, service models, and AI-powered tools with hands-on Azure, AWS, Fortinet, and AI solutions.' },
       { question: 'What are the entry requirements?', answer: 'Any graduate or 10+2 student interested in a career in cloud computing, AI, or cyber security is eligible to enroll.' },
-      { question: 'What is the duration of the program?', answer: 'The Certified Cloud Computing with AI program at Jetking spans 12 months, ensuring in-depth knowledge and practical experience.' },
-      { question: 'How will this program enhance my career prospects?', answer: 'You can pursue roles like Desktop Engineer, L2 Engineer, Team Lead, and Cloud Engineer across 11 career paths, or start your own venture.' },
+      { question: 'What is the duration of the course?', answer: 'The Certified Cloud Computing with AI course at Jetking spans 12 months, ensuring in-depth knowledge and practical experience.' },
+      { question: 'How will this course enhance my career prospects?', answer: 'You can pursue roles like Desktop Engineer, L2 Engineer, Team Lead, and Cloud Engineer across 11 career paths, or start your own venture.' },
       { question: 'What support and resources are provided to students?', answer: 'Experienced instructors, smartlabplus access, study materials, and career services including resume building, portfolio development, LMS, interview preparation, and job placement assistance.' },
     ],
     certificateImage: { url: '/courses/cloud-computing-engineer-ai-certificate.jpg', alt: 'Certificate specimen awarded on completion' },
@@ -553,8 +553,8 @@ export const courseSections: Record<string, CourseSections> = {
     faqs: [
       { question: 'What will I learn in the Cloud Computing & Cyber Security Certification?', answer: 'Skills, tools, and techniques to start a career in networking, paving the path to advanced domains of cloud management and cyber security.' },
       { question: 'What are the entry requirements?', answer: 'Any graduate or 10+2 student who wants to make a career as a desktop support professional can take this course.' },
-      { question: 'What is the duration of the program?', answer: 'The Jetking Cloud Computing & Cyber Security program spans 18 months, equipping students with the skills and knowledge for a successful career.' },
-      { question: 'How will this program enhance my career prospects?', answer: 'Graduates can become Field Support Engineer, Desktop Engineer, Network Support Engineer, Security Support Engineer, or Cloud Support Engineer, or start independent hardware support ventures.' },
+      { question: 'What is the duration of the course?', answer: 'The Jetking Cloud Computing & Cyber Security course spans 18 months, equipping students with the skills and knowledge for a successful career.' },
+      { question: 'How will this course enhance my career prospects?', answer: 'Graduates can become Field Support Engineer, Desktop Engineer, Network Support Engineer, Security Support Engineer, or Cloud Support Engineer, or start independent hardware support ventures.' },
       { question: 'What support and resources are provided to students?', answer: 'Experienced instructors, smartlabplus facility, study materials, and career services including resume building, interview preparation, and job placement assistance.' },
     ],
   },
@@ -630,8 +630,8 @@ export const courseSections: Record<string, CourseSections> = {
       { question: 'What is the Cloud Computing with AI Certification?', answer: 'An ideal choice for graduates and 10+2 students entering the IT-IMS industry, providing fundamental knowledge plus training for global certifications in cloud computing and AI.' },
       { question: 'What will I learn in the Cloud Computing with AI Certification?', answer: 'Essential cloud computing skills focusing on AI integration, mastering cloud architecture, service models, and AI-powered tools with hands-on Azure, AWS, Fortinet, and AI solutions.' },
       { question: 'What are the entry requirements?', answer: 'Any graduate or 10+2 student interested in a career in cloud computing, AI, or cyber security is eligible to enroll.' },
-      { question: 'What is the duration of the program?', answer: 'The Cloud Computing with AI program at Jetking spans 6 months, ensuring in-depth knowledge and practical experience in these dynamic fields.' },
-      { question: 'How will this program enhance my career prospects?', answer: 'Pursue roles as Desktop Engineer, L2 Engineer, Team Lead, Cloud Engineer, or Data Center Operations Engineer, or become an entrepreneur in Cloud Computing with AI.' },
+      { question: 'What is the duration of the course?', answer: 'The Cloud Computing with AI course at Jetking spans 6 months, ensuring in-depth knowledge and practical experience in these dynamic fields.' },
+      { question: 'How will this course enhance my career prospects?', answer: 'Pursue roles as Desktop Engineer, L2 Engineer, Team Lead, Cloud Engineer, or Data Center Operations Engineer, or become an entrepreneur in Cloud Computing with AI.' },
       { question: 'What support and resources are provided to students?', answer: 'Experienced instructors, smartlab plus access, study materials, and career services including resume building, portfolio development, LMS, interview preparation, and job placement assistance.' },
     ],
     certificateImage: { url: '/courses/cloud-computing-professional-ai-certificate.jpg', alt: 'Certificate specimen awarded on completion' },
@@ -642,7 +642,7 @@ export const courseSections: Record<string, CourseSections> = {
       'Top Indian and global faculty with industry experience',
       'Multiple learning formats: books, audiobooks, videos, live classes',
       'Career services including resume building and interview prep',
-      '6-month program with flexible payment options',
+      '6-month course with flexible payment options',
       'Industry-recognized NSDC / Skill India certification',
     ],
     tools: [
@@ -748,7 +748,7 @@ export const courseSections: Record<string, CourseSections> = {
       'Experienced mentors, expert reviewers and engaged student community',
       'Industry-designed projects with portfolio-ready results',
       'Resume building, interview prep and expert career guidance',
-      '24-month program with flexible fee payment options',
+      '24-month course with flexible fee payment options',
       'Real-world projects in graphic design and virtual reality',
     ],
     careerRoles: [
@@ -834,7 +834,7 @@ export const courseSections: Record<string, CourseSections> = {
     faqs: [
       { question: 'What is a Data Analyst and what does a Data Analyst do?', answer: 'A Data Analyst collects, cleans, and analyzes data to help businesses make better decisions using tools like Excel, SQL, Power BI, Python, and Tableau to create reports and dashboards.' },
       { question: 'What skills are required to become a Data Analyst?', answer: 'You need skills in data analysis, statistics, Excel, SQL, Python, data visualization tools like Power BI or Tableau, and the ability to interpret business data.' },
-      { question: 'What will I learn in the Jetking Data Analyst Program?', answer: 'The program covers Excel, SQL, Power BI and Tableau for visualization, Python with Pandas and NumPy, and real-world data analytics projects.' },
+      { question: 'What will I learn in the Jetking Data Analyst Course?', answer: 'The course covers Excel, SQL, Power BI and Tableau for visualization, Python with Pandas and NumPy, and real-world data analytics projects.' },
       { question: 'Is Data Analytics a good career option?', answer: 'Yes, Data Analytics is one of the fastest-growing careers globally, with companies across industries relying on analysts to understand trends and make data-driven decisions.' },
       { question: 'What Support Services Are Available for Students?', answer: 'Jetking provides mentorship programs, career counseling, and access to industry networks to ensure students have the guidance and resources needed to excel.' },
       { question: 'What job roles can I get after completing a Data Analyst course?', answer: 'You can work as a Data Analyst, Business Analyst, Data Visualization Specialist, Reporting Analyst, or Junior Data Scientist.' },
@@ -1402,7 +1402,7 @@ export const courseSections: Record<string, CourseSections> = {
       { question: 'What will I learn?', answer: 'You will be able to maintain, troubleshoot and repair desktops, learning about hardware, operating systems and applications.' },
       { question: 'What are the entry requirements?', answer: 'Any graduate, undergraduate or diploma holder can do this course.' },
       { question: 'How will this course enhance my career prospects?', answer: 'You can become a desktop support professional in the corporate sector or start your own hardware support venture, as a Field Support Engineer, Desktop Engineer or L1 Systems Support Engineer.' },
-      { question: 'What is a hardware course?', answer: 'A program focused on the physical components of computers and electronic devices, how they work, how to assemble and disassemble them, and how to troubleshoot hardware-related issues.' },
+      { question: 'What is a hardware course?', answer: 'A course focused on the physical components of computers and electronic devices, how they work, how to assemble and disassemble them, and how to troubleshoot hardware-related issues.' },
       { question: 'Which computer hardware course is best?', answer: 'It depends on your goals, but courses like CompTIA A+, Cisco CCNA, or courses from manufacturers such as Microsoft, Dell or HP are highly regarded.' },
     ],
   },
@@ -1589,7 +1589,7 @@ export const courseSections: Record<string, CourseSections> = {
     faqs: [
       { question: 'What is essential networking?', answer: 'Connecting computers and devices to share resources like internet, files, printers and services, covering IP addressing, DNS, routing, switching and network security for communication and data transfer.' },
       { question: 'What will I learn?', answer: 'The skills, tools and techniques to start a career in networking, paving the path for progression into advanced domains of cloud management and cyber security.' },
-      { question: 'What are the entry requirements?', answer: 'Typically a basic understanding of computer systems and networking concepts, and sometimes a relevant educational background or previous IT experience; requirements may vary by program.' },
+      { question: 'What are the entry requirements?', answer: 'Typically a basic understanding of computer systems and networking concepts, and sometimes a relevant educational background or previous IT experience; requirements may vary by course.' },
       { question: 'How will this course enhance my career prospects?', answer: 'You can work in the corporate sector in roles such as Network, Cloud, Security and Server support, or start your own hardware support venture.' },
       { question: 'What are the 3 types of networking?', answer: 'LAN connects devices within a limited area; WAN covers broad areas linking multiple LANs over long distances; MAN spans a city or large campus between LAN and WAN scale.' },
     ],

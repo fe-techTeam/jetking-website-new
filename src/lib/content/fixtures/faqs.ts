@@ -13,7 +13,7 @@ export const faqs: Faq[] = [
     id: 'faq-eligibility-bca',
     question: 'What is the eligibility for the BCA in Cloud Computing & Cyber Security?',
     answer:
-      'You need to have passed 10+2 in any stream. There is no entrance test for admission to the programme.',
+      'You need to have passed 10+2 in any stream. There is no entrance test for admission to the course.',
     topic: 'admissions',
     personaRelevance: { student: 1, parent: 0.9 },
     relatedCourseSlugs: ['bca-cloud-cyber-security'],
@@ -22,7 +22,7 @@ export const faqs: Faq[] = [
     id: 'faq-entrance-test',
     question: 'Is there an entrance exam?',
     answer:
-      'Jetking programmes do not require an entrance test. Admission is based on eligibility criteria for the specific programme, and a counsellor will confirm your fit during the enquiry conversation.',
+      'Jetking courses do not require an entrance test. Admission is based on eligibility criteria for the specific course, and a counsellor will confirm your fit during the enquiry conversation.',
     topic: 'admissions',
     personaRelevance: { student: 1, parent: 0.8 },
   },
@@ -30,7 +30,7 @@ export const faqs: Faq[] = [
     id: 'faq-fees-general',
     question: 'How much do the courses cost?',
     answer:
-      'Fees vary by programme, centre and intake, so they are confirmed by a counsellor rather than published as a single figure. EMI options are available on most programmes.',
+      'Fees vary by course, centre and intake, so they are confirmed by a counsellor rather than published as a single figure. EMI options are available on most courses.',
     topic: 'fees',
     personaRelevance: { parent: 1, student: 0.8, professional: 0.8 },
   },
@@ -38,7 +38,7 @@ export const faqs: Faq[] = [
     id: 'faq-emi',
     question: 'Are instalment or EMI options available?',
     answer:
-      'EMI options are available on most programmes. The specific arrangements depend on the centre and the programme, and a counsellor will walk you through what applies to your case.',
+      'EMI options are available on most courses. The specific arrangements depend on the centre and the course, and a counsellor will walk you through what applies to your case.',
     topic: 'fees',
     personaRelevance: { parent: 1, student: 0.6 },
   },
@@ -64,7 +64,7 @@ export const faqs: Faq[] = [
     id: 'faq-placement-support',
     question: 'What does placement support include?',
     answer:
-      'Placement support covers interview preparation, profile building and introductions to hiring employers. Specific outcomes depend on the programme, the centre and the individual learner, so a counsellor can give you the picture for the centre you are considering.',
+      'Placement support covers interview preparation, profile building and introductions to hiring employers. Specific outcomes depend on the course, the centre and the individual learner, so a counsellor can give you the picture for the centre you are considering.',
     topic: 'placement',
     personaRelevance: { parent: 1, student: 0.9, professional: 0.7 },
   },
@@ -72,7 +72,7 @@ export const faqs: Faq[] = [
     id: 'faq-certifications',
     question: 'Which industry certifications are included?',
     answer:
-      'Programmes are built around recognised industry certifications including Red Hat and CompTIA tracks. The exact certifications included depend on the programme you choose.',
+      'Courses are built around recognised industry certifications including Red Hat and CompTIA tracks. The exact certifications included depend on the course you choose.',
     topic: 'courses',
     personaRelevance: { student: 0.8, professional: 0.9, parent: 0.7 },
   },
@@ -80,7 +80,7 @@ export const faqs: Faq[] = [
     id: 'faq-centre-locations',
     question: 'Where are Jetking centres located?',
     answer:
-      'Jetking operates centres across India. You can browse centres by city to find the one nearest you, along with the programmes each centre offers.',
+      'Jetking operates centres across India. You can browse centres by city to find the one nearest you, along with the courses each centre offers.',
     topic: 'centres',
     personaRelevance: { student: 0.9, parent: 0.9 },
   },
@@ -158,9 +158,9 @@ export const faqs: Faq[] = [
   },
   {
     id: 'faq-course-duration',
-    question: 'How long do the programmes take?',
+    question: 'How long do the courses take?',
     answer:
-      'Programme length ranges from a 4-month foundation course to a 3-year BCA degree. Diploma programmes typically run between 9 and 12 months.',
+      'Course length ranges from a 4-month foundation course to a 3-year BCA degree. Diploma courses typically run between 9 and 12 months.',
     topic: 'courses',
     personaRelevance: { student: 0.8, professional: 0.9, parent: 0.8 },
   },
@@ -168,7 +168,7 @@ export const faqs: Faq[] = [
     id: 'faq-difference-cloud-cyber',
     question: 'What is the difference between the cloud and cyber security tracks?',
     answer:
-      'Cloud programmes focus on building and operating infrastructure, while cyber security programmes focus on defending it — detecting threats and responding to incidents. Both share networking and operating system fundamentals, and a counsellor can help you decide which suits your goals.',
+      'Cloud courses focus on building and operating infrastructure, while cyber security courses focus on defending it — detecting threats and responding to incidents. Both share networking and operating system fundamentals, and a counsellor can help you decide which suits your goals.',
     topic: 'courses',
     personaRelevance: { student: 0.9, professional: 0.9 },
     relatedCourseSlugs: ['cloud-computing-engineer-ai', 'ethical-hacking-specialist'],

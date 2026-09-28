@@ -5,7 +5,7 @@ export const siteConfig = {
   legalName: 'Jetking Infotrain Limited',
   tagline: 'India\'s trusted IT training brand',
   description:
-    'Jetking offers degree, diploma and certification programmes in cloud computing, cyber security and IT infrastructure, with centres across India and placement support.',
+    'Jetking offers degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure, with centres across India and placement support.',
   locale: 'en_IN',
   /**
    * Must be an absolute origin in production — canonical URLs and OG tags depend on

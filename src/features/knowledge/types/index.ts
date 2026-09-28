@@ -117,7 +117,7 @@ export interface KnowledgeBase {
 
 export const COURSE_CATEGORY_LABEL: Record<CourseCategory, string> = {
   degree: 'Degree',
-  career: 'Career programme',
+  career: 'Career course',
   certification: 'Certification',
   short: 'Short course',
 };

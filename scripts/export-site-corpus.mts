@@ -19,7 +19,6 @@ import {
   ABOUT_HERO,
   ACHIEVEMENTS,
   DIRECTORS,
-  INDEPENDENT_DIRECTOR,
   legacyStats,
   MANAGEMENT_TEAM,
   PURPOSE,
@@ -106,7 +105,7 @@ const aboutItems = [
       `${legacyStats().map((s) => `${s.value} ${s.label}`).join(', ')}.`,
     source: 'website-content-source' as const,
   },
-  ...[...DIRECTORS, ...MANAGEMENT_TEAM, INDEPENDENT_DIRECTOR].map((leader) => ({
+  ...[...DIRECTORS, ...MANAGEMENT_TEAM].map((leader) => ({
     id: `about-leader-${slugify(leader.name)}`,
     type: 'about',
     title: leader.name,
