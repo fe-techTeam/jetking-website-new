@@ -39,7 +39,10 @@ yarn-error.log*
 /.cache/
 /data/legacy-crawl/
 /data/cms/embeddings.json
-/data/cms/store.json
+# store.json is tracked (not ignored): Supabase isn't wired up for reads yet (see
+# src/lib/cms/store.ts), so this file is the actual, live production content
+# source right now, not just an offline dev fallback — it has to ship with the repo
+# or every deploy reseeds from the fixtures and silently drops any admin-panel edit.
 
 .vercel
 .env*
