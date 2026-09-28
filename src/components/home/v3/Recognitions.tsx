@@ -1,21 +1,39 @@
+'use client';
+
 import { UNIVERSITY_PARTNERS } from '@/components/explore/content';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import { HUE_VARS, RECOGNITIONS } from './data';
 
 export function Recognitions() {
+  const { ref, edge, scrollByItem } = useScrollTrack<HTMLUListElement>();
+
   return (
     <section className="py-12 sm:py-14 lg:py-16" aria-labelledby="home-recognition-heading">
       <div className="shell">
-        <div className="max-w-2xl">
-          <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Recognition</p>
-          <h2
-            id="home-recognition-heading"
-            className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
-          >
-            Recognised by industry, regulators and peers
-          </h2>
+        <div className="flex items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Recognition</p>
+            <h2
+              id="home-recognition-heading"
+              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+            >
+              Recognised by industry, regulators and peers
+            </h2>
+          </div>
+          <ScrollNavButtons
+            edge={edge}
+            onPrev={() => scrollByItem(-1)}
+            onNext={() => scrollByItem(1)}
+            label="recognitions"
+            className="mb-1 shrink-0"
+          />
         </div>
 
-        <ul tabIndex={0} aria-label="Recognitions" className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+        <ul
+          ref={ref}
+          tabIndex={0}
+          aria-label="Recognitions"
+          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {RECOGNITIONS.map((item) => {
             const { accent, tint } = HUE_VARS[item.hue];
             return (

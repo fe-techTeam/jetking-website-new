@@ -151,7 +151,7 @@ export function ExitIntentPopup() {
               Before you go —
             </p>
             <p className="mt-2 text-[15px] leading-relaxed text-foreground-secondary">
-              Leave your number and a Jetking counsellor will help you pick the right programme. No
+              Leave your number and a Jetking counsellor will help you pick the right course. No
               spam, no pressure.
             </p>
 

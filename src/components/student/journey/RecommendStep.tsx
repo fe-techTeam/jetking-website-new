@@ -30,7 +30,7 @@ export function RecommendStep({
           Step 2 · Recommended for you
         </p>
         <h2 className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[30px]">
-          Programmes matched to your {intent} goal
+          Courses matched to your {intent} goal
         </h2>
         <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
           Pick one to build your career roadmap. You can explore details or continue with
@@ -130,7 +130,7 @@ export function RecommendStep({
         </div>
       ) : (
         <p className="text-[14px] text-[var(--stu-ink-muted)]">
-          Select a programme above to continue.
+          Select a course above to continue.
         </p>
       )}
     </div>

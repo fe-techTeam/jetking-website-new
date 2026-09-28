@@ -86,7 +86,7 @@ export function BlogLanding({
                   href={'/courses' as Route}
                   className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--blog-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)] hover:bg-[var(--blog-accent-tint)] xs:text-[15px]"
                 >
-                  Browse programmes
+                  Browse courses
                 </Link>
               </div>
             </div>

@@ -12,7 +12,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: `${siteConfig.name} — Cloud, Cyber Security & IT Courses`,
     description:
-      'Degree, diploma and certification programmes in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
+      'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
   },
   '/',
 );
@@ -36,7 +36,7 @@ export default async function HomePage() {
     <>
       <ScrollDepthTracker />
       <div className="relative overflow-hidden [transform:translateZ(0)]">
-        <HomeV2 data={data} enquiryCentres={enquiryCentres} />
+        <HomeV2 enquiryCentres={enquiryCentres} />
       </div>
       <HomeSections data={data} enquiryCentres={enquiryCentres} />
     </>

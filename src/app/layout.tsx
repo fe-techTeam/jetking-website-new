@@ -13,6 +13,7 @@ import { AccountProvider } from '@/components/account/AccountProvider';
 import { JsonLd } from '@/components/ui';
 import { AppProviders } from '@/components/providers/app-providers';
 import { themeScript } from '@/components/providers/theme-script';
+import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
 import { organizationSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import '@/styles/globals.css';
@@ -47,6 +48,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   colorScheme: 'light dark',
+  // `maximum-scale` is deliberately NOT set here — it would apply to every browser,
+  // and on Android it genuinely blocks pinch-zoom (unlike iOS 10+, which ignores it
+  // for the user's own gesture). It's instead added at runtime, iOS-only, by
+  // `iosInputZoomGuardScript` below — see src/lib/ios-input-zoom-guard.ts.
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -64,6 +69,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="jetking-theme"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
+        <Script
+          id="jetking-ios-zoom-guard"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: iosInputZoomGuardScript }}
         />
         <AppProviders>
           <JsonLd data={organizationSchema()} />

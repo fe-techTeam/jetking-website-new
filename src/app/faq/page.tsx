@@ -83,7 +83,7 @@ export default async function FaqPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-                <p className="dc-eyebrow label-mono">FAQ</p>
+                <p className="dc-eyebrow label-mono text-[14px]">FAQ</p>
                 <h1 className="dc-heading-glow mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
                   Questions people <span className="dc-accent-glow">ask us most</span>
                 </h1>

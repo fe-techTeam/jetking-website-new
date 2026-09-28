@@ -978,3 +978,22 @@ html:not(.dark) :is(.dark-canvas, .blog-page, .centres-page, .professional-page,
 html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
   background-color: #ffffff;
 }
+
+/* ── iOS zoom-on-focus floor ──────────────────────────────────────────────────
+   iOS Safari zooms the viewport when a focused field's computed font-size is
+   under 16px. `.is-ios-webkit` is set by `iosInputZoomGuardScript` (see
+   src/lib/ios-input-zoom-guard.ts, run beforeInteractive in the root layout)
+   ONLY on real iOS/iPadOS WebKit — Android and desktop never get this class, so
+   their form fields keep whatever smaller size `fieldControl` actually declares.
+   Do not widen the selector to a plain touch/width media query in place of the
+   class: that would also flatten Android Chrome's fields to 16px, which has no
+   zoom-on-focus behavior to guard against and would just override its own
+   responsive type scale for nothing. */
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  html.is-ios-webkit
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']):not([type='button']):not([type='submit']):not([type='reset']):not([type='hidden']),
+  html.is-ios-webkit select,
+  html.is-ios-webkit textarea {
+    font-size: max(16px, 1em) !important;
+  }
+}

@@ -28,7 +28,7 @@ export const JUMP_START = [
   {
     title: 'Manpower Support',
     detail:
-      'Regular training programmes keep your team engaged and ready to perform every day.',
+      'Regular training courses keep your team engaged and ready to perform every day.',
   },
   {
     title: 'Hassle-Free Operations',
@@ -61,7 +61,7 @@ export const LAUNCH_STEPS = [
   {
     step: '03',
     title: 'Training',
-    body: 'Tech training, quality management, online programmes and courseware support.',
+    body: 'Tech training, quality management, online courses and courseware support.',
   },
   {
     step: '04',
@@ -95,7 +95,7 @@ export const COURSES = [
     body: 'Diplomas in Cloud Computing, Cyber Security and Metaverse Design.',
   },
   {
-    title: 'Graduation Programmes',
+    title: 'Graduation Courses',
     body: 'BCA pathways in Cloud, Cyber Security and Blockchain.',
   },
   {

@@ -105,23 +105,23 @@ const AFFILIATIONS = [
 
 const LEVEL_META: Record<CourseLevel, { label: string; blurb: string; icon: typeof GraduationCap }> = {
   degree: {
-    label: 'Degree Programmes',
+    label: 'Degree Courses',
     blurb: 'Multi-year BCA-style pathways combining a degree with an IT specialisation.',
     icon: GraduationCap,
   },
   diploma: {
-    label: 'Diploma Programmes',
+    label: 'Diploma Courses',
     blurb: 'Structured, multi-month diplomas that go deep on one technology track.',
     icon: BookOpen,
   },
   certification: {
     label: 'Career Courses',
-    blurb: 'Certification-focused programmes built to get you job-ready faster.',
+    blurb: 'Certification-focused courses built to get you job-ready faster.',
     icon: Award,
   },
   short: {
     label: 'Short Courses',
-    blurb: 'Focused, shorter programmes to pick up a specific in-demand skill.',
+    blurb: 'Focused, shorter courses to pick up a specific in-demand skill.',
     icon: Zap,
   },
 };
@@ -233,28 +233,28 @@ export function ExploreLanding({
             </h1>
 
             <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
-              No commitment needed. Browse programmes, see why students and franchise
+              No commitment needed. Browse courses, see why students and franchise
               partners choose {siteConfig.name}, and find a centre near you — at your own
               pace.
             </p>
 
-            <div className="mt-7 flex flex-col items-start gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
                 href={'/courses' as Route}
-                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--stu-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
                 Explore courses
                 <span
                   aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                  className="grid h-7 w-7 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5 sm:h-9 sm:w-9"
                 >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2.25} />
                 </span>
               </Link>
 
               <Link
                 href={'/centres' as Route}
-                className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+                className="inline-flex min-h-11 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] px-3.5 py-2 text-[13px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)] sm:min-h-12 sm:px-5 sm:py-3 sm:text-[15px]"
               >
                 Find a centre
               </Link>
@@ -428,8 +428,8 @@ export function ExploreLanding({
         <RecommendedCourses
           courses={courses}
           headingId="exp-courses"
-          title="Programmes to explore"
-          description={`${counts.courses} programmes across ${levelGroups.length} formats — tap a card to see full details.`}
+          title="Courses to explore"
+          description={`${counts.courses} courses across ${levelGroups.length} formats — tap a card to see full details.`}
         />
       </div>
 
@@ -726,7 +726,7 @@ export function ExploreLanding({
               </h2>
               <p className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
                 Not ready to talk to anyone yet? Just browse — every centre and every
-                programme is listed, no form required.
+                course is listed, no form required.
               </p>
             </div>
             <div className="flex flex-col gap-3 xs:flex-row xs:flex-wrap">

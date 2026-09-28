@@ -1,5 +1,8 @@
+'use client';
+
 import { ArrowRight, BookOpen, BriefcaseBusiness, Check, Cpu, Trophy } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import { HUE_VARS, type Hue } from './data';
 
 interface Step {
@@ -27,7 +30,7 @@ const STEPS: Step[] = [
     icon: Trophy,
     hue: 'cyber',
     title: 'Get certified',
-    points: ['Industry certifications such as CCNA, AWS and CEH', 'Jetking certificates for every programme', 'Partnership with NSDC'],
+    points: ['Industry certifications such as CCNA, AWS and CEH', 'Jetking certificates for every course', 'Partnership with NSDC'],
   },
   {
     icon: BriefcaseBusiness,
@@ -38,25 +41,40 @@ const STEPS: Step[] = [
 ];
 
 export function HowItWorks() {
+  const { ref, edge, scrollByItem } = useScrollTrack<HTMLOListElement>();
+
   return (
     <section
       className="py-12 sm:py-14 lg:py-16"
       aria-labelledby="home-how-heading"
     >
       <div className="shell">
-        <div className="max-w-2xl">
-          <h2
-            id="home-how-heading"
-            className="dc-heading-glow font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
-          >
-            Build your career, step by step
-          </h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-            From beginner to job-ready professional &mdash; we guide you at every stage.
-          </p>
+        <div className="flex items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <h2
+              id="home-how-heading"
+              className="dc-heading-glow font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+            >
+              Build your career, step by step
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+              From beginner to job-ready professional &mdash; we guide you at every stage.
+            </p>
+          </div>
+          <ScrollNavButtons
+            edge={edge}
+            onPrev={() => scrollByItem(-1)}
+            onNext={() => scrollByItem(1)}
+            label="steps"
+            className="mb-1 shrink-0"
+          />
         </div>
 
-        <ol aria-label="Steps" tabIndex={0} className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <ol
+          ref={ref}
+          aria-label="Steps"
+          tabIndex={0}
+          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {STEPS.map((step, index) => {
             const { accent, tint } = HUE_VARS[step.hue];
             return (

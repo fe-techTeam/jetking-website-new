@@ -113,7 +113,7 @@ export function ParentLanding({
             </h1>
 
             <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
-              Help your child build a future-ready IT career with industry-aligned programmes,
+              Help your child build a future-ready IT career with industry-aligned courses,
               practical labs, and placement support — with fee clarity before you commit.
             </p>
 
@@ -280,7 +280,7 @@ export function ParentLanding({
           courses={courses}
           headingId="par-courses"
           title="Top Career Options Your Child Can Build"
-          description="Proven programmes parents compare — labs, certifications, and support."
+          description="Proven courses parents compare — labs, certifications, and support."
         />
       </div>
 

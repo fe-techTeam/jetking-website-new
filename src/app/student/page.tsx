@@ -11,7 +11,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: `Student Path — Courses & Career Start | ${siteConfig.name}`,
     description:
-      'Explore Jetking programmes for students after 10th or 12th — cloud, cyber security and IT tracks with labs, certifications and placement support.',
+      'Explore Jetking courses for students after 10th or 12th — cloud, cyber security and IT tracks with labs, certifications and placement support.',
   },
   '/student',
 );

@@ -26,7 +26,7 @@ export function HeroAdaptivePrompt() {
         >
           <div className="min-w-0">
             <p className="font-semibold text-foreground">
-              Explore programmes that lead to industry certifications
+              Explore courses that lead to industry certifications
             </p>
             <p className="mt-1 text-sm text-foreground-secondary">
               Cloud, cyber security and IT tracks taught in person at centres near you.

@@ -105,7 +105,7 @@ export function ProfessionalImpact() {
               Why Professionals Choose Jetking
             </h3>
             <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-muted)] sm:text-[15px]">
-              What you get when you upskill with a programme built for working schedules.
+              What you get when you upskill with a course built for working schedules.
             </p>
           </div>
 

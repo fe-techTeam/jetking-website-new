@@ -156,7 +156,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             onChange={(e) => loc.onCity(e.target.value)}
             className={fieldClass}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'Select state first'}</option>
+            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -174,7 +174,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             onChange={(e) => loc.onCentre(e.target.value)}
             className={fieldClass}
           >
-            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'Select city first'}</option>
+            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
             {loc.centres.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -191,7 +191,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             required
             className={fieldClass}
           >
-            <option value="">Select qualification</option>
+            <option value="">Qualification</option>
             {QUALIFICATIONS.map((q) => (
               <option key={q.value} value={q.value}>
                 {q.label}

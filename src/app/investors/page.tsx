@@ -62,7 +62,7 @@ export default function InvestorsPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
-                <p className="dc-eyebrow label-mono">Investors</p>
+                <p className="dc-eyebrow label-mono text-[14px]">Investors</p>
                 <h1 className="dc-heading-glow mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-4 sm:text-[44px] lg:text-[50px]">
                   Investor <span className="dc-accent-glow">Information</span>
                 </h1>

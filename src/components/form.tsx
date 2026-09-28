@@ -11,8 +11,17 @@ import { cx } from './ui';
  * re-exports everything here.
  */
 
+/**
+ * `text-sm` (14px), not the old zoom-safe `text-base` (16px): iOS Safari zooms the
+ * viewport on focus for any field under 16px, but that's now handled separately —
+ * `iosInputZoomGuardScript` (src/lib/ios-input-zoom-guard.ts) detects real iOS/iPadOS
+ * WebKit at runtime and a matching CSS rule in globals.css (`.is-ios-webkit input,
+ * select, textarea { font-size: max(16px, 1em) !important }`) pins fields back up to
+ * 16px there, and only there. Every other platform keeps this smaller declared size.
+ * The placeholder goes smaller still, via `::placeholder`'s own independent font-size.
+ */
 export const fieldControl =
-  'w-full rounded-[var(--radius-input)] border border-border bg-background px-4 text-base text-foreground transition-colors duration-200 placeholder:text-foreground-disabled hover:border-border-medium focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface disabled:text-foreground-disabled aria-[invalid=true]:border-jk-600';
+  'w-full rounded-[var(--radius-input)] border border-border bg-background px-4 text-sm text-foreground transition-colors duration-200 placeholder:text-xs sm:placeholder:text-[13px] placeholder:text-foreground-disabled hover:border-border-medium focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface disabled:text-foreground-disabled aria-[invalid=true]:border-jk-600';
 
 /**
  * Wiring that a `Field` hands down to whichever control sits inside it.
@@ -64,6 +73,7 @@ export function Field({
   hint,
   error,
   required = false,
+  compact = false,
   children,
 }: {
   label: ReactNode;
@@ -71,6 +81,8 @@ export function Field({
   hint?: ReactNode;
   error?: ReactNode;
   required?: boolean;
+  /** Tighter label and spacing for forms squeezed into a small card, e.g. a banner's hero form. */
+  compact?: boolean;
   children: ReactNode;
 }) {
   const uid = useId();
@@ -81,8 +93,11 @@ export function Field({
 
   return (
     <FieldContext.Provider value={{ describedBy, invalid: Boolean(error), required }}>
-      <div className="space-y-2">
-        <label htmlFor={htmlFor} className="block text-sm font-semibold text-foreground">
+      <div className={compact ? 'space-y-0.5' : 'space-y-2'}>
+        <label
+          htmlFor={htmlFor}
+          className={cx('block font-semibold text-foreground', compact ? 'text-xs' : 'text-sm')}
+        >
           {label}
           {/*
             The asterisk is decoration — `required` on the control is what actually
@@ -111,9 +126,21 @@ export function Field({
   );
 }
 
-export function Input(props: ComponentProps<'input'>) {
+export function Input({
+  compact = false,
+  ...props
+}: ComponentProps<'input'> & { compact?: boolean }) {
   const { className, ...rest } = useFieldProps(props);
-  return <input className={cx(fieldControl, 'h-12', className)} {...rest} />;
+  return (
+    <input
+      className={cx(
+        fieldControl,
+        compact ? 'h-10 px-3 text-[11px] placeholder:text-[10px]' : 'h-12',
+        className,
+      )}
+      {...rest}
+    />
+  );
 }
 
 export function Textarea(props: ComponentProps<'textarea'>) {
@@ -121,10 +148,16 @@ export function Textarea(props: ComponentProps<'textarea'>) {
   return <textarea className={cx(fieldControl, 'min-h-32 py-3', className)} {...rest} />;
 }
 
-export function Select(props: ComponentProps<'select'>) {
+export function Select({
+  compact = false,
+  ...props
+}: ComponentProps<'select'> & { compact?: boolean }) {
   const { className, children, ...rest } = useFieldProps(props);
   return (
-    <select className={cx(fieldControl, 'h-12 pr-10', className)} {...rest}>
+    <select
+      className={cx(fieldControl, compact ? 'h-10 pr-9 pl-3 text-[11px]' : 'h-12 pr-10', className)}
+      {...rest}
+    >
       {children}
     </select>
   );

@@ -84,6 +84,11 @@ export const DIRECTORS: Leader[] = [
       'He completed his studies from Bond University, Australia and has 8 years of experience in the field of Marketing & Brand Management. Siddarth is a true “Apple” devotee and a tech fanatic.',
     ],
   },
+  /** Name not yet supplied — listed last, as the board's independent seat. */
+  {
+    name: 'Name to be confirmed',
+    role: 'Independent Director',
+  },
 ];
 
 /**
@@ -99,12 +104,6 @@ export const MANAGEMENT_TEAM: Leader[] = [
   { name: 'Anand', role: 'Designation to be confirmed' },
   { name: 'Dhruti', role: 'Designation to be confirmed' },
 ];
-
-/** Name not yet supplied. */
-export const INDEPENDENT_DIRECTOR: Leader = {
-  name: 'Name to be confirmed',
-  role: 'Independent Director',
-};
 
 export type Milestone = {
   year: string;
@@ -291,7 +290,7 @@ export const PARTNERSHIPS: Partnership[] = [
   },
   {
     name: 'Lincoln University',
-    body: 'Degree and certification tie-up for select programmes.',
+    body: 'Degree and certification tie-up for select courses.',
     logo: '/university-partners/lincoln-university.png',
   },
   {

@@ -93,7 +93,7 @@ function CentresBottomCta() {
                 href={'/courses' as Route}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--centres-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--centres-ink)] transition-colors hover:border-[var(--centres-accent-soft)]/60 hover:bg-[var(--centres-accent-tint)] xs:text-[15px]"
               >
-                Browse programmes
+                Browse courses
               </Link>
             </div>
           </div>

@@ -130,7 +130,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
               strokeWidth={1.75}
               aria-hidden="true"
             />
-            Top Programs for High-Growth Careers
+            Top Courses for High-Growth Careers
           </h2>
           <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-muted)] sm:text-[15px]">
             Short and professional tracks designed to fit around a full-time job.
@@ -149,7 +149,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
             <div className="flex gap-2 lg:hidden">
               <button
                 type="button"
-                aria-label="Previous programs"
+                aria-label="Previous courses"
                 onClick={() => scrollBy(-1)}
                 className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
               >
@@ -157,7 +157,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
               </button>
               <button
                 type="button"
-                aria-label="Next programs"
+                aria-label="Next courses"
                 onClick={() => scrollBy(1)}
                 className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
               >

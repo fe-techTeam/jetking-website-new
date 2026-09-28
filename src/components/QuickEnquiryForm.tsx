@@ -27,6 +27,7 @@ export function QuickEnquiryForm({
   source,
   onStatusChange,
   successAction,
+  compact = false,
 }: {
   centres: EnquiryCentre[];
   /** Which surface this form is on, e.g. `home-hero-modal` or `centres-hero-form`. */
@@ -35,6 +36,12 @@ export function QuickEnquiryForm({
   onStatusChange?: (status: QuickEnquiryStatus) => void;
   /** Extra control shown under the thank-you message, e.g. the modal's Close button. */
   successAction?: React.ReactNode;
+  /**
+   * Tighter fields, smaller type and name+mobile / centre+qualification paired into rows —
+   * for a form squeezed into a fixed-height card (the banner hero card) rather than the
+   * open width of the modal or a page section.
+   */
+  compact?: boolean;
 }) {
   const id = useId();
   const successRef = useRef<HTMLDivElement>(null);
@@ -119,41 +126,48 @@ export function QuickEnquiryForm({
     );
   }
 
+  const gridGap = compact ? 'gap-3' : 'gap-4';
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Field label="Your name" htmlFor={`${id}-name`} required>
-        <Input
-          id={`${id}-name`}
-          name="name"
-          key={`name-${user?.id ?? 'guest'}`}
-          defaultValue={user?.name}
-          minLength={2}
-          maxLength={120}
-          autoComplete="name"
-        />
-      </Field>
+    <form onSubmit={handleSubmit} className={compact ? 'space-y-2' : 'space-y-4'}>
+      <div className={`grid ${gridGap} sm:grid-cols-2`}>
+        <Field label="Your name" htmlFor={`${id}-name`} required compact={compact}>
+          <Input
+            id={`${id}-name`}
+            name="name"
+            key={`name-${user?.id ?? 'guest'}`}
+            defaultValue={user?.name}
+            minLength={2}
+            maxLength={120}
+            autoComplete="name"
+            compact={compact}
+          />
+        </Field>
 
-      <Field label="Mobile number" htmlFor={`${id}-phone`} required>
-        <Input
-          id={`${id}-phone`}
-          name="phone"
-          key={`phone-${user?.id ?? 'guest'}`}
-          defaultValue={user?.phone}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          pattern="[\d\s+\(\)\-]{10,20}"
-          placeholder="+91 98765 43210"
-        />
-      </Field>
+        <Field label="Mobile number" htmlFor={`${id}-phone`} required compact={compact}>
+          <Input
+            id={`${id}-phone`}
+            name="phone"
+            key={`phone-${user?.id ?? 'guest'}`}
+            defaultValue={user?.phone}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            pattern="[\d\s+\(\)\-]{10,20}"
+            placeholder="+91 98765 43210"
+            compact={compact}
+          />
+        </Field>
+      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="State" htmlFor={`${id}-state`} required>
+      <div className={`grid ${gridGap} sm:grid-cols-2`}>
+        <Field label="State" htmlFor={`${id}-state`} required compact={compact}>
           <Select
             id={`${id}-state`}
             value={loc.state}
             required
             onChange={(e) => loc.onState(e.target.value)}
+            compact={compact}
           >
             <option value="">Select state</option>
             {loc.states.map((s) => (
@@ -164,15 +178,16 @@ export function QuickEnquiryForm({
           </Select>
         </Field>
 
-        <Field label="City" htmlFor={`${id}-city`} required>
+        <Field label="City" htmlFor={`${id}-city`} required compact={compact}>
           <Select
             id={`${id}-city`}
             value={loc.city}
             required
             onChange={(e) => loc.onCity(e.target.value)}
             disabled={loc.cities.length === 0}
+            compact={compact}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'Select state first'}</option>
+            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -182,33 +197,42 @@ export function QuickEnquiryForm({
         </Field>
       </div>
 
-      <Field label="Centre" htmlFor={`${id}-centre`} required>
-        <Select
-          id={`${id}-centre`}
-          value={loc.centre}
-          required
-          onChange={(e) => loc.onCentre(e.target.value)}
-          disabled={loc.centres.length === 0}
-        >
-          <option value="">{loc.centres.length > 0 ? 'Select centre' : 'Select city first'}</option>
-          {loc.centres.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </Select>
-      </Field>
+      <div className={`grid ${gridGap} sm:grid-cols-2`}>
+        <Field label="Centre" htmlFor={`${id}-centre`} required compact={compact}>
+          <Select
+            id={`${id}-centre`}
+            value={loc.centre}
+            required
+            onChange={(e) => loc.onCentre(e.target.value)}
+            disabled={loc.centres.length === 0}
+            compact={compact}
+          >
+            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
+            {loc.centres.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
 
-      <Field label="Highest qualification" htmlFor={`${id}-qualification`} required>
-        <Select id={`${id}-qualification`} name="qualification" defaultValue="" required>
-          <option value="">Select qualification</option>
-          {QUALIFICATIONS.map((q) => (
-            <option key={q.value} value={q.value}>
-              {q.label}
-            </option>
-          ))}
-        </Select>
-      </Field>
+        <Field label="Highest qualification" htmlFor={`${id}-qualification`} required compact={compact}>
+          <Select
+            id={`${id}-qualification`}
+            name="qualification"
+            defaultValue=""
+            required
+            compact={compact}
+          >
+            <option value="">Qualification</option>
+            {QUALIFICATIONS.map((q) => (
+              <option key={q.value} value={q.value}>
+                {q.label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </div>
 
       {error ? (
         <p role="alert" className="text-sm font-medium text-[var(--accent-ink)]">
@@ -216,7 +240,12 @@ export function QuickEnquiryForm({
         </p>
       ) : null}
 
-      <Button type="submit" size="md" disabled={status === 'submitting'} className="w-full">
+      <Button
+        type="submit"
+        size={compact ? 'sm' : 'md'}
+        disabled={status === 'submitting'}
+        className="w-full"
+      >
         {status === 'submitting' ? 'Submitting…' : 'Submit'}
       </Button>
 

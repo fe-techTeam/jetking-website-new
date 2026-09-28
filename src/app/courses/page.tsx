@@ -7,7 +7,6 @@ import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { toEnquiryCentres } from '@/lib/enquiry-centres';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
-import { siteConfig } from '@/lib/site';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import { CourseExplorer } from './CourseExplorer';
 
@@ -15,7 +14,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: 'IT Courses — Cloud, Cyber Security & DevOps | Jetking',
     description:
-      'Jetking programmes in cloud, cyber security, DevOps and networking — from a 4-month foundation course to a 3-year BCA degree.',
+      'Jetking courses in cloud, cyber security, DevOps and networking — from a 4-month foundation course to a 3-year BCA degree.',
   },
   '/courses',
 );
@@ -71,7 +70,7 @@ export default async function CoursesPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
                 <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[56%] lg:px-12 lg:py-16 xl:px-14">
-                  <p className="dc-eyebrow label-mono">Programmes</p>
+                  <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
 
                   <h1 className="dc-heading-glow mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[54px]">
                     The Most In-Demand
@@ -81,13 +80,11 @@ export default async function CoursesPage() {
                   <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
                     Cloud, cyber security, DevOps and networking — from a four-month
                     foundation course to a three-year degree. Sorted by what suits you;
-                    every programme stays listed.
+                    every course stays listed.
                   </p>
 
-                  <p className="mt-6 numeral text-[12px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-7">
-                    {siteConfig.name}
-                    {' · '}
-                    {courses.length} programmes
+                  <p className="mt-6 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-7">
+                    {courses.length} courses
                     {' · '}
                     {levelCount} levels
                   </p>
@@ -160,7 +157,7 @@ export default async function CoursesPage() {
                   id="courses-cta"
                   className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
                 >
-                  Not sure which programme fits?
+                  Not sure which course fits?
                 </h2>
                 <p className="mt-2.5 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
                   Talk to a counsellor about your goals, eligibility and the right track — no

@@ -11,13 +11,13 @@ import type { EventName } from '@/lib/analytics';
 /**
  * The dark three-up action bar that closes the v2 lead.
  *
- * Carries the hero promise: Get Skills. Get a Degree. 100% Placement — only at Jetking.
+ * Carries the hero promise: Industry-Relevant Training. Real-World Projects.
+ * Placement Support That Delivers.
  */
 
 interface Action {
   icon: LucideIcon;
   label: string;
-  detail: string;
   href: string;
   event?: EventName;
 }
@@ -28,20 +28,17 @@ export function ActionBar() {
   const actions: Action[] = [
     {
       icon: Wrench,
-      label: 'Get Skills',
-      detail: 'Practical, industry-relevant training',
+      label: 'Industry-Relevant Training',
       href: '/courses',
     },
     {
       icon: GraduationCap,
-      label: 'Get a Degree',
-      detail: 'University-recognised programmes',
+      label: 'Real-World Projects',
       href: '/courses?level=degree',
     },
     {
       icon: Target,
-      label: '100% Placement',
-      detail: 'Only at Jetking',
+      label: 'Placement Support That Delivers',
       href: '/placements',
     },
   ];
@@ -68,19 +65,14 @@ export function ActionBar() {
                     })
                   : undefined
               }
-              className="flex min-h-[56px] items-center gap-3.5 px-4 py-3.5 transition-colors duration-200 hover:bg-[rgb(232_36_43/0.12)] xs:gap-4 xs:px-5 lg:h-full lg:px-5 lg:py-0 xl:px-6"
+              className="flex min-h-[56px] items-center justify-start gap-3.5 px-4 py-3.5 transition-colors duration-200 hover:bg-[rgb(232_36_43/0.12)] xs:gap-4 xs:px-5 lg:h-full lg:justify-center lg:px-5 lg:py-0 xl:px-6"
             >
               <action.icon
                 className="v2-icon-glow h-5 w-5 shrink-0 text-[var(--v2-accent-soft,#ff4d54)] xs:h-6 xs:w-6"
                 strokeWidth={1.75}
                 aria-hidden="true"
               />
-              <span className="min-w-0">
-                <span className="block text-[14px] font-bold xs:text-[15px]">{action.label}</span>
-                <span className="mt-0.5 block text-[12px] text-[var(--v2-ink-bar-muted)] xs:text-[12.5px]">
-                  {action.detail}
-                </span>
-              </span>
+              <span className="min-w-0 text-[14px] font-bold xs:text-[15px]">{action.label}</span>
             </Link>
           </li>
         ))}

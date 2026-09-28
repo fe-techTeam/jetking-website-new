@@ -7,7 +7,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: 'Placement Support at Jetking — What It Includes',
     description:
-      'What Jetking placement support covers: interview preparation, profile building and employer introductions. Written for students and parents evaluating the programme.',
+      'What Jetking placement support covers: interview preparation, profile building and employer introductions. Written for students and parents evaluating the course.',
   },
   '/placements',
 );

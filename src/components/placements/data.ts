@@ -14,7 +14,7 @@ export const PLACEMENTS_HERO = {
 
 /** Deliberately no promised numbers here — see design-system/MASTER.md, "unverified claims stay unpublished". */
 export const PLACEMENT_DISCLAIMER =
-  'Placement support is real work Jetking does on a learner’s behalf: resume preparation, interview practice and introductions to hiring partners where available. It is not a guarantee — outcomes depend on the programme, the centre, the local employer market and the individual learner.';
+  'Placement support is real work Jetking does on a learner’s behalf: resume preparation, interview practice and introductions to hiring partners where available. It is not a guarantee — outcomes depend on the course, the centre, the local employer market and the individual learner.';
 
 export type ProcessStep = { step: string; title: string; description: string };
 

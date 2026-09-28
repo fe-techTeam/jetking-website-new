@@ -240,7 +240,7 @@ function CourseCard({
 export function RecommendedCourses({
   courses,
   title = 'Recommended for You',
-  description = 'Popular programmes for students — tap a card to explore details.',
+  description = 'Popular courses for students — tap a card to explore details.',
   headingId = 'stu-recommended',
 }: {
   courses: Course[];

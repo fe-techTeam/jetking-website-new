@@ -87,7 +87,7 @@ export function CentreDetail({
   const introCopy =
     centre.body ??
     centre.intro ??
-    `IT training centre in ${localityCityLabel}. Cloud, cyber security and BCA programmes with placement support.`;
+    `IT training centre in ${localityCityLabel}. Cloud, cyber security and BCA courses with placement support.`;
   const heroAccent = centre.name.toLowerCase().includes(centre.locality.toLowerCase())
     ? (localitySameAsCity ? null : city.name)
     : centre.locality;
@@ -239,7 +239,7 @@ export function CentreDetail({
                   strokeWidth={2}
                   aria-hidden="true"
                 />
-                {featured.length || offered.length} programmes
+                {featured.length || offered.length} courses
               </span>
             </div>
           </div>
@@ -377,7 +377,7 @@ export function CentreDetail({
             {/* Catalogue programmes — same card format as student / featured */}
             <CentreCatalogueProgrammes
               courses={offered}
-              title={featured.length ? 'All programmes' : 'Programmes offered'}
+              title={featured.length ? 'All courses' : 'Courses offered'}
             />
 
             {cleanFaculty.length ? (
@@ -791,7 +791,7 @@ export function CentreDetail({
             <span className="text-[var(--centres-accent-soft)]">{centre.locality}</span>?
           </h2>
           <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--centres-ink-secondary)]">
-            Talk to a counsellor about batches, fees and the right programme for your goals at this
+            Talk to a counsellor about batches, fees and the right course for your goals at this
             centre.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">

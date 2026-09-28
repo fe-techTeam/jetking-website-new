@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { REASONS } from '@/components/explore/content';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import { HUE_VARS, type Hue } from './data';
 
 /** Website content: the "10 reasons why Jetking is every student's choice" already published on jetking.com (see `explore/content.ts`). Five are shown; the rest live on /explore. */
@@ -10,6 +13,8 @@ const HUES: Hue[] = ['ai', 'network', 'cloud', 'cyber', 'network'];
 const ITEMS = SHOWN.map((t, i) => ({ ...REASONS.find((r) => r.title === t)!, hue: HUES[i]! }));
 
 export function WhyJetking() {
+  const { ref, edge, scrollByItem } = useScrollTrack<HTMLUListElement>();
+
   return (
     <section className="py-12 sm:py-14 lg:py-16" aria-labelledby="home-why-heading">
       <div className="shell">
@@ -23,16 +28,29 @@ export function WhyJetking() {
               What makes Jetking different?
             </h2>
           </div>
-          <Link
-            href={'/about-us' as Route}
-            className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-          >
-            Our story
-            <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          </Link>
+          <div className="flex items-center justify-between gap-3 sm:justify-end">
+            <Link
+              href={'/about-us' as Route}
+              className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            >
+              Our story
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </Link>
+            <ScrollNavButtons
+              edge={edge}
+              onPrev={() => scrollByItem(-1)}
+              onNext={() => scrollByItem(1)}
+              label="reasons"
+              className="shrink-0"
+            />
+          </div>
         </div>
 
-        <ul tabIndex={0} aria-label="Reasons to choose Jetking" className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-5">
+        <ul
+          ref={ref}
+          tabIndex={0}
+          aria-label="Reasons to choose Jetking"
+          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-5">
           {ITEMS.map((item) => {
             const { accent, tint } = HUE_VARS[item.hue];
             return (

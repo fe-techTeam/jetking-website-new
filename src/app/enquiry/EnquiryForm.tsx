@@ -378,7 +378,7 @@ export function EnquiryForm({
             disabled={loc.cities.length === 0}
             className={fieldClass}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'Select state first'}</option>
+            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -399,7 +399,7 @@ export function EnquiryForm({
             disabled={loc.centres.length === 0}
             className={fieldClass}
           >
-            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'Select city first'}</option>
+            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
             {loc.centres.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -409,8 +409,14 @@ export function EnquiryForm({
         </Field>
 
         <Field label="Highest qualification" htmlFor="qualification" required>
-          <Select id="qualification" name="qualification" defaultValue="" required className={fieldClass}>
-            <option value="">Select qualification</option>
+          <Select
+            id="qualification"
+            name="qualification"
+            defaultValue=""
+            required
+            className={fieldClass}
+          >
+            <option value="">Qualification</option>
             {QUALIFICATIONS.map((q) => (
               <option key={q.value} value={q.value}>
                 {q.label}
@@ -420,7 +426,7 @@ export function EnquiryForm({
         </Field>
       </div>
 
-      <Field label="Programme of interest" htmlFor="courseSlug">
+      <Field label="Course of interest" htmlFor="courseSlug">
         <Select
           id="courseSlug"
           name="courseSlug"

@@ -33,7 +33,7 @@ export function BlogHero({
         <div aria-hidden="true" className="blog-hero-wash pointer-events-none absolute inset-0" />
 
         <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[52%] lg:px-12 lg:py-16 xl:px-14">
-          <p className="text-[12px] font-bold tracking-[0.18em] text-[var(--blog-accent-soft)] uppercase sm:text-[13px]">
+          <p className="text-[14px] font-bold tracking-[0.18em] text-[var(--blog-accent-soft)] uppercase sm:text-[14.5px]">
             Blogs &amp; Insights
           </p>
 
@@ -53,7 +53,7 @@ export function BlogHero({
             <BlogHeroSearch initialQuery={initialQuery} activeCategory={activeCategory} />
           </div>
 
-          <p className="mt-5 numeral text-[12px] font-bold tracking-[0.12em] text-[var(--blog-ink-muted)] uppercase sm:mt-6">
+          <p className="mt-5 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--blog-ink-muted)] uppercase sm:mt-6">
             {siteConfig.name}
             {' · '}
             {articleCount} {articleCount === 1 ? 'article' : 'articles'}

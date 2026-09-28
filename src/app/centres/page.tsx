@@ -8,7 +8,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: 'Jetking Centres Across India | Find Your Nearest',
     description:
-      'Find Jetking IT training centres by city. Browse centres across India offering cloud computing, cyber security, DevOps and networking programmes.',
+      'Find Jetking IT training centres by city. Browse centres across India offering cloud computing, cyber security, DevOps and networking courses.',
   },
   '/centres',
 );

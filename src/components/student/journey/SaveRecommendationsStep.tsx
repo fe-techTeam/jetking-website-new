@@ -87,7 +87,7 @@ export function SaveRecommendationsStep({
           Save your {intent} recommendations
         </h2>
         <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-          We&rsquo;ll text or WhatsApp your matched programmes and career roadmap. No
+          We&rsquo;ll text or WhatsApp your matched courses and career roadmap. No
           spam — just your saved path.
         </p>
       </div>

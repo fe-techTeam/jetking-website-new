@@ -167,7 +167,7 @@ export function BlogArticle({
               reserve="standard"
               variants={{
                 student: {
-                  headline: 'Ready to look at actual programmes?',
+                  headline: 'Ready to look at actual courses?',
                   body: 'Start with the tracks open to you straight after 12th.',
                   ctaLabel: 'Browse courses',
                   ctaHref: '/courses',
@@ -268,7 +268,7 @@ export function BlogArticle({
                   href={'/courses' as Route}
                   className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--blog-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)] hover:bg-[var(--blog-accent-tint)] xs:text-[15px]"
                 >
-                  Browse programmes
+                  Browse courses
                 </Link>
               </div>
             </div>

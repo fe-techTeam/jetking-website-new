@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowRight, MapPin, Search } from 'lucide-react';
+import { ArrowRight, ChevronDown, MapPin, Search } from 'lucide-react';
 import type { City } from '@/lib/content/types';
 import { centrePath } from '@/lib/centre-path';
 import { CITY_COORDS, INDIA_MAP, projectPercent } from './india-map';
@@ -158,9 +158,35 @@ export function CentreNetwork({
               />
             </div>
 
-            <div className="mt-4 grid gap-5 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] sm:gap-6">
+            {/* Mobile: a native picker (28 cities is a "find mine", not a "browse", list). sm+: the vertical list. */}
+            <div className="relative mt-4 sm:hidden">
+              <select
+                value={filtered.some((g) => g.city.slug === selected) ? selected : ''}
+                onChange={(e) => setSelected(e.target.value)}
+                disabled={filtered.length === 0}
+                aria-label="Choose a city"
+                className="h-11 w-full appearance-none rounded-xl border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] pr-10 pl-3.5 text-[14px] font-semibold text-[var(--dc-ink)] focus-visible:outline-2 focus-visible:outline-[var(--dc-accent-soft)] disabled:text-[var(--dc-ink-muted)]"
+              >
+                {filtered.length === 0 ? (
+                  <option value="">No centre found for &ldquo;{query}&rdquo;</option>
+                ) : (
+                  filtered.map(({ city, centres: list }) => (
+                    <option key={city.slug} value={city.slug}>
+                      {city.name} ({list.length})
+                    </option>
+                  ))
+                )}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+            </div>
+
+            <div className="mt-2 grid gap-5 sm:mt-4 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] sm:gap-6">
               <ul
-                className="flex gap-2 overflow-x-auto pb-1 sm:block sm:max-h-[340px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--dc-hairline)] sm:pr-4 sm:pb-0"
+                className="hidden sm:block sm:max-h-[340px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--dc-hairline)] sm:pr-4"
                 aria-label="Cities with a Jetking centre"
                 // Scroll container: focusable so keyboard users can scroll it with the arrow keys.
                 tabIndex={0}

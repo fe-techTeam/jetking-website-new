@@ -47,7 +47,7 @@ function buildWhyStats(counts: {
     { icon: Building2, value: '50+', label: 'Learning Centres' },
     { icon: ShieldCheck, value: 'Support', label: 'Placement Assistance' },
     { icon: Handshake, value: `${counts.cities}+`, label: 'Cities Across India' },
-    { icon: Users, value: `${counts.courses}`, label: 'Programmes On Offer' },
+    { icon: Users, value: `${counts.courses}`, label: 'Courses On Offer' },
     { icon: Award, value: 'In Person', label: 'Labs & Assessment' },
   ];
 }
@@ -140,7 +140,7 @@ export function StudentLanding({
                 Student Benefits
               </h2>
               <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-                What you get when you join a Jetking programme.
+                What you get when you join a Jetking course.
               </p>
             </div>
 

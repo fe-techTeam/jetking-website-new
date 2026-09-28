@@ -347,7 +347,7 @@ export function CentreFeaturedProgrammes({
               strokeWidth={1.75}
               aria-hidden="true"
             />
-            Featured programmes
+            Featured courses
           </h2>
         </div>
         <span className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--centres-ink-muted)] uppercase">
@@ -384,7 +384,7 @@ export function CentreFeaturedProgrammes({
 
 export function CentreCatalogueProgrammes({
   courses,
-  title = 'All programmes',
+  title = 'All courses',
 }: {
   courses: Course[];
   title?: string;
@@ -402,7 +402,7 @@ export function CentreCatalogueProgrammes({
           {title}
         </h2>
         <p className="mt-4 text-[14px] text-[var(--centres-ink-secondary)]">
-          Ask a counsellor which programmes run at this centre.
+          Ask a counsellor which courses run at this centre.
         </p>
       </section>
     );

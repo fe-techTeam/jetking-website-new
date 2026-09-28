@@ -12,7 +12,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: `Explore ${siteConfig.name} — Courses, Centres & Placements`,
     description:
-      'Browse Jetking programmes, placement stories and centres across India — no commitment needed, just explore at your own pace.',
+      'Browse Jetking courses, placement stories and centres across India — no commitment needed, just explore at your own pace.',
   },
   '/explore',
 );

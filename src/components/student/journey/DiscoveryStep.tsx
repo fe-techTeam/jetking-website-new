@@ -43,7 +43,7 @@ export function DiscoveryStep({
           Let&rsquo;s find your tech career path
         </h2>
         <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-          Two quick questions — no login needed. We&rsquo;ll recommend programmes that fit
+          Two quick questions — no login needed. We&rsquo;ll recommend courses that fit
           your background and goals.
         </p>
       </div>

@@ -144,7 +144,7 @@ export function CounsellingStep({
           Talk to a counsellor about {course.shortTitle}
         </h2>
         <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-          Free session — we&rsquo;ll help you confirm the programme, nearest centre, and
+          Free session — we&rsquo;ll help you confirm the course, nearest centre, and
           next steps. No obligation.
         </p>
       </div>

@@ -31,7 +31,7 @@ export function CentresHero({
 
         <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[52%] lg:px-12 lg:py-16 xl:px-14">
-            <p className="text-[12px] font-bold tracking-[0.18em] text-[var(--centres-accent-soft)] uppercase sm:text-[13px]">
+            <p className="text-[14px] font-bold tracking-[0.18em] text-[var(--centres-accent-soft)] uppercase sm:text-[14.5px]">
               {centreCount} Centres · Nationwide
             </p>
 
@@ -44,14 +44,14 @@ export function CentresHero({
 
             <p className="mt-4 max-w-[42ch] text-[14.5px] leading-[1.65] text-[var(--centres-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
               Jetking teaches in classrooms across India. Browse by city to see centres in your area
-              and the programmes each one runs.
+              and the courses each one runs.
             </p>
 
             <div className="mt-7 w-full sm:mt-8">
               <CentresHeroSearch initialQuery={initialQuery} />
             </div>
 
-            <p className="mt-5 numeral text-[12px] font-bold tracking-[0.12em] text-[var(--centres-ink-muted)] uppercase sm:mt-6">
+            <p className="mt-5 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--centres-ink-muted)] uppercase sm:mt-6">
               {siteConfig.name}
               {' · '}
               {cityCount} {cityCount === 1 ? 'city' : 'cities'}

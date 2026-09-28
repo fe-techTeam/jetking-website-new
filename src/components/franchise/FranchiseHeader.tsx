@@ -11,7 +11,7 @@ import { useHydrated } from '@/components/useHydrated';
 
 const NAV_LINKS = [
   { label: 'Why Jetking', href: '#why-jetking' },
-  { label: 'Programs', href: '/courses' },
+  { label: 'Courses', href: '/courses' },
   { label: 'Success Stories', href: '#testimonials' },
   { label: 'Franchise Support', href: '#journey' },
   { label: 'Resources', href: '/faq' },

@@ -29,7 +29,7 @@ export default function NotFound() {
         </div>
 
         <ul className="mt-14 border-t border-border">
-          <IndexRow href="/" title="Home" meta="Programmes, centres and outcomes" />
+          <IndexRow href="/" title="Home" meta="Courses, centres and outcomes" />
           <IndexRow href="/placements" title="Placement support" meta="What it covers" />
           <IndexRow href="/blog" title="Guidance" meta="Choosing a course and a career" />
           <IndexRow href="/franchise" title="Franchise" meta="The operating model" />

@@ -78,21 +78,21 @@ export function StudentExploreHero({
           </h1>
 
           <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
-            Explore programmes, placement support and labs — then get a personalised career
+            Explore courses, placement support and labs — then get a personalised career
             path when you&rsquo;re ready. No login required to browse.
           </p>
 
-          <div className="mt-7 flex flex-col items-start gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+          <div className="mt-7 flex flex-row flex-wrap items-center gap-1.5 sm:mt-8 sm:gap-4">
             <Link
               href={'/courses' as Route}
-              className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+              className="group/cta inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[var(--stu-accent)] py-2.5 pr-2 pl-3.5 text-[12.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
             >
               Explore Courses
               <span
                 aria-hidden="true"
-                className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                className="grid h-6 w-6 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5 sm:h-9 sm:w-9"
               >
-                <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={2.25} />
               </span>
             </Link>
 
@@ -102,9 +102,9 @@ export function StudentExploreHero({
                 track('journey_start_clicked', { surface: 'student-hero' });
                 onStartJourney();
               }}
-              className="group/path inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+              className="group/path inline-flex min-h-11 items-center gap-1 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-3 py-2 text-[12.5px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
             >
-              <Sparkles className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden="true" />
               Find my career path
             </button>
           </div>

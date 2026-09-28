@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import {
   ArrowUpRight,
@@ -7,11 +9,11 @@ import {
   Users,
 } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import {
   ABOUT_HERO,
   ACHIEVEMENTS,
   DIRECTORS,
-  INDEPENDENT_DIRECTOR,
   legacyStats,
   MANAGEMENT_TEAM,
   PARTNERSHIPS,
@@ -52,6 +54,8 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
 }
 
 export function AboutLanding() {
+  const { ref: awardsRef, edge: awardsEdge, scrollByItem: scrollAwardsBy } = useScrollTrack<HTMLUListElement>();
+
   return (
     <div className="dark-canvas pb-14 sm:pb-16 lg:pb-20">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -74,7 +78,7 @@ export function AboutLanding() {
             />
 
             <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-              <p className="dc-eyebrow label-mono">{ABOUT_HERO.eyebrow}</p>
+              <p className="dc-eyebrow label-mono text-[14px]">{ABOUT_HERO.eyebrow}</p>
 
               <h1 className="dc-heading-glow mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[56px]">
                 <span className="dc-accent-glow">{ABOUT_HERO.titleLead}</span>
@@ -184,10 +188,6 @@ export function AboutLanding() {
             <LeaderCard key={leader.name} leader={leader} compact />
           ))}
         </ul>
-
-        <ul className="mt-5 grid gap-5 sm:max-w-xs">
-          <LeaderCard leader={INDEPENDENT_DIRECTOR} />
-        </ul>
       </section>
 
       {/* ── Legacy timeline ──────────────────────────────────────────────── */}
@@ -211,19 +211,31 @@ export function AboutLanding() {
 
       {/* ── Achievements ─────────────────────────────────────────────────── */}
       <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-awards">
-        <p className="dc-eyebrow label-mono">Recognition</p>
-        <h2
-          id="about-awards"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
-        >
-          Our <span className="dc-accent-glow">achievements</span>
-        </h2>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="dc-eyebrow label-mono">Recognition</p>
+            <h2
+              id="about-awards"
+              className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+            >
+              Our <span className="dc-accent-glow">achievements</span>
+            </h2>
+          </div>
+          <ScrollNavButtons
+            edge={awardsEdge}
+            onPrev={() => scrollAwardsBy(-1)}
+            onNext={() => scrollAwardsBy(1)}
+            label="achievements"
+            className="mb-1 shrink-0"
+          />
+        </div>
         <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[16px]">
           Over the decades, we’ve accomplished remarkable milestones. Explore the timeline that
           showcases how our journey has evolved.
         </p>
 
         <ul
+          ref={awardsRef}
           // Phones: a swipeable row (12 tall cards stacked was a very long scroll). sm+: the grid.
           className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] sm:mt-12 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-4 lg:gap-5 [&::-webkit-scrollbar]:hidden"
           aria-label="Awards and achievements"

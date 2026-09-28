@@ -78,7 +78,7 @@ const JOURNEY_STEPS = [
     step: 3,
     icon: Handshake,
     title: 'Training',
-    body: 'Tech training & exam support; quality management; online training programs; courseware & other technical assistance.',
+    body: 'Tech training & exam support; quality management; online training courses; courseware & other technical assistance.',
   },
   {
     step: 4,
@@ -129,7 +129,7 @@ const COURSES = [
     lines: ['Diploma In Cloud Computing, Cyber Security, Metaverse Design'],
   },
   {
-    title: 'Graduation Program',
+    title: 'Graduation Course',
     lines: ['Bachelor of Computer Applications in Cloud Computing, Cyber Security, Blockchain'],
   },
   {
@@ -343,7 +343,7 @@ export function FranchiseLanding({
               {
                 title: 'Manpower Support',
                 body:
-                  'You never have to worry about anyone leaving. Regular training programmes keep everyone engaged and constantly motivated to learn and grow more — everyday.',
+                  'You never have to worry about anyone leaving. Regular training courses keep everyone engaged and constantly motivated to learn and grow more — everyday.',
               },
               {
                 title: '100% Hassle Free Operations',

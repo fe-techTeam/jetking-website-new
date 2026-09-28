@@ -117,25 +117,25 @@ export function FranchiseLandingLight({
               support, and a path to build lasting local impact — and wealth.
             </p>
 
-            <div className="mt-7 flex flex-col items-start gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
                 href="#enquire"
-                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--stu-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
                 Enquire Now
                 <span
                   aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                  className="grid h-7 w-7 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5 sm:h-9 sm:w-9"
                 >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2.25} />
                 </span>
               </Link>
 
               <Link
                 href="#enquire"
-                className="group/path inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+                className="group/path inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-3.5 py-2 text-[13px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
               >
-                <Download className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden="true" />
                 Download Brochure
               </Link>
             </div>
@@ -454,7 +454,7 @@ export function FranchiseLandingLight({
               Courses your centre will deliver
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-              Proven programmes parents trust and employers recognise.
+              Proven courses parents trust and employers recognise.
             </p>
           </div>
 

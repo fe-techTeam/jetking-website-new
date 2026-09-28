@@ -127,6 +127,6 @@ export const RECOGNITIONS: Recognition[] = [
     hue: 'network',
     badge: 'Skill India',
     title: 'NSDC / Skill India recognition',
-    detail: 'The Certified Data Analyst programme is NSDC / Skill India recognised.',
+    detail: 'The Certified Data Analyst course is NSDC / Skill India recognised.',
   },
 ];

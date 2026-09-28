@@ -1,3 +1,6 @@
+'use client';
+
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import { GROWTH_STEPS } from './data';
 
 function StepNode({
@@ -84,6 +87,7 @@ function StepCopy({
 export function ProfessionalGrowthPath() {
   const finalIndex = GROWTH_STEPS.length - 1;
   const stepCount = GROWTH_STEPS.length;
+  const { ref: trackRef, edge, scrollByItem } = useScrollTrack<HTMLOListElement>();
 
   return (
     <section
@@ -91,20 +95,29 @@ export function ProfessionalGrowthPath() {
       aria-labelledby="pro-growth-heading"
     >
       <div className="shell">
-        <header className="max-w-2xl">
-          <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
-            Career progression
-          </p>
-          <h2
-            id="pro-growth-heading"
-            className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[28px]"
-          >
-            Your Career Growth Path with Jetking
-          </h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
-            From your current role to your next promotion — five practical milestones that fit around
-            a full-time schedule.
-          </p>
+        <header className="flex items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
+              Career progression
+            </p>
+            <h2
+              id="pro-growth-heading"
+              className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[28px]"
+            >
+              Your Career Growth Path with Jetking
+            </h2>
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
+              From your current role to your next promotion — five practical milestones that fit around
+              a full-time schedule.
+            </p>
+          </div>
+          <ScrollNavButtons
+            edge={edge}
+            onPrev={() => scrollByItem(-1)}
+            onNext={() => scrollByItem(1)}
+            label="milestones"
+            className="mb-1 shrink-0 lg:hidden"
+          />
         </header>
 
         <div
@@ -115,6 +128,7 @@ export function ProfessionalGrowthPath() {
         >
           {/* Mobile / tablet — swipeable step cards */}
           <ol
+            ref={trackRef}
             aria-label="Career growth milestones"
             tabIndex={0}
             className="pro-path-track -mx-5 flex gap-4 overflow-x-auto px-5 pb-1 lg:hidden"

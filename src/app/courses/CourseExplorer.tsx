@@ -257,7 +257,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
       {/* ── Left: filter sidebar ─────────────────────────────────────────── */}
       <aside
         className="dc-panel flex flex-col self-start rounded-[20px] xs:rounded-[22px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
-        aria-label="Filter programmes"
+        aria-label="Filter courses"
       >
         {/* Pinned: title + search always visible while the lists scroll */}
         <div className="shrink-0 rounded-t-[20px] border-b border-[rgb(255_100_105/0.18)] bg-[var(--dc-card)] p-5 xs:rounded-t-[22px] sm:p-6">
@@ -275,7 +275,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
           </div>
 
           <label htmlFor={inputId} className="relative mt-5 block">
-            <span className="sr-only">Search programmes</span>
+            <span className="sr-only">Search courses</span>
             <Search
               className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
               strokeWidth={2.25}
@@ -286,7 +286,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
               type="search"
               value={query}
               onChange={(e) => setView((v) => ({ ...v, query: e.target.value }))}
-              placeholder="Search programmes..."
+              placeholder="Search courses..."
               autoComplete="off"
               className="dc-input w-full rounded-full py-2.5 pr-10 pl-10 text-[13.5px]"
             />
@@ -348,7 +348,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
           aria-live="polite"
           className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
         >
-          {visible.size} {visible.size === 1 ? 'programme' : 'programmes'}
+          {visible.size} {visible.size === 1 ? 'course' : 'courses'}
           {hasActiveFilters ? ' matching' : null}
         </p>
 
@@ -417,7 +417,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
 
                     <div className="mt-6 flex items-center justify-between gap-3">
                       <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
-                        View programme
+                        View course
                       </span>
                       <span
                         aria-hidden="true"
@@ -440,7 +440,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
         {visible.size === 0 ? (
           <div className="dc-panel mt-6 rounded-[20px] px-6 py-12 text-center sm:px-8">
             <p className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
-              No programme matches those filters
+              No course matches those filters
             </p>
             <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)]">
               Try a different level, technology, or search term.

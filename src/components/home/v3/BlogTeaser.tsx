@@ -1,9 +1,12 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import type { Post } from '@/lib/content/types';
 import { formatPostDate, postCover } from '@/components/blog/BlogCards';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 
 /**
  * A compact card built on this page's own `dc-*` tokens rather than importing
@@ -14,6 +17,7 @@ import { formatPostDate, postCover } from '@/components/blog/BlogCards';
  * those are reused as-is.
  */
 export function BlogTeaser({ posts }: { posts: Post[] }) {
+  const { ref, edge, scrollByItem } = useScrollTrack<HTMLUListElement>();
   if (posts.length === 0) return null;
 
   return (
@@ -29,16 +33,29 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
               Career guidance and industry notes
             </h2>
           </div>
-          <Link
-            href={'/blog' as Route}
-            className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-          >
-            Visit the blog
-            <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          </Link>
+          <div className="flex items-center justify-between gap-3 sm:justify-end">
+            <Link
+              href={'/blog' as Route}
+              className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            >
+              Visit the blog
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </Link>
+            <ScrollNavButtons
+              edge={edge}
+              onPrev={() => scrollByItem(-1)}
+              onNext={() => scrollByItem(1)}
+              label="articles"
+              className="shrink-0"
+            />
+          </div>
         </div>
 
-        <ul tabIndex={0} aria-label="Latest articles" className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+        <ul
+          ref={ref}
+          tabIndex={0}
+          aria-label="Latest articles"
+          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {posts.map((post) => {
             const cover = postCover(post);
             return (

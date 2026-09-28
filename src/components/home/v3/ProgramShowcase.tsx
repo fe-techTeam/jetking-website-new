@@ -7,6 +7,7 @@ import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import type { Course, CourseLevel } from '@/lib/content/types';
 import { COURSE_CATEGORIES, categoriesOf, type CourseCategoryId } from '@/lib/course-categories';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import { CardTrack } from './CardTrack';
 
 const LEVEL_LABEL: Record<CourseLevel, string> = {
@@ -31,6 +32,7 @@ function inTab(course: Course, tab: (typeof TABS)[number]): boolean {
 /** Featured programmes first, then the catalogue by technology — tabs only for technologies that have courses. */
 export function ProgramShowcase({ courses }: { courses: Course[] }) {
   const [tab, setTab] = useState<TabId>('featured');
+  const { ref: tabsRef, edge: tabsEdge, scrollByItem: scrollTabsBy } = useScrollTrack<HTMLDivElement>();
 
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
   if (tabs.length === 0) return null;
@@ -46,12 +48,12 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
       <div className="shell">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
-            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Programmes</p>
+            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>
             <h2
               id="home-programs-heading"
               className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
-              Explore our programmes
+              Explore our courses
             </h2>
             <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
               Industry-aligned, certification-focused courses for real-world careers — from a first certification to a full degree.
@@ -66,7 +68,21 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
           </Link>
         </div>
 
-        <div className="mt-6 -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" role="group" aria-label="Filter programmes by technology">
+        <div className="mt-6 flex items-center justify-end sm:hidden">
+          <ScrollNavButtons
+            edge={tabsEdge}
+            onPrev={() => scrollTabsBy(-1)}
+            onNext={() => scrollTabsBy(1)}
+            label="technology filters"
+          />
+        </div>
+
+        <div
+          ref={tabsRef}
+          className="mt-2 -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-6 sm:flex-wrap sm:overflow-visible sm:px-0"
+          role="group"
+          aria-label="Filter courses by technology"
+        >
           {tabs.map((t) => (
             <button
               key={t.id}
@@ -84,7 +100,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
         </div>
 
         <div className="mt-4">
-          <CardTrack key={tab} label={`${tab} programmes`}>
+          <CardTrack key={tab} label={`${tab} courses`}>
             {visible.map((course) => (
               <li
                 key={course.slug}

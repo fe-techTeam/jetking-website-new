@@ -70,7 +70,7 @@ export function ProfessionalHero() {
             href={'/courses' as Route}
             className="v2-cta-glow group/explore inline-flex min-h-12 items-center gap-5 rounded-full py-3.5 pr-5 pl-6 text-[15px] font-bold text-white transition-[background-color,box-shadow] duration-200 sm:gap-6 sm:py-4 sm:pr-5.5 sm:pl-7 sm:text-[16px]"
           >
-            Explore Programs
+            Explore Courses
             <ArrowRight
               className="h-5 w-5 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/explore:translate-x-0.5"
               strokeWidth={2}

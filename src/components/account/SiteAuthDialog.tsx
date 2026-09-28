@@ -177,7 +177,7 @@ export function SiteAuthDialog({
                     onChange={(e) => loc.setCity(e.target.value)}
                     disabled={loc.cities.length === 0}
                   >
-                    <option value="">{loc.cities.length > 0 ? 'Select city' : 'Select state first'}</option>
+                    <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
                     {loc.cities.map((c) => (
                       <option key={c.slug} value={c.slug}>
                         {c.name}
@@ -197,7 +197,7 @@ export function SiteAuthDialog({
                   onChange={(e) => loc.setCentre(e.target.value)}
                   disabled={loc.centres.length === 0}
                 >
-                  <option value="">{loc.centres.length > 0 ? 'No preference' : 'Select a city first'}</option>
+                  <option value="">{loc.centres.length > 0 ? 'No preference' : 'City first'}</option>
                   {loc.centres.map((c) => (
                     <option key={c.slug} value={c.slug}>
                       {c.name}

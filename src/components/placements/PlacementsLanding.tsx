@@ -119,7 +119,7 @@ export function PlacementsLanding() {
             />
 
             <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[62%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
-              <p className="dc-eyebrow label-mono">{PLACEMENTS_HERO.eyebrow}</p>
+              <p className="dc-eyebrow label-mono text-[14px]">{PLACEMENTS_HERO.eyebrow}</p>
 
               <h1 className="dc-heading-glow mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
                 {PLACEMENTS_HERO.titleLead}{' '}
@@ -130,16 +130,16 @@ export function PlacementsLanding() {
                 {PLACEMENTS_HERO.lede}
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
+              <div className="mt-7 flex flex-col items-start gap-2 xs:flex-row xs:flex-wrap sm:mt-8 sm:gap-3">
                 <Link
                   href={'/enquiry' as Route}
-                  className="dc-cta inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold sm:h-14 sm:px-7 sm:text-base"
+                  className="dc-cta inline-flex h-10 items-center justify-center rounded-full px-4 text-[13px] font-bold sm:h-14 sm:px-7 sm:text-base"
                 >
                   Talk to a counsellor
                 </Link>
                 <a
                   href={PLACEMENTS_CONTACT.tel}
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:px-7 sm:text-base"
+                  className="inline-flex h-10 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:px-7 sm:text-base"
                 >
                   Call {PLACEMENTS_CONTACT.phone}
                 </a>
@@ -270,7 +270,7 @@ export function PlacementsLanding() {
               </h2>
             </div>
             <p className="text-[13.5px] font-semibold text-[var(--dc-ink-muted)]">
-              More than training — a complete career readiness program.
+              More than training — a complete career readiness course.
             </p>
           </div>
 

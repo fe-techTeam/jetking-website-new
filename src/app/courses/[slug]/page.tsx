@@ -19,9 +19,9 @@ import { FeeDepthTracker } from './FeeDepthTracker';
  * so it lives here as static content rather than per-course data.
  */
 const JETKING_STATS = [
-  { value: '80', label: 'Years of Legacy' },
-  { value: '5000+', label: 'Recruiter partners' },
-  { value: '360°', label: 'Career support' },
+  { value: 'Degree', label: 'From a top university' },
+  { value: 'Learn', label: 'In-demand skills & tech tools' },
+  { value: 'Get Placed', label: 'In top companies — 5000+ partners' },
 ];
 
 const WHY_JETKING: Array<{ title: string; body: string; icon: LucideIcon }> = [
@@ -32,7 +32,7 @@ const WHY_JETKING: Array<{ title: string; body: string; icon: LucideIcon }> = [
   },
   {
     title: 'Career services built in',
-    body: 'Resume building, mock interviews and interview preparation throughout the programme.',
+    body: 'Resume building, mock interviews and interview preparation throughout the course.',
     icon: BriefcaseBusiness,
   },
   {
@@ -95,15 +95,6 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
     { name: course.shortTitle, path: `/courses/${course.slug}` },
   ];
 
-  const feeValue =
-    course.fees.disclosed && course.fees.totalInr
-      ? new Intl.NumberFormat('en-IN', {
-          style: 'currency',
-          currency: 'INR',
-          maximumFractionDigits: 0,
-        }).format(course.fees.totalInr)
-      : 'Confirmed by a counsellor';
-
   return (
     <>
       <JsonLd data={[courseSchema(course), breadcrumbSchema(trail)]} />
@@ -150,6 +141,22 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
               <p className="lede mt-6 max-w-[60ch] text-[var(--dc-ink-secondary)]">
                 {course.summary}
               </p>
+
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  href="/enquiry"
+                  className="dc-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold"
+                >
+                  Talk to a counsellor
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/enquiry"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline)] px-6 text-sm font-semibold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[rgb(255_100_105/0.08)]"
+                >
+                  Download brochure
+                </Link>
+              </div>
             </div>
 
             {course.heroImage ? (
@@ -177,56 +184,27 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 key={stat.label}
                 className="dc-panel rounded-[16px] px-3 py-5 text-center sm:px-6"
               >
-                <p className="dc-accent-glow numeral font-display text-2xl font-extrabold sm:text-3xl">
+                <p className="dc-accent-glow font-display text-lg font-extrabold sm:text-xl">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-[12px] font-semibold tracking-[0.04em] text-[var(--dc-ink-muted)] uppercase sm:text-[12.5px]">
+                <p className="mt-1 text-[12px] leading-snug font-semibold text-[var(--dc-ink-muted)] sm:text-[12.5px]">
                   {stat.label}
                 </p>
               </li>
             ))}
           </ul>
 
-          {/* ── Body ───────────────────────────────────────────────────────── */}
-          <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+          {/* ── Body ─────────────────────────────────────────────────────────
+              Full width — the sidebar CTAs moved up into the masthead, next to
+              the description, so there is no reserved side column left here. */}
+          <div className="mt-14">
             <div className="min-w-0">
-              <div className="max-w-2xl">
-                <AdaptiveNudge
-                  id="course-detail-nudge"
-                  reserve="standard"
-                  tone="dark"
-                  variants={{
-                    student: {
-                      headline: 'Want to know how the placement year works?',
-                      ctaLabel: 'See placement support',
-                      ctaHref: '/placements',
-                    },
-                    professional: {
-                      headline: 'Need to fit this around a full-time job?',
-                      body: 'Ask a counsellor which centres run evening batches.',
-                      ctaLabel: 'Ask about batches',
-                      ctaHref: '/enquiry',
-                    },
-                    parent: {
-                      headline: 'Want the fee structure and EMI options?',
-                      body: 'A counsellor can give you the exact figures for your centre.',
-                      ctaLabel: 'Request fee details',
-                      ctaHref: '/enquiry',
-                    },
-                    franchise: {
-                      headline: 'Evaluating the programme portfolio?',
-                      ctaLabel: 'Franchise details',
-                      ctaHref: '/franchise',
-                    },
-                  }}
-                />
-              </div>
-
-              <div className="mt-14 space-y-14">
+              {/* "Suggested for you" nudge hidden site-wide per request. */}
+              <div className="space-y-14">
                 {/* Highlights — shown only when the live page lists key features */}
                 {course.highlights?.length ? (
                   <section>
-                    <SectionHeading>Programme highlights</SectionHeading>
+                    <SectionHeading>Course highlights</SectionHeading>
                     <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                       {course.highlights.map((item) => (
                         <li
@@ -347,7 +325,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                             <p className="measure text-[15px]">
                               Taught in person at your centre, with lab work and assessment
                               built into the module rather than deferred to the end of the
-                              programme.
+                              course.
                             </p>
                           </Disclosure>
                         ))}
@@ -452,7 +430,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 {/* Career opportunities — shown only when roles are listed */}
                 {course.careerRoles?.length ? (
                   <section>
-                    <SectionHeading>Where this can take you</SectionHeading>
+                    <SectionHeading>What career this course can provide</SectionHeading>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {course.careerRoles.map((role) => (
                         <span
@@ -469,6 +447,36 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                     </div>
                   </section>
                 ) : null}
+
+                <AdaptiveNudge
+                  id="course-detail-nudge"
+                  reserve="standard"
+                  tone="dark"
+                  variants={{
+                    student: {
+                      headline: 'Want to know how the placement year works?',
+                      ctaLabel: 'See placement support',
+                      ctaHref: '/placements',
+                    },
+                    professional: {
+                      headline: 'Need to fit this around a full-time job?',
+                      body: 'Ask a counsellor which centres run evening batches.',
+                      ctaLabel: 'Ask about batches',
+                      ctaHref: '/enquiry',
+                    },
+                    parent: {
+                      headline: 'Want the fee structure and EMI options?',
+                      body: 'A counsellor can give you the exact figures for your centre.',
+                      ctaLabel: 'Request fee details',
+                      ctaHref: '/enquiry',
+                    },
+                    franchise: {
+                      headline: 'Evaluating the course portfolio?',
+                      ctaLabel: 'Franchise details',
+                      ctaHref: '/franchise',
+                    },
+                  }}
+                />
 
                 {offeringCentres.length ? (
                   <section>
@@ -523,40 +531,6 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 ) : null}
               </div>
             </div>
-
-            {/* ── Sidebar ──────────────────────────────────────────────────
-                Fees are shown as a policy statement, never a figure unless the
-                CMS holds an authoritative one — the same rule as the AI Guide. */}
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="dc-panel rounded-[20px] p-7">
-                <p className="dc-eyebrow label-mono">At a glance</p>
-                <dl className="mt-5">
-                  <SpecRow label="Duration" value={course.duration} numeric />
-                  <SpecRow label="Eligibility" items={eligibilityItems(course.eligibility)} />
-                  {course.university ? (
-                    <SpecRow label="Awarded by" value={course.university} />
-                  ) : null}
-                  <SpecRow label="Fees" value={feeValue} note={course.fees.note} />
-                  {course.fees.emiAvailable ? (
-                    <SpecRow label="Payment" value="EMI options available" />
-                  ) : null}
-                </dl>
-
-                <Link
-                  href="/enquiry"
-                  className="dc-cta mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold"
-                >
-                  Talk to a counsellor
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/enquiry"
-                  className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline)] px-6 text-sm font-semibold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[rgb(255_100_105/0.08)]"
-                >
-                  Download brochure
-                </Link>
-              </div>
-            </aside>
           </div>
 
           {/* Where our alumni work — shown only when the page names companies */}
@@ -602,7 +576,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           {related.length ? (
             <section className="mt-20 border-t border-[var(--dc-hairline)] pt-12">
               <div className="flex flex-wrap items-baseline justify-between gap-4">
-                <SectionHeading>Similar programmes</SectionHeading>
+                <SectionHeading>Similar courses</SectionHeading>
                 <Link
                   href="/courses"
                   className="inline-flex min-h-6 items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
@@ -655,7 +629,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
                           <div className="mt-5 flex items-center justify-between gap-3">
                             <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
-                              View programme
+                              View course
                             </span>
                             <span
                               aria-hidden="true"
@@ -756,54 +730,3 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Split a prose eligibility line into scannable bullets (by sentence). */
-function eligibilityItems(text: string): string[] {
-  const parts = text
-    .split(/(?<=\.)\s+(?=[A-Z0-9])/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  return parts.length ? parts : [text];
-}
-
-function SpecRow({
-  label,
-  value,
-  items,
-  note,
-  numeric,
-}: {
-  label: string;
-  value?: string;
-  items?: string[];
-  note?: string;
-  numeric?: boolean;
-}) {
-  return (
-    <div className="border-t border-[var(--dc-hairline)] py-3.5 first:border-t-0 first:pt-0">
-      <dt className="text-sm text-[var(--dc-ink-muted)]">{label}</dt>
-      {items?.length ? (
-        <dd className="mt-2">
-          <ul className="space-y-2">
-            {items.map((item) => (
-              <li
-                key={item}
-                className="flex gap-2.5 text-[13.5px] leading-snug font-semibold text-[var(--dc-ink)]"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--dc-accent)]"
-                />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </dd>
-      ) : (
-        <dd className={`mt-0.5 font-semibold text-[var(--dc-ink)]${numeric ? ' numeral' : ''}`}>
-          {value}
-        </dd>
-      )}
-      {note ? <dd className="mt-1 text-sm text-[var(--dc-ink-muted)]">{note}</dd> : null}
-    </div>
-  );
-}

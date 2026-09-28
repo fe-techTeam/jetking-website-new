@@ -472,7 +472,7 @@ export function Guide() {
 function FeesCard({ fees }: { fees: FeesPayload }) {
   return (
     <div className="space-y-2">
-      <p className="label-mono">Programme fee</p>
+      <p className="label-mono">Course fee</p>
       {fees.courseTitle ? (
         <p className="font-semibold text-foreground">{fees.courseTitle}</p>
       ) : null}

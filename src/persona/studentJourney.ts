@@ -60,10 +60,10 @@ export const EMPTY_STUDENT_JOURNEY: StudentJourneyState = {
 
 export const EDUCATION_OPTIONS: Array<{ id: StudentEducation; label: string; hint: string }> = [
   { id: '10th', label: 'After 10th', hint: 'Foundation & certification tracks' },
-  { id: '12th', label: 'After 12th', hint: 'Diploma & specialist programmes' },
+  { id: '12th', label: 'After 12th', hint: 'Diploma & specialist courses' },
   { id: 'diploma', label: 'Diploma holder', hint: 'Advanced certification paths' },
   { id: 'engineering', label: 'Engineering / B.Tech', hint: 'Degree-aligned tracks' },
-  { id: 'graduate', label: 'Graduate', hint: 'Career-start programmes' },
+  { id: 'graduate', label: 'Graduate', hint: 'Career-start courses' },
 ];
 
 export const INTEREST_OPTIONS: Array<{ id: StudentInterest; label: string; intent: string }> = [
@@ -253,7 +253,7 @@ export function buildCareerRoadmap(
     {
       title: 'Career launch',
       detail: outcome ?? 'Placement support, mock interviews & hiring partner intros',
-      duration: 'After programme',
+      duration: 'After course',
     },
   ];
 }

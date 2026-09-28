@@ -2,8 +2,6 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
-import { WelcomeBack } from '@/persona/WelcomeBack';
-import type { HomeData } from '../data';
 import { ActionBar } from './ActionBar';
 import { JourneyHexes } from './JourneyHexes';
 import { HeroEnquireCta } from './HeroEnquireCta';
@@ -16,10 +14,8 @@ import type { EnquiryCentre } from '@/components/EnquiryModal';
  * rail here (Find Center / Call / Book Counselling) — the Professional page still uses it.
  */
 export function HomeV2({
-  data,
   enquiryCentres,
 }: {
-  data: HomeData;
   /** Centres offered in the hero's quick-enquiry modal (state → centre). */
   enquiryCentres: EnquiryCentre[];
 }) {
@@ -88,14 +84,14 @@ export function HomeV2({
               <br className="hidden sm:inline" /> Placement support that delivers.
             </p>
 
-            <div className="mt-6 flex flex-col items-start gap-5 xs:mt-7 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-5 2xl:gap-x-6 lg:mt-8 2xl:mt-[34px]">
+            <div className="mt-6 flex flex-row flex-wrap items-center gap-2.5 xs:mt-7 xs:gap-3 sm:mt-8 sm:gap-x-4 sm:gap-y-5 2xl:gap-x-6 lg:mt-8 2xl:mt-[34px]">
               <Link
                 href={'/courses' as Route}
-                className="v2-cta-glow group/explore inline-flex min-h-12 items-center gap-5 rounded-full py-3.5 pr-5 pl-6 text-[15px] font-bold text-white transition-[background-color,box-shadow] duration-200 sm:gap-6 sm:py-4 sm:pr-5.5 sm:pl-7 sm:text-[16px]"
+                className="v2-cta-glow group/explore inline-flex min-h-11 items-center gap-2 rounded-full py-2.5 pr-3.5 pl-4 text-[13px] font-bold text-white transition-[background-color,box-shadow] duration-200 sm:min-h-12 sm:gap-6 sm:py-4 sm:pr-5.5 sm:pl-7 sm:text-[16px]"
               >
                 Explore Courses
                 <ArrowRight
-                  className="h-5 w-5 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/explore:translate-x-0.5"
+                  className="h-4 w-4 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/explore:translate-x-0.5 sm:h-5 sm:w-5"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
@@ -106,8 +102,6 @@ export function HomeV2({
 
           {/* Chooser occupies the former banner slot */}
           <div className="v2-hero-stage relative flex h-full flex-col items-center justify-center text-center">
-            <WelcomeBack className="mb-5 w-full max-w-xl text-left xs:mb-6" />
-
             <h2 className="v2-heading-glow font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--v2-ink)] xs:text-[23px] sm:text-[26px] md:text-[28px] 3xl:text-[30px]">
               What brings you here today?
             </h2>

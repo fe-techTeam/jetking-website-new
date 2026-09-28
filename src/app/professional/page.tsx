@@ -11,7 +11,7 @@ export const metadata: Metadata = buildMetadata(
   {
     title: `Working Professional Path — Upskill & Advance | ${siteConfig.name}`,
     description:
-      'Upgrade your career with Jetking upskilling programmes — cloud, cyber security, DevOps and AI tracks with flexible batches, certifications and career support for working professionals.',
+      'Upgrade your career with Jetking upskilling courses — cloud, cyber security, DevOps and AI tracks with flexible batches, certifications and career support for working professionals.',
   },
   '/professional',
 );

@@ -36,7 +36,7 @@ export function buildFigures({
   const derived: Figure[] = [
     { icon: Building2, value: String(centres), label: 'Learning centres\nacross India' },
     { icon: MapPin, value: String(cities), label: 'Cities across\nIndia' },
-    { icon: Sparkles, value: String(courses), label: 'Programmes\non offer' },
+    { icon: Sparkles, value: String(courses), label: 'Courses\non offer' },
   ];
 
   const verified: Figure[] = trust

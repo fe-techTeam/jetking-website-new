@@ -591,7 +591,6 @@
   background: var(--dc-accent);
   border-color: transparent;
   color: var(--dc-ink);
-  box-shadow: 0 0 18px rgb(196 30 36 / 0.35);
 }
 
 /* ── Search / text input ────────────────────────────────────────────────
