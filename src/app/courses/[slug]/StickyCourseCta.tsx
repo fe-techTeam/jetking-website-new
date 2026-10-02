@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { ArrowRight, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { siteConfig } from '@/lib/site';
@@ -63,14 +62,14 @@ export function StickyCourseCta({
         >
           <Phone className="h-[18px] w-[18px]" strokeWidth={2.25} aria-hidden="true" />
         </a>
-        <Link
-          href="/enquiry"
+        <a
+          href="#cp-enquiry"
           onClick={() => track('enquiry_started', { surface: 'sticky-course-cta' })}
           className="dc-cta inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full px-4 text-[14px] font-bold xs:px-5"
         >
           Enquire now
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
+        </a>
       </div>
     </div>
   );

@@ -11,11 +11,20 @@ import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import { AskAiLink } from '@/components/AskAiLink';
 import { CourseExplorer } from './CourseExplorer';
 
+const COURSE_DOMAINS = [
+  'Cloud Computing',
+  'Cyber Security',
+  'AI Engineering',
+  'DevOps',
+  'Gaming & Metaverse',
+  'Networking',
+] as const;
+
 export const metadata: Metadata = buildMetadata(
   {
-    title: 'IT Courses — Cloud, Cyber Security & DevOps | Jetking',
+    title: 'IT Courses — Cloud, Cyber Security, AI, DevOps, Gaming & Networking | Jetking',
     description:
-      'Jetking courses in cloud, cyber security, DevOps and networking — from a 4-month foundation course to a 3-year BCA degree.',
+      'Jetking courses in cloud computing, cyber security, AI engineering, DevOps, gaming & metaverse and networking — short-term courses to UG and PG degree programs for 10+2 students, graduates and young professionals.',
   },
   '/courses',
 );
@@ -70,18 +79,29 @@ export default async function CoursesPage() {
               />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[56%] lg:px-12 lg:py-16 xl:px-14">
+                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
                   <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
 
-                  <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[54px]">
+                  <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[clamp(40px,4.3vw,56px)]">
                     The Most In-Demand
                     <span className="dc-accent-glow mt-1 block sm:mt-1.5">Job-Ready Courses.</span>
                   </h1>
 
-                  <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
-                    Cloud, cyber security, DevOps and networking — from a four-month
-                    foundation course to a three-year degree. Sorted by what suits you;
-                    every course stays listed.
+                  {/* Slide 1 order: the domains first, then the programme line. Plain text for search crawlers. */}
+                  <ul aria-label="Domains we offer courses in" className="mt-4 flex max-w-[60ch] flex-wrap gap-2 sm:mt-5">
+                    {COURSE_DOMAINS.map((domain) => (
+                      <li
+                        key={domain}
+                        className="rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3 py-1 text-[13px] font-bold text-[var(--dc-ink)]"
+                      >
+                        {domain}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="mt-4 max-w-[60ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:text-[16px]">
+                    Short term to UG &amp; PG Degree Programs for 10+2 Students, Graduates &amp; Young
+                    Professionals
                   </p>
 
                   <p className="mt-6 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-7">

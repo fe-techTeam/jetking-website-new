@@ -1,0 +1,217 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   COURSE PAGE — degree programme template (`.cp`)
+   Client feedback: white background (not pink), one straight font (Arial /
+   Helvetica) for every heading and body line, Jetking red plus yellow, black,
+   light blue and grey in small doses. Tokens are `--cp-*`; the `--dc-*` aliases
+   at the bottom of the block let the shared BrandTile / Disclosure pieces read
+   correctly here without edits. The page still follows the site's dark toggle.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.cp {
+  --cp-bg: #ffffff;
+  --cp-ink: #111827;
+  --cp-ink-2: #374151;
+  --cp-muted: #5b6472;
+  --cp-line: #e5e7eb;
+  --cp-grey: #f3f4f6;
+  --cp-red: #c7141c;
+  --cp-red-bright: #ea1c24;
+  /* Backgrounds that carry white text stay dark enough in both themes (>= 4.5:1); --cp-red is the text/accent shade. */
+  --cp-red-fill: #c7141c;
+  --cp-blue-fill: #0b6fc2;
+  --cp-yellow-ink: #7a5200;
+  --cp-red-tint: #fdecec;
+  --cp-yellow: #fdb913;
+  --cp-yellow-tint: #fff6dd;
+  --cp-blue: #0b6fc2;
+  --cp-sky: #eaf4fd;
+  --cp-black: #0f1115;
+
+  --dc-ink: var(--cp-ink);
+  --dc-ink-secondary: var(--cp-ink-2);
+  --dc-ink-muted: var(--cp-muted);
+  --dc-hairline: var(--cp-line);
+  --dc-accent: var(--cp-red);
+  --dc-accent-soft: var(--cp-red);
+
+  background: var(--cp-bg);
+  color: var(--cp-ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html.dark .cp {
+  --cp-bg: #0f1115;
+  --cp-ink: #f3f4f6;
+  --cp-ink-2: #d1d5db;
+  --cp-muted: #9ca3af;
+  --cp-line: #2a2f3a;
+  --cp-grey: #171a21;
+  --cp-red: #f0585e;
+  --cp-red-tint: #2a1416;
+  --cp-yellow-tint: #2b2410;
+  --cp-blue: #6db6f2;
+  --cp-sky: #101c2a;
+  --cp-yellow-ink: #f5c84c;
+  --cp-black: #05060a;
+}
+
+/* One heading style across every section: same family, same sizes. */
+.cp,
+.cp h1,
+.cp h2,
+.cp h3,
+.cp p,
+.cp li,
+.cp button,
+.cp input,
+.cp select,
+.cp a {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cp-h1 {
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cp-ink);
+}
+
+.cp-h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--cp-ink);
+}
+
+.cp-h3 {
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--cp-ink);
+}
+
+.cp-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cp-red);
+}
+
+.cp-lede {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--cp-ink-2);
+}
+
+.cp-section {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.cp-band-sky {
+  background: var(--cp-sky);
+}
+.cp-band-grey {
+  background: var(--cp-grey);
+}
+.cp-band-yellow {
+  background: var(--cp-yellow-tint);
+}
+.cp-band-black {
+  background: var(--cp-black);
+  color: #fff;
+}
+
+.cp-card {
+  background: var(--cp-bg);
+  border: 1px solid var(--cp-line);
+  border-radius: 16px;
+}
+
+.cp-btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding-inline: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  background: var(--cp-red-fill);
+  color: #fff;
+  transition: background-color 0.15s;
+}
+.cp-btn:hover {
+  background: #a50d13;
+}
+.cp-btn-ghost {
+  background: transparent;
+  color: var(--cp-ink);
+  border: 1.5px solid var(--cp-ink);
+}
+.cp-btn-ghost:hover {
+  background: var(--cp-ink);
+  color: var(--cp-bg);
+}
+.cp-btn-yellow {
+  background: var(--cp-yellow);
+  color: #111827;
+}
+.cp-btn-yellow:hover {
+  background: #e8a600;
+}
+
+/* Horizontally scrolling rows that snap a fixed number of cards per view. */
+.cp-snap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 1rem) / 2);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.75rem;
+}
+.cp-snap > * {
+  scroll-snap-align: start;
+}
+@media (min-width: 1024px) {
+  .cp-snap {
+    grid-auto-columns: calc((100% - 3rem) / 4);
+  }
+}
+
+/* Tools: every logo fits in exactly two lines; when there are many, the row scrolls sideways rather than growing taller. */
+.cp-two-lines {
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(7rem, 1fr);
+  gap: 1.25rem 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+/* Slider rows hide the native scrollbar — the SnapSlider's own progress bar and buttons replace it. */
+.cp-snap-clean {
+  scrollbar-width: none;
+  padding-bottom: 0;
+}
+.cp-snap-clean::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shared pieces (Disclosure meta, numerals) use the site's mono face; the client wants one straight font. */
+.cp .label-mono,
+.cp .numeral {
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-numeric: normal;
+}
+
+/* Two plain (un-banded) sections in a row would double their padding; keep one standard gap. */
+.cp-section:not([class*='cp-band']) + .cp-section:not([class*='cp-band']) {
+  padding-top: 0;
+}
