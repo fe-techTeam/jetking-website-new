@@ -38,7 +38,7 @@ export const REASONS = [
   },
   {
     title: 'Countrywide Network',
-    detail: 'A well-established, nationally recognised institute with 50+ centres.',
+    detail: 'A well-established, nationally recognised institute with centres across India.',
     icon: Building2,
   },
   {

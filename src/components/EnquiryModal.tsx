@@ -44,7 +44,7 @@ export function EnquiryModal({
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center sm:p-4">
       <div aria-hidden="true" className="absolute inset-0 bg-black/55" onClick={handleClose} />
 
       <div
@@ -52,13 +52,13 @@ export function EnquiryModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${id}-title`}
-        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-[440px] overflow-y-auto rounded-[20px] border border-border bg-background p-6 shadow-2xl sm:p-8"
+        className="sheet-up relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-[24px] border border-b-0 border-border bg-background p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:max-w-[440px] sm:rounded-[20px] sm:border-b sm:p-8"
       >
         <button
           type="button"
           onClick={handleClose}
           aria-label="Close"
-          className="absolute top-4 right-4 grid h-8 w-8 cursor-pointer place-items-center rounded-full text-foreground-muted transition-colors hover:bg-surface hover:text-foreground"
+          className="absolute top-2.5 right-2.5 grid h-11 w-11 cursor-pointer place-items-center rounded-full sm:top-3 sm:right-3 text-foreground-muted transition-colors hover:bg-surface hover:text-foreground"
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>

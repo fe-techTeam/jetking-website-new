@@ -25,7 +25,7 @@ export function PlacementProof() {
   return (
     <section className="border-y border-[var(--dc-hairline)] bg-[var(--dc-surface)] py-12 sm:py-14 lg:py-16" aria-labelledby="home-proof-heading">
       <div className="shell">
-        <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-[#c7141c] to-[#7d0d12] p-6 text-white shadow-[0_24px_60px_rgb(125_13_18/0.3)] sm:p-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-10">
+        <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-jk-600 to-jk-800 p-6 text-white shadow-xl shadow-jk-800/30 sm:p-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-10">
           <div>
             <h2 id="home-proof-heading" className="font-display text-[28px] font-extrabold tracking-[-0.02em] text-white sm:text-[34px]">
               Our learners, our pride
@@ -61,10 +61,10 @@ export function PlacementProof() {
                 // No drop shadow: the Carousel viewport clips overflow, so a shadow shows as a hard cut edge.
                 // flex-1 makes each card fill the tallest slide, so short quotes leave no empty band.
                 return (
-                  <figure className="flex flex-1 flex-col rounded-[20px] bg-white p-5 text-[#1d2939] ring-1 ring-black/5 sm:p-6">
+                  <figure className="flex flex-1 flex-col rounded-[20px] bg-white p-5 text-ink-800 ring-1 ring-black/5 sm:p-6">
                     <Quote className="h-6 w-6 text-jk-600" strokeWidth={1.75} aria-hidden="true" />
                     <blockquote className="mt-2 flex-1 text-[14px] leading-relaxed sm:text-[14.5px]">{s.quote}</blockquote>
-                    <figcaption className="mt-4 flex items-center gap-3 border-t border-[#e4e7ec] pt-4">
+                    <figcaption className="mt-4 flex items-center gap-3 border-t border-ink-200 pt-4">
                       <span
                         aria-hidden="true"
                         className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-jk-50 font-extrabold text-jk-700"
@@ -73,7 +73,7 @@ export function PlacementProof() {
                       </span>
                       <span className="min-w-0 text-[13px]">
                         <span className="block font-extrabold">{s.name}</span>
-                        <span className="block text-[#475467]">{title ? `${title}, ${company}` : company}</span>
+                        <span className="block text-ink-600">{title ? `${title}, ${company}` : company}</span>
                       </span>
                     </figcaption>
                   </figure>

@@ -16,11 +16,13 @@
  * the About/Placements pages had.
  */
 
+import { SINCE_FOUNDED } from '../../lib/brand-facts';
+
 export const WHY_STATS = [
-  { value: '100+', label: 'Successful Entrepreneurs' },
-  { value: '11+ Lakh', label: 'Students Trained' },
+  { value: 'Proven', label: 'Centre Operating Model' },
+  { value: 'End-to-end', label: 'Launch Support' },
   { value: 'Pan-India', label: 'Centre Network' },
-  { value: '78+', label: 'Years of Brand Legacy' },
+  { value: SINCE_FOUNDED, label: 'Brand Legacy' },
   { value: 'Awarded', label: 'Franchise Support' },
 ] as const;
 

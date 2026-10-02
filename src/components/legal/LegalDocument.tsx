@@ -49,7 +49,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       return (
         <h2
           id={id}
-          className="dc-heading-glow mt-10 scroll-mt-28 font-display text-[21px] leading-snug font-extrabold tracking-[-0.015em] text-[var(--dc-ink)] first:mt-0 sm:text-[24px]"
+          className="mt-10 scroll-mt-28 font-display text-[21px] leading-snug font-extrabold tracking-[-0.015em] text-[var(--dc-ink)] first:mt-0 sm:text-[24px]"
         >
           {block.text}
         </h2>
@@ -96,7 +96,12 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       );
     case 'table':
       return (
-        <div className="mt-5 overflow-x-auto rounded-[14px] border border-[var(--dc-hairline-strong)]">
+        <div
+          role="region"
+          aria-label={block.caption || 'Table'}
+          tabIndex={0}
+          className="mt-5 overflow-x-auto rounded-[14px] border border-[var(--dc-hairline-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
+        >
           <table className="w-full min-w-[28rem] border-collapse text-left text-[14px] text-[var(--dc-ink-secondary)]">
             {block.caption ? (
               <caption className="border-b border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-4 py-2.5 text-left text-[12.5px] font-bold tracking-wide text-[var(--dc-ink)] uppercase">
@@ -177,7 +182,7 @@ export function LegalDocument({
         <Breadcrumbs trail={trail} />
         <div className="mt-6 sm:mt-8">
           <p className="dc-eyebrow label-mono text-[14px]">Legal</p>
-          <h1 className="dc-heading-glow mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-[42px] lg:text-[48px]">
+          <h1 className="mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-[42px] lg:text-[48px]">
             {doc.title}
           </h1>
           <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[16px]">{intro}</p>
@@ -194,11 +199,11 @@ export function LegalDocument({
         <nav aria-label="Other legal pages" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
           <span className="dc-eyebrow label-mono">Also read</span>
           {others.map((l) => (
-            <Link key={l.href} href={l.href as Route} className="font-semibold text-[var(--dc-accent-soft)] hover:underline">
+            <Link key={l.href} href={l.href as Route} className="tap font-semibold text-[var(--dc-accent-soft)] hover:underline">
               {l.label}
             </Link>
           ))}
-          <Link href={'/enquiry' as Route} className="font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
+          <Link href={'/enquiry' as Route} className="tap font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
             Questions? Talk to a counsellor
           </Link>
         </nav>

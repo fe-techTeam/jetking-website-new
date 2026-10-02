@@ -26,7 +26,7 @@ export interface SourcePage {
   section: PageSection;
 }
 
-export type ChunkKind = 'heading' | 'paragraph' | 'list' | 'faq' | 'fact';
+type ChunkKind = 'heading' | 'paragraph' | 'list' | 'faq' | 'fact';
 
 export interface Chunk {
   id: string;
@@ -61,7 +61,7 @@ export interface CourseRecord {
   certifications: string[];
 }
 
-export interface CentreLocation {
+interface CentreLocation {
   name: string;
   locality: string;
 }
@@ -114,10 +114,3 @@ export interface KnowledgeBase {
   stats: StatRecord[];
   contact: ContactRecord;
 }
-
-export const COURSE_CATEGORY_LABEL: Record<CourseCategory, string> = {
-  degree: 'Degree',
-  career: 'Career course',
-  certification: 'Certification',
-  short: 'Short course',
-};

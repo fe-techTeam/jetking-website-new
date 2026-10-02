@@ -1,6 +1,6 @@
 import data from './disclosures.json';
 
-export interface DisclosureItem {
+interface DisclosureItem {
   label: string;
   href: string;
 }

@@ -37,7 +37,7 @@ const assistantMessageSchema = z.object({
 });
 
 /** A transcript entry as persisted. "Thinking" placeholders are never stored. */
-export const storedMessageSchema = z.union([userMessageSchema, assistantMessageSchema]);
+const storedMessageSchema = z.union([userMessageSchema, assistantMessageSchema]);
 export type StoredMessage = z.infer<typeof storedMessageSchema>;
 
 export const saveConversationSchema = z.object({

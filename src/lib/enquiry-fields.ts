@@ -7,7 +7,5 @@ export const QUALIFICATIONS = [
   { value: 'graduate', label: 'Graduate and above' },
 ] as const;
 
-export type Qualification = (typeof QUALIFICATIONS)[number]['value'];
-
 /** Tuple form for `z.enum`. */
 export const QUALIFICATION_VALUES = ['10+2', 'graduate'] as const;

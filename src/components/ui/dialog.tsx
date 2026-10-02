@@ -7,8 +7,6 @@ import { forwardRef, type ComponentPropsWithoutRef, type ElementRef } from 'reac
 import { cn } from '@/lib/utils';
 
 export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogClose = DialogPrimitive.Close;
 
 export const DialogContent = forwardRef<
   ElementRef<typeof DialogPrimitive.Content>,
@@ -25,9 +23,11 @@ export const DialogContent = forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed top-1/2 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2',
-          'rounded-2xl border border-line bg-surface-raised p-6 shadow-pop',
-          'data-[state=open]:animate-rise-in',
+          // Phone: bottom sheet. sm+: centred modal.
+          'sheet-up fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] w-full overflow-y-auto overscroll-contain',
+          'rounded-t-[24px] border border-b-0 border-line bg-surface-raised p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-pop',
+          'sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:w-[calc(100vw-2rem)] sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2',
+          'sm:rounded-2xl sm:border-b sm:pb-6 sm:data-[state=open]:animate-rise-in',
           className,
         )}
         {...props}
@@ -37,7 +37,7 @@ export const DialogContent = forwardRef<
           <DialogPrimitive.Close
             aria-label="Close"
             className={cn(
-              'absolute top-4 right-4 rounded-lg p-1.5 text-ink-subtle',
+              'absolute top-2.5 right-2.5 grid size-11 place-items-center rounded-lg text-ink-subtle',
               'transition-colors hover:bg-surface-hover hover:text-ink',
             )}
           >

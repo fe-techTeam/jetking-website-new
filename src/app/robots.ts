@@ -1,6 +1,22 @@
 import type { MetadataRoute } from 'next';
 import { absoluteUrl, siteConfig } from '@/lib/site';
 
+const AI_CRAWLERS = [
+  'GPTBot',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'PerplexityBot',
+  'Perplexity-User',
+  'ClaudeBot',
+  'Claude-SearchBot',
+  'Claude-User',
+  'Google-Extended',
+  'Applebot-Extended',
+  'Bingbot',
+  'meta-externalagent',
+  'CCBot',
+];
+
 /**
  * Staging must never be indexed — a crawlable staging copy competes with production
  * for the exact keywords the migration is protecting. Gated on an explicit env flag
@@ -15,6 +31,13 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
+      {
+        // Named explicitly because several of these crawlers only index sites that admit
+        // them by name, and being crawlable is the precondition for being cited in AI answers.
+        userAgent: AI_CRAWLERS,
+        allow: '/',
+        disallow: ['/api/'],
+      },
       {
         userAgent: '*',
         allow: '/',

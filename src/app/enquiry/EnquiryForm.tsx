@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
-import { clearHandoff, readHandoff, type GuideHandoffPayload } from '@/guide/handoff';
 import { track } from '@/lib/analytics';
 import { siteConfig } from '@/lib/site';
 import { useAccount } from '@/components/account/AccountProvider';
@@ -19,8 +19,7 @@ import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryL
  * arrived and what it was reading — that context is the practical payoff of the
  * whole persona engine, and it is what "the AI warms the lead" means in the proposal.
  *
- * When the visitor arrives from the Guide handoff, conversation summary is prefilled
- * into the message and sent as `guideSummary` for CRM routing.
+ * `/enquiry?course=…&city=…` preselects those fields.
  */
 
 interface Option {
@@ -52,63 +51,8 @@ const INTRO: Record<string, string> = {
   student: 'Tell us where you are in your studies and we will point you to the right track.',
   professional: 'Tell us your current role and what you want to move into.',
   parent: 'Tell us a little about your child’s situation and what you would like to know.',
-  franchise: 'Tell us which territory you are interested in and we will connect you with the franchise team.',
   unknown: 'Tell us what you are looking for.',
 };
-
-/**
- * Deliberately never reads `readHandoff()` (localStorage) — this must return
- * the same thing on the server and on the client's first render, or React
- * flags a hydration mismatch (confirmed live: it did, every time a stored
- * Guide handoff existed). The localStorage-derived half is applied
- * separately, after mount — see `useGuidePrefill` below.
- */
-function resolveGuidePrefill(searchParams: URLSearchParams): {
-  course: string;
-  city: string;
-  message: string;
-} {
-  if (searchParams.get('from') === 'guide') {
-    return {
-      course: searchParams.get('course') ?? '',
-      city: searchParams.get('city') ?? '',
-      message: '',
-    };
-  }
-
-  return { course: '', city: '', message: '' };
-}
-
-/**
- * Layers the sessionStorage-only Guide handoff on top of the SSR-safe,
- * URL-derived prefill from `resolveGuidePrefill` — `handoff` starts `null`
- * (matching the server) and is populated in an effect, which only ever runs
- * client-side, after hydration has already reconciled against the server's
- * markup. A genuine external-source sync, not derived state: sessionStorage
- * does not exist during SSR, so reading it in a lazy initialiser would
- * reintroduce the same hydration mismatch this exists to avoid.
- */
-function useGuidePrefill(searchParams: URLSearchParams) {
-  const base = useMemo(() => resolveGuidePrefill(searchParams), [searchParams]);
-  const [handoff, setHandoff] = useState<GuideHandoffPayload | null>(null);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHandoff(readHandoff());
-  }, []);
-
-  return useMemo(() => {
-    if (!handoff) return { handoff: null, ...base };
-    return {
-      handoff,
-      course: handoff.courseSlug ?? '',
-      city: handoff.citySlug ?? '',
-      message: `I was chatting with the Jetking Guide and would like a counsellor to follow up.\n\n${
-        handoff.lastQuestion ? `Last question: ${handoff.lastQuestion}` : handoff.summary.slice(0, 500)
-      }`,
-    };
-  }, [handoff, base]);
-}
 
 export function EnquiryForm({
   courses,
@@ -125,11 +69,14 @@ export function EnquiryForm({
   const successRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
-  const prefill = useGuidePrefill(searchParams);
+  const prefill = useMemo(
+    () => ({ course: searchParams.get('course') ?? '', city: searchParams.get('city') ?? '' }),
+    [searchParams],
+  );
   const account = useAccount();
   const accountUser = account.user;
 
-  // State → City → Centre. Defaults, in order: the Guide/URL handoff, then the signed-in
+  // State → City → Centre. Defaults, in order: the URL prefill, then the signed-in
   // account's saved location; once the visitor picks, their choice wins.
   const loc = useEnquiryLocation(centres, {
     state: accountUser?.state,
@@ -146,12 +93,9 @@ export function EnquiryForm({
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    track('enquiry_started', {
-      persona: classification.persona,
-      from_guide: Boolean(prefill.handoff) || searchParams.get('from') === 'guide',
-    });
+    track('enquiry_started', { persona: classification.persona });
     record({ kind: 'form', formId: 'enquiry', status: 'started' });
-  }, [classification.persona, record, prefill.handoff, searchParams]);
+  }, [classification.persona, record]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -177,9 +121,7 @@ export function EnquiryForm({
           message: form.get('message') || undefined,
           persona: classification.persona,
           confidence: classification.confidence,
-          source: prefill.handoff ? 'guide-handoff' : window.location.pathname,
-          guideSummary: prefill.handoff?.summary,
-          guideReason: prefill.handoff?.reason,
+          source: window.location.pathname,
           visitorId: visitor.id || undefined,
           // Rich profile context for CRM / counsellor routing.
           journeyStage: profile.stage,
@@ -211,13 +153,11 @@ export function EnquiryForm({
       }
 
       setStatus('done');
-      clearHandoff();
       track('enquiry_submitted', {
         persona: classification.persona,
         confidence: classification.confidence,
         has_course: Boolean(form.get('courseSlug')),
         has_centre: Boolean(form.get('centre')),
-        from_guide: Boolean(prefill.handoff),
         visitor_id: visitor.id,
         stage: profile.stage,
         intent: profile.intent ?? '',
@@ -273,7 +213,17 @@ export function EnquiryForm({
      */
     <form onSubmit={handleSubmit} className="space-y-7">
       <p className="text-base text-[var(--stu-ink-secondary)]">
-        {INTRO[classification.persona] ?? INTRO.unknown}
+        {classification.persona === 'franchise' ? (
+          <>
+            This form reaches a course counsellor. Looking to open a Jetking centre?{' '}
+            <Link href="/franchise#enquire" className="font-semibold text-[var(--accent-ink)] underline underline-offset-4">
+              Use the franchise enquiry form
+            </Link>
+            .
+          </>
+        ) : (
+          (INTRO[classification.persona] ?? INTRO.unknown)
+        )}
       </p>
 
       {account.ready ? (
@@ -287,19 +237,13 @@ export function EnquiryForm({
             <button
               type="button"
               onClick={() => account.openAuth('login')}
-              className="cursor-pointer font-semibold text-[var(--accent-ink)] underline underline-offset-2"
+              className="tap cursor-pointer font-semibold text-[var(--accent-ink)] underline underline-offset-2"
             >
               Log in
             </button>{' '}
             to fill in your details.
           </p>
         )
-      ) : null}
-
-      {prefill.handoff ? (
-        <Notice tone="accent">
-          Your Guide conversation will be shared with the counsellor so they have context.
-        </Notice>
       ) : null}
 
       <Field label="Your name" htmlFor="name" required>
@@ -448,8 +392,6 @@ export function EnquiryForm({
           name="message"
           rows={4}
           maxLength={2000}
-          defaultValue={prefill.message}
-          key={prefill.message ? 'with-guide' : 'blank'}
           className={fieldClass}
         />
       </Field>

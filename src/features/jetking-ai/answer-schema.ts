@@ -37,10 +37,9 @@ export const ContentBlockSchema = z.discriminatedUnion('type', [
 ]);
 export type ContentBlock = z.infer<typeof ContentBlockSchema>;
 
-export const StructuredAnswerSchema = z.object({
+const StructuredAnswerSchema = z.object({
   blocks: z.array(ContentBlockSchema).min(1).max(10),
 });
-export type StructuredAnswer = z.infer<typeof StructuredAnswerSchema>;
 
 /**
  * The bare JSON Schema behind both wire formats:

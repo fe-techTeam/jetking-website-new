@@ -58,7 +58,7 @@ export function CentreNetwork({
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Centre network</p>
             <h2
               id="home-centres-heading"
-              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               {counts.centres} centres across {counts.cities} cities
             </h2>
@@ -68,7 +68,7 @@ export function CentreNetwork({
           </div>
           <Link
             href={'/centres' as Route}
-            className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
             Find your centre
             <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
@@ -125,7 +125,7 @@ export function CentreNetwork({
                   <span
                     aria-hidden="true"
                     className={[
-                      'relative grid place-items-center rounded-full border-2 border-white bg-[var(--dc-accent)] text-[12px] font-extrabold text-white shadow-[0_2px_6px_rgb(0_0_0/0.3)] transition-transform duration-200 group-hover:scale-125',
+                      'relative grid place-items-center rounded-full border-2 border-white bg-[var(--dc-accent)] text-[12px] font-extrabold text-white shadow-sm shadow-black/30 transition-transform duration-200 group-hover:scale-125',
                       isActive ? 'h-5 w-5 scale-110' : list.length > 1 ? 'h-4 w-4' : 'h-3 w-3',
                     ].join(' ')}
                   >
@@ -264,7 +264,7 @@ export function CentreNetwork({
                   </ul>
                   <Link
                     href={cityHref(active.city.name)}
-                    className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]"
+                    className="tap mt-3 inline-flex items-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]"
                   >
                     All centres in {active.city.name}
                     <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -275,7 +275,7 @@ export function CentreNetwork({
 
             <Link
               href={'/centres' as Route}
-              className="mt-5 inline-flex min-h-10 items-center gap-1.5 rounded-full border-2 border-[var(--dc-hairline-strong)] px-4 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
+              className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--dc-hairline-strong)] px-4 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
             >
               View all {counts.centres} centres
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />

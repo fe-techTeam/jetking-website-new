@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Phone } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { OfferLetterSlider } from './OfferLetterSlider';
 import { PlacementsTestimonialSlider } from './PlacementsTestimonialSlider';
@@ -106,7 +106,7 @@ export function PlacementsLanding() {
         <div className="relative mt-5 sm:mt-6">
           <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[32px] lg:min-h-[520px]">
             <Image
-              src="/placements/photos/hero-male.png"
+              src="/placements/photos/hero-male.webp"
               alt=""
               fill
               priority
@@ -121,7 +121,7 @@ export function PlacementsLanding() {
             <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[62%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
               <p className="dc-eyebrow label-mono text-[14px]">{PLACEMENTS_HERO.eyebrow}</p>
 
-              <h1 className="dc-heading-glow mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
+              <h1 className="mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
                 {PLACEMENTS_HERO.titleLead}{' '}
                 <span className="dc-accent-glow">{PLACEMENTS_HERO.titleAccent}</span>
               </h1>
@@ -130,18 +130,21 @@ export function PlacementsLanding() {
                 {PLACEMENTS_HERO.lede}
               </p>
 
-              <div className="mt-7 flex flex-col items-start gap-2 xs:flex-row xs:flex-wrap sm:mt-8 sm:gap-3">
+              <div className="mt-7 flex flex-wrap gap-2 sm:mt-8 sm:gap-3">
                 <Link
                   href={'/enquiry' as Route}
-                  className="dc-cta inline-flex h-10 items-center justify-center rounded-full px-4 text-[13px] font-bold sm:h-14 sm:px-7 sm:text-base"
+                  className="dc-cta inline-flex h-11 grow items-center justify-center rounded-full px-4 text-[13px] font-bold whitespace-nowrap sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
                   Talk to a counsellor
                 </Link>
                 <a
                   href={PLACEMENTS_CONTACT.tel}
-                  className="inline-flex h-10 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:px-7 sm:text-base"
+                  aria-label={`Call ${PLACEMENTS_CONTACT.phone}`}
+                  className="inline-flex h-11 grow items-center justify-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[13px] font-bold whitespace-nowrap text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
-                  Call {PLACEMENTS_CONTACT.phone}
+                  <Phone className="h-4 w-4 text-[var(--dc-accent-soft)] lg:hidden" aria-hidden="true" />
+                  <span className="lg:hidden">Call now</span>
+                  <span className="hidden lg:inline">Call {PLACEMENTS_CONTACT.phone}</span>
                 </a>
               </div>
 
@@ -196,18 +199,25 @@ export function PlacementsLanding() {
         <p className="dc-eyebrow label-mono">How it works</p>
         <h2
           id="placements-process"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
         >
           Five steps from <span className="dc-accent-glow">classroom to offer</span>
         </h2>
 
-        <ol className="mt-10 flex flex-col items-center gap-2 sm:mt-12 lg:flex-row lg:items-start lg:justify-center lg:gap-0">
+        {/* Below lg: a left-aligned timeline joined by a rule; from lg: one row joined by arrows. */}
+        <ol className="mt-8 flex flex-col sm:mt-12 sm:items-center lg:flex-row lg:items-start lg:justify-center">
           {PROCESS_STEPS.map((item, index) => {
             const isLast = index === PROCESS_STEPS.length - 1;
             return (
               <Fragment key={item.step}>
-                <li className="flex flex-col items-center text-center lg:w-[172px] lg:shrink-0">
-                  <span className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)]">
+                <li
+                  className={`relative flex items-start gap-4 max-lg:w-full max-lg:max-w-md lg:w-[172px] lg:shrink-0 lg:flex-col lg:items-center lg:gap-0 lg:text-center ${
+                    isLast
+                      ? ''
+                      : 'max-lg:pb-5 max-lg:before:absolute max-lg:before:top-[3.75rem] max-lg:before:bottom-1 max-lg:before:left-7 max-lg:before:w-px max-lg:before:bg-[var(--dc-accent-border)]'
+                  }`}
+                >
+                  <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)] lg:h-16 lg:w-16">
                     <IconGlyph src={PROCESS_STEP_ICONS[index] ?? ICONS.completeTraining} className="h-7 w-7" />
                     {/* Darkened a touch from the raw accent token — white text at 11px needs
                         4.5:1 for WCAG AA and the plain accent red only clears ~4.48:1. */}
@@ -215,20 +225,18 @@ export function PlacementsLanding() {
                       {item.step}
                     </span>
                   </span>
-                  <h3 className="mt-3 max-w-[9rem] font-display text-[14px] font-extrabold tracking-[-0.01em] text-[var(--dc-ink)] sm:text-[14.5px]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1.5 max-w-[10rem] text-[12px] leading-snug text-[var(--dc-ink-muted)] sm:text-[12.5px]">
-                    {item.description}
-                  </p>
+                  <div className="min-w-0 pt-2 lg:pt-0">
+                    <h3 className="font-display text-[15px] font-extrabold tracking-[-0.01em] text-[var(--dc-ink)] lg:mt-3 lg:max-w-[9rem] lg:text-[14.5px]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-[13px] leading-snug text-[var(--dc-ink-muted)] lg:mt-1.5 lg:max-w-[10rem] lg:text-[12.5px]">
+                      {item.description}
+                    </p>
+                  </div>
                 </li>
                 {!isLast ? (
-                  <li aria-hidden="true" className="flex shrink-0 items-center justify-center py-1 lg:h-16 lg:w-10 lg:py-0">
-                    <ArrowRight
-                      className="h-5 w-5 rotate-90 text-[var(--dc-accent-soft)]/55 lg:hidden"
-                      strokeWidth={2}
-                    />
-                    <IconGlyph src={ICONS.processArrow} className="hidden h-6 w-6 lg:block" />
+                  <li aria-hidden="true" className="hidden shrink-0 items-center justify-center lg:flex lg:h-16 lg:w-10">
+                    <IconGlyph src={ICONS.processArrow} className="h-6 w-6" />
                   </li>
                 ) : null}
               </Fragment>
@@ -243,7 +251,7 @@ export function PlacementsLanding() {
           <p className="dc-eyebrow label-mono">Our recruiters</p>
           <h2
             id="placements-recruiters"
-            className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+            className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
           >
             Brands that are our <span className="dc-accent-glow">placement partners</span>
           </h2>
@@ -258,13 +266,13 @@ export function PlacementsLanding() {
 
       {/* ── Student benefits ─────────────────────────────────────────────── */}
       <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-benefits">
-        <div className="dc-panel relative overflow-hidden rounded-[24px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12">
+        <div className="dc-panel relative overflow-hidden rounded-[24px] px-5 py-9 xs:rounded-[28px] xs:px-6 sm:px-10 sm:py-12">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="dc-eyebrow label-mono">What you build</p>
               <h2
                 id="placements-benefits"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
               >
                 What placement preparation covers
               </h2>
@@ -274,15 +282,16 @@ export function PlacementsLanding() {
             </p>
           </div>
 
-          <ul className="relative mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          {/* Wraps and stretches each row, so an odd item count never leaves a lone card. */}
+          <ul className="relative mt-7 flex flex-wrap gap-3 sm:mt-10 sm:gap-4 lg:gap-5">
             {STUDENT_BENEFITS.map((benefit, index) => (
               <li
                 key={benefit.title}
-                className="h-full rounded-[16px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] p-5"
+                className="min-w-0 grow basis-[140px] rounded-[16px] lg:basis-[calc(25%-15px)] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] p-3.5 xs:p-4 sm:p-5"
               >
                 <span
                   aria-hidden="true"
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)]"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] sm:h-11 sm:w-11"
                 >
                   <IconGlyph src={BENEFIT_ICON_SRCS[index] ?? ICONS.learnPractically} className="h-5 w-5" />
                 </span>
@@ -301,7 +310,7 @@ export function PlacementsLanding() {
         <p className="dc-eyebrow label-mono">What an offer looks like</p>
         <h2
           id="placements-offers"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
         >
           Sample <span className="dc-accent-glow">offer letters</span>
         </h2>
@@ -323,7 +332,7 @@ export function PlacementsLanding() {
               <p className="dc-eyebrow label-mono">In their words</p>
               <h2
                 id="placements-testimonials"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
               >
                 What placed learners <span className="dc-accent-glow">say</span>
               </h2>
@@ -344,7 +353,7 @@ export function PlacementsLanding() {
               <p className="dc-eyebrow label-mono">Next step</p>
               <h2
                 id="placements-cta"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.025em] text-[var(--dc-ink)] xs:text-[26px] sm:text-[30px]"
+                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.025em] text-[var(--dc-ink)] xs:text-[26px] sm:text-[30px]"
               >
                 Ask about a <span className="dc-accent-glow">specific centre</span>
               </h2>

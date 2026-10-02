@@ -44,7 +44,7 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
 
           <div
             className={cx(
-              'fixed inset-0 z-[95] grid place-items-center p-4 transition-opacity duration-200',
+              'fixed inset-0 z-[95] grid place-items-end transition-opacity duration-200 sm:place-items-center sm:p-4',
               open ? 'opacity-100' : 'pointer-events-none opacity-0',
             )}
           >
@@ -55,15 +55,15 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
               aria-label={leader.name}
               inert={!open}
               className={cx(
-                'relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-[20px] border border-border bg-background p-6 text-left shadow-[0_24px_60px_-12px_rgb(0_0_0/0.35)] transition-transform duration-200 sm:rounded-[24px] sm:p-8',
-                open ? 'scale-100' : 'scale-95',
+                'relative max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-[24px] border border-b-0 border-border bg-background p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-left shadow-xl shadow-black/35 transition-transform duration-300 ease-[var(--ease-out-soft)] sm:max-h-[85vh] sm:max-w-lg sm:rounded-[24px] sm:border-b sm:p-8',
+                open ? 'translate-y-0 sm:scale-100' : 'translate-y-full sm:translate-y-0 sm:scale-95',
               )}
             >
               <button
                 type="button"
                 onClick={close}
                 aria-label="Close"
-                className="absolute top-4 right-4 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-surface text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
+                className="absolute top-3 right-3 grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-surface text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
               >
                 <X className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               </button>
@@ -75,7 +75,9 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
                 <h3 className="mt-4 font-display text-[20px] font-extrabold tracking-[-0.02em] text-foreground sm:text-[22px]">
                   {leader.name}
                 </h3>
-                <p className="mt-1 text-[13.5px] font-bold text-[var(--accent-ink)]">{leader.role}</p>
+                {leader.role ? (
+                  <p className="mt-1 text-[13.5px] font-bold text-[var(--accent-ink)]">{leader.role}</p>
+                ) : null}
               </div>
 
               {leader.bio ? (
@@ -98,7 +100,7 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
+        className="tap mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
       >
         Read more
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />

@@ -30,7 +30,7 @@ export function CredibilityMarquee() {
         <div className="max-w-2xl">
           <h2
             id="home-credibility-heading"
-            className="dc-heading-glow font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+            className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
           >
             Trusted by top companies. Our learners work at
           </h2>
@@ -92,7 +92,7 @@ function LogoList({
       {items.map((item, index) => (
         <li
           key={`${item.name}-${index}`}
-          className={`flex h-16 w-32 shrink-0 items-center justify-center rounded-[14px] px-4 py-3 shadow-[0_0_0_1px_rgb(0_0_0/0.06)] sm:h-20 sm:w-40 ${'dark' in item && item.dark ? 'bg-[#14141f]' : 'bg-white'}`}
+          className={`flex h-16 w-32 shrink-0 items-center justify-center rounded-[14px] px-4 py-3 shadow-logo sm:h-20 sm:w-40 ${'dark' in item && item.dark ? 'bg-tile-dark' : 'bg-white'}`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
           <img

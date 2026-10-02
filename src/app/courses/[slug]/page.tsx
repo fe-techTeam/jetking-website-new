@@ -2,16 +2,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { ArrowRight, BadgeCheck, BriefcaseBusiness, GraduationCap, Waypoints } from 'lucide-react';
+import { ArrowRight, BadgeCheck, BriefcaseBusiness, CircleCheck, GraduationCap, MapPin, Waypoints } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { content } from '@/lib/content';
 import { brandMark } from '@/lib/course-logos';
-import { breadcrumbSchema, buildMetadata, courseSchema } from '@/lib/seo';
+import { breadcrumbSchema, buildMetadata, courseSchema, faqSchema } from '@/lib/seo';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
 import { Disclosure } from '@/components/Disclosure';
 import { CourseViewTracker } from './CourseViewTracker';
 import { FeeDepthTracker } from './FeeDepthTracker';
+import { StickyCourseCta } from './StickyCourseCta';
 
 /*
  * Shared trust content — the same on every Jetking course page (mirrors the
@@ -21,7 +22,7 @@ import { FeeDepthTracker } from './FeeDepthTracker';
 const JETKING_STATS = [
   { value: 'Degree', label: 'From a top university' },
   { value: 'Learn', label: 'In-demand skills & tech tools' },
-  { value: 'Get Placed', label: 'In top companies — 5000+ partners' },
+  { value: 'Get Placed', label: 'With placement assistance from hiring partners' },
 ];
 
 const WHY_JETKING: Array<{ title: string; body: string; icon: LucideIcon }> = [
@@ -42,7 +43,7 @@ const WHY_JETKING: Array<{ title: string; body: string; icon: LucideIcon }> = [
   },
   {
     title: 'Placement support',
-    body: 'A 5000+ recruiter network with 360° placement support to launch your career.',
+    body: 'A recruiter network with 360° placement support to launch your career.',
     icon: BadgeCheck,
   },
 ];
@@ -97,7 +98,13 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
   return (
     <>
-      <JsonLd data={[courseSchema(course), breadcrumbSchema(trail)]} />
+      <JsonLd
+        data={[
+          courseSchema(course),
+          breadcrumbSchema(trail),
+          ...(ownFaqs.length + feeFaqs.length ? [faqSchema([...ownFaqs, ...feeFaqs])] : []),
+        ]}
+      />
       {/* Records the behavioural signal. Client component, no effect on the document. */}
       <CourseViewTracker slug={course.slug} level={course.level} title={course.title} />
 
@@ -126,6 +133,15 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 <span className="inline-flex rounded-full border border-[var(--dc-hairline)] px-3 py-1 text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-secondary)] uppercase">
                   {course.duration}
                 </span>
+                {offeringCentres.length ? (
+                  <a
+                    href="#course-centres"
+                    className="tap inline-flex items-center gap-1 rounded-full border border-[var(--dc-hairline)] px-3 py-1 text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-secondary)] uppercase transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-ink)]"
+                  >
+                    <MapPin className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
+                    {offeringCentres.length} {offeringCentres.length === 1 ? 'centre' : 'centres'}
+                  </a>
+                ) : null}
               </div>
 
               {/*
@@ -133,16 +149,34 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 `course-<slug>`, so navigating animates that heading into this one.
               */}
               <h1
-                className="dc-heading-glow mt-5 font-display text-3xl leading-[1.05] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-4xl lg:text-5xl"
+                className="mt-5 font-display text-3xl leading-[1.05] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-4xl lg:text-5xl"
                 style={{ viewTransitionName: `course-${course.slug}` }}
               >
                 {course.title}
               </h1>
-              <p className="lede mt-6 max-w-[60ch] text-[var(--dc-ink-secondary)]">
+              <p className="lede mt-6 max-w-[60ch] text-[var(--dc-ink-secondary)] max-sm:line-clamp-3">
                 {course.summary}
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3">
+              {course.outcomes.length ? (
+                <ul className="mt-5 grid max-w-[60ch] gap-2.5" aria-label="What you get">
+                  {course.outcomes.slice(0, 3).map((outcome) => (
+                    <li
+                      key={outcome}
+                      className="flex gap-2.5 text-[14.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[15px]"
+                    >
+                      <CircleCheck
+                        className="mt-px h-[18px] w-[18px] shrink-0 text-[var(--dc-accent-soft)]"
+                        strokeWidth={2.25}
+                        aria-hidden="true"
+                      />
+                      {outcome}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              <div id="course-hero-cta" className="mt-7 flex flex-wrap gap-3">
                 <Link
                   href="/enquiry"
                   className="dc-cta inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold"
@@ -152,11 +186,32 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 </Link>
                 <Link
                   href="/enquiry"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline)] px-6 text-sm font-semibold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[rgb(255_100_105/0.08)]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline)] px-6 text-sm font-semibold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-soft)]/8"
                 >
                   Download brochure
                 </Link>
               </div>
+
+              {course.certifications.length ? (
+                <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <p className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
+                    Prepares you for
+                  </p>
+                  <ul className="flex flex-wrap items-center gap-2">
+                    {course.certifications.slice(0, 6).map((cert) => (
+                      <li key={cert} title={cert}>
+                        <BrandMark name={cert} small />
+                        <span className="sr-only">{cert}</span>
+                      </li>
+                    ))}
+                    {course.certifications.length > 6 ? (
+                      <li className="text-[12.5px] font-bold text-[var(--dc-ink-muted)]">
+                        +{course.certifications.length - 6} more
+                      </li>
+                    ) : null}
+                  </ul>
+                </div>
+              ) : null}
             </div>
 
             {course.heroImage ? (
@@ -171,23 +226,23 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 />
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.5)] via-transparent to-transparent"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/50 via-transparent to-transparent"
                 />
               </div>
             ) : null}
           </div>
 
           {/* ── Trust stats band (shared) ──────────────────────────────────── */}
-          <ul className="mt-10 grid grid-cols-3 gap-3 sm:mt-12 sm:gap-4">
+          <ul className="mt-10 grid gap-2.5 sm:mt-12 sm:grid-cols-3 sm:gap-4">
             {JETKING_STATS.map((stat) => (
               <li
                 key={stat.label}
-                className="dc-panel rounded-[16px] px-3 py-5 text-center sm:px-6"
+                className="dc-panel flex items-center gap-4 rounded-[16px] px-4 py-3.5 sm:block sm:px-6 sm:py-5 sm:text-center"
               >
-                <p className="dc-accent-glow font-display text-lg font-extrabold sm:text-xl">
+                <p className="dc-accent-glow w-[6.5rem] shrink-0 font-display text-lg font-extrabold sm:w-auto sm:text-xl">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-[12px] leading-snug font-semibold text-[var(--dc-ink-muted)] sm:text-[12.5px]">
+                <p className="text-[13px] leading-snug font-semibold text-[var(--dc-ink-muted)] sm:mt-1 sm:text-[12.5px]">
                   {stat.label}
                 </p>
               </li>
@@ -479,7 +534,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 />
 
                 {offeringCentres.length ? (
-                  <section>
+                  <section id="course-centres" className="scroll-mt-24">
                     <SectionHeading>Where you can study this</SectionHeading>
                     <div className="dc-panel mt-6 flex flex-col gap-5 rounded-[16px] p-6 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
@@ -579,37 +634,37 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                 <SectionHeading>Similar courses</SectionHeading>
                 <Link
                   href="/courses"
-                  className="inline-flex min-h-6 items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
+                  className="tap inline-flex min-h-6 items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
                 >
                   Full catalogue
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                 </Link>
               </div>
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
                 {related.map((item) => (
                   <li key={item.slug} className="relative h-full">
                     <Link
                       href={`/courses/${item.slug}`}
                       className="dc-card-shell dc-card-interactive group/card block h-full"
                     >
-                      <div className="dc-card flex h-full flex-col overflow-hidden">
-                        <div className="dc-card-media relative aspect-[16/10] overflow-hidden">
+                      <div className="dc-card flex h-full overflow-hidden sm:flex-col">
+                        <div className="dc-card-media relative min-h-[104px] w-[104px] shrink-0 overflow-hidden min-[400px]:w-[120px] sm:aspect-[16/10] sm:min-h-0 sm:w-auto">
                           {item.heroImage ? (
                             <Image
                               src={item.heroImage.url}
                               alt=""
                               fill
-                              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 90vw"
+                              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 120px"
                               className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
                             />
                           ) : null}
                           <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.65)] via-transparent to-transparent"
+                            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
                           />
                         </div>
 
-                        <div className="flex flex-1 flex-col p-5 sm:p-6">
+                        <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-6">
                           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                             <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
                               {item.level}
@@ -619,21 +674,21 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                             </span>
                           </div>
 
-                          <h3 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:text-[18px]">
+                          <h3 className="mt-2 font-display text-[15.5px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:mt-3.5 sm:text-[18px]">
                             {item.shortTitle}
                           </h3>
 
-                          <p className="mt-2 line-clamp-2 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                          <p className="mt-2 line-clamp-2 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)] max-sm:hidden">
                             {item.eligibility}
                           </p>
 
-                          <div className="mt-5 flex items-center justify-between gap-3">
+                          <div className="mt-auto flex items-center justify-between gap-3 pt-2.5 sm:pt-5">
                             <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
                               View course
                             </span>
                             <span
                               aria-hidden="true"
-                              className="dc-cta grid h-10 w-10 shrink-0 place-items-center rounded-full"
+                              className="dc-cta hidden h-10 w-10 shrink-0 place-items-center rounded-full sm:grid"
                             >
                               <ArrowRight
                                 className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/card:translate-x-0.5"
@@ -651,12 +706,25 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
           ) : null}
         </div>
       </div>
+      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} />
     </>
   );
 }
 
 /** Logo above label — used for the tools / certifications grids. */
 function BrandTile({ name }: { name: string }) {
+  return (
+    <div className="flex flex-col items-center gap-3 text-center">
+      <BrandMark name={name} />
+      <span className="max-w-[8.5rem] text-[13px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
+        {name}
+      </span>
+    </div>
+  );
+}
+
+/** The logo square alone; `small` is the masthead's certification strip. */
+function BrandMark({ name, small = false }: { name: string; small?: boolean }) {
   const mark = brandMark(name);
   const lightMark = mark ? isLightBrandColor(mark.color) : false;
   const initials = name
@@ -670,14 +738,15 @@ function BrandTile({ name }: { name: string }) {
     .slice(0, 4);
 
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
       <span
         aria-hidden="true"
-        className={`grid h-16 w-16 place-items-center overflow-hidden rounded-2xl border border-[var(--dc-hairline)] sm:h-[4.5rem] sm:w-[4.5rem] ${
+        className={`grid shrink-0 place-items-center overflow-hidden border border-[var(--dc-hairline)] ${
+          small ? 'h-10 w-10 rounded-xl' : 'h-16 w-16 rounded-2xl sm:h-[4.5rem] sm:w-[4.5rem]'
+        } ${
           mark?.painted
             ? 'bg-transparent p-0'
             : lightMark
-              ? 'bg-[rgb(20_20_28)]'
+              ? 'bg-tile-dark'
               : 'bg-white'
         }`}
       >
@@ -686,7 +755,7 @@ function BrandTile({ name }: { name: string }) {
           <img src={mark.src} alt="" className="h-full w-full object-cover" />
         ) : mark ? (
           <span
-            className="dc-logo !h-9 !w-9 sm:!h-10 sm:!w-10"
+            className={`dc-logo ${small ? '!h-6 !w-6' : '!h-9 !w-9 sm:!h-10 sm:!w-10'}`}
             style={
               {
                 '--logo': `url(${mark.src})`,
@@ -695,15 +764,11 @@ function BrandTile({ name }: { name: string }) {
             }
           />
         ) : (
-          <span className="font-display text-[15px] font-extrabold tracking-tight text-ink-500">
+          <span className={`font-display font-extrabold tracking-tight text-ink-500 ${small ? 'text-[11px]' : 'text-[15px]'}`}>
             {initials || '·'}
           </span>
         )}
       </span>
-      <span className="max-w-[8.5rem] text-[13px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
-        {name}
-      </span>
-    </div>
   );
 }
 

@@ -7,14 +7,14 @@ import { SiteChrome, FooterChrome } from '@/components/SiteShell';
 import { SiteHeaderServer } from '@/components/SiteHeaderServer';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PersonaInspector } from '@/components/PersonaInspector';
-import { Guide } from '@/components/Guide';
 import { ExitIntentPopup } from '@/components/ExitIntentPopup';
+import { MobileContactBar } from '@/components/MobileContactBar';
 import { AccountProvider } from '@/components/account/AccountProvider';
 import { JsonLd } from '@/components/ui';
 import { AppProviders } from '@/components/providers/app-providers';
 import { themeScript } from '@/components/providers/theme-script';
 import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
-import { organizationSchema } from '@/lib/seo';
+import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import '@/styles/globals.css';
 
@@ -41,6 +41,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Browser chrome can't resolve CSS variables: keep in sync with --color-background and --color-ink-950.
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#0B111E' },
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-IN"
       className={`${display.variable} ${body.variable}`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body>
@@ -76,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: iosInputZoomGuardScript }}
         />
         <AppProviders>
-          <JsonLd data={organizationSchema()} />
+          <JsonLd data={[organizationSchema(), websiteSchema()]} />
           <a
             href="#main"
             className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
@@ -95,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <SiteFooter />
               </FooterChrome>
               <SiteChrome>
-                <Guide />
+                <MobileContactBar />
                 <ExitIntentPopup />
                 {showInspector ? <PersonaInspector /> : null}
               </SiteChrome>

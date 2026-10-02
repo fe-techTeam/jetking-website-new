@@ -23,9 +23,9 @@ import {
   Users,
 } from 'lucide-react';
 import type { Course, Testimonial } from '@/lib/content/types';
-import { openGuide } from '@/components/Guide';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
 import { siteConfig } from '@/lib/site';
+import { FOUNDED_YEAR, SINCE_FOUNDED, type NetworkCounts } from '@/lib/brand-facts';
 import { ParentTestimonialSlider } from './ParentTestimonialSlider';
 
 const HERO_FEATURES = [
@@ -35,12 +35,14 @@ const HERO_FEATURES = [
   { label: 'Trusted by Parents', icon: ShieldCheck },
 ] as const;
 
-const TRUST_STATS = [
-  { icon: Users, value: '75,000+', label: 'Students Trained Successfully' },
-  { icon: Briefcase, value: '90%', label: 'Placement Assistance' },
-  { icon: GraduationCap, value: 'Industry', label: 'Aligned Curriculum' },
-  { icon: Award, value: 'Since 1947', label: 'Trusted Brand Legacy' },
-] as const;
+function trustStats(counts: NetworkCounts) {
+  return [
+    { icon: Building2, value: `${counts.centres}`, label: 'Centres to visit in person' },
+    { icon: Briefcase, value: 'Support', label: 'Placement Assistance' },
+    { icon: GraduationCap, value: 'Industry', label: 'Aligned Curriculum' },
+    { icon: Award, value: SINCE_FOUNDED, label: 'Trusted Brand Legacy' },
+  ] as const;
+}
 
 const JOURNEY_STEPS = [
   { title: 'Career Guidance', detail: '& Counselling', icon: MessageCircle },
@@ -62,13 +64,13 @@ const PARENT_LOVES = [
   { label: 'Dedicated Mentors', icon: Users },
   { label: 'Hands-on Labs', icon: Sparkles },
   { label: 'Career Counselling', icon: MessageCircle },
-  { label: 'Trusted Legacy Since 1947', icon: Award },
+  { label: `Trusted Legacy ${SINCE_FOUNDED}`, icon: Award },
 ] as const;
 
 const STORY_AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
 ] as const;
 
 export function ParentLanding({
@@ -77,9 +79,10 @@ export function ParentLanding({
   testimonials,
 }: {
   courses: Course[];
-  counts: { courses: number; centres: number; cities: number };
+  counts: NetworkCounts;
   testimonials?: Testimonial[];
 }) {
+  const stats = trustStats(counts);
   return (
     <div
       className={[
@@ -96,10 +99,6 @@ export function ParentLanding({
     >
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-8 pb-10 xs:pt-10 sm:pt-12 sm:pb-12 lg:pt-14 lg:pb-14">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-        />
 
         <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
           <div className="lg:col-span-7 xl:col-span-7">
@@ -173,7 +172,7 @@ export function ParentLanding({
                 />
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.55)] via-transparent to-transparent"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
                 />
               </div>
 
@@ -197,7 +196,7 @@ export function ParentLanding({
                   Why Parents Trust {siteConfig.name}
                 </h2>
                 <ul className="mt-3 space-y-2.5 sm:mt-3.5 sm:space-y-3">
-                  {TRUST_STATS.map((stat) => (
+                  {stats.map((stat) => (
                     <li key={stat.label} className="flex items-start gap-2.5 sm:gap-3">
                       <span
                         aria-hidden="true"
@@ -321,11 +320,11 @@ export function ParentLanding({
                 ))}
               </ul>
               <p className="mt-4 text-[12.5px] text-[var(--stu-ink-muted)]">
-                50+ centres across {counts.cities}+ cities — visit before you decide.
+                {counts.centres} centres across {counts.cities} cities — visit before you decide.
               </p>
             </div>
 
-            <div className="flex flex-col justify-center rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] p-5 sm:p-6 lg:col-span-4">
+            <div className="flex flex-col justify-center rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-surface)] p-5 sm:p-6 lg:col-span-4">
               <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)]">
                 <FileText
                   className="mt-0.5 h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]"
@@ -334,14 +333,13 @@ export function ParentLanding({
                 />
                 Have questions? We&rsquo;re here to help you!
               </p>
-              <button
-                type="button"
-                onClick={() => openGuide('parent-help')}
+              <Link
+                href={'/chatbot' as Route}
                 className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--stu-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                 Chat with Us
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -367,17 +365,17 @@ export function ParentLanding({
                 <div className="mt-8 flex flex-wrap items-end gap-8">
                   <div>
                     <p className="font-display text-[48px] leading-none font-extrabold text-[var(--stu-accent-soft)] sm:text-[56px]">
-                      90%
+                      {FOUNDED_YEAR}
                     </p>
                     <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                      Placement assistance
+                      Training IT talent since
                     </p>
                   </div>
                   <div>
                     <p className="font-display text-[32px] leading-none font-extrabold text-[var(--stu-ink)] sm:text-[36px]">
-                      75,000+
+                      {counts.cities}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">Happy students</p>
+                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">Cities with a Jetking centre</p>
                   </div>
                 </div>
 
@@ -417,10 +415,10 @@ export function ParentLanding({
             Things Parents Love About {siteConfig.name}
           </h2>
 
-          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+          <ul className="mt-6 flex flex-wrap gap-3 lg:gap-4">
             {PARENT_LOVES.map((item) => (
-              <li key={item.label}>
-                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[18px] p-4 sm:items-center sm:p-5 sm:text-center">
+              <li key={item.label} className="@container min-w-0 flex-[1_1_140px]">
+                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[18px] p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
                   <span
                     aria-hidden="true"
                     className="grid h-11 w-11 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
@@ -479,7 +477,7 @@ export function ParentLanding({
 
               <div className="relative mx-auto w-full max-w-[340px] lg:col-span-5 lg:mx-0 lg:ml-auto lg:max-w-[360px]">
                 <div className="relative aspect-square w-full">
-                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--stu-hairline)] bg-[linear-gradient(160deg,var(--stu-card),var(--stu-surface),var(--stu-card))] shadow-[0_28px_70px_rgb(0_0_0/0.45)]">
+                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--stu-hairline)] bg-[linear-gradient(160deg,var(--stu-card),var(--stu-surface),var(--stu-card))] shadow-media">
                     <Image
                       src="/parent/hero.jpg"
                       alt={`Parent researching ${siteConfig.name} career guidance for their child`}

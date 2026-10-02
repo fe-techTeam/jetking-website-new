@@ -44,9 +44,9 @@ function buildWhyStats(counts: {
   cities: number;
 }): Array<{ icon: typeof Building2; value: string; label: string }> {
   return [
-    { icon: Building2, value: '50+', label: 'Learning Centres' },
+    { icon: Building2, value: `${counts.centres}`, label: 'Learning Centres' },
     { icon: ShieldCheck, value: 'Support', label: 'Placement Assistance' },
-    { icon: Handshake, value: `${counts.cities}+`, label: 'Cities Across India' },
+    { icon: Handshake, value: `${counts.cities}`, label: 'Cities Across India' },
     { icon: Users, value: `${counts.courses}`, label: 'Courses On Offer' },
     { icon: Award, value: 'In Person', label: 'Labs & Assessment' },
   ];
@@ -97,21 +97,28 @@ export function StudentLanding({
                   <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
-                <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-3">
+                {/* Wraps into as many rows as the width allows; each row's tiles grow to fill it. */}
+                <dl className="mt-7 flex flex-wrap gap-3 sm:gap-4 lg:gap-3 xl:gap-4">
                   {whyStats.map((stat) => (
-                    <div key={stat.label} className="text-center sm:text-left lg:text-center">
-                      <stat.icon
-                        className="mx-auto h-6 w-6 text-[var(--stu-accent-soft)] sm:mx-0 lg:mx-auto"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
+                    <div
+                      key={stat.label}
+                      className="stu-card @container min-w-0 flex-[1_1_136px] rounded-2xl p-4"
+                    >
                       <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="mt-2.5 block font-display text-[20px] leading-none font-extrabold sm:text-[22px]">
-                          {stat.value}
+                      <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
+                        <span
+                          aria-hidden="true"
+                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                        >
+                          <stat.icon className="h-5 w-5" strokeWidth={1.75} />
                         </span>
-                        <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)]">
-                          {stat.label}
+                        <span className="min-w-0">
+                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--stu-ink)] sm:text-[22px]">
+                            {stat.value}
+                          </span>
+                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                            {stat.label}
+                          </span>
                         </span>
                       </dd>
                     </div>
@@ -171,7 +178,7 @@ export function StudentLanding({
               <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
-                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-[0_8px_20px_rgb(196_30_36/0.2)] xs:h-12 xs:w-12"
+                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-brand xs:h-12 xs:w-12"
                 >
                   <CalendarDays className="h-5 w-5" strokeWidth={1.75} />
                 </span>

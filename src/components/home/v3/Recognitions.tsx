@@ -15,7 +15,7 @@ export function Recognitions() {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Recognition</p>
             <h2
               id="home-recognition-heading"
-              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               Recognised by industry, regulators and peers
             </h2>
@@ -72,7 +72,7 @@ export function Recognitions() {
                 <div className="flex h-full flex-col items-center gap-2 rounded-[18px] border border-[var(--dc-hairline)] bg-white p-4 text-center shadow-[var(--dc-shadow)]">
                   {/* eslint-disable-next-line @next/next/no-img-element -- small static partner logos */}
                   <img src={partner.src} alt="" draggable={false} className="h-14 w-full object-contain" />
-                  <span className="text-[12px] leading-snug font-semibold text-[#475467]">{partner.name}</span>
+                  <span className="text-[12px] leading-snug font-semibold text-ink-600">{partner.name}</span>
                 </div>
               </li>
             ))}

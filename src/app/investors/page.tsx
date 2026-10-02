@@ -63,7 +63,7 @@ export default function InvestorsPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
                 <p className="dc-eyebrow label-mono text-[14px]">Investors</p>
-                <h1 className="dc-heading-glow mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-4 sm:text-[44px] lg:text-[50px]">
+                <h1 className="mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-4 sm:text-[44px] lg:text-[50px]">
                   Investor <span className="dc-accent-glow">Information</span>
                 </h1>
                 <p className="mt-3 max-w-[52ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-4 sm:text-[16px]">
@@ -88,7 +88,7 @@ export default function InvestorsPage() {
             </p>
             <h2
               id="investors-reports"
-              className="dc-heading-glow mt-4 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+              className="mt-4 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
             >
               Access our <span className="dc-accent-glow">reports</span>
             </h2>
@@ -192,18 +192,17 @@ function Accordion({
       open={defaultOpen}
       className="group overflow-hidden rounded-[16px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)]"
     >
-      <summary className="flex cursor-pointer list-none items-center gap-3 bg-[var(--dc-accent)] px-5 py-4 text-left text-white transition-colors marker:hidden hover:bg-[var(--dc-accent-hover)] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white sm:px-6 sm:py-[18px] [&::-webkit-details-marker]:hidden">
-        <span aria-hidden="true" className="h-5 w-1 shrink-0 rounded-full bg-white/70" />
+      <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-5 py-3.5 text-left text-[var(--dc-ink)] transition-colors marker:hidden group-open:border-b group-open:border-[var(--dc-hairline)] group-open:bg-[var(--dc-accent-tint)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[var(--dc-accent-soft)] sm:px-6 sm:py-4 [&::-webkit-details-marker]:hidden">
         <span className="min-w-0 flex-1 font-display text-[15px] leading-snug font-extrabold tracking-[-0.01em] sm:text-[17px]">
           {title}
         </span>
         {count ? (
-          <span className="shrink-0 rounded-full bg-black/25 px-2.5 py-0.5 text-[12px] font-bold tabular-nums">
+          <span className="shrink-0 rounded-full border border-[var(--dc-accent-soft)]/30 bg-[var(--dc-accent-tint)] px-2.5 py-0.5 text-[12px] font-bold text-[var(--dc-accent-soft)] tabular-nums">
             {count}
           </span>
         ) : null}
         <ChevronDown
-          className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+          className="h-5 w-5 shrink-0 text-[var(--dc-accent-soft)] transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
           strokeWidth={2.25}
           aria-hidden="true"
         />
@@ -229,7 +228,7 @@ function DocumentRow({ label, href }: { label: string; href: string }) {
       <a
         href={href}
         {...(href.startsWith('/') ? {} : externalLink)}
-        className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] px-3.5 text-[12.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)]"
+        className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] px-3.5 text-[12.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)]"
       >
         {linkLabel(href)}
         <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -250,13 +249,13 @@ function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestN
     ['Registered office', COMPANY.registeredOffice],
     [
       'Investor line',
-      <a key="tel" href={`tel:${COMPANY.phone}`} className="font-bold text-[var(--dc-accent-soft)] hover:underline">
+      <a key="tel" href={`tel:${COMPANY.phone}`} className={contactLink}>
         {COMPANY.phone}
       </a>,
     ],
     [
       'Email',
-      <a key="mail" href={`mailto:${COMPANY.email}`} className="font-bold text-[var(--dc-accent-soft)] hover:underline">
+      <a key="mail" href={`mailto:${COMPANY.email}`} className={contactLink}>
         {COMPANY.email}
       </a>,
     ],
@@ -317,7 +316,8 @@ function ContactBlock({ heading, children }: { heading: string; children: ReactN
   );
 }
 
-const contactLink = 'font-bold text-[var(--dc-accent-soft)] hover:underline';
+const contactLink =
+  'inline-flex min-h-11 items-center font-bold [overflow-wrap:anywhere] text-[var(--dc-accent-soft)] hover:underline';
 
 /** Grievance redressal, the registrar and transfer agent, and the KMP authorised on materiality. */
 function InvestorContacts() {

@@ -53,7 +53,7 @@ export function HowItWorks() {
           <div className="max-w-2xl">
             <h2
               id="home-how-heading"
-              className="dc-heading-glow font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               Build your career, step by step
             </h2>

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -21,20 +21,19 @@ import type { Centre, City, Course } from '@/lib/content/types';
 import { centrePath } from '@/lib/centre-path';
 import { googleMapsUrl } from '@/lib/maps';
 import { siteConfig } from '@/lib/site';
-import { breadcrumbSchema, centreSchema } from '@/lib/seo';
+import { breadcrumbSchema, centreSchema, faqSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { CentreViewTracker } from '@/app/centres/[city]/[slug]/CentreViewTracker';
 import { CentreCatalogueProgrammes, CentreFeaturedProgrammes } from '@/components/centres/CentreFeaturedProgrammes';
 import { CentreTestimonialSlider } from '@/components/centres/CentreTestimonialSlider';
 import { TrackedAnchor } from '@/components/TrackedAnchor';
+import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 
-function legacyStats() {
-  return [
-    { icon: Award, value: '80', label: 'Years of Legacy' },
-    { icon: Users, value: '12L+', label: 'Students trained' },
-    { icon: Building2, value: '5000+', label: 'Recruiters' },
-    { icon: ShieldCheck, value: '50+', label: 'Training centres' },
-  ] as const;
+const STAT_ICONS = [Award, Building2, Users, ShieldCheck] as const;
+
+/** Centre programme titles and catalogue titles differ in case and "&"/"and"; compare loosely. */
+function normaliseTitle(title: string) {
+  return title.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
 }
 
 /**
@@ -48,12 +47,14 @@ export function CentreDetail({
   courses,
   siblingCentres = [],
   canonicalPath,
+  network,
 }: {
   centre: Centre;
   city: City;
   courses: Course[];
   siblingCentres?: Centre[];
   canonicalPath: string;
+  network: NetworkCounts;
 }) {
   const offered = courses.filter((c) => centre.coursesOffered.includes(c.slug));
   const siblings = siblingCentres.filter((c) => c.slug !== centre.slug);
@@ -65,6 +66,8 @@ export function CentreDetail({
     : null;
 
   const featured = centre.featuredProgrammes ?? [];
+  const featuredTitles = new Set(featured.map((p) => normaliseTitle(p.title)));
+  const moreCourses = offered.filter((c) => !featuredTitles.has(normaliseTitle(c.title)));
   const eligibility = centre.eligibility ?? [];
   const journey = centre.journey ?? [];
   const faculty = centre.faculty ?? [];
@@ -133,7 +136,13 @@ export function CentreDetail({
 
   return (
     <div className="centres-page relative">
-      <JsonLd data={[centreSchema(centre, city.name), breadcrumbSchema(trail)]} />
+      <JsonLd
+        data={[
+          centreSchema(centre, city.name),
+          breadcrumbSchema(trail),
+          ...(faqs.length ? [faqSchema(faqs)] : []),
+        ]}
+      />
       <CentreViewTracker slug={centre.slug} name={centre.name} city={city.slug} />
 
       {/* Breadcrumb */}
@@ -148,7 +157,7 @@ export function CentreDetail({
                 ) : (
                   <Link
                     href={crumb.path as Route}
-                    className="transition-colors hover:text-[var(--centres-accent-soft)]"
+                    className="tap transition-colors hover:text-[var(--centres-accent-soft)]"
                   >
                     {crumb.name}
                   </Link>
@@ -261,24 +270,27 @@ export function CentreDetail({
                 </h2>
               </div>
               <dl className="grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-6 lg:flex-1">
-                {legacyStats().map((stat) => (
-                  <div key={stat.label} className="text-center sm:text-left">
-                    <stat.icon
-                      className="mx-auto h-5 w-5 text-[var(--centres-accent-soft)] sm:mx-0"
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
-                    <dt className="sr-only">{stat.label}</dt>
-                    <dd>
-                      <span className="numeral mt-2 block font-display text-[22px] leading-none font-extrabold text-[var(--centres-ink)] sm:text-[26px]">
-                        {stat.value}
-                      </span>
-                      <span className="mt-1.5 block text-[12px] leading-snug text-[var(--centres-ink-secondary)]">
-                        {stat.label}
-                      </span>
-                    </dd>
-                  </div>
-                ))}
+                {legacyStats(network).map((stat, index) => {
+                  const Icon = STAT_ICONS[index] ?? Award;
+                  return (
+                    <div key={stat.label} className="text-center sm:text-left">
+                      <Icon
+                        className="mx-auto h-5 w-5 text-[var(--centres-accent-soft)] sm:mx-0"
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                      <dt className="sr-only">{stat.label}</dt>
+                      <dd>
+                        <span className="numeral mt-2 block font-display text-[22px] leading-none font-extrabold text-[var(--centres-ink)] sm:text-[26px]">
+                          {stat.value}
+                        </span>
+                        <span className="mt-1.5 block text-[12px] leading-snug text-[var(--centres-ink-secondary)]">
+                          {stat.label}
+                        </span>
+                      </dd>
+                    </div>
+                  );
+                })}
               </dl>
             </div>
           </div>
@@ -350,7 +362,7 @@ export function CentreDetail({
                   {journey.map((step, i) => (
                     <li key={step.title} className="flex gap-4">
                       <span
-                        className="numeral grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[rgb(255_100_105/0.35)] bg-[var(--centres-accent-tint)] text-[13px] font-bold text-[var(--centres-accent-soft)]"
+                        className="numeral grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--centres-accent-soft)]/35 bg-[var(--centres-accent-tint)] text-[13px] font-bold text-[var(--centres-accent-soft)]"
                         aria-hidden="true"
                       >
                         {i + 1}
@@ -375,10 +387,12 @@ export function CentreDetail({
             ) : null}
 
             {/* Catalogue programmes — same card format as student / featured */}
-            <CentreCatalogueProgrammes
-              courses={offered}
-              title={featured.length ? 'All courses' : 'Courses offered'}
-            />
+            {featured.length && !moreCourses.length ? null : (
+              <CentreCatalogueProgrammes
+                courses={featured.length ? moreCourses : offered}
+                title={featured.length ? 'More courses at this centre' : 'Courses offered'}
+              />
+            )}
 
             {cleanFaculty.length ? (
               <section aria-labelledby="centre-faculty">
@@ -410,8 +424,8 @@ export function CentreDetail({
                         <article className="relative h-full">
                           <div className="centres-clip-shell centres-clip-interactive group/fac">
                             <div className="centres-clip-card flex h-full flex-col overflow-hidden">
-                              <div className="flex justify-center pt-5 pb-1 sm:pt-6">
-                                <div className="centres-clip-media relative h-28 w-28 shrink-0 overflow-hidden sm:h-32 sm:w-32">
+                              <div className="flex items-center gap-4 px-4 pt-4 max-sm:pb-1 sm:flex-col sm:gap-0 sm:px-5 sm:pt-6">
+                                <div className="centres-clip-media relative h-20 w-20 shrink-0 overflow-hidden sm:h-32 sm:w-32">
                                   {member.photoUrl ? (
                                     <Image
                                       src={member.photoUrl}
@@ -430,17 +444,19 @@ export function CentreDetail({
                                     </div>
                                   )}
                                 </div>
+                                <div className="min-w-0 sm:mt-4 sm:text-center">
+                                  <h3 className="font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[18px]">
+                                    {member.name}
+                                  </h3>
+                                  <p className="mt-1 text-[12px] font-bold tracking-[0.06em] text-[var(--centres-accent-soft)] uppercase sm:mt-1.5">
+                                    {member.title}
+                                  </p>
+                                </div>
                               </div>
 
-                              <div className="flex flex-1 flex-col items-center px-4 pt-3 pb-4 text-center sm:px-5 sm:pb-5">
-                                <h3 className="font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[18px]">
-                                  {member.name}
-                                </h3>
-                                <p className="mt-1.5 text-[12px] font-bold tracking-[0.06em] text-[var(--centres-accent-soft)] uppercase">
-                                  {member.title}
-                                </p>
+                              <div className="flex flex-1 flex-col px-4 pb-4 sm:px-5 sm:pb-5">
                                 {bioLines.length ? (
-                                  <ul className="mt-4 w-full space-y-2 border-t border-[var(--centres-hairline)]/50 pt-3 text-left">
+                                  <ul className="mt-3 w-full space-y-2 border-t border-[var(--centres-hairline)]/50 pt-3 text-left sm:mt-4">
                                     {bioLines.map((line) => (
                                       <li
                                         key={line.slice(0, 40)}
@@ -480,14 +496,14 @@ export function CentreDetail({
                     {placements.length}
                   </span>
                 </div>
-                <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <ul className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
                   {placements.slice(0, 12).map((p) => (
                     <li key={`${p.name}-${p.company}`} className="min-w-0">
                       <article className="relative h-full">
                         <div className="centres-clip-shell centres-clip-interactive group/place">
                           <div className="centres-clip-card flex h-full flex-col overflow-hidden">
-                            <div className="flex justify-center pt-5 pb-1 sm:pt-6">
-                              <div className="centres-clip-media relative h-24 w-24 shrink-0 overflow-hidden sm:h-28 sm:w-28">
+                            <div className="flex justify-center pt-4 pb-1 sm:pt-6">
+                              <div className="centres-clip-media relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden sm:h-28 sm:w-28">
                                 {p.photoUrl ? (
                                   <Image
                                     src={p.photoUrl}
@@ -511,14 +527,14 @@ export function CentreDetail({
                               </div>
                             </div>
 
-                            <div className="flex flex-1 flex-col items-center px-4 pt-3 pb-4 text-center sm:px-5 sm:pb-5">
-                              <h3 className="font-display text-[16px] leading-snug font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[17px]">
+                            <div className="flex flex-1 flex-col items-center px-3 pt-2.5 pb-3.5 text-center sm:px-5 sm:pt-3 sm:pb-5">
+                              <h3 className="font-display text-[14.5px] leading-snug font-extrabold tracking-[-0.02em] break-words text-[var(--centres-ink)] sm:text-[17px]">
                                 {p.name}
                               </h3>
-                              <p className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-[var(--centres-ink-muted)]">
+                              <p className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-[var(--centres-ink-muted)] sm:mt-1.5 sm:text-[13px]">
                                 {p.company}
                               </p>
-                              {p.package ? (
+                              {p.package && /\d/.test(p.package) ? (
                                 <span className="numeral mt-auto pt-3 text-[12px] font-bold tracking-[0.04em] text-[var(--centres-accent-soft)]">
                                   {p.package}
                                 </span>
@@ -561,7 +577,7 @@ export function CentreDetail({
                 >
                   Frequently asked questions
                 </h2>
-                <div className="mt-4 divide-y divide-[rgb(255_100_105/0.14)]">
+                <div className="mt-4 divide-y divide-[var(--centres-accent-soft)]/14">
                   {faqs.map((faq) => (
                     <details key={faq.question} className="group py-4">
                       <summary className="cursor-pointer list-none text-[15px] font-bold text-[var(--centres-ink)] marker:content-none [&::-webkit-details-marker]:hidden">
@@ -594,7 +610,7 @@ export function CentreDetail({
                     <li key={sib.slug}>
                       <Link
                         href={centrePath(sib.slug) as Route}
-                        className="group/sib flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5 transition-colors hover:bg-[rgb(255_100_105/0.06)]"
+                        className="group/sib flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5 transition-colors hover:bg-[var(--centres-accent-soft)]/6"
                       >
                         <span>
                           <span className="block text-[14px] font-bold text-[var(--centres-ink)] group-hover/sib:text-[var(--centres-accent-soft)]">
@@ -615,7 +631,7 @@ export function CentreDetail({
                 </ul>
                 <Link
                   href={cityDirectoryHref}
-                  className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--centres-accent-soft)]"
+                  className="tap mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--centres-accent-soft)]"
                 >
                   View all {city.name} centres
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -625,7 +641,7 @@ export function CentreDetail({
               <div>
                 <Link
                   href={cityDirectoryHref}
-                  className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--centres-accent-soft)]"
+                  className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--centres-accent-soft)]"
                 >
                   View all {city.name} centres
                   <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -636,7 +652,7 @@ export function CentreDetail({
 
           {/* Sticky visit panel */}
           <aside className="centres-card self-start overflow-hidden rounded-[22px] lg:sticky lg:top-28">
-            <div className="border-b border-[rgb(255_100_105/0.18)] bg-[linear-gradient(160deg,rgb(232_36_43/0.18)_0%,transparent_70%)] px-5 py-5 sm:px-6 sm:py-6">
+            <div className="border-b border-[var(--centres-accent-soft)]/18 bg-linear-160 from-[var(--centres-accent)]/18 to-transparent to-70% px-5 py-5 sm:px-6 sm:py-6">
               <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--centres-ink-muted)] uppercase">
                 Visit this centre
               </p>
@@ -666,7 +682,7 @@ export function CentreDetail({
                 href={googleMapsUrl(centre)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 ml-7 inline-flex items-center gap-1.5 rounded-full border border-[var(--centres-hairline)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--centres-accent-soft)] transition-colors hover:border-[var(--centres-accent-soft)] hover:bg-[var(--centres-accent-tint)]"
+                className="tap mt-3 ml-7 inline-flex items-center gap-1.5 rounded-full border border-[var(--centres-hairline)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--centres-accent-soft)] transition-colors hover:border-[var(--centres-accent-soft)] hover:bg-[var(--centres-accent-tint)]"
               >
                 <Navigation className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
                 Open in Google Maps
@@ -674,7 +690,7 @@ export function CentreDetail({
               </a>
 
               {centre.phone ? (
-                <div className="mt-5 flex gap-3 border-t border-[rgb(255_100_105/0.18)] pt-5">
+                <div className="mt-5 flex gap-3 border-t border-[var(--centres-accent-soft)]/18 pt-5">
                   <Phone
                     className="mt-0.5 h-4 w-4 shrink-0 text-[var(--centres-accent-soft)]"
                     strokeWidth={2}
@@ -689,7 +705,7 @@ export function CentreDetail({
                         href={phoneHref}
                         event="phone_clicked"
                         props={{ centre_slug: centre.slug }}
-                        className="numeral mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
+                        className="tap numeral mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
                       >
                         {centre.phone}
                       </TrackedAnchor>
@@ -718,7 +734,7 @@ export function CentreDetail({
                         href={helplineHref}
                         event="phone_clicked"
                         props={{ centre_slug: centre.slug, type: 'helpline' }}
-                        className="numeral mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
+                        className="tap numeral mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
                       >
                         {centre.helpline}
                       </TrackedAnchor>
@@ -744,7 +760,7 @@ export function CentreDetail({
                     </p>
                     <a
                       href={`mailto:${centre.email}`}
-                      className="mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
+                      className="tap mt-0.5 block text-[15px] font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
                     >
                       {centre.email}
                     </a>
@@ -822,22 +838,5 @@ export function CentreDetail({
         </div>
       </section>
     </div>
-  );
-}
-
-/** Flat centre link — matches jetking.com URL shape. */
-export function CentreLink({
-  centre,
-  className,
-  children,
-}: {
-  centre: Pick<Centre, 'slug' | 'name'>;
-  className?: string;
-  children?: ReactNode;
-}) {
-  return (
-    <Link href={centrePath(centre.slug)} className={className}>
-      {children ?? centre.name}
-    </Link>
   );
 }

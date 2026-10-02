@@ -104,12 +104,13 @@ export function JourneyHexes() {
 
               <span
                 aria-hidden="true"
-                className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[12px] ring-2 ring-[rgb(232_36_43/0.4)] xs:h-[72px] xs:w-[72px] lg:absolute lg:inset-0 lg:h-auto lg:w-auto lg:rounded-none lg:ring-0"
+                className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[12px] ring-2 ring-[var(--v2-accent)]/40 xs:h-[72px] xs:w-[72px] lg:absolute lg:inset-0 lg:h-auto lg:w-auto lg:rounded-none lg:ring-0"
               >
                 <Image
                   src={journey.image}
                   alt=""
                   fill
+                  loading="eager"
                   sizes="(min-width: 1024px) 320px, 72px"
                   className="object-cover object-[center_22%] transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover/hex:scale-105"
                 />
@@ -117,7 +118,7 @@ export function JourneyHexes() {
 
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(180deg,rgb(10_10_20/0.12)_0%,rgb(10_10_20/0.4)_45%,rgb(8_8_16/0.9)_100%)] lg:block"
+                className="pointer-events-none absolute inset-0 hidden bg-linear-180 from-scrim/12 via-scrim/40 via-45% to-scrim/90 lg:block"
               />
 
               <span className="relative z-10 min-w-0 flex-1 lg:mt-auto lg:flex-none lg:px-5 lg:pt-8 lg:pb-5 lg:text-center lg2:px-3 lg2:pt-4 lg2:pb-4 2xl:px-6 2xl:pt-8 2xl:pb-6">
@@ -137,12 +138,10 @@ export function JourneyHexes() {
                     /* Smaller in the compact 1200–1535 band so it fits with the label;
                        full size again from 2xl. */
                     'v2-hex-arrow mt-3 hidden h-9 w-9 place-items-center rounded-full lg:mx-auto lg:grid lg2:mt-2 lg2:h-7 lg2:w-7 2xl:mt-3.5 2xl:h-10 2xl:w-10',
-                    'border border-[rgb(255_120_130/0.65)] bg-[rgb(232_36_43/0.2)] text-white',
-                    'shadow-[0_0_12px_rgb(232_36_43/0.38)]',
-                    'transition-[transform,box-shadow,background-color,border-color] duration-200 ease-[var(--ease-out-soft)]',
-                    'group-hover/hex:translate-x-0.5 group-hover/hex:border-[rgb(255_150_160/0.9)]',
-                    'group-hover/hex:bg-[rgb(232_36_43/0.38)]',
-                    'group-hover/hex:shadow-[0_0_18px_rgb(232_36_43/0.55)]',
+                    'border border-white/25 bg-white/10 text-white',
+                    'transition-[transform,background-color,border-color] duration-200 ease-[var(--ease-out-soft)]',
+                    'group-hover/hex:translate-x-0.5 group-hover/hex:border-jk-500',
+                    'group-hover/hex:bg-jk-600',
                   ].join(' ')}
                 >
                   <ArrowRight className="h-4 w-4 2xl:h-[18px] 2xl:w-[18px]" strokeWidth={2.25} />
@@ -154,10 +153,8 @@ export function JourneyHexes() {
                 className={[
                   'v2-hex-arrow grid h-9 w-9 shrink-0 place-items-center rounded-full lg:hidden',
                   'border border-[color:var(--hex-ink)] text-[color:var(--hex-ink)]',
-                  'bg-[rgb(232_36_43/0.08)]',
-                  'transition-[transform,box-shadow,background-color] duration-200 ease-[var(--ease-out-soft)]',
-                  'group-hover/hex:translate-x-0.5 group-hover/hex:bg-[rgb(232_36_43/0.16)]',
-                  'group-hover/hex:shadow-[0_0_12px_rgb(232_36_43/0.35)]',
+                  'transition-[transform,background-color] duration-200 ease-[var(--ease-out-soft)]',
+                  'group-hover/hex:translate-x-0.5',
                 ].join(' ')}
               >
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} />

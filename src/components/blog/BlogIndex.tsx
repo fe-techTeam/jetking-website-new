@@ -176,7 +176,7 @@ export function BlogIndex({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search titles, topics, keywords…"
             autoComplete="off"
-            className="blog-search-input w-full rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-11 text-[14.5px] text-[var(--blog-ink)] placeholder:text-[var(--blog-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:shadow-[0_0_0_3px_rgb(255_107_112/0.18)]"
+            className="blog-search-input w-full rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-11 text-[14.5px] text-[var(--blog-ink)] placeholder:text-[var(--blog-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:ring-3 focus:ring-[var(--blog-accent-soft)]/20"
           />
           {query ? (
             <button
@@ -191,7 +191,32 @@ export function BlogIndex({
         </label>
 
         {categories.length > 1 ? (
-          <div className="relative w-full lg:w-64 lg:shrink-0">
+          <nav aria-label="Topics" className="-mx-[var(--gutter)] lg:hidden">
+            <ul className="scrollbar-none flex snap-x scroll-px-[var(--gutter)] gap-2 overflow-x-auto px-[var(--gutter)] pb-1">
+              {[null, ...categories].map((category) => {
+                const active = (activeCategory ?? null) === category;
+                return (
+                  <li key={category ?? 'all'} className="shrink-0 snap-start">
+                    <Link
+                      href={categoryHref(category, query)}
+                      aria-current={active ? 'page' : undefined}
+                      className={`inline-flex min-h-11 items-center rounded-full border px-4 text-[13.5px] font-bold whitespace-nowrap transition-colors ${
+                        active
+                          ? 'border-[var(--blog-accent)] bg-[var(--blog-accent)] text-white'
+                          : 'border-[var(--blog-hairline)] bg-[var(--blog-card)] text-[var(--blog-ink-secondary)] hover:border-[var(--blog-accent-soft)]/50'
+                      }`}
+                    >
+                      {category ?? 'All topics'}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        ) : null}
+
+        {categories.length > 1 ? (
+          <div className="relative hidden w-full lg:block lg:w-64 lg:shrink-0">
             <label htmlFor={categoryId} className="sr-only">
               Filter by topic
             </label>
@@ -199,7 +224,7 @@ export function BlogIndex({
               id={categoryId}
               value={activeCategory ?? ''}
               onChange={(e) => router.push(categoryHref(e.target.value || null, query))}
-              className="w-full cursor-pointer appearance-none rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-5 text-[14.5px] font-semibold text-[var(--blog-ink)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:shadow-[0_0_0_3px_rgb(255_107_112/0.18)]"
+              className="w-full cursor-pointer appearance-none rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-5 text-[14.5px] font-semibold text-[var(--blog-ink)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:ring-3 focus:ring-[var(--blog-accent-soft)]/20"
             >
               <option value="">All topics</option>
               {categories.map((category) => (
@@ -282,13 +307,13 @@ export function BlogIndex({
                       event.preventDefault();
                       goToPage(currentPage - 1);
                     }}
-                    className="inline-flex min-h-10 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
                   >
                     <ChevronLeft className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                     Prev
                   </Link>
                 ) : (
-                  <span role="link" aria-disabled="true" className="inline-flex min-h-10 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
+                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
                     <ChevronLeft className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                     Prev
                   </span>
@@ -320,8 +345,8 @@ export function BlogIndex({
                           }}
                           className={
                             item === currentPage
-                              ? 'grid h-10 min-w-10 place-items-center rounded-full bg-[var(--blog-accent)] px-3 text-[12.5px] font-bold text-white'
-                              : 'grid h-10 min-w-10 place-items-center rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3 text-[12.5px] font-bold text-[var(--blog-ink-muted)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-ink)]'
+                              ? 'grid h-11 min-w-11 place-items-center rounded-full bg-[var(--blog-accent)] px-3 text-[12.5px] font-bold text-white'
+                              : 'grid h-11 min-w-11 place-items-center rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3 text-[12.5px] font-bold text-[var(--blog-ink-muted)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-ink)]'
                           }
                         >
                           {item}
@@ -342,13 +367,13 @@ export function BlogIndex({
                       event.preventDefault();
                       goToPage(currentPage + 1);
                     }}
-                    className="inline-flex min-h-10 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
                   >
                     Next
                     <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                   </Link>
                 ) : (
-                  <span role="link" aria-disabled="true" className="inline-flex min-h-10 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
+                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
                     Next
                     <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                   </span>

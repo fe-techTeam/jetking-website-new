@@ -20,7 +20,7 @@ import { cx } from './ui';
  * 16px there, and only there. Every other platform keeps this smaller declared size.
  * The placeholder goes smaller still, via `::placeholder`'s own independent font-size.
  */
-export const fieldControl =
+const fieldControl =
   'w-full rounded-[var(--radius-input)] border border-border bg-background px-4 text-sm text-foreground transition-colors duration-200 placeholder:text-xs sm:placeholder:text-[13px] placeholder:text-foreground-disabled hover:border-border-medium focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface disabled:text-foreground-disabled aria-[invalid=true]:border-jk-600';
 
 /**

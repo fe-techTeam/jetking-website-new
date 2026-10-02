@@ -2,7 +2,6 @@ import type { PersonaId } from '@/lib/content/types';
 import type { AcquisitionChannel } from './channel';
 
 export type { PersonaId };
-export type { AcquisitionChannel } from './channel';
 
 export const PERSONA_IDS = ['student', 'professional', 'parent', 'franchise'] as const;
 export type KnownPersonaId = (typeof PERSONA_IDS)[number];
@@ -46,19 +45,19 @@ export interface FirstTouchInput {
   hourIst?: number;
 }
 
-export interface LastCentreRef {
+interface LastCentreRef {
   citySlug: string;
   slug: string;
   name?: string;
 }
 
-export interface FormAttempt {
+interface FormAttempt {
   formId: string;
   status: 'started' | 'completed';
   at: string;
 }
 
-export interface VisitedPage {
+interface VisitedPage {
   path: string;
   title?: string;
   at: string;

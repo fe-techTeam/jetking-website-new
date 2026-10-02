@@ -5,7 +5,6 @@ import {
   createLead,
   deleteLead,
   getLead,
-  isDatabaseConfigured,
   listLeadActivities,
   listLeads,
   updateLeadStatus,
@@ -18,8 +17,6 @@ import { resolveCentreCity, cityMatches } from '@/lib/leads/centre-scope';
 import { leadInputSchema, leadStatusSchema } from '@/lib/leads/schema';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
-
-export { isDatabaseConfigured };
 
 const STAFF_ROLES = ['admin', 'editor', 'centre_staff'] as const;
 

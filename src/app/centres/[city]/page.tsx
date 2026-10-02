@@ -51,12 +51,14 @@ export default async function CentrePage({ params }: { params: Promise<{ city: s
     notFound();
   }
 
-  const [parentCity, courses, cityCentres] = await Promise.all([
+  const [parentCity, courses, allCentres, cities] = await Promise.all([
     content.getCity(centre.citySlug),
     content.listCourses(),
-    content.listCentres({ citySlug: centre.citySlug }),
+    content.listCentres(),
+    content.listCities(),
   ]);
   if (!parentCity) notFound();
+  const cityCentres = allCentres.filter((c) => c.citySlug === centre.citySlug);
 
   return (
     <CentreDetail
@@ -65,6 +67,7 @@ export default async function CentrePage({ params }: { params: Promise<{ city: s
       courses={courses}
       siblingCentres={cityCentres}
       canonicalPath={centrePath(centre.slug)}
+      network={{ courses: courses.length, centres: allCentres.length, cities: cities.length }}
     />
   );
 }

@@ -8,7 +8,7 @@ The original website implementation is preserved, and the original chatbot
 features, local knowledge base, embeddings, assets, scripts, and model setup
 now run inside the same application and dependency graph.
 
-**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel; Guide = OpenAI embeddings + pgvector/BM25 hybrid + GPT-4o; analytics via `track()` → GA4/GTM + PostHog.
+**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel; AI assistant = Jetking AI at `/chatbot` (local embeddings + BM25, Ollama or OpenAI); analytics via `track()` → GA4/GTM + PostHog.
 
 ```bash
 npm install
@@ -26,7 +26,6 @@ npm run dev          # http://localhost:3000
 | `npm run verify:seo -- --base <url>` | The SEO gate. Requires a running server |
 | `npm run crawl:legacy -- --base <url>` | Inventory the existing site → `data/legacy-urls.json` |
 | `npm run build:redirects` | Propose a redirect map from that inventory |
-| `npm run ingest:embeddings` | Chunk CMS content → OpenAI embed → pgvector / local store |
 | `npm run migrate:cms` | Seed Admin CMS store from local fixtures |
 | `npm run sync:chatbot-content` | Refresh the assistant knowledge content |
 | `npm run check:chatbot-answers` | Verify grounded assistant answers |
@@ -86,7 +85,7 @@ Personalising server-rendered HTML would mean serving different content to Googl
 src/
 ├─ proxy.ts                  Edge persona classification
 ├─ persona/                  Adaptive engine + CMS rule matcher + return-visit profile
-├─ guide/                    RAG Guide (BM25 + pgvector hybrid, GPT-4o, guardrails)
+├─ guide/                    Content corpus builder used by `npm run build:chatbot-index`
 ├─ lib/
 │  ├─ content/               CMS-agnostic ContentSource
 │  ├─ cms/                   Admin file/Postgres store + publish hooks
@@ -98,7 +97,7 @@ src/
 ├─ components/home/          Homepage: v2 hero, v3 section stack (see Homepage)
 ├─ app/
 │  ├─ (admin)/admin/         Staff CMS
-│  ├─ api/{guide,enquiry,revalidate,ingest}/
+│  ├─ api/{chat,chatbot,enquiry,revalidate,…}/
 │  └─ …                      Public routes
 └─ supabase/migrations/      Schema + pgvector
 ```
@@ -190,7 +189,7 @@ See `.env.example`. Critical keys:
 
 - `NEXT_PUBLIC_SITE_URL` — baked into canonicals at build time
 - `PERSONA_COOKIE_SECRET` — HMAC for `jk_persona`
-- `OPENAI_API_KEY` — Guide + embeddings (absent → degraded citation-only answers)
+- `OPENAI_API_KEY` — `/api/chat` hosted-model fallback and persona inference (absent → local Ollama only)
 - `CONTENT_SOURCE=admin` — read published CMS data
 - `REVALIDATE_SECRET` — protect publish webhooks
 - `ADMIN_PASSWORD` — simple staff gate when Supabase Auth is unset

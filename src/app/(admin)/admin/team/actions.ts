@@ -1,6 +1,6 @@
 'use server';
 
-import { requireRole, type CurrentUser } from '../actions';
+import { requireRole } from '../actions';
 import {
   listUsers,
   createUser,
@@ -9,7 +9,6 @@ import {
   deleteUser,
   getUserByEmail,
   getUserById,
-  isDatabaseConfigured,
   ROLES,
   ROLE_LABEL,
   type Role,
@@ -17,8 +16,6 @@ import {
 import { listCentreOptions } from '@/lib/leads/centre-scope';
 import type { AdminUser } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
-
-export { isDatabaseConfigured };
 
 function isRole(value: string): value is Role {
   return (ROLES as readonly string[]).includes(value);
@@ -33,12 +30,6 @@ async function assertRealCentre(centreSlug: string): Promise<string | null> {
     return 'That centre doesn\'t exist — pick one from the list.';
   }
   return null;
-}
-
-export async function getTeam(): Promise<{ users: AdminUser[]; me: CurrentUser }> {
-  const me = await requireRole(['admin']);
-  const users = await listUsers();
-  return { users, me };
 }
 
 export async function inviteUser(

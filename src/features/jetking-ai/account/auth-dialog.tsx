@@ -12,7 +12,7 @@ import { useLocationPicker, useLocations } from './use-locations';
 type Mode = 'login' | 'signup';
 
 const fieldClass =
-  'h-11 w-full rounded-xl border border-line bg-surface px-3.5 text-[14px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink-subtle hover:border-jk-300 focus:border-jk-500 focus:shadow-[0_0_0_3px_#ea1c2422]';
+  'h-11 w-full rounded-xl border border-line bg-surface px-3.5 text-[14px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink-subtle hover:border-jk-300 focus:border-jk-500 focus:ring-3 focus:ring-jk-500/15';
 
 /**
  * Log in / Sign up for the optional chatbot account. The whole point of the account
@@ -82,14 +82,14 @@ export function AuthDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-[20px] font-extrabold">
-            {isLogin ? 'Welcome back' : 'Create your account'}
+            {isLogin ? 'Log in to Jetking AI' : 'Create your account'}
           </DialogTitle>
           <DialogDescription>
             {isLogin
-              ? 'Log in to pick up your earlier chats with Jetking AI.'
+              ? 'Log in to save your chats and pick them up later.'
               : 'Save your chats with Jetking AI and continue them any time.'}
           </DialogDescription>
         </DialogHeader>
@@ -104,7 +104,7 @@ export function AuthDialog({
               onClick={() => switchMode(m)}
               className={cn(
                 'rounded-lg py-2 text-[13px] font-bold transition-colors',
-                mode === m ? 'bg-surface text-ink shadow-[0_1px_4px_#10182814]' : 'text-ink-muted hover:text-ink',
+                mode === m ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink',
               )}
             >
               {m === 'login' ? 'Log in' : 'Sign up'}
@@ -271,7 +271,7 @@ export function AuthDialog({
           <button
             type="submit"
             disabled={pending}
-            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-jk-500 text-[14px] font-bold tracking-wide text-white shadow-[0_6px_18px_#ea1c2444] transition-colors hover:bg-jk-600 disabled:opacity-60"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand text-[14px] font-bold tracking-wide text-white shadow-brand transition-colors hover:bg-brand-hover disabled:opacity-60"
           >
             {pending ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
             {pending ? 'Please wait…' : isLogin ? 'Log in' : 'Create account'}

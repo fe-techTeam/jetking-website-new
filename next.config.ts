@@ -62,12 +62,7 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [
-      // CMS asset host gets added here once the CMS is chosen.
-      { protocol: 'https', hostname: '**.sanity.io' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'www.jetking.com' },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: 'www.jetking.com' }],
   },
 
   typedRoutes: true,

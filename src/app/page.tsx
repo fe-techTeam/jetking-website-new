@@ -36,7 +36,7 @@ export default async function HomePage() {
     <>
       <ScrollDepthTracker />
       <div className="relative overflow-hidden [transform:translateZ(0)]">
-        <HomeV2 enquiryCentres={enquiryCentres} />
+        <HomeV2 enquiryCentres={enquiryCentres} counts={{ centres: centres.length, cities: cities.length }} />
       </div>
       <HomeSections data={data} enquiryCentres={enquiryCentres} />
     </>

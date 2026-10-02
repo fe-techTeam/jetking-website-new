@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { ChevronDown, Mail, MapPin, Phone } from 'lucide-react';
 import { content } from '@/lib/content';
 import { siteConfig } from '@/lib/site';
 import { SOCIAL_LINKS } from '@/lib/social';
@@ -78,9 +78,9 @@ export async function SiteFooter() {
   const phoneLabel = siteConfig.phone || COMPANY_CONTACT.phone;
 
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="shell py-12 sm:py-16 lg:py-20">
-        <div className="grid gap-10 sm:gap-12 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))] lg:gap-8">
+    <footer id="site-footer" className="border-t border-border bg-background">
+      <div className="shell py-10 sm:py-16 lg:py-20">
+        <div className="grid gap-8 sm:gap-12 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))] lg:gap-8">
           <div>
             <Image
               src="/brand/jetking-wordmark.png"
@@ -103,7 +103,7 @@ export async function SiteFooter() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
-                <a href={`tel:${phoneHref}`} className="link-underline inline-flex min-h-6 items-center hover:text-foreground">
+                <a href={`tel:${phoneHref}`} className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground">
                   {phoneLabel}
                 </a>
               </li>
@@ -111,7 +111,7 @@ export async function SiteFooter() {
                 <Mail className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
                 <a
                   href={`mailto:${COMPANY_CONTACT.email}`}
-                  className="link-underline inline-flex min-h-6 items-center hover:text-foreground"
+                  className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground"
                 >
                   {COMPANY_CONTACT.email}
                 </a>
@@ -140,8 +140,8 @@ export async function SiteFooter() {
             </nav>
           </div>
 
-          {/* Phones: link lists sit two-up (a single 30-row column was a very long scroll). lg: `contents` hands them back to the parent grid. */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:contents">
+          {/* Phones: each link group collapses (see FooterNav). sm: three columns. lg: `contents` hands them back to the parent grid. */}
+          <div className="border-t border-border sm:grid sm:grid-cols-3 sm:gap-x-6 sm:border-0 lg:contents">
             <FooterNav label="Courses">
               {featuredCourses.map((course) => (
                 <FooterLink key={course.slug} href={`/courses/${course.slug}`}>
@@ -166,8 +166,7 @@ export async function SiteFooter() {
 
             <FooterNav
               label="Company"
-              className="col-span-2 sm:col-span-1"
-              listClassName="grid grid-cols-2 gap-x-6 sm:block sm:space-y-3"
+              listClassName="grid grid-cols-2 gap-x-6 gap-y-3 sm:block sm:space-y-3"
             >
               {company.map((item) => (
                 <FooterLink key={item.href} href={item.href}>
@@ -184,12 +183,12 @@ export async function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.
           </p>
-          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1">
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5">
             {LEGAL_LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="inline-flex min-h-6 items-center transition-colors hover:text-foreground focus-visible:text-foreground"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground focus-visible:text-foreground lg:min-h-6"
               >
                 {l.label}
               </Link>
@@ -202,21 +201,38 @@ export async function SiteFooter() {
   );
 }
 
+/**
+ * Phones get a native disclosure per group (no client JS); sm+ gets the plain column.
+ * The links render in both, with complementary visibility — `<details>` can't be forced
+ * open at a breakpoint with CSS alone, and both copies stay in the server HTML for crawlers.
+ */
 function FooterNav({
   label,
   children,
-  className,
   listClassName,
 }: {
   label: string;
   children: React.ReactNode;
-  className?: string;
   listClassName?: string;
 }) {
+  const list = listClassName ?? 'space-y-3';
   return (
-    <nav aria-label={label} className={className}>
-      <h2 className="label-mono">{label}</h2>
-      <ul className={`mt-5 ${listClassName ?? 'space-y-3'}`}>{children}</ul>
+    <nav aria-label={label}>
+      <details className="group border-b border-border sm:hidden">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+          <h2 className="label-mono">{label}</h2>
+          <ChevronDown
+            className="h-4 w-4 text-foreground-muted transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+            strokeWidth={2.25}
+            aria-hidden="true"
+          />
+        </summary>
+        <ul className={`pt-1 pb-5 ${list}`}>{children}</ul>
+      </details>
+      <div className="hidden sm:block">
+        <h2 className="label-mono">{label}</h2>
+        <ul className={`mt-5 ${list}`}>{children}</ul>
+      </div>
     </nav>
   );
 }

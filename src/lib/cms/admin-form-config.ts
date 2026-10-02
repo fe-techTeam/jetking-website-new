@@ -11,7 +11,7 @@ import type { CmsCollection } from './types';
  * a fixed set of choices.
  */
 
-export interface SelectFieldConfig {
+interface SelectFieldConfig {
   label: string;
   options: Array<{ value: string; label: string }>;
 }

@@ -60,7 +60,7 @@ function RecruiterList({ items, clone = false }: { items: readonly Recruiter[]; 
         <li
           key={company.name}
           // Logos sit on white tiles in both themes: they are raster artwork drawn for a white ground.
-          className="flex h-24 w-44 shrink-0 items-center justify-center rounded-[16px] border border-[var(--dc-hairline)] bg-white px-5 py-4 shadow-[0_4px_14px_rgb(60_50_90/0.06)] sm:h-28 sm:w-52"
+          className="flex h-24 w-44 shrink-0 items-center justify-center rounded-[16px] border border-[var(--dc-hairline)] bg-white px-5 py-4 shadow-md sm:h-28 sm:w-52"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
           <img

@@ -8,6 +8,8 @@ import { usePersona } from '@/persona/PersonaProvider';
 import { useFlip } from '@/components/motion/flip';
 import { TransitionLink } from '@/components/motion/TransitionLink';
 import { track } from '@/lib/analytics';
+import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
+import { COURSE_LEVELS, COURSE_LEVEL_LABEL } from '@/lib/course-categories';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════
@@ -35,22 +37,8 @@ import { track } from '@/lib/analytics';
 
 const LEVELS: Array<{ id: CourseLevel | 'all'; label: string }> = [
   { id: 'all', label: 'All levels' },
-  { id: 'degree', label: 'Degree' },
-  { id: 'certification', label: 'Certification' },
-  { id: 'short', label: 'Short course' },
+  ...COURSE_LEVELS,
 ];
-
-/**
- * The Level filter shows four buckets, not the four-plus-diploma the raw
- * course data carries — Diploma reads as Certification here, and what was
- * Certification folds into Short course. This is purely a display/filter
- * grouping; `course.level` itself is untouched everywhere else in the app.
- */
-function displayLevel(level: CourseLevel): CourseLevel {
-  if (level === 'diploma') return 'certification';
-  if (level === 'certification') return 'short';
-  return level;
-}
 
 type Technology =
   | 'cloud'
@@ -144,6 +132,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
    */
   const [levelOpen, setLevelOpen] = useState(false);
   const [technologyOpen, setTechnologyOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   /*
    * Restore a shared filtered URL — a genuine external-source sync, not derived
@@ -206,25 +195,34 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
       .map((entry) => entry.course);
   }, [courses, classification.persona, classification.confidence, hydrated]);
 
-  // ── Facet counts (over the full set, like the centres sidebar) ────────────
+  const needle = query.trim().toLowerCase();
+
+  // ── Facet counts: each group counts what the *other* active filters leave ──
   const levelCounts = useMemo(() => {
     const map = new Map<string, number>();
+    let total = 0;
     for (const course of courses) {
-      const level = displayLevel(course.level);
-      map.set(level, (map.get(level) ?? 0) + 1);
+      if (technology !== 'all' && !courseTechnologies(course).includes(technology)) continue;
+      if (!matchesQuery(course, needle)) continue;
+      map.set(course.level, (map.get(course.level) ?? 0) + 1);
+      total += 1;
     }
+    map.set('all', total);
     return map;
-  }, [courses]);
+  }, [courses, technology, needle]);
 
   const technologyCounts = useMemo(() => {
     const map = new Map<string, number>();
+    let total = 0;
     for (const course of courses) {
+      if (level !== 'all' && course.level !== level) continue;
+      if (!matchesQuery(course, needle)) continue;
       for (const tech of courseTechnologies(course)) map.set(tech, (map.get(tech) ?? 0) + 1);
+      total += 1;
     }
+    map.set('all', total);
     return map;
-  }, [courses]);
-
-  const needle = query.trim().toLowerCase();
+  }, [courses, level, needle]);
 
   const visible = useMemo(
     () =>
@@ -232,7 +230,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
         ordered
           .filter(
             (course) =>
-              (level === 'all' || displayLevel(course.level) === level) &&
+              (level === 'all' || course.level === level) &&
               (technology === 'all' || courseTechnologies(course).includes(technology)) &&
               matchesQuery(course, needle),
           )
@@ -252,15 +250,29 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
     setView(DEFAULT_VIEW);
   }
 
+  function pickLevel(id: CourseLevel | 'all') {
+    setView((v) => ({ ...v, level: id }));
+    track('nudge_clicked', { nudge_id: 'explorer-level', href: String(id) });
+  }
+
+  function pickTechnology(id: Technology | 'all') {
+    setView((v) => ({ ...v, technology: id }));
+    track('nudge_clicked', { nudge_id: 'explorer-technology', href: String(id) });
+  }
+
+  const activeFacetCount = (level !== 'all' ? 1 : 0) + (technology !== 'all' ? 1 : 0);
+  const activeLevelLabel = LEVELS.find((x) => x.id === level)?.label;
+  const activeTechnologyLabel = TECHNOLOGIES.find((x) => x.id === technology)?.label;
+
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] xl:gap-12">
       {/* ── Left: filter sidebar ─────────────────────────────────────────── */}
       <aside
-        className="dc-panel flex flex-col self-start rounded-[20px] xs:rounded-[22px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
+        className="dc-panel hidden flex-col self-start rounded-[20px] lg:flex xs:rounded-[22px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
         aria-label="Filter courses"
       >
         {/* Pinned: title + search always visible while the lists scroll */}
-        <div className="shrink-0 rounded-t-[20px] border-b border-[rgb(255_100_105/0.18)] bg-[var(--dc-card)] p-5 xs:rounded-t-[22px] sm:p-6">
+        <div className="shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 bg-[var(--dc-card)] p-5 xs:rounded-t-[22px] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <p className="label-mono">Filters</p>
             {hasActiveFilters ? (
@@ -310,12 +322,9 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
               <FilterRow
                 key={option.id}
                 active={level === option.id}
-                onClick={() => {
-                  setView((v) => ({ ...v, level: option.id }));
-                  track('nudge_clicked', { nudge_id: 'explorer-level', href: String(option.id) });
-                }}
+                onClick={() => pickLevel(option.id)}
                 label={option.label}
-                count={option.id === 'all' ? courses.length : (levelCounts.get(option.id) ?? 0)}
+                count={levelCounts.get(option.id) ?? 0}
               />
             ))}
           </FilterGroup>
@@ -330,12 +339,9 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
               <FilterRow
                 key={option.id}
                 active={technology === option.id}
-                onClick={() => {
-                  setView((v) => ({ ...v, technology: option.id }));
-                  track('nudge_clicked', { nudge_id: 'explorer-technology', href: String(option.id) });
-                }}
+                onClick={() => pickTechnology(option.id)}
                 label={option.label}
-                count={option.id === 'all' ? courses.length : (technologyCounts.get(option.id) ?? 0)}
+                count={technologyCounts.get(option.id) ?? 0}
               />
             ))}
           </FilterGroup>
@@ -344,6 +350,84 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
 
       {/* ── Right: results ───────────────────────────────────────────────── */}
       <div className="min-w-0">
+        {/* Below lg the sidebar collapses into this toolbar + a bottom sheet. */}
+        <div className="mb-5 lg:hidden">
+          <div className="flex gap-2.5">
+            <label htmlFor={`${inputId}-m`} className="relative block min-w-0 flex-1">
+              <span className="sr-only">Search courses</span>
+              <Search
+                className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
+                strokeWidth={2.25}
+                aria-hidden="true"
+              />
+              <input
+                id={`${inputId}-m`}
+                type="search"
+                value={query}
+                onChange={(e) => setView((v) => ({ ...v, query: e.target.value }))}
+                placeholder="Search courses..."
+                autoComplete="off"
+                enterKeyHint="search"
+                className="dc-input h-11 w-full rounded-full pr-11 pl-10 text-[14px]"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => setView((v) => ({ ...v, query: '' }))}
+                  aria-label="Clear search"
+                  className="absolute top-1/2 right-0 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-[var(--dc-ink-muted)] hover:text-[var(--dc-ink)]"
+                >
+                  <X className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+                </button>
+              ) : null}
+            </label>
+
+            <FilterSheet
+              title="Filter courses"
+              activeCount={activeFacetCount}
+              resultLabel={`Show ${visible.size} ${visible.size === 1 ? 'course' : 'courses'}`}
+              canClear={hasActiveFilters}
+              onClear={clearFilters}
+              open={sheetOpen}
+              onOpenChange={setSheetOpen}
+            >
+              <SheetFacet label="Level">
+                {LEVELS.map((option) => (
+                  <SheetChip
+                    key={option.id}
+                    active={level === option.id}
+                    onClick={() => pickLevel(option.id)}
+                    label={option.label}
+                    count={levelCounts.get(option.id) ?? 0}
+                  />
+                ))}
+              </SheetFacet>
+              <SheetFacet label="Technology">
+                {TECHNOLOGIES.map((option) => (
+                  <SheetChip
+                    key={option.id}
+                    active={technology === option.id}
+                    onClick={() => pickTechnology(option.id)}
+                    label={option.label}
+                    count={technologyCounts.get(option.id) ?? 0}
+                  />
+                ))}
+              </SheetFacet>
+            </FilterSheet>
+          </div>
+
+          <ActiveFilterChips
+            items={[
+              ...(level !== 'all'
+                ? [{ key: 'level', label: activeLevelLabel ?? level, onRemove: () => pickLevel('all') }]
+                : []),
+              ...(technology !== 'all'
+                ? [{ key: 'tech', label: activeTechnologyLabel ?? technology, onRemove: () => pickTechnology('all') }]
+                : []),
+            ]}
+          />
+        </div>
+
         <p
           aria-live="polite"
           className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
@@ -354,12 +438,11 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
 
         <div
           ref={listRef}
-          className="mt-5 grid gap-4 sm:mt-6 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+          className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
         >
           {ordered.map((course) => {
             const isVisible = visible.has(course.slug);
-            const levelLabel =
-              LEVELS.find((l) => l.id === displayLevel(course.level))?.label ?? course.level;
+            const levelLabel = COURSE_LEVEL_LABEL[course.level];
 
             return (
               <article
@@ -380,24 +463,25 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                   }
                   className="dc-card-shell dc-card-interactive group/card block h-full"
                 >
-                  <div className="dc-card flex h-full flex-col overflow-hidden">
-                    <div className="dc-card-media relative aspect-[16/10] overflow-hidden">
+                  <div className="dc-card flex h-full overflow-hidden sm:flex-col">
+                    {/* Phones: a thumbnail beside the text, so 18 cards don't stack into a 10,000px+ page. */}
+                    <div className="dc-card-media relative min-h-[112px] w-[104px] shrink-0 overflow-hidden min-[400px]:w-[120px] sm:aspect-[16/10] sm:min-h-0 sm:w-auto">
                       {course.heroImage ? (
                         <Image
                           src={course.heroImage.url}
                           alt=""
                           fill
-                          sizes="(min-width: 1280px) 22vw, (min-width: 640px) 42vw, 90vw"
+                          sizes="(min-width: 1280px) 22vw, (min-width: 640px) 42vw, 120px"
                           className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
                         />
                       ) : null}
                       <div
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.65)] via-transparent to-transparent"
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
                       />
                     </div>
 
-                    <div className="flex flex-1 flex-col p-6 sm:p-7">
+                    <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-7">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                       <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
                         {levelLabel}
@@ -407,21 +491,21 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                       </span>
                     </div>
 
-                    <h2 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:text-[18px]">
+                    <h2 className="mt-2 font-display text-[15.5px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:mt-3.5 sm:text-[18px]">
                       {course.title}
                     </h2>
 
-                    <p className="mt-2 line-clamp-2 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                    <p className="mt-2 line-clamp-2 flex-1 text-[13.5px] leading-relaxed max-sm:hidden text-[var(--dc-ink-muted)]">
                       {course.eligibility}
                     </p>
 
-                    <div className="mt-6 flex items-center justify-between gap-3">
+                    <div className="mt-auto flex items-center justify-between gap-3 pt-2.5 sm:pt-6">
                       <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
                         View course
                       </span>
                       <span
                         aria-hidden="true"
-                        className="dc-cta grid h-10 w-10 shrink-0 place-items-center rounded-full"
+                        className="dc-cta hidden h-10 w-10 shrink-0 place-items-center rounded-full sm:grid"
                       >
                         <ArrowRight
                           className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/card:translate-x-0.5"

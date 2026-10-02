@@ -1,0 +1,69 @@
+---
+description: Mobile-first, responsive, accessible UI/UX rules for every page, component and style change
+globs: src/**/*.tsx,src/**/*.css
+alwaysApply: false
+---
+
+# Mobile-First UI/UX Rules
+
+Mobile is the baseline, not a reduced desktop. Build mobile → tablet → desktop → large desktop.
+Prioritise usability, accessibility, maintainability and responsive behaviour over visual complexity.
+
+## Layout
+- Breakpoints by content need: mobile 320–767, tablet 768–1023, desktop 1024–1439, large 1440+. No extra breakpoints.
+- Unprefixed Tailwind classes are the phone layout; add `sm:`/`md:`/`lg:` upward. Use `max-sm:` only to undo something.
+- Fluid first: Grid, Flexbox, `min()`/`max()`/`clamp()`, container queries. No hard-coded pixel positioning or heavy absolute layout.
+- No horizontal page scroll at 320px. No fixed widths wider than the viewport. Tables scroll inside a focusable region or stack as cards.
+- One container width per page area; don't give sections random widths.
+- Spacing scale 4/8/12/16/24/32/40/48/64/80/96/128. Consistent radius (6/10/16/24/pill) and sparse, subtle shadows.
+
+## Hierarchy & content
+- Every page answers: where am I, what is this, what's the primary action, what next. One obvious primary CTA per screen.
+- Don't cram everything above the fold: value proposition, context, primary CTA.
+- Cards: media → label → title → description → meta → action. Phones: stack, or the compact side-by-side card when lists get long (see `CourseExplorer.tsx`).
+- Concise copy, action-oriented labels ("Enquire now", "Book a counselling call"), never "Click here" / "Submit" / "Go". Long-form text 45–75 characters per line.
+- Design for longer strings (translations, Indian number/date formats); no fixed-width buttons.
+
+## Tokens (this project)
+- No hex/rgb literals in `.tsx`/component `.ts` (only exceptions: `viewport.themeColor`, third-party logo colours in `course-logos.ts`). Raw values live only in `src/styles/*.css` token definitions.
+- Translucent accent: `border-[var(--centres-accent-soft)]/18`, not `rgb(…/0.18)`. Photo overlays: `from-scrim/55`. Neutrals: `ink-*`; reds: `jk-*`; dark logo tile: `bg-tile-dark`; track circles: `--color-track-*`; WhatsApp: `whatsapp`.
+- Shadows: `shadow-xs|sm|md|lg|xl|bar|drawer|media|logo|brand`, recoloured with `shadow-black/55` etc. Focus halos: `focus:ring-3 focus:ring-[var(--x-accent-soft)]/20`.
+- Use area tokens: `--theme-*` (global), `--dc-*`, `--stu-*`, `--v2-*`, `--pro-*`, `--blog-*`, `--centres-*`, chatbot `--brand*`.
+- Brand red: `jk-600` for solid fills under white text and red text on light; `jk-400` for red text on dark. `jk-500` fails 4.5:1, so don't use it for text.
+- Dark mode is the `dark` class on `<html>`: define both themes, don't just invert, check borders, shadows, images, form controls and disabled states.
+- Typography: use the existing display/heading/body scale; responsive sizes, never desktop-only huge type.
+
+## Interaction & accessibility (WCAG 2.2 AA)
+- Touch targets ≥ 44×44px (buttons, icon buttons, menu, close, checkboxes, nav links). Icon buttons use `h-11 w-11`/`size-11`; compact text links, pills and breadcrumbs add the `tap` utility (globals.css: invisible 44px hit area, no layout change, not for absolute elements). Carousel dots stay at 24px because the prev/next arrows are 44px.
+- Icon-only buttons need `aria-label`. Use one icon set (Lucide).
+- Visible focus states everywhere; never remove an outline without a replacement. Hover, active, disabled and loading states on buttons.
+- Semantic HTML, a logical heading order, one `<main>` (the root layout's), meaningful `alt` (empty for decorative images).
+- Everything keyboard-operable (Tab, Enter, Space, Escape, arrows). Dialogs trap and restore focus and close on Escape. Never trap focus by accident.
+- Gestures (swipe, drag) always need a button alternative.
+- Respect `prefers-reduced-motion`; motion only for state, feedback and spatial meaning.
+- Don't use colour alone to convey meaning.
+
+## Forms
+- One column on phones. Every input has a visible label, correct `type`/`inputMode`/`autoComplete`, focus, error and disabled states.
+- Specific, human error messages next to the field, linked via `aria-describedby`, announced to screen readers ("Enter a valid 10-digit mobile number."). Keep valid input after an error.
+
+## States
+- Async UI has loading (skeleton/spinner/disabled button), empty ("what happened, why, what next" plus an action), error (plain language plus retry, no raw backend errors) and success feedback.
+
+## Sticky, modals, images, performance
+- Sticky bars/CTAs must not cover content or forms; respect `env(safe-area-inset-*)` and the open keyboard (see `MobileContactBar.tsx`).
+- Mobile dialogs fit the viewport (full-screen or bottom sheet), with a clear close control.
+  - Phone bottom sheet, centred from `sm`: wrapper `flex items-end sm:items-center sm:p-4`; panel `sheet-up max-h-[92dvh] w-full overflow-y-auto overscroll-contain rounded-t-[24px] border-b-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:max-w-… sm:rounded-[20px] sm:border-b`; 44px close button. `ui/dialog.tsx` already does this. Media lightboxes stay centred.
+  - Filter sidebars: desktop aside `hidden lg:flex`; below `lg` a toolbar (search + `FilterSheet` trigger + `ActiveFilterChips`) from `src/components/FilterSheet.tsx` (`SheetFacet`, `SheetChip`). Portalled UI uses `--theme-*` tokens, not area-scoped vars.
+  - Short single-choice lists (topics, categories) on phone: horizontal chip row (`scrollbar-none flex snap-x overflow-x-auto`, bleed to `--gutter`, `min-h-11` pills, `aria-current`) instead of a `<select>`.
+- Images: `next/image`, WebP/AVIF, correct `sizes`, fixed aspect ratios, no distortion, lazy below the fold, `<picture>`/art direction when mobile needs a different crop.
+- Prefer server components; add `'use client'` only for interactivity. No unnecessary `useEffect`, deps, third-party scripts, `any`, `!important` or magic numbers.
+
+## Components
+- Reuse or extend before creating; one shared component per pattern. Small, focused changes; don't rewrite unrelated files or add libraries without a reason.
+
+## Definition of done (check before saying finished)
+- Test at 320, 375, 390, 430, 768, 1024, 1280 and 1440, in light and dark, portrait and landscape, with long content.
+- No horizontal overflow; clear hierarchy and primary action; loading, empty and error states exist.
+- Keyboard, focus, labels, contrast, screen reader: axe shows 0 violations.
+- `tsc` and `eslint` pass, no unexpected console errors, and screenshots visually reviewed. "It compiles" is not done.

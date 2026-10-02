@@ -7,10 +7,10 @@ import type { Testimonial } from './data';
 /* Generic avatar placeholders — same set every persona testimonial slider
    uses, since no real headshots exist for these published quotes. */
 const AVATARS = [
-  '/student/testimonial.png',
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
+  '/student/testimonial.webp',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
 ] as const;
 
 type Slide = Testimonial & { id: string };

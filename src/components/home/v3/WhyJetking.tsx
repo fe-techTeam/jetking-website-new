@@ -23,7 +23,7 @@ export function WhyJetking() {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Why Jetking</p>
             <h2
               id="home-why-heading"
-              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               What makes Jetking different?
             </h2>
@@ -31,7 +31,7 @@ export function WhyJetking() {
           <div className="flex items-center justify-between gap-3 sm:justify-end">
             <Link
               href={'/about-us' as Route}
-              className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
             >
               Our story
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

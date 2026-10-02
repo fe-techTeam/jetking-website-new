@@ -72,7 +72,7 @@ function ObjectListEditor({
 /** Renders every key of a plain object as a labeled field, two-up for short
  *  scalars and full width for anything nested — the building block both the
  *  top-level record form and each repeatable list item share. */
-export function ObjectFields({
+function ObjectFields({
   value,
   config,
   depth,

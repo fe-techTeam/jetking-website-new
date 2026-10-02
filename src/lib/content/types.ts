@@ -6,13 +6,13 @@
  *
  * Design note: fields that the AI Guide is allowed to state as fact are marked
  * `@grounded`. Anything not marked is presentational and must never be quoted
- * as authoritative by the Guide (see src/guide/guardrails.ts).
+ * as authoritative by the AI assistant.
  */
 
 export type PersonaId = 'student' | 'professional' | 'parent' | 'franchise' | 'unknown';
 
 /** Personas a piece of content is especially relevant to. Drives re-ranking. */
-export type PersonaRelevance = Partial<Record<Exclude<PersonaId, 'unknown'>, number>>;
+type PersonaRelevance = Partial<Record<Exclude<PersonaId, 'unknown'>, number>>;
 
 export interface Seo {
   /** @grounded */
@@ -43,7 +43,7 @@ export type CourseLevel = 'degree' | 'diploma' | 'certification' | 'short';
  * component and NEVER generates fee figures as free text (DEVELOPMENT-PLAN §5.2,
  * risk R4). If `disclosed` is false the Guide must hand off to a counsellor.
  */
-export interface Fees {
+interface Fees {
   disclosed: boolean;
   /** @grounded Total programme fee in INR. Only meaningful when disclosed. */
   totalInr?: number;
@@ -140,17 +140,17 @@ export interface CentreFeaturedProgramme {
   mode?: string;
 }
 
-export interface CentreEligibilityBlock {
+interface CentreEligibilityBlock {
   title: string;
   items: string[];
 }
 
-export interface CentreJourneyStep {
+interface CentreJourneyStep {
   title: string;
   items: string[];
 }
 
-export interface CentreFaq {
+interface CentreFaq {
   question: string;
   answer: string;
 }
@@ -161,7 +161,7 @@ export interface CentreTestimonial {
   role?: string;
 }
 
-export interface CentreFaculty {
+interface CentreFaculty {
   name: string;
   title: string;
   bio?: string;
@@ -169,7 +169,7 @@ export interface CentreFaculty {
   photoUrl?: string;
 }
 
-export interface CentrePlacement {
+interface CentrePlacement {
   name: string;
   company: string;
   package?: string;
@@ -265,8 +265,6 @@ export interface Post {
   kind?: 'blog' | 'news';
 }
 
-export type News = Post & { kind: 'news' };
-
 /* ────────────────────────────────────────────────────────────────────────── */
 /* FAQ                                                                        */
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -312,7 +310,7 @@ export interface Faculty {
   updatedAt: string;
 }
 
-export interface PlacementStat {
+interface PlacementStat {
   /** @grounded */
   label: string;
   /** @grounded */
@@ -352,14 +350,14 @@ export interface TrustSignal {
 /* Homepage variants + CMS persona rules                                      */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export interface BannerContent {
+interface BannerContent {
   eyebrow?: string;
   headline: string;
   lede: string;
   imageUrl?: string;
 }
 
-export interface CtaContent {
+interface CtaContent {
   label: string;
   href: string;
 }
@@ -371,14 +369,14 @@ export interface Testimonial {
   role: string;
 }
 
-export interface SuccessStory {
+interface SuccessStory {
   id: string;
   title: string;
   summary: string;
   href?: string;
 }
 
-export interface VideoContent {
+interface VideoContent {
   title: string;
   src: string;
   poster?: string;
@@ -396,7 +394,7 @@ export interface HomepageVariant {
   centreBoost?: string[];
 }
 
-export type RuleConditionField =
+type RuleConditionField =
   | 'location.city'
   | 'interest'
   | 'returning'

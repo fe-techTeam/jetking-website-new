@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { content } from '@/lib/content';
-import { articleSchema, breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { articleSchema, breadcrumbSchema, buildMetadata, postDescription } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { BlogArticle } from '@/components/blog/BlogArticle';
 import { ArticleViewTracker } from './ArticleViewTracker';
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await content.getPost(slug);
   if (!post) return {};
-  return buildMetadata(post.seo, `/blog/${post.slug}`);
+  return buildMetadata({ ...post.seo, description: postDescription(post) }, `/blog/${post.slug}`);
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -206,8 +206,3 @@ export async function buildCorpus(): Promise<Chunk[]> {
   cache = { chunks, builtAt: Date.now() };
   return chunks;
 }
-
-/** Called by the CMS webhook once content changes. */
-export function invalidateCorpus(): void {
-  cache = null;
-}

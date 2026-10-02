@@ -7,6 +7,19 @@ import type { CourseLevel } from '@/lib/content/types';
  * keywords appear in its slug or title. `href` values use the params /courses reads
  * (`?tech=` and `?level=`).
  */
+/** Display order and labels for course levels, shared by every surface that shows one. */
+export const COURSE_LEVELS: ReadonlyArray<{ id: CourseLevel; label: string }> = [
+  { id: 'degree', label: 'Degree' },
+  { id: 'diploma', label: 'Diploma' },
+  { id: 'certification', label: 'Certification' },
+  { id: 'short', label: 'Short course' },
+];
+
+export const COURSE_LEVEL_LABEL = Object.fromEntries(COURSE_LEVELS.map((l) => [l.id, l.label])) as Record<
+  CourseLevel,
+  string
+>;
+
 export type CourseCategoryId =
   | 'degree'
   | 'cloud'

@@ -24,7 +24,9 @@ import type { Faq, Testimonial } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
 import { FranchiseTestimonialSliderLight } from './FranchiseTestimonialSliderLight';
 import { FranchiseEnquiryFormLight } from './FranchiseEnquiryFormLight';
+import { HeroOrbit } from '@/components/HeroOrbit';
 import { Disclosure } from '@/components/Disclosure';
+import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import { COURSES, JUMP_START, LAUNCH_STEPS, MARKET_STATS, WHY_STATS } from './data';
 
 // Icons paired with ./data's arrays by index — kept here, not in the shared
@@ -37,16 +39,16 @@ const LAUNCH_STEPS_ICONS = [FileText, Rocket, Users, Handshake];
 const COURSES_ICONS = [Shield, Award, TrendingUp];
 
 const PARTNER_AVATARS = [
-  '/franchise/partner-avatar-1.png',
-  '/franchise/partner-avatar-2.png',
-  '/franchise/partner-avatar-3.png',
-  '/franchise/hero-partner.png',
+  '/franchise/partner-avatar-1.webp',
+  '/franchise/partner-avatar-2.webp',
+  '/franchise/partner-avatar-3.webp',
+  '/franchise/hero-partner.webp',
 ] as const;
 
 const ORBIT = [
   {
     label: 'Brand',
-    detail: '78+ years of trust',
+    detail: `Trusted ${SINCE_FOUNDED.toLowerCase()}`,
     icon: Award,
     className: 'top-[6%] left-0 sm:left-[-4%] lg:left-[-8%]',
   },
@@ -96,10 +98,6 @@ export function FranchiseLandingLight({
     >
       {/* ── Hero (student orbit pattern) ───────────────────────────────── */}
       <section className="shell relative pt-8 pb-6 xs:pt-10 sm:pt-12 lg:pt-14 lg:pb-8">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-        />
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
@@ -153,7 +151,7 @@ export function FranchiseLandingLight({
                   ))}
                 </span>
                 <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                  100+ partners across India
+                  Partners across India
                 </span>
               </div>
               <span
@@ -172,58 +170,18 @@ export function FranchiseLandingLight({
 
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               Prefer to talk? Call franchise manager
             </a>
           </div>
 
-          <div className="stu-hero-glow relative mx-auto w-full max-w-[540px] lg:max-w-none">
-            <div className="relative mx-auto aspect-square w-[min(100%,440px)] lg:w-full lg:max-w-[500px]">
-              <div
-                aria-hidden="true"
-                className="stu-orbit-ring absolute inset-[10%] rounded-full"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-[16%] rounded-full border border-dashed border-[rgb(232_36_43/0.28)]"
-              />
-
-              <div className="absolute inset-[20%] overflow-hidden rounded-full bg-[linear-gradient(160deg,var(--card),var(--surface-sunken),var(--card))] shadow-[0_28px_70px_rgb(0_0_0/0.55)]">
-                <Image
-                  src="/franchise/hero-building.png"
-                  alt="Modern Jetking franchise training centre building"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 380px, 75vw"
-                  className="object-cover object-center"
-                />
-              </div>
-
-              {ORBIT.map((item) => (
-                <div
-                  key={item.label}
-                  className={`stu-float absolute z-10 flex max-w-[158px] items-start gap-2.5 rounded-2xl p-3 sm:max-w-[172px] sm:p-3.5 ${item.className}`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-                  >
-                    <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                  </span>
-                  <span className="min-w-0 pt-0.5">
-                    <span className="block text-[13px] font-extrabold text-[var(--stu-ink)]">
-                      {item.label}
-                    </span>
-                    <span className="mt-0.5 block text-[12px] leading-snug text-[var(--stu-ink-secondary)]">
-                      {item.detail}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HeroOrbit
+            src="/franchise/hero-building.webp"
+            alt="Modern Jetking franchise training centre building"
+            items={ORBIT}
+          />
         </div>
       </section>
 
@@ -244,23 +202,34 @@ export function FranchiseLandingLight({
                   <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
-                <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-3">
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] sm:text-[15px]">
+                  The numbers behind a franchise model built on decades of trust.
+                </p>
+
+                {/* Wraps into as many rows as the width allows; each row's tiles grow to fill it. */}
+                <dl className="mt-7 flex flex-wrap gap-3 sm:gap-4 lg:gap-3 xl:gap-4">
                   {WHY_STATS.map((stat, i) => {
                     const Icon = WHY_STATS_ICONS[i]!;
                     return (
-                    <div key={stat.label} className="text-center sm:text-left lg:text-center">
-                      <Icon
-                        className="mx-auto h-6 w-6 text-[var(--stu-accent-soft)] sm:mx-0 lg:mx-auto"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
+                    <div
+                      key={stat.label}
+                      className="stu-card @container min-w-0 flex-[1_1_136px] rounded-2xl p-4"
+                    >
                       <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="mt-2.5 block font-display text-[20px] leading-none font-extrabold sm:text-[22px]">
-                          {stat.value}
+                      <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
+                        <span
+                          aria-hidden="true"
+                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                        >
+                          <Icon className="h-5 w-5" strokeWidth={1.75} />
                         </span>
-                        <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)]">
-                          {stat.label}
+                        <span className="min-w-0">
+                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--stu-ink)] sm:text-[22px]">
+                            {stat.value}
+                          </span>
+                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                            {stat.label}
+                          </span>
                         </span>
                       </dd>
                     </div>
@@ -324,7 +293,7 @@ export function FranchiseLandingLight({
               <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
-                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-[0_8px_20px_rgb(196_30_36/0.2)] xs:h-12 xs:w-12"
+                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-brand xs:h-12 xs:w-12"
                 >
                   <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} />
                 </span>
@@ -408,7 +377,7 @@ export function FranchiseLandingLight({
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="relative overflow-hidden rounded-[24px] border border-[var(--stu-hairline)] lg:col-span-5">
               <Image
-                src="/franchise/centre-interior.png"
+                src="/franchise/centre-interior.webp"
                 alt="Students learning in a modern Jetking-style IT training classroom"
                 width={1200}
                 height={900}
@@ -416,7 +385,7 @@ export function FranchiseLandingLight({
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.55)] via-transparent to-transparent"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
               />
             </div>
 
@@ -429,13 +398,13 @@ export function FranchiseLandingLight({
                 job-ready training centres in every city.
               </p>
 
-              <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+              <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
                 {MARKET_STATS.map((stat) => (
-                  <li key={stat.label} className="stu-card rounded-[18px] p-4 sm:p-5">
-                    <p className="font-display text-[26px] font-extrabold leading-none text-[var(--stu-accent-soft)]">
+                  <li key={stat.label} className="stu-card rounded-[18px] p-3.5 sm:p-5">
+                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--stu-accent-soft)] sm:text-[26px]">
                       {stat.value}
                     </p>
-                    <p className="mt-2 text-[13px] leading-snug text-[var(--stu-ink-secondary)]">
+                    <p className="mt-2 text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13px]">
                       {stat.label}
                     </p>
                   </li>
@@ -511,13 +480,13 @@ export function FranchiseLandingLight({
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
-                  src="/franchise/hero-building.png"
+                  src="/franchise/hero-building.webp"
                   alt="Modern Jetking franchise centre exterior"
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.88)] via-[rgb(7_7_12/0.35)] to-transparent lg:bg-gradient-to-r" />
+                <div className="absolute inset-0 bg-gradient-to-t from-scrim/88 via-scrim/35 to-transparent lg:bg-gradient-to-r" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
                   <p className="font-display text-[22px] font-extrabold leading-snug tracking-[-0.02em] text-white sm:text-[26px]">
                     Be your own boss. Build lasting wealth with a trusted brand.
@@ -539,10 +508,10 @@ export function FranchiseLandingLight({
       {/* ── Contact bar ────────────────────────────────────────────────── */}
       <footer className="border-t border-[var(--stu-hairline)] bg-[var(--stu-surface)] py-5">
         <div className="shell">
-          <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:flex-wrap sm:gap-8">
+          <div className="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:flex-wrap sm:gap-8">
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
             >
               <Headphones
                 className="h-4 w-4 text-[var(--stu-accent-soft)]"
@@ -553,7 +522,7 @@ export function FranchiseLandingLight({
             </a>
             <a
               href="mailto:franchise@jetking.com"
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
             >
               <Mail
                 className="h-4 w-4 text-[var(--stu-accent-soft)]"
@@ -564,7 +533,7 @@ export function FranchiseLandingLight({
             </a>
             <Link
               href="/franchise"
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
             >
               <Download
                 className="h-4 w-4 text-[var(--stu-accent-soft)]"

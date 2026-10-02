@@ -23,7 +23,7 @@ export function BlogHero({
     <section className="shell relative pt-6 pb-10 xs:pt-8 sm:pt-10 lg:pt-12 lg:pb-12">
       <div className="blog-hero-banner relative min-h-[min(72vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[440px] sm:rounded-[32px] lg:min-h-[520px]">
         <Image
-          src="/blog/hero.png"
+          src="/blog/hero.webp"
           alt=""
           fill
           priority

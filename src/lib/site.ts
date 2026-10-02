@@ -22,7 +22,15 @@ export const siteConfig = {
    * button on an education site costs more than one extra click.
    */
   phone: process.env.NEXT_PUBLIC_PHONE ?? '',
+  /** National toll-free helpline, as published on Investors and the enrollment terms. */
+  helpline: '07666830000',
 } as const;
+
+/** WhatsApp only renders once a real number is configured, never the env placeholder. */
+export const whatsappHref =
+  siteConfig.whatsappNumber && !/^91?9{9,}$/.test(siteConfig.whatsappNumber)
+    ? `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, '')}`
+    : null;
 
 export function absoluteUrl(path: string): string {
   const normalised = path.startsWith('/') ? path : `/${path}`;

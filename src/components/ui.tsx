@@ -48,68 +48,6 @@ export function Section({
   );
 }
 
-/**
- * `as` defaults to h2 because most section heads sit under a page h1. Listing pages
- * (/courses, /centres, /blog, /faq) whose section head IS the page title must pass
- * `as="h1"` — a page with no h1 is a real ranking defect, and the CI SEO gate fails
- * the build for it.
- */
-export function SectionHead({
-  eyebrow,
-  title,
-  lede,
-  align = 'left',
-  as = 'h2',
-  action,
-}: {
-  eyebrow?: string;
-  title: ReactNode;
-  lede?: ReactNode;
-  align?: 'left' | 'center';
-  as?: 'h1' | 'h2';
-  /** Trailing action — sits opposite the title on wide viewports. */
-  action?: ReactNode;
-}) {
-  const Heading = as;
-
-  return (
-    <div
-      className={cx(
-        'gap-6',
-        action ? 'flex flex-col items-start justify-between md:flex-row md:items-end' : '',
-      )}
-    >
-      <div className={cx('max-w-[42rem]', align === 'center' && 'mx-auto text-center')}>
-        {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-        <Heading
-          className={cx(
-            eyebrow ? 'mt-4' : '',
-            as === 'h1'
-              ? 'text-3xl sm:text-4xl lg:text-5xl'
-              : 'text-2xl sm:text-3xl lg:text-4xl',
-          )}
-        >
-          {title}
-        </Heading>
-        {lede ? <p className="lede mt-5">{lede}</p> : null}
-      </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
-    </div>
-  );
-}
-
-export function Eyebrow({ children }: { children: ReactNode }) {
-  // `--accent-ink` is a semantic alias, not a `--color-*` theme token, so it has no
-  // generated Tailwind utility — it is referenced directly. It resolves to jk-600 on
-  // paper and jk-400 inside `.surface-inverse`.
-  return <span className="label-mono block text-[var(--accent-ink)]">{children}</span>;
-}
-
-/** The 40×2px red rule that opens a major section. Decorative. */
-export function Keyline({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cx('block h-0.5 w-10 bg-jk-500', className)} />;
-}
-
 /* ── Actions ─────────────────────────────────────────────────────────────── */
 
 export type ButtonTone = 'primary' | 'secondary' | 'ghost' | 'text';
@@ -123,7 +61,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
  * The primary fill is jk-600, not the jk-500 brand red: white on jk-500 measures
  * 4.48:1 and fails WCAG AA. jk-600 measures 5.92:1 and still reads as Jetking red.
  */
-export const buttonTones: Record<ButtonTone, string> = {
+const buttonTones: Record<ButtonTone, string> = {
   primary:
     'bg-jk-600 text-white hover:bg-jk-500 hover:shadow-[var(--shadow-accent)] active:bg-jk-700',
   secondary:
@@ -133,17 +71,14 @@ export const buttonTones: Record<ButtonTone, string> = {
   text: 'bg-transparent text-foreground link-underline h-auto rounded-none px-0 hover:text-[var(--accent-ink)]',
 };
 
-export const buttonSizes: Record<ButtonSize, string> = {
+const buttonSizes: Record<ButtonSize, string> = {
   sm: 'h-11 px-4 text-sm',
   md: 'h-12 px-6 text-sm',
   lg: 'h-14 px-7 text-base',
 };
 
-export const buttonBase =
+const buttonBase =
   'inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-all duration-200 ease-[var(--ease-out-soft)] disabled:pointer-events-none disabled:opacity-45';
-
-/** Kept as a single default so callers that only pass `tone` still get a size. */
-export const buttonDefaultSize = buttonSizes.md;
 
 export function ButtonLink({
   tone = 'primary',
@@ -205,91 +140,6 @@ export function ArrowLink({
         →
       </span>
     </Link>
-  );
-}
-
-/* ── Surfaces ────────────────────────────────────────────────────────────── */
-
-export function Card({
-  children,
-  className,
-  as: Tag = 'div',
-  interactive = false,
-  padding = 'md',
-}: {
-  children: ReactNode;
-  className?: string;
-  as?: 'div' | 'article' | 'li' | 'section';
-  /** Adds the hover lift. Only for cards whose whole surface is a link. */
-  interactive?: boolean;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-}) {
-  const paddings = {
-    none: '',
-    sm: 'p-5',
-    md: 'p-6 sm:p-7',
-    lg: 'p-7 sm:p-9',
-  } as const;
-
-  return (
-    <Tag
-      className={cx(
-        'card group rounded-[var(--radius-card)]',
-        interactive && 'card-interactive',
-        paddings[padding],
-        className,
-      )}
-    >
-      {children}
-    </Tag>
-  );
-}
-
-export function Pill({
-  children,
-  tone = 'neutral',
-}: {
-  children: ReactNode;
-  tone?: 'neutral' | 'accent' | 'outline';
-}) {
-  const tones = {
-    neutral: 'bg-surface text-foreground-secondary',
-    accent: 'bg-jk-50 text-jk-700',
-    outline: 'border border-border text-foreground-muted',
-  } as const;
-
-  return (
-    <span
-      className={cx(
-        'inline-flex items-center rounded-full px-2.5 py-1 text-2xs font-semibold tracking-[0.06em] uppercase',
-        tones[tone],
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
-/**
- * A figure and its label. Figures use tabular numerals so a row of stats aligns on
- * the digit rather than drifting — the detail that makes a stat row read as a data
- * table instead of as decoration.
- */
-export function Stat({
-  value,
-  label,
-  note,
-}: {
-  value: ReactNode;
-  label: ReactNode;
-  note?: ReactNode;
-}) {
-  return (
-    <div className="rule-top">
-      <p className="numeral font-display text-3xl font-bold text-foreground sm:text-4xl">{value}</p>
-      <p className="mt-2 text-sm font-semibold text-foreground">{label}</p>
-      {note ? <p className="mt-1 text-sm text-foreground-muted">{note}</p> : null}
-    </div>
   );
 }
 
@@ -368,7 +218,7 @@ export function IndexRow({
  * `Section` or a `JsonLd`. Re-exporting keeps `@/components/ui` the single import
  * surface for callers while the client boundary sits one file down.
  */
-export { Field, fieldControl, Input, Select, Textarea } from './form';
+export { Field,  Input, Select, Textarea } from './form';
 
 /* ── Notices ─────────────────────────────────────────────────────────────── */
 
@@ -447,7 +297,7 @@ export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
                   {item.name}
                 </span>
               ) : (
-                <Link href={href} className="link-underline inline-flex min-h-6 items-center hover:text-[var(--accent-ink)]">
+                <Link href={href} className="link-underline tap inline-flex min-h-6 items-center hover:text-[var(--accent-ink)]">
                   {item.name}
                 </Link>
               )}

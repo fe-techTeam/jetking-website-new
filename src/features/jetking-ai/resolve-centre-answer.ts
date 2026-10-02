@@ -251,7 +251,7 @@ function websiteCentres(): CentreRecord[] {
  * Pick the best centre record(s) for a location question from the structured KB.
  * Prefers a city hub that has branch `locations` over suburb SEO pages.
  */
-export function pickCentresForQuery(
+function pickCentresForQuery(
   centres: CentreRecord[],
   query: string,
 ): CentreRecord[] {
@@ -347,7 +347,7 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): nu
  */
 const NEARBY_STUB_RADIUS_KM = 60;
 
-export function pickCentreByCoords(
+function pickCentreByCoords(
   centres: CentreRecord[],
   lat: number,
   lng: number,

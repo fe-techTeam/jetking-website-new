@@ -1,5 +1,4 @@
-import { readBehaviour } from './behaviour';
-import type { KnownPersonaId } from './types';
+
 
 /**
  * Anonymous visitor identity.
@@ -17,7 +16,6 @@ export const VISITOR_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 const STORAGE_KEY = 'jk_visitor_id_v1';
 const IDENTITY_KEY = 'jk_identity_link_v1';
-const WELCOME_DISMISS_KEY = 'jk_welcome_dismissed_v1';
 
 export type VisitorState = 'new' | 'known';
 
@@ -35,14 +33,6 @@ export interface LinkedIdentity {
   /** Volunteered first name — used to personalise, never inferred. */
   name?: string;
   linkedAt: string;
-}
-
-export interface JourneyResume {
-  persona?: KnownPersonaId;
-  lastCourse?: string;
-  interests: string[];
-  continueHref: string;
-  continueLabel: string;
 }
 
 function readCookieValue(name: string): string | undefined {
@@ -138,10 +128,6 @@ export function resolveVisitorId(existing: string | undefined): { id: string; mi
   return { id: mintVisitorId(), minted: true };
 }
 
-export function readVisitorId(): string | undefined {
-  return readStoredId();
-}
-
 /**
  * After brochure / counselling / enquiry: bind anonymous ID to phone/email locally
  * so the CRM payload can carry both. Cross-device reclaim still needs OTP later.
@@ -175,111 +161,4 @@ export function linkVisitorIdentity(input: {
     // Best-effort — CRM still receives visitorId on the request body.
   }
   return linked;
-}
-
-export function readLinkedIdentity(): LinkedIdentity | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = window.localStorage.getItem(IDENTITY_KEY);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (typeof parsed !== 'object' || parsed === null) return null;
-    const row = parsed as Partial<LinkedIdentity>;
-    if (typeof row.visitorId !== 'string' || !isValidVisitorId(row.visitorId)) return null;
-    return {
-      visitorId: row.visitorId,
-      phone: typeof row.phone === 'string' ? row.phone : undefined,
-      email: typeof row.email === 'string' ? row.email : undefined,
-      name: typeof row.name === 'string' ? row.name : undefined,
-      linkedAt: typeof row.linkedAt === 'string' ? row.linkedAt : '',
-    };
-  } catch {
-    return null;
-  }
-}
-
-const PERSONA_CONTINUE: Record<KnownPersonaId, { href: string; label: string }> = {
-  student: { href: '/student', label: 'Continue your student path' },
-  professional: { href: '/professional', label: 'Continue exploring courses' },
-  parent: { href: '/parent', label: 'Continue your parent path' },
-  franchise: { href: '/franchise', label: 'Continue the franchise path' },
-};
-
-/**
- * Derive a single resume CTA from on-device journey memory.
- * Returns null when there is nothing useful to continue — then treat as new UX.
- */
-export function readJourneyResume(persona?: KnownPersonaId | 'unknown'): JourneyResume | null {
-  const behaviour = readBehaviour();
-  const interests = behaviour.interests ?? [];
-  const lastCourse = behaviour.lastCourse;
-  const knownPersona =
-    persona && persona !== 'unknown' ? persona : undefined;
-
-  if (lastCourse) {
-    const interestHint = interests[0];
-    const label = interestHint
-      ? `Continue exploring ${interestHint}`
-      : 'Continue where you left off';
-    return {
-      persona: knownPersona,
-      lastCourse,
-      interests,
-      continueHref: `/courses/${lastCourse}`,
-      continueLabel: label,
-    };
-  }
-
-  if (interests.length > 0) {
-    const top = interests[0];
-    return {
-      persona: knownPersona,
-      interests,
-      continueHref: knownPersona ? PERSONA_CONTINUE[knownPersona].href : '/courses',
-      continueLabel: `Continue your ${top} journey`,
-    };
-  }
-
-  if (knownPersona) {
-    const next = PERSONA_CONTINUE[knownPersona];
-    return {
-      persona: knownPersona,
-      interests,
-      continueHref: next.href,
-      continueLabel: next.label,
-    };
-  }
-
-  return null;
-}
-
-/** Session-scoped dismiss so reload does not nag; next browser session can show again. */
-export function isWelcomeDismissed(): boolean {
-  if (typeof window === 'undefined') return true;
-  try {
-    return window.sessionStorage.getItem(WELCOME_DISMISS_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-export function dismissWelcome(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.sessionStorage.setItem(WELCOME_DISMISS_KEY, '1');
-  } catch {
-    // ignore
-  }
-}
-
-export function clearVisitorIdentity(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-    window.localStorage.removeItem(IDENTITY_KEY);
-    window.sessionStorage.removeItem(WELCOME_DISMISS_KEY);
-    document.cookie = `${VISITOR_COOKIE}=; Max-Age=0; path=/`;
-  } catch {
-    // ignore
-  }
 }

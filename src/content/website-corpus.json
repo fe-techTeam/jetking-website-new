@@ -1,7 +1,7 @@
 {
   "builtAt": "2026-09-23T05:25:07.762Z",
   "contentSource": "admin",
-  "count": 1431,
+  "count": 1430,
   "items": [
     {
       "id": "course:bca-cloud-cyber-security",
@@ -11152,7 +11152,7 @@
       "type": "about",
       "title": "About Jetking",
       "path": "/about-us",
-      "text": "India’s foremost computer networking institute, committed to creating a better life for students, franchisees, recruiters, and investors. Our vision: To provide economic independence to 10 million people in India and overseas. Our mission: To become a world-class engine for employment generation through an efficient partnership network. Our values: Quality. Trust. Self-motivation. Innovation. Hands-on. Learning & teaching. Equanimity. Values: Quality, Trust, Self-motivation, Innovation, Hands-on, Learning & teaching, Equanimity. 80 Years of Legacy, 15,00,000 Students Placed, 50+ Training centres, 5000+ Recruiting partners.",
+      "text": "India’s foremost computer networking institute, committed to creating a better life for students, franchisees, recruiters, and investors. Our vision: To provide economic independence to 10 million people in India and overseas. Our mission: To become a world-class engine for employment generation through an efficient partnership network. Our values: Quality. Trust. Self-motivation. Innovation. Hands-on. Learning & teaching. Equanimity. Values: Quality, Trust, Self-motivation, Innovation, Hands-on, Learning & teaching, Equanimity. 1947 Year founded, 39 Learning centres, 28 Cities across India, 18 Courses on offer.",
       "source": "website-content-source"
     },
     {
@@ -11192,7 +11192,7 @@
       "type": "about",
       "title": "Meghna",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11200,7 +11200,7 @@
       "type": "about",
       "title": "Keyur",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11208,7 +11208,7 @@
       "type": "about",
       "title": "Rajashree",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11216,7 +11216,7 @@
       "type": "about",
       "title": "Akhilesh",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11224,7 +11224,7 @@
       "type": "about",
       "title": "Shabnam",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11232,7 +11232,7 @@
       "type": "about",
       "title": "Anand",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11240,15 +11240,7 @@
       "type": "about",
       "title": "Dhruti",
       "path": "/about-us",
-      "text": "Designation to be confirmed",
-      "source": "website-content-source"
-    },
-    {
-      "id": "about-leader-name-to-be-confirmed",
-      "type": "about",
-      "title": "Name to be confirmed",
-      "path": "/about-us",
-      "text": "Independent Director",
+      "text": "Management team, Jetking",
       "source": "website-content-source"
     },
     {
@@ -11312,7 +11304,7 @@
       "type": "franchise",
       "title": "Why partner with Jetking — franchise track record",
       "path": "/franchise",
-      "text": "100+ Successful Entrepreneurs, 11+ Lakh Students Trained, Pan-India Centre Network, 78+ Years of Brand Legacy, Awarded Franchise Support",
+      "text": "Proven Centre Operating Model, End-to-end Launch Support, Pan-India Centre Network, Since 1947 Brand Legacy, Awarded Franchise Support",
       "source": "website-content-source"
     },
     {
@@ -11360,7 +11352,7 @@
       "type": "professional",
       "title": "Jetking outcomes for working professionals",
       "path": "/professional",
-      "text": "60–120% Avg. Salary Increase, 75,000+ Professionals Upskilled, 1000+ Hiring Partners, 90% Placement Rate.",
+      "text": "Hands-on portfolio-ready lab projects, industry credentials included, placement assistance and interview prep. Training IT talent since 1947.",
       "source": "website-content-source"
     },
     {
@@ -11368,7 +11360,7 @@
       "type": "professional",
       "title": "Why working professionals choose Jetking to upskill",
       "path": "/professional",
-      "text": "Hands-on Projects: Build portfolio-ready work in guided labs — not theory-only sessions. Recognized Certifications: Industry credentials included to strengthen your professional profile. Flexible Batches: Weekend and evening options designed around a full-time work schedule. Career Counsellors: Dedicated guidance on courses, timing, and your next career move. Interview Preparation: Mock interviews and resume support before you step into hiring loops. Hiring Network: Access to 1000+ hiring partners across roles, sectors, and cities.",
+      "text": "Hands-on Projects: Build portfolio-ready work in guided labs — not theory-only sessions. Recognized Certifications: Industry credentials included to strengthen your professional profile. Flexible Batches: Weekend and evening options designed around a full-time work schedule. Career Counsellors: Dedicated guidance on courses, timing, and your next career move. Interview Preparation: Mock interviews and resume support before you step into hiring loops. Hiring Network: Access to Jetking’s hiring partners across roles, sectors, and cities.",
       "source": "website-content-source"
     },
     {
@@ -11392,7 +11384,7 @@
       "type": "parent",
       "title": "Why parents trust Jetking",
       "path": "/parent",
-      "text": "75,000+ Students Trained Successfully, 90% Placement Assistance, Industry Aligned Curriculum, Trusted Brand Legacy Since 1947.",
+      "text": "39 centres to visit in person across 28 cities, placement assistance, industry aligned curriculum, trusted brand legacy since 1947.",
       "source": "website-content-source"
     },
     {
@@ -11424,7 +11416,7 @@
       "type": "explore",
       "title": "Why choose Jetking — every student's reasons",
       "path": "/explore",
-      "text": "Trained & Certified Faculty: Award winning and internationally bench-marked training faculty. Practical Foundation through Labs: One computer per student, so every theory lesson gets hands-on practice. Placement Support: We take every necessary step to help you get a suitable job on completing the course. Scenario Based Learning: Case studies and animated scenarios give you real-life problem-solving practice. SmartLabPlus Teaching Methodology: Innovative methods of teaching that make learning fun and easy to remember. Countrywide Network: A well-established, nationally recognised institute with 100+ centres. Personality Development: Builds confidence and supports better job and salary prospects. State-of-the-Art Infrastructure: Every centre is equipped for a successful learning environment. De-stress with Yoga: A relaxed mind finds it easier to learn. Partnership with NSDC: Associated with the National Skill Development Corporation as a skill development partner.",
+      "text": "Trained & Certified Faculty: Award winning and internationally bench-marked training faculty. Practical Foundation through Labs: One computer per student, so every theory lesson gets hands-on practice. Placement Support: We take every necessary step to help you get a suitable job on completing the course. Scenario Based Learning: Case studies and animated scenarios give you real-life problem-solving practice. SmartLabPlus Teaching Methodology: Innovative methods of teaching that make learning fun and easy to remember. Countrywide Network: A well-established, nationally recognised institute with centres across India. Personality Development: Builds confidence and supports better job and salary prospects. State-of-the-Art Infrastructure: Every centre is equipped for a successful learning environment. De-stress with Yoga: A relaxed mind finds it easier to learn. Partnership with NSDC: Associated with the National Skill Development Corporation as a skill development partner.",
       "source": "website-content-source"
     },
     {
@@ -11508,7 +11500,7 @@
           "Curriculum mapped to global certifications (Microsoft, AWS, Red Hat)",
           "60-70% practical hands-on SmartLab learning",
           "360-degree placement support: resume building, mock interviews and recruiter partner introductions",
-          "5000+ recruiter partners and top Indian & global faculty"
+          "Recruiter partners and top Indian & global faculty"
         ],
         "tools": [
           "AWS",
@@ -11696,7 +11688,7 @@
         "updatedAt": "2026-08-07",
         "highlights": [
           "UGC-recognized Master's degree, 24-month program",
-          "Placement support via 5000+ hiring partners",
+          "Placement support via Jetking hiring partners",
           "Earn while you learn via paid internships after Semester 2",
           "Curriculum aligned with AWS, Azure, CISSP, CEH",
           "Real-world project-based learning",
@@ -11869,7 +11861,7 @@
           "Specialization in 3D animation, graphic design, and gaming design",
           "Placement support per Jetking placement policy",
           "360-degree career support with mock interviews and resume building",
-          "5000+ hiring partner network"
+          "Jetking hiring partner network"
         ],
         "tools": [
           "Adobe Creative Suite",
@@ -12048,7 +12040,7 @@
           "Job-ready skills and industry-recognized certification",
           "NSDC certification included",
           "Access to state-of-the-art smartlabplus labs",
-          "5000+ recruiter partners with career services"
+          "Recruiter partners with career services"
         ],
         "tools": [
           "AWS",
@@ -12231,7 +12223,7 @@
           "14 global certifications included",
           "Hands-on training with practical real-world experience",
           "Access to SmartLabPlus facility",
-          "5000+ recruiter partners with top Indian & global faculty",
+          "Recruiter partners with top Indian & global faculty",
           "Suitable for 12th pass students and working professionals"
         ],
         "tools": [
@@ -12412,7 +12404,7 @@
           "Top Indian & global faculty",
           "Access to smartlabplus labs and LMS",
           "Career services with resume building and interview prep",
-          "Placement support via 5000+ recruiter partners"
+          "Placement support via Jetking recruiter partners"
         ],
         "tools": [
           "AWS",
@@ -12552,7 +12544,7 @@
         },
         "updatedAt": "2026-08-07",
         "highlights": [
-          "Placement support via 5000+ recruiter partners",
+          "Placement support via Jetking recruiter partners",
           "Top Indian and global faculty with industry experience",
           "Multiple learning formats: books, audiobooks, videos, live classes",
           "Career services including resume building and interview prep",
@@ -12805,7 +12797,7 @@
           "Top Indian and global faculty with industry experience",
           "Choose how you learn: books, audiobooks, videos, live classes",
           "Career services including resume building and interview prep",
-          "5000+ recruitment partners for placement opportunities",
+          "Recruitment partners for placement opportunities",
           "Hands-on training with real-world projects and datasets",
           "Government-recognized NSDC / Skill India certification"
         ],
@@ -16252,7 +16244,7 @@
             "answer": "Students 10+2 and Degrees in non-technical fields such as B. Com., B.A., or finance-related disciplines are also acceptable. Additionally, students who are in their final year of graduation are eligible for the course."
           },
           {
-            "question": "What is the Cost of Cloud computing courses in Haryana?",
+            "question": "What is the Cost of Cloud computing courses in Chhattisgarh?",
             "answer": "To find out the cost and duration of our cloud computing courses in Chhattisgarh, please visit our official website and submit an inquiry. Our team will provide you with detailed information on the course fees and other relevant details."
           },
           {
@@ -16260,7 +16252,7 @@
             "answer": "To enroll in this course, students need to have completed their 10+2 education in any stream. This program equips students with the essential technical knowledge and skills to safeguard computer networks against malicious attacks."
           },
           {
-            "question": "What is the salary of Cloud Engineer in Haryana, India?",
+            "question": "What is the salary of Cloud Engineer in Chhattisgarh, India?",
             "answer": "The average salary for a Cloud Engineer in Chhattisgarh, India typically falls between ₹3.0 Lakhs and ₹13.0 Lakhs per year, with the average annual pay being around ₹7.3 Lakhs."
           }
         ],

@@ -39,7 +39,7 @@ const InferResponseSchema = z.object({
   reason: z.string().max(240),
 });
 
-export function buildInferPrompt(payload: InferPayload): string {
+function buildInferPrompt(payload: InferPayload): string {
   return [
     'Classify this Jetking website visitor into exactly one persona.',
     'Personas: student (after 12th / degree seeker), professional (working / upskill), parent (deciding for child), franchise (investor), unknown (not enough evidence).',

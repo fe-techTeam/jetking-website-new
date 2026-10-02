@@ -15,12 +15,13 @@ import {
 } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
 import { track } from '@/lib/analytics';
+import { HeroOrbit, type OrbitItem } from '@/components/HeroOrbit';
 
 const AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
-  '/student/avatar-4.png',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
+  '/student/avatar-4.webp',
 ] as const;
 
 const ORBIT = [
@@ -48,7 +49,7 @@ const ORBIT = [
     icon: Briefcase,
     className: 'bottom-[8%] right-0 sm:right-[-2%] lg:right-[-8%]',
   },
-] as const;
+] as const satisfies readonly OrbitItem[];
 
 export function StudentExploreHero({
   cities,
@@ -61,11 +62,6 @@ export function StudentExploreHero({
 
   return (
     <section className="shell relative pt-8 pb-6 xs:pt-10 sm:pt-12 lg:pt-14 lg:pb-8">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-      />
-
       <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
         <div>
           <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
@@ -122,7 +118,7 @@ export function StudentExploreHero({
                 ))}
               </span>
               <span className="text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                Learners across {cities}+ cities
+                Centres in {cities} cities
               </span>
             </div>
             <span className="hidden h-4 w-px bg-[var(--stu-hairline)] sm:block" aria-hidden="true" />
@@ -139,7 +135,7 @@ export function StudentExploreHero({
           {phoneHref ? (
             <a
               href={phoneHref}
-              className="mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               Prefer to talk? Call a counsellor
@@ -147,51 +143,12 @@ export function StudentExploreHero({
           ) : null}
         </div>
 
-        <div className="stu-hero-glow relative mx-auto w-full max-w-[540px] lg:max-w-none">
-          <div className="relative mx-auto aspect-square w-[min(100%,440px)] lg:w-full lg:max-w-[500px]">
-            <div
-              aria-hidden="true"
-              className="stu-orbit-ring absolute inset-[10%] rounded-full"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-[16%] rounded-full border border-dashed border-[rgb(232_36_43/0.28)]"
-            />
-
-            <div className="absolute inset-[20%] overflow-hidden rounded-full bg-[linear-gradient(160deg,var(--card),var(--surface-sunken),var(--card))] shadow-[0_28px_70px_rgb(0_0_0/0.55)]">
-              <Image
-                src="/student/hero.png"
-                alt={`${siteConfig.name} student ready for a tech career`}
-                fill
-                priority
-                sizes="(min-width: 1024px) 380px, 75vw"
-                className="object-cover object-[center_18%]"
-              />
-            </div>
-
-            {ORBIT.map((item) => (
-              <div
-                key={item.label}
-                className={`stu-float absolute z-10 flex max-w-[158px] items-start gap-2.5 rounded-2xl p-3 sm:max-w-[172px] sm:p-3.5 ${item.className}`}
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-                >
-                  <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                </span>
-                <span className="min-w-0 pt-0.5">
-                  <span className="block text-[13px] font-extrabold text-[var(--stu-ink)]">
-                    {item.label}
-                  </span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-[var(--stu-ink-secondary)]">
-                    {item.detail}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <HeroOrbit
+          src="/student/hero.webp"
+          alt={`${siteConfig.name} student ready for a tech career`}
+          items={ORBIT}
+          imageClassName="object-cover object-[center_18%]"
+        />
       </div>
     </section>
   );

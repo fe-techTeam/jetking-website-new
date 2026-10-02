@@ -15,11 +15,11 @@ import { fileURLToPath } from 'node:url';
 import { buildCorpus } from '@/guide/corpus';
 import type { ChunkType } from '@/guide/types';
 import { content } from '@/lib/content';
+import { legacyStats, SINCE_FOUNDED } from '@/lib/brand-facts';
 import {
   ABOUT_HERO,
   ACHIEVEMENTS,
   DIRECTORS,
-  legacyStats,
   MANAGEMENT_TEAM,
   PURPOSE,
   TIMELINE,
@@ -102,17 +102,22 @@ const aboutItems = [
       `${ABOUT_HERO.lede} ` +
       `${PURPOSE.map((p) => `${p.title}: ${p.body}`).join(' ')} ` +
       `Values: ${VALUES.join(', ')}. ` +
-      `${legacyStats().map((s) => `${s.value} ${s.label}`).join(', ')}.`,
+      `${legacyStats({ courses: courses.length, centres: centres.length, cities: cities.length }).map((s) => `${s.value} ${s.label}`).join(', ')}.`,
     source: 'website-content-source' as const,
   },
-  ...[...DIRECTORS, ...MANAGEMENT_TEAM].map((leader) => ({
-    id: `about-leader-${slugify(leader.name)}`,
-    type: 'about',
-    title: leader.name,
-    path: '/about-us',
-    text: leader.bio ? `${leader.role}\n${leader.bio.join(' ')}` : leader.role,
-    source: 'website-content-source' as const,
-  })),
+  ...[...DIRECTORS, ...MANAGEMENT_TEAM]
+    .filter((leader) => leader.name)
+    .map((leader) => {
+      const role = leader.role ?? 'Management team, Jetking';
+      return {
+        id: `about-leader-${slugify(leader.name)}`,
+        type: 'about',
+        title: leader.name,
+        path: '/about-us',
+        text: leader.bio ? `${role}\n${leader.bio.join(' ')}` : role,
+        source: 'website-content-source' as const,
+      };
+    }),
   {
     // A dedicated, single-fact item: earlyTimeline below folds this founding
     // fact in among eight other 1947-2008 milestones, which dilutes the
@@ -263,7 +268,7 @@ const professionalItems = [
     type: 'professional',
     title: 'Jetking outcomes for working professionals',
     path: '/professional',
-    text: '60–120% Avg. Salary Increase, 75,000+ Professionals Upskilled, 1000+ Hiring Partners, 90% Placement Rate.',
+    text: `Hands-on portfolio-ready lab projects, industry credentials included, placement assistance and interview prep. Training IT talent ${SINCE_FOUNDED.toLowerCase()}.`,
     source: 'website-content-source' as const,
   },
   {
@@ -277,7 +282,7 @@ const professionalItems = [
       'Flexible Batches: Weekend and evening options designed around a full-time work schedule. ' +
       'Career Counsellors: Dedicated guidance on courses, timing, and your next career move. ' +
       'Interview Preparation: Mock interviews and resume support before you step into hiring loops. ' +
-      'Hiring Network: Access to 1000+ hiring partners across roles, sectors, and cities.',
+      'Hiring Network: Access to Jetking’s hiring partners across roles, sectors, and cities.',
     source: 'website-content-source' as const,
   },
   {
@@ -307,7 +312,7 @@ const parentItems = [
     type: 'parent',
     title: 'Why parents trust Jetking',
     path: '/parent',
-    text: '75,000+ Students Trained Successfully, 90% Placement Assistance, Industry Aligned Curriculum, Trusted Brand Legacy Since 1947.',
+    text: `${centres.length} centres to visit in person across ${cities.length} cities, placement assistance, industry aligned curriculum, trusted brand legacy ${SINCE_FOUNDED.toLowerCase()}.`,
     source: 'website-content-source' as const,
   },
   {
@@ -355,7 +360,7 @@ const exploreItems = [
       'Placement Support: We take every necessary step to help you get a suitable job on completing the course. ' +
       'Scenario Based Learning: Case studies and animated scenarios give you real-life problem-solving practice. ' +
       'SmartLabPlus Teaching Methodology: Innovative methods of teaching that make learning fun and easy to remember. ' +
-      'Countrywide Network: A well-established, nationally recognised institute with 100+ centres. ' +
+      'Countrywide Network: A well-established, nationally recognised institute with centres across India. ' +
       'Personality Development: Builds confidence and supports better job and salary prospects. ' +
       'State-of-the-Art Infrastructure: Every centre is equipped for a successful learning environment. ' +
       'De-stress with Yoga: A relaxed mind finds it easier to learn. ' +

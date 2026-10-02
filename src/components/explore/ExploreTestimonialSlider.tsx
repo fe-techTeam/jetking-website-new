@@ -12,10 +12,10 @@ import {
 } from '@/components/placements/data';
 
 const AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
-  '/student/testimonial.png',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
+  '/student/testimonial.webp',
 ] as const;
 
 type Slide =
@@ -60,11 +60,11 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.85)] via-[rgb(7_7_12/0.15)] to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-scrim/85 via-scrim/15 to-transparent"
         />
         <span
           aria-hidden="true"
-          className="absolute top-1/2 left-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink-900 shadow-[0_8px_24px_rgb(0_0_0/0.4)] transition-transform duration-200 group-hover/play:scale-110"
+          className="absolute top-1/2 left-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink-900 shadow-lg shadow-black/40 transition-transform duration-200 group-hover/play:scale-110"
         >
           <Play className="h-6 w-6 fill-current" strokeWidth={0} />
         </span>

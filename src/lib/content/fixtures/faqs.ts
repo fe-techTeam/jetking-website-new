@@ -2,11 +2,11 @@ import type { Faq } from '../types';
 
 /**
  * PLACEHOLDER CONTENT — the FAQ corpus is the single highest-value grounding source
- * for the AI Guide, because it is short, factual and written in answer form.
+ * for Jetking AI, because it is short, factual and written in answer form.
  *
  * Note what is deliberately absent: no answer states a fee figure, a placement
  * percentage, or a salary. Those route to the deterministic fee component or to a
- * counsellor handoff. See src/guide/guardrails.ts.
+ * counsellor handoff.
  */
 export const faqs: Faq[] = [
   {

@@ -342,7 +342,7 @@ function formatCentre(text: string): string {
   return lines.join('\n').trim();
 }
 
-export function formatPassage(hit: PassageHit): string {
+function formatPassage(hit: PassageHit): string {
   const t = hit.type;
   if (t === 'fees') return formatFees(hit.text);
   if (t === 'curriculum') return formatCurriculum(hit.text);

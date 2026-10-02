@@ -2,7 +2,7 @@
 
 export const ABOUT_HERO = {
   eyebrow: 'Since 1947',
-  titleLead: 'An 80-year-old legacy moulding',
+  titleLead: 'Decades of legacy moulding',
   titleAccent: 'the innovators of the future',
   lede: 'India’s foremost computer networking institute, committed to creating a better life for students, franchisees, recruiters, and investors.',
 } as const;
@@ -44,8 +44,10 @@ export const VALUES = [
  * Independent Director are not yet supplied.
  */
 export type Leader = {
+  /** Empty until supplied — `AboutLanding` skips nameless cards. */
   name: string;
-  role: string;
+  /** Omitted until supplied: the card shows the name alone rather than a placeholder. */
+  role?: string;
   photoUrl?: string;
   bio?: string[];
 };
@@ -84,25 +86,22 @@ export const DIRECTORS: Leader[] = [
       'He completed his studies from Bond University, Australia and has 8 years of experience in the field of Marketing & Brand Management. Siddarth is a true “Apple” devotee and a tech fanatic.',
     ],
   },
-  /** Name not yet supplied — listed last, as the board's independent seat. */
+  /** Name not yet supplied — listed last, as the board's independent seat. Hidden until named. */
   {
-    name: 'Name to be confirmed',
+    name: '',
     role: 'Independent Director',
   },
 ];
 
-/**
- * Names only — job titles were not supplied, so each carries a placeholder
- * designation pending real content rather than a guessed one.
- */
+/** Names only — add each `role` once job titles are supplied. */
 export const MANAGEMENT_TEAM: Leader[] = [
-  { name: 'Meghna', role: 'Designation to be confirmed' },
-  { name: 'Keyur', role: 'Designation to be confirmed' },
-  { name: 'Rajashree', role: 'Designation to be confirmed' },
-  { name: 'Akhilesh', role: 'Designation to be confirmed' },
-  { name: 'Shabnam', role: 'Designation to be confirmed' },
-  { name: 'Anand', role: 'Designation to be confirmed' },
-  { name: 'Dhruti', role: 'Designation to be confirmed' },
+  { name: 'Meghna' },
+  { name: 'Keyur' },
+  { name: 'Rajashree' },
+  { name: 'Akhilesh' },
+  { name: 'Shabnam' },
+  { name: 'Anand' },
+  { name: 'Dhruti' },
 ];
 
 export type Milestone = {
@@ -299,12 +298,3 @@ export const PARTNERSHIPS: Partnership[] = [
     logo: '/university-partners/yenepoya.png',
   },
 ];
-
-export function legacyStats() {
-  return [
-    { value: '80', label: 'Years of Legacy' },
-    { value: '15,00,000', label: 'Students Placed' },
-    { value: '50+', label: 'Training centres' },
-    { value: '5000+', label: 'Recruiting partners' },
-  ] as const;
-}

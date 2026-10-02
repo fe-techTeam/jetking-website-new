@@ -78,7 +78,7 @@ export function inferPersonaFromQuestion(
   return detectPersonaFromUtterance(combined);
 }
 
-export function detectPersonaFromUtterance(text: string): PersonaUtteranceHit | null {
+function detectPersonaFromUtterance(text: string): PersonaUtteranceHit | null {
   const trimmed = text.trim();
   if (!trimmed) return null;
   for (const cue of UTTERANCE_CUES) {

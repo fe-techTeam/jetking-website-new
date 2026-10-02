@@ -21,7 +21,7 @@ export function FinalCta({ centres }: { centres: EnquiryCentre[] }) {
           <div>
             <h2
               id="home-final-cta-heading"
-              className="dc-heading-glow font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[34px]"
+              className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[34px]"
             >
               Ready to start? Talk to a counsellor today.
             </h2>

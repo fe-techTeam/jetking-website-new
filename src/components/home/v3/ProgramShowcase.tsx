@@ -5,17 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
-import type { Course, CourseLevel } from '@/lib/content/types';
-import { COURSE_CATEGORIES, categoriesOf, type CourseCategoryId } from '@/lib/course-categories';
-import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
+import type { Course } from '@/lib/content/types';
+import {
+  COURSE_CATEGORIES,
+  COURSE_LEVEL_LABEL as LEVEL_LABEL,
+  categoriesOf,
+  type CourseCategoryId,
+} from '@/lib/course-categories';
 import { CardTrack } from './CardTrack';
-
-const LEVEL_LABEL: Record<CourseLevel, string> = {
-  degree: 'Degree',
-  diploma: 'Diploma',
-  certification: 'Certification',
-  short: 'Short course',
-};
 
 type TabId = 'featured' | CourseCategoryId;
 
@@ -32,8 +29,6 @@ function inTab(course: Course, tab: (typeof TABS)[number]): boolean {
 /** Featured programmes first, then the catalogue by technology — tabs only for technologies that have courses. */
 export function ProgramShowcase({ courses }: { courses: Course[] }) {
   const [tab, setTab] = useState<TabId>('featured');
-  const { ref: tabsRef, edge: tabsEdge, scrollByItem: scrollTabsBy } = useScrollTrack<HTMLDivElement>();
-
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
   if (tabs.length === 0) return null;
 
@@ -51,7 +46,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>
             <h2
               id="home-programs-heading"
-              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               Explore our courses
             </h2>
@@ -61,25 +56,15 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
           </div>
           <Link
             href={'/courses' as Route}
-            className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
             View all courses
             <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="mt-6 flex items-center justify-end sm:hidden">
-          <ScrollNavButtons
-            edge={tabsEdge}
-            onPrev={() => scrollTabsBy(-1)}
-            onNext={() => scrollTabsBy(1)}
-            label="technology filters"
-          />
-        </div>
-
         <div
-          ref={tabsRef}
-          className="mt-2 -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:mt-6 sm:flex-wrap sm:overflow-visible sm:px-0"
+          className="mt-6 -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none]"
           role="group"
           aria-label="Filter courses by technology"
         >

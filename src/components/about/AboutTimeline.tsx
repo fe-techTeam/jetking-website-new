@@ -93,7 +93,7 @@ export function AboutTimeline() {
                 href={item.link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-6 items-center text-[13px] font-bold text-[var(--dc-accent-soft)] hover:underline"
+                className="tap mt-3 inline-flex min-h-6 items-center text-[13px] font-bold text-[var(--dc-accent-soft)] hover:underline"
               >
                 {item.link.label}
               </a>

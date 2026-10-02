@@ -5,10 +5,10 @@ import { Carousel } from '@/components/Carousel';
 import type { CentreTestimonial } from '@/lib/content/types';
 
 const AVATARS = [
-  '/student/testimonial.png',
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
+  '/student/testimonial.webp',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
 ] as const;
 
 type Slide = CentreTestimonial & { id: string };

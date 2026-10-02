@@ -77,7 +77,7 @@ function richInline(text: string): ReactNode[] {
           href={link[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-jk-500 font-medium hover:underline"
+          className="text-brand-text font-medium hover:underline"
         >
           {link[1]}
         </a>
@@ -274,7 +274,7 @@ function renderContentBlock(b: ContentBlock, i: number) {
       return (
         <ol
           key={i}
-          className="text-ink marker:text-jk-500 flex list-decimal flex-col gap-1.5 pl-5 text-[14px] leading-relaxed marker:font-semibold"
+          className="text-ink marker:text-brand-text flex list-decimal flex-col gap-1.5 pl-5 text-[14px] leading-relaxed marker:font-semibold"
         >
           {b.items.map((it, j) => (
             <li key={j} className="pl-1">
@@ -287,7 +287,7 @@ function renderContentBlock(b: ContentBlock, i: number) {
       return (
         <ul
           key={i}
-          className="text-ink marker:text-jk-500 flex list-disc flex-col gap-1.5 pl-5 text-[14px] leading-relaxed"
+          className="text-ink marker:text-brand-text flex list-disc flex-col gap-1.5 pl-5 text-[14px] leading-relaxed"
         >
           {b.items.map((it, j) => (
             <li key={j} className="pl-1">
@@ -390,7 +390,7 @@ export function AnswerBody({
           return (
             <ol
               key={i}
-              className="text-ink marker:text-jk-500 flex list-decimal flex-col gap-1.5 pl-5 text-[14px] leading-relaxed marker:font-semibold"
+              className="text-ink marker:text-brand-text flex list-decimal flex-col gap-1.5 pl-5 text-[14px] leading-relaxed marker:font-semibold"
             >
               {b.items.map((it, j) => (
                 <li key={j} className="pl-1">
@@ -404,7 +404,7 @@ export function AnswerBody({
           return (
             <ul
               key={i}
-              className="text-ink marker:text-jk-500 flex list-disc flex-col gap-1.5 pl-5 text-[14px] leading-relaxed"
+              className="text-ink marker:text-brand-text flex list-disc flex-col gap-1.5 pl-5 text-[14px] leading-relaxed"
             >
               {b.items.map((it, j) => (
                 <li key={j} className="pl-1">

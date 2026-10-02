@@ -129,7 +129,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
                 <img src={item.src} alt="" loading="lazy" className="h-full w-full object-contain" />
                 <span
                   aria-hidden="true"
-                  className="absolute right-2.5 bottom-2.5 grid h-9 w-9 place-items-center rounded-full bg-[rgb(16_24_40/0.78)] text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 max-md:opacity-100"
+                  className="absolute right-2.5 bottom-2.5 grid h-9 w-9 place-items-center rounded-full bg-ink-900/78 text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 max-md:opacity-100"
                 >
                   <ZoomIn className="h-[18px] w-[18px]" strokeWidth={2} />
                 </span>
@@ -193,7 +193,7 @@ function OfferLetterGallery({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative flex max-h-full w-full max-w-[56rem] flex-col gap-3 rounded-[20px] border border-white/15 bg-[rgb(16_18_28/0.96)] p-3 shadow-2xl sm:gap-4 sm:p-5"
+        className="relative flex max-h-full w-full max-w-[56rem] flex-col gap-3 rounded-[20px] border border-white/15 bg-ink-950/96 p-3 shadow-2xl sm:gap-4 sm:p-5"
       >
         <div className="flex items-start justify-between gap-4 px-1">
           <div className="min-w-0">
@@ -230,7 +230,7 @@ function OfferLetterGallery({
             onClick={() => onIndexChange(index - 1)}
             disabled={index === 0}
             aria-label="Previous letter"
-            className="absolute top-1/2 left-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-[rgb(16_24_40/0.82)] text-white shadow-lg transition-colors hover:bg-[rgb(16_24_40)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
+            className="absolute top-1/2 left-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-ink-900/82 text-white shadow-lg transition-colors hover:bg-ink-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
           </button>
@@ -239,7 +239,7 @@ function OfferLetterGallery({
             onClick={() => onIndexChange(index + 1)}
             disabled={index === last}
             aria-label="Next letter"
-            className="absolute top-1/2 right-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-[rgb(16_24_40/0.82)] text-white shadow-lg transition-colors hover:bg-[rgb(16_24_40)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
+            className="absolute top-1/2 right-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-ink-900/82 text-white shadow-lg transition-colors hover:bg-ink-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronRight className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
           </button>

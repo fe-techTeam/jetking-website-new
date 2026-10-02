@@ -6,7 +6,7 @@ import type { Route } from 'next';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { ArrowRight, ChevronDown, ChevronRight } from 'lucide-react';
 import type { CourseLevel } from '@/lib/content/types';
-import { COURSE_CATEGORIES, type CourseCategoryId } from '@/lib/course-categories';
+import { COURSE_CATEGORIES, COURSE_LEVEL_LABEL as LEVEL_LABEL, type CourseCategoryId } from '@/lib/course-categories';
 import { cx } from './ui';
 
 export interface MenuCourse {
@@ -17,13 +17,6 @@ export interface MenuCourse {
   featured: boolean;
   categories: CourseCategoryId[];
 }
-
-const LEVEL_LABEL: Record<CourseLevel, string> = {
-  degree: 'Degree',
-  diploma: 'Diploma',
-  certification: 'Certification',
-  short: 'Short course',
-};
 
 /**
  * "Courses" header item with a mega menu (desktop header only): categories on the left,
@@ -73,7 +66,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
 
       {/* Positioned against the (sticky) header, so it is centred on the page, not on the trigger. */}
       <div className="invisible absolute top-full left-1/2 z-[60] w-[min(960px,calc(100vw-48px))] -translate-x-1/2 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-        <div className="grid overflow-hidden rounded-2xl border border-border bg-background shadow-[0_24px_60px_rgb(16_24_40/0.18)] lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div className="grid overflow-hidden rounded-2xl border border-border bg-background shadow-xl lg:grid-cols-[260px_minmax(0,1fr)]">
           <ul className="border-r border-border bg-surface p-3" aria-label="Course categories">
             {categories.map((cat) => {
               const highlighted = cat.id === active?.id;
@@ -88,7 +81,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
                     className={cx(
                       'flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors',
                       highlighted
-                        ? 'bg-background text-[var(--accent-ink)] shadow-[0_1px_2px_rgb(16_24_40/0.08)]'
+                        ? 'bg-background text-[var(--accent-ink)] shadow-xs'
                         : 'text-foreground-secondary hover:text-foreground',
                     )}
                   >
@@ -153,7 +146,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
                   href={active.href as Route}
                   className="mt-3 inline-flex items-center gap-1.5 px-3 text-sm font-bold text-[var(--accent-ink)]"
                 >
-                  View all {active.label.toLowerCase()} courses
+                  View all {active.label.toLowerCase().replace(/ courses$/, '')} courses
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                 </Link>
               </>

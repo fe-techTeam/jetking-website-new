@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
+import { SINCE_FOUNDED } from '@/lib/brand-facts';
+import { AskAiLink } from '@/components/AskAiLink';
 import { ActionBar } from './ActionBar';
 import { JourneyHexes } from './JourneyHexes';
 import { HeroEnquireCta } from './HeroEnquireCta';
@@ -15,10 +17,14 @@ import type { EnquiryCentre } from '@/components/EnquiryModal';
  */
 export function HomeV2({
   enquiryCentres,
+  counts,
 }: {
   /** Centres offered in the hero's quick-enquiry modal (state → centre). */
   enquiryCentres: EnquiryCentre[];
+  /** Live network size for the proof line — computed, never a hand-typed claim. */
+  counts: { centres: number; cities: number };
 }) {
+  const proof = [SINCE_FOUNDED, `${counts.centres} centres`, `${counts.cities} cities`];
   return (
     <section
       className={[
@@ -56,13 +62,13 @@ export function HomeV2({
           ].join(' ')}
         >
           <div className="flex h-full flex-col justify-center">
-            <p className="v2-eyebrow-glow text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
+            <p className="text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
               India&rsquo;s No.1 Technology Training Institute
             </p>
 
             <h1
               className={[
-                'v2-heading-glow mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
+                'mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
                 'text-[36px] xs:mt-5 xs:text-[40px]',
                 'sm:text-[44px] md:text-[48px]',
                 'lg:mt-6 lg:text-[48px]',
@@ -76,13 +82,24 @@ export function HomeV2({
               The Power of Three
               <br />
               with{' '}
-              <span className="v2-accent-glow text-[var(--v2-accent)]">{siteConfig.name}</span>
+              <span className="text-[var(--v2-accent)]">{siteConfig.name}</span>
             </h1>
 
             <p className="mt-4 max-w-[42ch] text-[15px] leading-[1.6] text-[var(--v2-ink-secondary)] xs:mt-4 xs:text-[15.5px] sm:text-[16px] lg:text-[17px] 3xl:text-[18px]">
               Industry-relevant training. Real-world projects.
               <br className="hidden sm:inline" /> Placement support that delivers.
             </p>
+
+            <ul className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] font-bold text-[var(--v2-ink)] sm:text-[14px]">
+              {proof.map((item, i) => (
+                <li key={item} className="flex items-center gap-2.5">
+                  {i > 0 ? (
+                    <span aria-hidden="true" className="h-1 w-1 rounded-full bg-[var(--v2-accent)]" />
+                  ) : null}
+                  {item}
+                </li>
+              ))}
+            </ul>
 
             <div className="mt-6 flex flex-row flex-wrap items-center gap-2.5 xs:mt-7 xs:gap-3 sm:mt-8 sm:gap-x-4 sm:gap-y-5 2xl:gap-x-6 lg:mt-8 2xl:mt-[34px]">
               <Link
@@ -98,11 +115,14 @@ export function HomeV2({
               </Link>
               <HeroEnquireCta centres={enquiryCentres} />
             </div>
+
+            <AskAiLink className="mt-4 text-[var(--v2-eyebrow)] sm:mt-5" />
+
           </div>
 
           {/* Chooser occupies the former banner slot */}
           <div className="v2-hero-stage relative flex h-full flex-col items-center justify-center text-center">
-            <h2 className="v2-heading-glow font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--v2-ink)] xs:text-[23px] sm:text-[26px] md:text-[28px] 3xl:text-[30px]">
+            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--v2-ink)] xs:text-[23px] sm:text-[26px] md:text-[28px] 3xl:text-[30px]">
               What brings you here today?
             </h2>
             <p className="mt-2.5 text-[14px] text-[var(--v2-ink-muted)] xs:mt-3 xs:text-[15px] sm:text-[15.5px]">

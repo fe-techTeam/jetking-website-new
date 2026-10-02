@@ -3,8 +3,6 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { ImageRef, Post } from '@/lib/content/types';
-import { siteConfig } from '@/lib/site';
-
 export const BLOG_PAGE_SIZE = 12;
 
 export function formatPostDate(iso: string) {
@@ -62,7 +60,9 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
         href={`/blog/${post.slug}` as Route}
         className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[18px] sm:rounded-[22px]"
       >
-        <div className="blog-card-media relative aspect-[840/300] overflow-hidden">
+        <div
+          className={`blog-card-media relative aspect-[840/300] overflow-hidden ${cover ? '' : 'max-sm:hidden'}`}
+        >
           {cover ? (
             <Image
               src={cover.url}
@@ -76,37 +76,18 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
               className="flex h-full w-full items-center justify-center bg-[linear-gradient(145deg,var(--blog-card),var(--blog-surface),var(--blog-card))]"
               aria-hidden="true"
             >
-              <span className="flex items-center gap-2.5 opacity-90">
-                <span
-                  className="relative grid h-9 w-[30px] shrink-0 place-items-center overflow-hidden border-[2.5px] sm:h-10 sm:w-[34px]"
-                  style={{
-                    borderRadius: '7px 7px 46% 46% / 7px 7px 56% 56%',
-                    borderColor: 'var(--blog-accent-soft)',
-                  }}
-                >
-                  <span
-                    className="mt-[-2px] h-[58%] w-[38%]"
-                    style={{
-                      background:
-                        'repeating-linear-gradient(-48deg,var(--blog-accent-soft) 0 2px,transparent 2px 5.5px)',
-                    }}
-                  />
-                </span>
-                <span className="flex flex-col">
-                  <span className="font-display text-[20px] leading-none font-extrabold tracking-[-0.02em] text-jk-400 sm:text-[22px]">
-                    {siteConfig.name}
-                    <sup className="ml-0.5 text-[12px] font-bold sm:text-[12px]">®</sup>
-                  </span>
-                  <span className="mt-0.5 text-[12px] font-semibold tracking-[0.06em] text-jk-300 sm:text-[12px]">
-                    Better Life
-                  </span>
-                </span>
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
+              <img
+                src="/brand/jetking-wordmark.png"
+                alt=""
+                draggable={false}
+                className="block h-[34px] w-auto select-none object-contain transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03] sm:h-[40px]"
+              />
             </div>
           )}
         </div>
 
-        <div className="flex flex-1 flex-col p-5 xs:p-6 sm:p-7">
+        <div className="flex flex-1 flex-col p-4 xs:p-5 sm:p-7">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
             <span className="inline-flex rounded-full border border-[var(--blog-accent-soft)]/35 bg-[var(--blog-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--blog-accent-soft)] uppercase">
               {post.category}
@@ -119,14 +100,14 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
             </time>
           </div>
 
-          <h3 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] transition-colors group-hover/post:text-[var(--blog-accent-soft)] xs:text-[18px] sm:text-[19px]">
+          <h3 className="mt-3 font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] transition-colors group-hover/post:text-[var(--blog-accent-soft)] xs:text-[18px] sm:text-[19px]">
             {post.title}
           </h3>
-          <p className="mt-2 line-clamp-3 flex-1 text-[13.5px] leading-relaxed text-[var(--blog-ink-muted)] xs:text-[14px]">
+          <p className="mt-2 line-clamp-2 flex-1 sm:line-clamp-3 text-[13.5px] leading-relaxed text-[var(--blog-ink-muted)] xs:text-[14px]">
             {post.excerpt}
           </p>
 
-          <span className="mt-5 inline-flex items-center gap-2 text-[13.5px] font-bold text-[var(--blog-accent-soft)]">
+          <span className="mt-4 inline-flex items-center gap-2 text-[13.5px] sm:mt-5 font-bold text-[var(--blog-accent-soft)]">
             Read article
             <ArrowRight
               className="h-4 w-4 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/post:translate-x-0.5"

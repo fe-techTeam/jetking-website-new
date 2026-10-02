@@ -2,13 +2,16 @@ import type { Metadata } from 'next';
 import { AboutLanding } from '@/components/about/AboutLanding';
 import { buildMetadata, breadcrumbSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
+import { content } from '@/lib/content';
+import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import { siteConfig } from '@/lib/site';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const centres = await content.listCentres();
   return buildMetadata(
     {
-      title: `About ${siteConfig.name} — 80 Years of Legacy`,
-      description: `Jetking is India's foremost computer networking and IT training institute with 80 years of legacy, 50+ centres and placement support for students across India.`,
+      title: `About ${siteConfig.name} — Training IT Talent ${SINCE_FOUNDED}`,
+      description: `Jetking is India's foremost computer networking and IT training institute — training IT talent ${SINCE_FOUNDED.toLowerCase()}, with ${centres.length} centres and placement support for students across India.`,
     },
     '/about-us',
   );
@@ -20,10 +23,15 @@ const trail: Crumb[] = [
 ];
 
 export default async function AboutPage() {
+  const [courses, centres, cities] = await Promise.all([
+    content.listCourses(),
+    content.listCentres(),
+    content.listCities(),
+  ]);
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
-      <AboutLanding />
+      <AboutLanding counts={{ courses: courses.length, centres: centres.length, cities: cities.length }} />
     </>
   );
 }

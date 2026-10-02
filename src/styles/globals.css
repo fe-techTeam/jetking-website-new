@@ -79,6 +79,18 @@
   --color-signal-600: #b54708;
   --color-signal-50: #fffaeb;
 
+  /* ── Media & brand utilities ───────────────────────────────────────────── */
+  /* Photo overlay base: use with opacity (`from-scrim/55`) so text on images stays legible in both themes. */
+  --color-scrim: #07070c;
+  /* Tile behind logos drawn in white ink. */
+  --color-tile-dark: #14141f;
+  --color-whatsapp: #25d366;
+  /* Solid track hues for circles behind white icons; identical in both themes. */
+  --color-track-cyber: #5f3aa8;
+  --color-track-cloud: #2454a6;
+  --color-track-network: #17683b;
+  --color-track-ai: #9a4312;
+
   /* ── Typography ────────────────────────────────────────────────────────── */
   --font-display: var(--font-display-src), 'Segoe UI', system-ui, sans-serif;
   --font-body: var(--font-body-src), 'Segoe UI', system-ui, sans-serif;
@@ -125,7 +137,18 @@
     0 4px 12px rgb(16 24 40 / 0.07), 0 2px 4px rgb(16 24 40 / 0.04);
   --shadow-lg:
     0 12px 32px rgb(16 24 40 / 0.1), 0 4px 8px rgb(16 24 40 / 0.04);
-  --shadow-accent: 0 6px 20px rgb(199 20 28 / 0.22);
+  --shadow-accent: 0 6px 16px rgb(16 24 40 / 0.14);
+  --shadow-xl: 0 24px 60px rgb(16 24 40 / 0.18);
+  /* Bottom-docked bars cast upward. */
+  --shadow-bar: 0 -8px 24px rgb(16 24 40 / 0.12);
+  /* Right-side drawers cast leftward; add `shadow-black/55` on dark canvases. */
+  --shadow-drawer: -18px 0 40px rgb(16 24 40 / 0.12);
+  /* Large hero imagery floating on a dark canvas. */
+  --shadow-media: 0 28px 70px rgb(0 0 0 / 0.5);
+  /* Hairline ring around white logo tiles. */
+  --shadow-logo: 0 0 0 1px rgb(0 0 0 / 0.06);
+  /* Glow under solid brand-red buttons and badges. */
+  --shadow-brand: 0 6px 18px rgb(199 20 28 / 0.27);
 
   /* ── Motion ────────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
@@ -241,7 +264,7 @@
   --glass-blur: 14px;
 
   /* Crest stroke — the shield-mark logo's outline/fill. Recurs verbatim across
-     every header that draws the crest inline (SiteHeader, FranchiseHeader). */
+     every header that draws the crest inline (e.g. SiteHeader). */
   --color-brand-crest: #d81f26;
 
   /* ── Scrollbars (slim + editorial) ────────────────────────────────────── */
@@ -254,11 +277,11 @@
   /* ── Global Theme Colors (for all pages) ────────────────────────────────── */
   /* Canvas & Surfaces */
   --theme-canvas: #ffffff;
-  /* Warm surfaces: the sunken bands and cards are tinted from the brand red (jk-50) rather than
-     the old cool blue-greys; light ink on them stays above 4.5:1. */
-  --theme-surface: #fff5f4;
-  --theme-card: #fff8f7;
-  --theme-card-warm: #faf5f0;
+  /* Neutral surfaces: red is the one accent, so bands and cards stay white / off-white and
+     separate with hairlines rather than a brand-tinted wash. */
+  --theme-surface: #f8f9fb;
+  --theme-card: #ffffff;
+  --theme-card-warm: #f8f9fb;
   --theme-elevated: #ffffff;
 
   /* Text Colors */
@@ -269,8 +292,8 @@
   --theme-ink-muted: #5f6b7d;
 
   /* Accent & Highlights */
-  --theme-accent: #dc1a22;
-  --theme-accent-hover: #c7141c;
+  --theme-accent: var(--color-jk-600);
+  --theme-accent-hover: var(--color-jk-700);
   --theme-accent-soft: #f97066;
   --theme-accent-soft-light: #fda29b;
   --theme-accent-tint: #fef3f2;
@@ -283,8 +306,8 @@
 
   /* Shadows & Glows */
   --theme-shadow: 0 4px 12px rgb(60 50 90 / 0.08);
-  --theme-shadow-hover: 0 8px 24px rgb(60 50 90 / 0.12);
-  --theme-glow: 0 0 16px rgb(234 28 36 / 0.2);
+  --theme-shadow-hover: 0 8px 24px rgb(16 24 40 / 0.1);
+  --theme-glow: 0 4px 12px rgb(16 24 40 / 0.12);
 
   /* Persona & Track Colors (Light Mode) */
   --theme-student-ink: #5f3aa8;
@@ -293,7 +316,7 @@
   --theme-parent-tint: #e8f7ed;
   --theme-professional-ink: #2454a6;
   --theme-professional-tint: #dde7fb;
-  --theme-franchise-ink: #b34c11;
+  --theme-franchise-ink: #9a4312;
   --theme-franchise-tint: #fde7d4;
   --theme-cyber-ink: #5f3aa8;
   --theme-cyber-tint: #eee8ff;
@@ -301,7 +324,7 @@
   --theme-cloud-tint: #dde7fb;
   --theme-network-ink: #17683b;
   --theme-network-tint: #e8f7ed;
-  --theme-ai-ink: #b34c11;
+  --theme-ai-ink: #9a4312;
   --theme-ai-tint: #fde7d4;
 }
 
@@ -373,7 +396,7 @@
   --theme-canvas: #07070c;
   --theme-surface: #0c0c12;
   --theme-card: #14141c;
-  --theme-card-warm: #1a1210;
+  --theme-card-warm: #16161e;
   --theme-elevated: #101828;
 
   /* Text Colors */
@@ -382,25 +405,24 @@
   --theme-ink-muted: #9a9aa8;
 
   /* Accent & Highlights */
-  /* #e8242b measured 4.45:1 for white text — just under the 4.5 AA floor for
-     normal-size text (e.g. solid CTA button labels). Darkened slightly to
-     clear it; the shift is imperceptible next to the original brand red. */
-  --theme-accent: #e01e25;
-  --theme-accent-hover: #c41e24;
+  /* Solid fill under white text (CTA labels): brighter reds such as #e8242b
+     fall just under the 4.5:1 AA floor. Text-coloured red uses the -soft tokens. */
+  --theme-accent: var(--color-jk-600);
+  --theme-accent-hover: var(--color-jk-700);
   --theme-accent-soft: #ff6b70;
   --theme-accent-soft-light: #ff8a90;
   --theme-accent-tint: #3a181c;
   --theme-eyebrow: #ff8a90;
 
   /* Lines & Borders */
-  --theme-hairline: rgb(255 100 105 / 0.4);
-  --theme-hairline-medium: rgb(255 100 105 / 0.55);
-  --theme-hairline-strong: rgb(255 100 105 / 0.65);
+  --theme-hairline: rgb(255 255 255 / 0.12);
+  --theme-hairline-medium: rgb(255 255 255 / 0.18);
+  --theme-hairline-strong: rgb(255 255 255 / 0.26);
 
   /* Shadows & Glows */
   --theme-shadow: 0 8px 28px rgb(0 0 0 / 0.45);
-  --theme-shadow-hover: 0 0 36px rgb(232 36 43 / 0.35);
-  --theme-glow: 0 0 22px rgb(232 36 43 / 0.5);
+  --theme-shadow-hover: 0 14px 36px rgb(0 0 0 / 0.5);
+  --theme-glow: 0 8px 20px rgb(0 0 0 / 0.35);
 
   /* Persona & Track Colors (Dark Mode) */
   --theme-student-ink: #c4a8ff;
@@ -544,6 +566,33 @@
 @media (min-width: 2560px) {
   :root {
     --gutter: 120px;
+  }
+}
+
+/*
+ * Invisible 44×44px minimum hit area for compact text links, pills and
+ * breadcrumbs, without changing their visual size. Not for elements that are
+ * already absolutely positioned or that use ::before themselves.
+ */
+@utility tap {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -995,5 +1044,34 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
   html.is-ios-webkit select,
   html.is-ios-webkit textarea {
     font-size: max(16px, 1em) !important;
+  }
+}
+
+/* ── Bottom sheet (FilterSheet and other phone dialogs) ─────────────────── */
+.filter-sheet[data-state='open'] {
+  animation: sheet-in var(--duration-nudge) var(--ease-out-soft) both;
+}
+
+.filter-sheet-overlay[data-state='open'] {
+  animation: sheet-fade-in var(--duration-base) ease both;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+
+/* Phone bottom sheets slide up; on sm+ the same panel is a centred modal. */
+@media (max-width: 639.98px) {
+  .sheet-up {
+    animation: sheet-in var(--duration-nudge) var(--ease-out-soft) both;
   }
 }

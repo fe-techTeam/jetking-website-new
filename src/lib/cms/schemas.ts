@@ -278,7 +278,7 @@ const personaRuleSchema = withStatus({
   enabled: z.boolean(),
 });
 
-export const CMS_COLLECTION_SCHEMAS = {
+const CMS_COLLECTION_SCHEMAS = {
   courses: courseSchema,
   cities: citySchema,
   centres: centreSchema,

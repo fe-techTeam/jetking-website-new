@@ -21,7 +21,7 @@ export function ProfessionalImpact() {
               <span className="text-[var(--pro-accent-soft)]">{siteConfig.name}</span>
             </h2>
             <p className="mt-3 max-w-[58ch] text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
-              Measurable career growth for working professionals who upskill without leaving their
+              Practical career growth for working professionals who upskill without leaving their
               current role.
             </p>
           </div>
@@ -136,7 +136,7 @@ export function ProfessionalImpact() {
             <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--pro-hairline)] bg-[var(--pro-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
               <span
                 aria-hidden="true"
-                className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)] shadow-[0_8px_20px_rgb(196_30_36/0.2)] xs:h-12 xs:w-12"
+                className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)] shadow-brand xs:h-12 xs:w-12"
               >
                 <TrendingUp className="h-5 w-5" strokeWidth={1.75} />
               </span>

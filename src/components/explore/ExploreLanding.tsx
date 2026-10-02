@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Award,
   BookOpen,
+  ChevronDown,
   Compass,
   GraduationCap,
   MapPin,
@@ -14,7 +15,8 @@ import {
 import type { Course, CourseLevel, Post } from '@/lib/content/types';
 import { PLACEMENT_PARTNERS } from './partners';
 import { siteConfig } from '@/lib/site';
-import { ABOUT_HERO, ACHIEVEMENTS, legacyStats, PURPOSE } from '@/components/about/data';
+import { ABOUT_HERO, ACHIEVEMENTS, PURPOSE } from '@/components/about/data';
+import { legacyStats } from '@/lib/brand-facts';
 import { PLACED_CANDIDATES, PLACEMENT_DISCLAIMER } from '@/components/placements/data';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
 import { PostCard } from '@/components/blog/BlogCards';
@@ -22,6 +24,7 @@ import { brandMark } from '@/lib/course-logos';
 import { ExploreTestimonialSlider } from './ExploreTestimonialSlider';
 import { REASONS, UNIVERSITY_PARTNERS } from './content';
 import { ExploreEnquiryForm } from './ExploreEnquiryForm';
+import { HeroOrbit } from '@/components/HeroOrbit';
 import type { LocatedCentre } from '@/components/useEnquiryLocation';
 
 /** Certifications students train toward — real brand marks, kept off white ('unity'/'tcs'/'x'). */
@@ -62,10 +65,10 @@ const PARTNER_LOGOS: Record<string, { src: string; dark?: boolean }> = {
 };
 
 const AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
-  '/student/avatar-4.png',
+  '/student/avatar-1.webp',
+  '/student/avatar-2.webp',
+  '/student/avatar-3.webp',
+  '/student/avatar-4.webp',
 ] as const;
 
 const ORBIT = [
@@ -156,8 +159,9 @@ function initialsOf(name: string): string {
 const LOGO_TILE =
   'flex h-16 w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--stu-hairline)] p-3 sm:h-[4.5rem]';
 const LOGO_IMG = 'max-h-full max-w-full object-contain';
-/** Auto-fit columns: as many equal cards per row as fit at >= 7.5rem each. */
-const LOGO_GRID = 'grid grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] gap-x-4 gap-y-5';
+/** Auto-fit columns: as many equal cards per row as fit at >= 6.25rem (phone) / 7.5rem each. */
+const LOGO_GRID =
+  'grid grid-cols-[repeat(auto-fill,minmax(6.25rem,1fr))] gap-x-3 gap-y-5 sm:grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] sm:gap-x-4';
 
 function LogoTile({ name }: { name: string }) {
   const partner = PARTNER_LOGOS[name];
@@ -166,7 +170,7 @@ function LogoTile({ name }: { name: string }) {
     <div className="flex h-full min-w-0 flex-col items-center gap-2.5 text-center">
       <span
         aria-hidden="true"
-        className={`${LOGO_TILE} ${partner?.dark ? 'bg-[#14141f]' : 'bg-white'}`}
+        className={`${LOGO_TILE} ${partner?.dark ? 'bg-tile-dark' : 'bg-white'}`}
       >
         {partner ? (
           // eslint-disable-next-line @next/next/no-img-element -- real company logo, fetched from its official site/Wikimedia
@@ -189,6 +193,58 @@ function LogoTile({ name }: { name: string }) {
         {name}
       </span>
     </div>
+  );
+}
+
+const PHONE_PREVIEW = 8;
+
+/**
+ * Long logo walls: phones see the first few plus a native disclosure for the
+ * rest (no client JS); sm+ always shows the full grid. Overflow items render
+ * twice with complementary visibility, so each breakpoint shows them once.
+ */
+function CollapsibleLogoGrid<T>({
+  items,
+  itemKey,
+  render,
+  noun,
+}: {
+  items: readonly T[];
+  itemKey: (item: T) => string;
+  render: (item: T) => React.ReactNode;
+  noun: string;
+}) {
+  const rest = items.slice(PHONE_PREVIEW);
+  return (
+    <>
+      <ul className={`mt-7 ${LOGO_GRID}`}>
+        {items.map((item, i) => (
+          <li key={itemKey(item)} className={`min-w-0 ${i >= PHONE_PREVIEW ? 'max-sm:hidden' : ''}`}>
+            {render(item)}
+          </li>
+        ))}
+      </ul>
+      {rest.length ? (
+        <details className="group mt-5 sm:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-5 text-[14px] font-bold text-[var(--stu-ink)] [&::-webkit-details-marker]:hidden">
+            <span className="group-open:hidden">Show all {items.length} {noun}</span>
+            <span className="hidden group-open:inline">Show fewer</span>
+            <ChevronDown
+              className="h-4 w-4 transition-transform group-open:rotate-180"
+              strokeWidth={2.25}
+              aria-hidden="true"
+            />
+          </summary>
+          <ul className={`mt-5 ${LOGO_GRID}`}>
+            {rest.map((item) => (
+              <li key={itemKey(item)} className="min-w-0">
+                {render(item)}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </>
   );
 }
 
@@ -217,10 +273,6 @@ export function ExploreLanding({
     >
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-8 pb-6 xs:pt-10 sm:pt-12 lg:pt-14 lg:pb-8">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-        />
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
@@ -273,7 +325,7 @@ export function ExploreLanding({
                   ))}
                 </span>
                 <span className="text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                  Visitors from {counts.cities}+ cities
+                  Centres in {counts.cities} cities
                 </span>
               </div>
               <span className="hidden h-4 w-px bg-[var(--stu-hairline)] sm:block" aria-hidden="true" />
@@ -288,48 +340,12 @@ export function ExploreLanding({
             </div>
           </div>
 
-          <div className="stu-hero-glow relative mx-auto w-full max-w-[540px] lg:max-w-none">
-            <div className="relative mx-auto aspect-square w-[min(100%,440px)] lg:w-full lg:max-w-[500px]">
-              <div aria-hidden="true" className="stu-orbit-ring absolute inset-[10%] rounded-full" />
-              <div
-                aria-hidden="true"
-                className="absolute inset-[16%] rounded-full border border-dashed border-[rgb(232_36_43/0.28)]"
-              />
-
-              <div className="absolute inset-[20%] overflow-hidden rounded-full bg-[linear-gradient(160deg,var(--card),var(--surface-sunken),var(--card))] shadow-[0_28px_70px_rgb(0_0_0/0.55)]">
-                <Image
-                  src="/home/journey-explore-v2.jpg"
-                  alt="Visitor exploring the Jetking campus"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 380px, 75vw"
-                  className="object-cover object-[center_22%]"
-                />
-              </div>
-
-              {ORBIT.map((item) => (
-                <div
-                  key={item.label}
-                  className={`stu-float absolute z-10 flex max-w-[158px] items-start gap-2.5 rounded-2xl p-3 sm:max-w-[172px] sm:p-3.5 ${item.className}`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-                  >
-                    <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                  </span>
-                  <span className="min-w-0 pt-0.5">
-                    <span className="block text-[13px] font-extrabold text-[var(--stu-ink)]">
-                      {item.label}
-                    </span>
-                    <span className="mt-0.5 block text-[12px] leading-snug text-[var(--stu-ink-secondary)]">
-                      {item.detail}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HeroOrbit
+            src="/home/journey-explore-v2.jpg"
+            alt="Visitor exploring the Jetking campus"
+            items={ORBIT}
+            imageClassName="object-cover object-[center_22%]"
+          />
         </div>
       </section>
 
@@ -346,7 +362,7 @@ export function ExploreLanding({
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover object-[center_22%]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.88)] via-[rgb(7_7_12/0.35)] to-transparent lg:bg-gradient-to-r" />
+                <div className="absolute inset-0 bg-gradient-to-t from-scrim/88 via-scrim/35 to-transparent lg:bg-gradient-to-r" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
                   <p className="font-display text-[22px] font-extrabold leading-snug tracking-[-0.02em] text-white sm:text-[26px]">
                     Have a specific question?
@@ -384,7 +400,7 @@ export function ExploreLanding({
               </p>
               <Link
                 href={'/about-us' as Route}
-                className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
+                className="tap mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
               >
                 Read our story
                 <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -416,7 +432,7 @@ export function ExploreLanding({
                 <Link
                   key={group.level}
                   href={'/courses' as Route}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--stu-ink-secondary)] transition-colors hover:border-[var(--stu-accent-soft)] hover:text-[var(--stu-accent-soft)]"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--stu-ink-secondary)] transition-colors hover:border-[var(--stu-accent-soft)] hover:text-[var(--stu-accent-soft)]"
                 >
                   {meta.label}
                   <span className="text-[var(--stu-ink-muted)]">{group.courses.length}</span>
@@ -448,7 +464,7 @@ export function ExploreLanding({
                 </h2>
 
                 <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4 lg:grid-cols-2">
-                  {legacyStats().map((stat) => (
+                  {legacyStats(counts).map((stat) => (
                     <div key={stat.label}>
                       <dt className="sr-only">{stat.label}</dt>
                       <dd>
@@ -515,20 +531,20 @@ export function ExploreLanding({
           >
             10 reasons why {siteConfig.name} is every student&rsquo;s choice
           </h2>
-          <ul className="mt-7 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-7 grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-4">
             {REASONS.map((card) => (
               <li key={card.title} className="min-w-0">
-                <article className="stu-card flex h-full flex-col gap-0 rounded-[20px] p-5">
+                <article className="stu-card flex h-full flex-col gap-0 rounded-[18px] p-4 sm:rounded-[20px] sm:p-5">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:h-11 sm:w-11"
                   >
-                    <card.icon className="h-5 w-5" strokeWidth={1.75} />
+                    <card.icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
                   </span>
-                  <h3 className="mt-4 text-[15px] font-extrabold text-[var(--stu-ink)]">
+                  <h3 className="mt-3 text-[14px] leading-snug font-extrabold text-[var(--stu-ink)] sm:mt-4 sm:text-[15px]">
                     {card.title}
                   </h3>
-                  <p className="mt-1.5 text-[13px] leading-snug text-[var(--stu-ink-muted)]">
+                  <p className="mt-1.5 text-[12.5px] leading-snug text-[var(--stu-ink-muted)] sm:text-[13px]">
                     {card.detail}
                   </p>
                 </article>
@@ -598,7 +614,7 @@ export function ExploreLanding({
             </h2>
             <Link
               href={'/placements' as Route}
-              className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
+              className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
             >
               See placement records
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -607,13 +623,12 @@ export function ExploreLanding({
           <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
             Companies from Jetking&rsquo;s own published placement records.
           </p>
-          <ul className={`mt-7 ${LOGO_GRID}`}>
-            {ALUMNI_COMPANIES.map((company) => (
-              <li key={company}>
-                <LogoTile name={company} />
-              </li>
-            ))}
-          </ul>
+          <CollapsibleLogoGrid
+            items={ALUMNI_COMPANIES}
+            itemKey={(company) => company}
+            render={(company) => <LogoTile name={company} />}
+            noun="companies"
+          />
           <p className="mt-7 max-w-2xl text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
             {PLACEMENT_DISCLAIMER}
           </p>
@@ -629,24 +644,23 @@ export function ExploreLanding({
           >
             Our Placement Partners
           </h2>
-          <ul className={`mt-7 ${LOGO_GRID}`}>
-            {PLACEMENT_PARTNERS.map((partner) => (
-              <li key={partner.name} className="min-w-0">
-                <span
-                  className={`${LOGO_TILE} ${partner.dark ? 'bg-[#14141f]' : 'bg-white'}`}
-                >
-                  {partner.file ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do
-                    <img src={partner.file} alt={partner.name} loading="lazy" className={LOGO_IMG} />
-                  ) : (
-                    <span className="text-center font-display text-[14px] leading-tight font-extrabold text-[var(--stu-ink-secondary)] [overflow-wrap:anywhere]">
-                      {partner.name}
-                    </span>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <CollapsibleLogoGrid
+            items={PLACEMENT_PARTNERS}
+            itemKey={(partner) => partner.name}
+            noun="partners"
+            render={(partner) => (
+              <span className={`${LOGO_TILE} ${partner.dark ? 'bg-tile-dark' : 'bg-white'}`}>
+                {partner.file ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do
+                  <img src={partner.file} alt={partner.name} loading="lazy" className={LOGO_IMG} />
+                ) : (
+                  <span className="text-center font-display text-[14px] leading-tight font-extrabold text-[var(--stu-ink-secondary)] [overflow-wrap:anywhere]">
+                    {partner.name}
+                  </span>
+                )}
+              </span>
+            )}
+          />
           <p className="mt-4 max-w-2xl text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
             Note: Placements are subject to recruitment norms. Jetking does not guarantee
             placements in the above organisations.
@@ -693,7 +707,7 @@ export function ExploreLanding({
               </h2>
               <Link
                 href={'/blog' as Route}
-                className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--blog-accent-soft)]"
+                className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--blog-accent-soft)]"
               >
                 Read more
                 <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -722,7 +736,7 @@ export function ExploreLanding({
                 <MapPin className="h-5 w-5" strokeWidth={1.75} />
               </span>
               <h2 id="exp-cta" className="mt-4 text-[20px] font-extrabold text-[var(--stu-ink)] sm:text-[22px]">
-                50+ centres across {counts.cities}+ cities
+                {counts.centres} centres across {counts.cities} cities
               </h2>
               <p className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
                 Not ready to talk to anyone yet? Just browse — every centre and every

@@ -93,9 +93,7 @@
 }
 
 .blog-cta-band {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.35) 0%, transparent 55%),
-    linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
+  background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
   border: 1px solid var(--blog-hairline);
 }
 
@@ -103,7 +101,7 @@
    the toggle like every other surface on the page. Must stay AFTER the
    unconditional rule above; see the note on `.blog-hero-wash` below. */
 :where(html:not(.dark)) .blog-cta-band {
-  background: #fff5f4;
+  background: #f8f9fb;
   border: 1px solid var(--blog-hairline);
 }
 
@@ -183,7 +181,7 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.45rem 0.85rem 0.45rem 0.7rem;
-  background: linear-gradient(135deg, #ff4d55 0%, #c41e24 52%, #a81820 100%);
+  background: linear-gradient(135deg, var(--color-jk-600) 0%, var(--color-jk-700) 100%);
   color: #fff;
   font-size: 12px;
   font-weight: 800;
@@ -317,22 +315,19 @@ html:not(.dark) .blog-page {
   --blog-ink: #14141f;
   --blog-ink-secondary: #464657;
   --blog-ink-muted: #666679;
-  --blog-accent: #d81f26;
+  --blog-accent: var(--color-jk-600);
   /* #f97066 is tuned for the dark canvas; on this light card it fails AA
      text contrast (~2.5:1) — same fix as --stu-accent-soft/--dc-accent-soft. */
   --blog-accent-soft: #a50d13;
   --blog-accent-tint: #fef3f2;
   --blog-canvas: #ffffff;
-  --blog-surface: #fff5f4;
+  --blog-surface: #f8f9fb;
   --blog-card: #ffffff;
   --blog-hairline: rgb(20 20 31 / 0.12);
-  --blog-shadow:
-    0 6px 20px rgb(60 50 90 / 0.08),
-    0 0 12px rgb(234 28 36 / 0.04);
+  --blog-shadow: 0 6px 20px rgb(16 24 40 / 0.06);
   --blog-shadow-hover:
-    0 0 0 1px rgb(249 112 102 / 0.5),
-    0 8px 28px rgb(234 28 36 / 0.12),
-    0 12px 36px rgb(60 50 90 / 0.12);
+    0 0 0 1px rgb(199 20 28 / 0.35),
+    0 12px 36px rgb(16 24 40 / 0.1);
 }
 
 html:not(.dark) .blog-page::before {

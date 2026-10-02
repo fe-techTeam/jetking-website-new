@@ -50,7 +50,7 @@ function ProgramCard({
           style={{ background: visual.accentTint, color: visual.accent }}
         >
           <Briefcase className="h-3 w-3 shrink-0" strokeWidth={2.25} aria-hidden="true" />
-          Salary upto {visual.salaryHint}
+          Salary up to {visual.salaryHint}
         </span>
       </div>
 
@@ -140,7 +140,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
         <div className="flex items-center gap-3">
           <Link
             href={'/courses' as Route}
-            className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--pro-accent-soft)]"
+            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--pro-accent-soft)]"
           >
             View all
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -151,7 +151,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
                 type="button"
                 aria-label="Previous courses"
                 onClick={() => scrollBy(-1)}
-                className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
               >
                 <ArrowLeft className="h-4 w-4" strokeWidth={2} />
               </button>
@@ -159,7 +159,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
                 type="button"
                 aria-label="Next courses"
                 onClick={() => scrollBy(1)}
-                className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
               >
                 <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </button>

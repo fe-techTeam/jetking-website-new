@@ -109,8 +109,3 @@ export function brandMark(name: string): BrandMark | null {
   }
   return null;
 }
-
-/** @deprecated Prefer brandMark — kept for any call sites that only need the path. */
-export function brandLogo(name: string): string | null {
-  return brandMark(name)?.src ?? null;
-}

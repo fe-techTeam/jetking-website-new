@@ -5,9 +5,9 @@ import type { Testimonial } from '@/lib/content/types';
 import { Carousel } from '@/components/Carousel';
 
 const AVATARS = [
-  '/franchise/partner-avatar-2.png',
-  '/franchise/partner-avatar-1.png',
-  '/franchise/partner-avatar-3.png',
+  '/franchise/partner-avatar-2.webp',
+  '/franchise/partner-avatar-1.webp',
+  '/franchise/partner-avatar-3.webp',
 ] as const;
 
 const FALLBACK: Testimonial[] = [

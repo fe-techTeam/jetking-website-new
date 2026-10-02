@@ -19,24 +19,3 @@ export const SITE = {
   sourceSite: publicEnv.siteUrl,
   sourceLabel: publicEnv.siteHost,
 } as const;
-
-/**
- * Resolve a knowledge-base path to a link.
- *
- * Accepts a stored relative path ("/courses/x"). Absolute URLs are passed
- * through untouched so any legacy row still renders rather than producing a
- * broken `https://site.com/http://…`.
- */
-export function siteHref(path: string): string {
-  if (!path) return SITE.sourceSite;
-  if (/^https?:\/\//i.test(path)) return path;
-  return `${SITE.sourceSite}${path.startsWith('/') ? path : `/${path}`}`;
-}
-
-/** Placeholder identity — swap for real session data when auth is added. */
-export const CURRENT_USER = {
-  id: 'usr_local',
-  name: 'Guest',
-  email: 'guest@jetking.com',
-  plan: 'Course explorer',
-} as const;

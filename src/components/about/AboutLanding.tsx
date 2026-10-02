@@ -14,12 +14,12 @@ import {
   ABOUT_HERO,
   ACHIEVEMENTS,
   DIRECTORS,
-  legacyStats,
   MANAGEMENT_TEAM,
   PARTNERSHIPS,
   PURPOSE,
   type Leader,
 } from './data';
+import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 import { AboutTimeline } from './AboutTimeline';
 import { LeaderAvatar } from './LeaderAvatar';
 import { LeaderDetailModal } from './LeaderDetailModal';
@@ -29,22 +29,27 @@ const trail: Crumb[] = [
   { name: 'About Us', path: '/about-us' },
 ];
 
-const STAT_ICONS = [Award, Users, Building2, ShieldCheck] as const;
+const STAT_ICONS = [Award, Building2, Users, ShieldCheck] as const;
 
 /** `compact` (no-bio team members): two per row on phones with a smaller avatar, full size from `sm`. */
 function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boolean }) {
   return (
-    <li data-reveal>
+    <li
+      data-reveal
+      className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]"
+    >
       <article className="dc-card-shell h-full">
-        <div className={`dc-card flex h-full flex-col sm:p-6 ${compact ? 'p-3.5' : 'p-5'}`}>
-          <div className={`relative mx-auto shrink-0 overflow-hidden rounded-full bg-[var(--dc-surface)] ring-1 ring-[var(--dc-hairline)] sm:h-32 sm:w-32 ${compact ? 'h-16 w-16' : 'h-28 w-28'}`}>
+        <div className={`dc-card flex h-full flex-col sm:p-6 ${compact ? 'p-3.5' : 'p-4'}`}>
+          <div className={`relative mx-auto shrink-0 overflow-hidden rounded-full bg-[var(--dc-surface)] ring-1 ring-[var(--dc-hairline)] sm:h-32 sm:w-32 ${compact ? 'h-16 w-16' : 'h-20 w-20'}`}>
             <LeaderAvatar leader={leader} />
           </div>
-          <div className={`flex flex-1 flex-col text-center sm:mt-5 ${compact ? 'mt-3' : 'mt-5'}`}>
-            <h3 className={`font-display font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[20px] ${compact ? 'text-[15px]' : 'text-[18px]'}`}>
+          <div className={`flex flex-1 flex-col text-center sm:mt-5 ${compact ? 'mt-3' : 'mt-4'}`}>
+            <h3 className={`font-display font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[20px] ${compact ? 'text-[15px]' : 'text-[16px]'}`}>
               {leader.name}
             </h3>
-            <p className={`mt-1 font-bold text-[var(--dc-accent-soft)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
+            {leader.role ? (
+              <p className={`mt-1 font-bold text-[var(--dc-accent-soft)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
+            ) : null}
             {leader.bio ? <LeaderDetailModal leader={leader} /> : null}
           </div>
         </div>
@@ -53,7 +58,7 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
   );
 }
 
-export function AboutLanding() {
+export function AboutLanding({ counts }: { counts: NetworkCounts }) {
   const { ref: awardsRef, edge: awardsEdge, scrollByItem: scrollAwardsBy } = useScrollTrack<HTMLUListElement>();
 
   return (
@@ -80,7 +85,7 @@ export function AboutLanding() {
             <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
               <p className="dc-eyebrow label-mono text-[14px]">{ABOUT_HERO.eyebrow}</p>
 
-              <h1 className="dc-heading-glow mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[56px]">
+              <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[56px]">
                 <span className="dc-accent-glow">{ABOUT_HERO.titleLead}</span>
                 <span className="mt-1 block sm:mt-1.5">{ABOUT_HERO.titleAccent}</span>
               </h1>
@@ -96,7 +101,7 @@ export function AboutLanding() {
       {/* ── Legacy stats ─────────────────────────────────────────────────── */}
       <section className="shell relative mt-8 sm:mt-10" aria-label="Legacy at a glance">
         <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {legacyStats().map((stat, index) => {
+          {legacyStats(counts).map((stat, index) => {
             const Icon = STAT_ICONS[index] ?? Award;
             return (
               <div
@@ -129,7 +134,7 @@ export function AboutLanding() {
         <p className="dc-eyebrow label-mono">Purpose</p>
         <h2
           id="about-purpose"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
         >
           Our purpose &amp;{' '}
           <span className="dc-accent-glow">values</span>
@@ -164,7 +169,7 @@ export function AboutLanding() {
         <p className="dc-eyebrow label-mono">Leadership</p>
         <h2
           id="about-leaders"
-          className="dc-heading-glow mt-3 max-w-[20ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="mt-3 max-w-[20ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
         >
           The leaders who drive our{' '}
           <span className="dc-accent-glow">growth</span>
@@ -174,8 +179,9 @@ export function AboutLanding() {
           methodologies.
         </p>
 
-        <ul className="mt-10 grid gap-5 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-          {DIRECTORS.map((leader) => (
+        {/* Cards set their own widths (LeaderCard); a short last row centres instead of hugging the left. */}
+        <ul className="mt-10 flex flex-wrap justify-center gap-3 sm:mt-12 sm:gap-5 lg:gap-6">
+          {DIRECTORS.filter((leader) => leader.name).map((leader) => (
             <LeaderCard key={leader.name} leader={leader} />
           ))}
         </ul>
@@ -183,7 +189,7 @@ export function AboutLanding() {
         <h3 className="mt-14 font-display text-[20px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:mt-16 sm:text-[22px]">
           Management team
         </h3>
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:mt-9 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+        <ul className="mt-8 flex flex-wrap justify-center gap-3 sm:mt-9 sm:gap-5 lg:gap-6">
           {MANAGEMENT_TEAM.map((leader) => (
             <LeaderCard key={leader.name} leader={leader} compact />
           ))}
@@ -195,7 +201,7 @@ export function AboutLanding() {
         <p className="dc-eyebrow label-mono">History</p>
         <h2
           id="about-timeline"
-          className="dc-heading-glow mt-3 max-w-[22ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="mt-3 max-w-[22ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
         >
           A legacy that we take{' '}
           <span className="dc-accent-glow">pride in</span>
@@ -216,7 +222,7 @@ export function AboutLanding() {
             <p className="dc-eyebrow label-mono">Recognition</p>
             <h2
               id="about-awards"
-              className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+              className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
             >
               Our <span className="dc-accent-glow">achievements</span>
             </h2>
@@ -271,7 +277,7 @@ export function AboutLanding() {
         <p className="dc-eyebrow label-mono">Alliances</p>
         <h2
           id="about-partnerships"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
         >
           Our <span className="dc-accent-glow">partnerships</span>
         </h2>

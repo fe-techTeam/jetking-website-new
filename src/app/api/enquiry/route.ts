@@ -42,9 +42,6 @@ const EnquirySchema = z.object({
   persona: z.enum(['student', 'professional', 'parent', 'franchise', 'unknown']).default('unknown'),
   confidence: z.number().min(0).max(1).default(0),
   source: z.string().max(200).default('website'),
-  /** Guide conversation summary when the lead came from the AI Guide handoff. */
-  guideSummary: z.string().max(4000).optional(),
-  guideReason: z.string().max(80).optional(),
   /**
    * Anonymous first-party visitor ID (`JK_…`). CRM should store this so a later
    * mobile/email match can reconnect browsing history to the lead.
@@ -60,7 +57,7 @@ const EnquirySchema = z.object({
 });
 
 /**
- * Looser than the Guide's limit — a genuine visitor may legitimately submit two or
+ * Loose enough that a genuine visitor may legitimately submit two or
  * three enquiries (different courses, a correction) — but tight enough that this
  * public endpoint cannot be used to flood counsellors with junk leads.
  */

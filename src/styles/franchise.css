@@ -26,7 +26,7 @@
   color: var(--stu-accent-soft);
   font-weight: 800;
   font-size: 18px;
-  box-shadow: 0 0 16px rgb(232 36 43 / 0.2);
+  box-shadow: none;
 }
 
 .fra-check-item {
@@ -44,7 +44,7 @@
   border-radius: 50%;
   background: var(--stu-accent);
   color: var(--stu-ink);
-  box-shadow: 0 0 12px rgb(196 30 36 / 0.45);
+  box-shadow: none;
 }
 
 /* Enquiry form on dark surfaces */
@@ -116,9 +116,9 @@ html:not(.dark) .fra-timeline-line {
 }
 
 html:not(.dark) .fra-step-circle {
-  box-shadow: 0 0 12px rgb(234 28 36 / 0.12);
+  box-shadow: none;
 }
 
 html:not(.dark) .fra-check-icon {
-  box-shadow: 0 0 8px rgb(234 28 36 / 0.2);
+  box-shadow: none;
 }

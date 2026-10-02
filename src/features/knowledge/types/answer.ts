@@ -19,7 +19,7 @@ export type AnswerIntent =
 
 export interface AnswerSource {
   title: string;
-  /** Site-relative; resolve with `siteHref()` when rendering a link. */
+  /** Site-relative path, e.g. `/courses/x`. */
   path: string;
 }
 

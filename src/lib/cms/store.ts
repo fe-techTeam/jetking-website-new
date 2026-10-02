@@ -30,7 +30,7 @@ import {
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { CmsCollection, PublishStatus } from '@/lib/cms/types';
 
-export type { CmsCollection, PublishStatus } from '@/lib/cms/types';
+export type { CmsCollection } from '@/lib/cms/types';
 
 type WithStatus<T> = T & { status: PublishStatus };
 

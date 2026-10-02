@@ -53,8 +53,8 @@ export function ProfessionalSocialProof() {
                     <p className="-mt-5 text-[15.5px] leading-relaxed font-medium sm:text-[16.5px]">
                       {story.quote}
                     </p>
-                    <footer className="mt-6 flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
+                    <footer className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+                      <div className="flex min-w-0 items-center gap-3">
                         <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
                           <Image
                             src={story.avatar}

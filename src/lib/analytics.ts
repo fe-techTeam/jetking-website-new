@@ -29,11 +29,6 @@ export type EventName =
   | 'nudge_clicked'
   | 'nudge_dismissed'
   | 'adaptive_slot_rendered'
-  | 'guide_opened'
-  | 'guide_message'
-  | 'guide_cited'
-  | 'guide_refused'
-  | 'guide_handoff'
   | 'enquiry_started'
   | 'enquiry_submitted'
   | 'exit_intent_shown'
@@ -87,15 +82,4 @@ export function track(event: EventName, props: EventProps = {}): void {
   } catch (err) {
     if (isDev) console.warn('[track] failed', event, err);
   }
-}
-
-/**
- * Page-level context helper. Called by route components so behavioural signals and
- * analytics stay in step — one call records both.
- */
-export function trackPageContext(
-  event: Extract<EventName, 'course_viewed' | 'centre_viewed' | 'article_viewed'>,
-  props: EventProps,
-): void {
-  track(event, props);
 }

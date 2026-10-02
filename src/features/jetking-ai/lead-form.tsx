@@ -173,7 +173,7 @@ export function LeadCaptureForm({
       </Field>
 
       {error ? (
-        <p role="alert" className="text-[12.5px] font-medium text-jk-500">
+        <p role="alert" className="text-[12.5px] font-medium text-brand-text">
           {error}
         </p>
       ) : null}

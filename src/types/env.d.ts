@@ -39,20 +39,16 @@ declare namespace NodeJS {
     PERSONA_INFER_MODEL?: string;
     /** Staff/admin CMS login password — required in production. */
     ADMIN_PASSWORD?: string;
-    /** Bearer token required by /api/ingest and /api/revalidate in production. */
+    /** Bearer token required by /api/revalidate in production. */
     REVALIDATE_SECRET?: string;
     /** Supabase service-role key — full-privilege, server-only. */
     SUPABASE_SERVICE_ROLE_KEY?: string;
-    /** OpenAI key shared by the Guide, persona inference, and /api/chat's general fallback. */
+    /** OpenAI key shared by persona inference, the chat planner, and /api/chat's general fallback. */
     OPENAI_API_KEY?: string;
-    /** Chat model the AI Guide writes answers with. */
+    /** Default OpenAI chat model for /api/chat, the planner and persona inference. */
     GUIDE_MODEL?: string;
-    /** Disables the Guide's model-generated replies when set to 'false'. */
+    /** Disables model-based persona inference when set to 'false'. */
     GUIDE_ENABLED?: string;
-    /** Retriever backend the Guide uses. */
-    GUIDE_RETRIEVER?: string;
-    /** Embedding model used to build/query the Guide's knowledge base. */
-    GUIDE_EMBEDDING_MODEL?: string;
     /** CRM webhook that enquiry/journey submissions are forwarded to. */
     CRM_ENDPOINT?: string;
     /** Bearer token for the CRM webhook. */

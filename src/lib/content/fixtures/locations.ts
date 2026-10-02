@@ -2275,7 +2275,7 @@ export const centres: Centre[] = [
         "answer": "Students 10+2 and Degrees in non-technical fields such as B. Com., B.A., or finance-related disciplines are also acceptable. Additionally, students who are in their final year of graduation are eligible for the course."
       },
       {
-        "question": "What is the Cost of Cloud computing courses in Haryana?",
+        "question": "What is the Cost of Cloud computing courses in Chhattisgarh?",
         "answer": "To find out the cost and duration of our cloud computing courses in Chhattisgarh, please visit our official website and submit an inquiry. Our team will provide you with detailed information on the course fees and other relevant details."
       },
       {
@@ -2283,7 +2283,7 @@ export const centres: Centre[] = [
         "answer": "To enroll in this course, students need to have completed their 10+2 education in any stream. This course equips students with the essential technical knowledge and skills to safeguard computer networks against malicious attacks."
       },
       {
-        "question": "What is the salary of Cloud Engineer in Haryana, India?",
+        "question": "What is the salary of Cloud Engineer in Chhattisgarh, India?",
         "answer": "The average salary for a Cloud Engineer in Chhattisgarh, India typically falls between ₹3.0 Lakhs and ₹13.0 Lakhs per year, with the average annual pay being around ₹7.3 Lakhs."
       }
     ],

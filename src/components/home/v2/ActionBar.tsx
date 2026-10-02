@@ -46,7 +46,7 @@ export function ActionBar() {
   return (
     <nav
       aria-label="Next steps"
-      className="v2-bar-glow overflow-hidden rounded-[12px] border border-[rgb(232_36_43/0.28)] bg-[var(--v2-ink-bar)] text-white xs:rounded-[14px] lg:rounded-[12px]"
+      className="v2-bar-glow overflow-hidden rounded-[12px] border border-[var(--v2-accent)]/28 bg-[var(--v2-ink-bar)] text-white xs:rounded-[14px] lg:rounded-[12px]"
     >
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:h-[68px] lg:grid-cols-none lg:flex-row lg:items-stretch 3xl:h-[72px]">
         {actions.map((action, index) => (
@@ -65,10 +65,10 @@ export function ActionBar() {
                     })
                   : undefined
               }
-              className="flex min-h-[56px] items-center justify-start gap-3.5 px-4 py-3.5 transition-colors duration-200 hover:bg-[rgb(232_36_43/0.12)] xs:gap-4 xs:px-5 lg:h-full lg:justify-center lg:px-5 lg:py-0 xl:px-6"
+              className="flex min-h-[56px] items-center justify-start gap-3.5 px-4 py-3.5 transition-colors duration-200 hover:bg-[var(--v2-accent)]/12 xs:gap-4 xs:px-5 lg:h-full lg:justify-center lg:px-5 lg:py-0 xl:px-6"
             >
               <action.icon
-                className="v2-icon-glow h-5 w-5 shrink-0 text-[var(--v2-accent-soft,#ff4d54)] xs:h-6 xs:w-6"
+                className="h-5 w-5 shrink-0 text-[var(--v2-accent-soft)] xs:h-6 xs:w-6"
                 strokeWidth={1.75}
                 aria-hidden="true"
               />

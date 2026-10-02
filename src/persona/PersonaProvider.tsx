@@ -343,8 +343,3 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
 export function usePersona(): PersonaContextValue {
   return useContext(PersonaContext);
 }
-
-/** Convenience alias — same context, signals intent for readers. */
-export function useUserProfile(): UserProfile {
-  return useContext(PersonaContext).profile;
-}

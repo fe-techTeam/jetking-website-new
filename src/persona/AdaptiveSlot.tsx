@@ -6,10 +6,7 @@ import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { usePersona } from './PersonaProvider';
 import type { KnownPersonaId } from './types';
 import { track } from '@/lib/analytics';
-import { buttonBase, buttonSizes, buttonTones, type ButtonSize, type ButtonTone } from '@/components/ui';
 import { useFlip } from '@/components/motion/flip';
-import { openGuide } from '@/components/Guide';
-
 /**
  * ══════════════════════════════════════════════════════════════════════════════
  * THE ONLY SANCTIONED WAY CONTENT ADAPTS
@@ -42,58 +39,6 @@ import { openGuide } from '@/components/Guide';
 type PersonaVariants<T> = Partial<Record<KnownPersonaId, T>>;
 
 /* ────────────────────────────────────────────────────────────────────────── */
-/* AdaptiveCta — the `emphasise` primitive                                    */
-/* ────────────────────────────────────────────────────────────────────────── */
-
-export interface CtaContent {
-  label: string;
-  href: string;
-}
-
-export function AdaptiveCta({
-  id,
-  fallback,
-  variants,
-  tone = 'primary',
-  size = 'md',
-  className = '',
-}: {
-  id: string;
-  /** Rendered server-side and pre-hydration. This is the indexed version. */
-  fallback: CtaContent;
-  variants: PersonaVariants<CtaContent>;
-  tone?: ButtonTone;
-  size?: ButtonSize;
-  className?: string;
-}) {
-  const { classification, hydrated } = usePersona();
-  const reportedRef = useRef(false);
-
-  const persona = classification.persona;
-  const variant = persona !== 'unknown' ? variants[persona] : undefined;
-  const adapted = hydrated && variant !== undefined;
-  const content = adapted && variant ? variant : fallback;
-
-  useEffect(() => {
-    if (!adapted || reportedRef.current) return;
-    reportedRef.current = true;
-    track('adaptive_slot_rendered', { slot_id: id, persona, strategy: 'emphasise' });
-  }, [adapted, id, persona]);
-
-  const href = content.href as Route;
-
-  return (
-    <Link
-      href={href}
-      data-slot={id}
-      className={`${buttonBase} ${tone === 'text' ? '' : buttonSizes[size]} ${buttonTones[tone]} ${className}`}
-    >
-      {content.label}
-    </Link>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────────────── */
 /* AdaptiveNudge — the `nudge` primitive                                      */
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -101,9 +46,9 @@ export interface NudgeContent {
   headline: string;
   body?: string;
   ctaLabel: string;
-  /** Omit when `ctaAction` is set — the CTA opens the Guide instead of navigating. */
+  /** Omit when `ctaAction` is set. */
   ctaHref?: string;
-  /** 'guide' opens the AI Guide chat panel in place of a `ctaHref` navigation. */
+  /** 'guide' sends the visitor to Jetking AI with the headline as their question. */
   ctaAction?: 'guide';
 }
 
@@ -160,40 +105,30 @@ export function AdaptiveNudge({
     });
   }, [nudge, id, persona, classification.confidence, classification.version]);
 
-  const nudgeHref = nudge?.ctaAction ? undefined : nudge ? (nudge.ctaHref as Route) : undefined;
+  const nudgeHref = !nudge
+    ? undefined
+    : nudge.ctaAction === 'guide'
+      ? (`/chatbot?q=${encodeURIComponent(nudge.headline)}` as Route)
+      : (nudge.ctaHref as Route | undefined);
   const skin = NUDGE_SKINS[tone];
 
   return (
     <div className={`slot-stable ${RESERVE[reserve]}`} data-slot={id}>
-      {nudge && (nudgeHref || nudge.ctaAction) ? (
+      {nudge && nudgeHref ? (
         <aside className={skin.aside} aria-label="Suggested next step">
           <div className="min-w-0">
             <p className={skin.eyebrow}>Suggested for you</p>
             <p className={skin.headline}>{nudge.headline}</p>
             {nudge.body ? <p className={skin.body}>{nudge.body}</p> : null}
           </div>
-          {nudge.ctaAction === 'guide' ? (
-            <button
-              type="button"
-              onClick={() => {
-                track('nudge_clicked', { nudge_id: id, persona, href: 'guide' });
-                openGuide(id, nudge.headline);
-              }}
-              className={skin.cta}
-            >
-              {nudge.ctaLabel}
-              <span aria-hidden="true">→</span>
-            </button>
-          ) : (
-            <Link
-              href={nudgeHref as Route}
-              onClick={() => track('nudge_clicked', { nudge_id: id, persona, href: nudge.ctaHref })}
-              className={skin.cta}
-            >
-              {nudge.ctaLabel}
-              <span aria-hidden="true">→</span>
-            </Link>
-          )}
+          <Link
+            href={nudgeHref}
+            onClick={() => track('nudge_clicked', { nudge_id: id, persona, href: nudgeHref })}
+            className={skin.cta}
+          >
+            {nudge.ctaLabel}
+            <span aria-hidden="true">→</span>
+          </Link>
         </aside>
       ) : null}
     </div>
@@ -218,7 +153,7 @@ const NUDGE_SKINS: Record<
     eyebrow: 'text-[12px] font-bold tracking-[0.12em] text-[var(--blog-accent-soft)] uppercase',
     headline: 'mt-1.5 font-semibold text-[var(--blog-ink)]',
     body: 'mt-1 text-sm text-[var(--blog-ink-muted)]',
-    cta: 'inline-flex h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-[var(--blog-accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#a81820]',
+    cta: 'inline-flex h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-[var(--blog-accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-jk-700)]',
   },
   dark: {
     aside:

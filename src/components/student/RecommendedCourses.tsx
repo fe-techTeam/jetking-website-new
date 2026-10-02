@@ -50,10 +50,10 @@ const ACCENT: Record<Accent, { ink: string; tint: string; chip: string }> = {
   // mode for use as text-on-card — this solid circle needs to stay a dark,
   // saturated tone in both themes so the white arrow stays legible. Values
   // match each accent's light-mode `ink` colour from student.css.
-  cyber: { ink: 'var(--stu-cyber)', tint: 'var(--stu-cyber-tint)', chip: '#5f3aa8' },
-  cloud: { ink: 'var(--stu-cloud)', tint: 'var(--stu-cloud-tint)', chip: '#2454a6' },
-  network: { ink: 'var(--stu-network)', tint: 'var(--stu-network-tint)', chip: '#17683b' },
-  ai: { ink: 'var(--stu-ai)', tint: 'var(--stu-ai-tint)', chip: '#9a4312' },
+  cyber: { ink: 'var(--stu-cyber)', tint: 'var(--stu-cyber-tint)', chip: 'var(--color-track-cyber)' },
+  cloud: { ink: 'var(--stu-cloud)', tint: 'var(--stu-cloud-tint)', chip: 'var(--color-track-cloud)' },
+  network: { ink: 'var(--stu-network)', tint: 'var(--stu-network-tint)', chip: 'var(--color-track-network)' },
+  ai: { ink: 'var(--stu-ai)', tint: 'var(--stu-ai-tint)', chip: 'var(--color-track-ai)' },
 };
 
 const COURSE_VISUALS: Record<string, CourseVisual> = {
@@ -283,7 +283,7 @@ export function RecommendedCourses({
         <div className="flex items-center gap-3">
           <Link
             href={'/courses' as Route}
-            className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--stu-accent-soft)]"
+            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--stu-accent-soft)]"
           >
             View all
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -293,7 +293,7 @@ export function RecommendedCourses({
               type="button"
               aria-label="Previous courses"
               onClick={() => scrollBy(-1)}
-              className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
+              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
             >
               <ArrowLeft className="h-4 w-4" strokeWidth={2} />
             </button>
@@ -301,7 +301,7 @@ export function RecommendedCourses({
               type="button"
               aria-label="Next courses"
               onClick={() => scrollBy(1)}
-              className="grid h-10 w-10 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
+              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
             >
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </button>

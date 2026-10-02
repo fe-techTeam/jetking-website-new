@@ -8,7 +8,7 @@ import { usePersona } from '@/persona/PersonaProvider';
 const EVENT = 'blog:search';
 
 /** Dispatch so BlogIndex can sync without a full navigation. */
-export function dispatchBlogSearch(query: string) {
+function dispatchBlogSearch(query: string) {
   window.dispatchEvent(new CustomEvent(EVENT, { detail: { query } }));
 }
 
@@ -85,12 +85,12 @@ export function BlogHeroSearch({
         onChange={(e) => setValue(e.target.value)}
         placeholder="Search articles, topics, skills..."
         autoComplete="off"
-        className="blog-hero-search-input w-full rounded-full border border-white/12 bg-[rgb(12_12_18/0.72)] py-3.5 pr-12 pl-5 text-[14.5px] text-white shadow-[inset_3px_0_0_0_var(--blog-accent)] backdrop-blur-md placeholder:text-white/50 transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/45 focus:border-[var(--blog-accent-soft)]/70 focus:shadow-[inset_3px_0_0_0_var(--blog-accent),0_0_0_3px_rgb(255_107_112/0.16)]"
+        className="blog-hero-search-input w-full rounded-full border border-white/12 bg-scrim/72 py-3.5 pr-14 pl-5 text-[14.5px] text-white shadow-[inset_3px_0_0_0_var(--blog-accent)] backdrop-blur-md placeholder:text-white/50 transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/45 focus:border-[var(--blog-accent-soft)]/70 focus:ring-3 focus:ring-[var(--blog-accent-soft)]/20"
       />
       <button
         type="submit"
         aria-label="Search articles"
-        className="absolute top-1/2 right-2.5 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-white transition-colors hover:bg-[var(--blog-accent-tint)] hover:text-[var(--blog-accent-soft)]"
+        className="absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-white transition-colors hover:bg-[var(--blog-accent-tint)] hover:text-[var(--blog-accent-soft)]"
       >
         <Search className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
       </button>

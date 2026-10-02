@@ -22,30 +22,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     content.listPosts(),
   ]);
 
-  const now = new Date();
-
+  // Google only trusts `lastmod` on sites where it is accurate, so a static page carries one only
+  // when it can be derived from the content it lists; "now" on every build would discredit them all.
+  const latest = (dates: string[]) =>
+    dates.length ? new Date(Math.max(...dates.map((d) => new Date(d).getTime()))) : undefined;
+  const coursesUpdated = latest(courses.map((c) => c.updatedAt));
+  const centresUpdated = latest(centres.map((c) => c.updatedAt));
+  const postsUpdated = latest(posts.map((p) => p.updatedAt));
+  const siteUpdated = latest(
+    [coursesUpdated, centresUpdated, postsUpdated].filter((d): d is Date => Boolean(d)).map((d) => d.toISOString()),
+  );
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: absoluteUrl('/'), lastModified: now, changeFrequency: 'weekly', priority: 1 },
-    { url: absoluteUrl('/courses'), lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: absoluteUrl('/centres'), lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
-    { url: absoluteUrl('/placements'), lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: absoluteUrl('/student'), lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: absoluteUrl('/parent'), lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    {
-      url: absoluteUrl('/professional'),
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    { url: absoluteUrl('/franchise'), lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: absoluteUrl('/blog'), lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
-    { url: absoluteUrl('/about-us'), lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: absoluteUrl('/faq'), lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: absoluteUrl('/sitemap'), lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
-    { url: absoluteUrl('/privacy-policy'), lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-    { url: absoluteUrl('/terms-conditions'), lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-    { url: absoluteUrl('/enrollment-terms-and-conditions'), lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/'), lastModified: siteUpdated, changeFrequency: 'weekly', priority: 1 },
+    { url: absoluteUrl('/courses'), lastModified: coursesUpdated, changeFrequency: 'weekly', priority: 0.9 },
+    { url: absoluteUrl('/centres'), lastModified: centresUpdated, changeFrequency: 'monthly', priority: 0.8 },
+    { url: absoluteUrl('/placements'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: absoluteUrl('/student'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: absoluteUrl('/parent'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: absoluteUrl('/professional'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: absoluteUrl('/explore'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: absoluteUrl('/franchise'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: absoluteUrl('/blog'), lastModified: postsUpdated, changeFrequency: 'weekly', priority: 0.7 },
+    { url: absoluteUrl('/about-us'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: absoluteUrl('/faq'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: absoluteUrl('/sitemap'), changeFrequency: 'monthly', priority: 0.3 },
+    { url: absoluteUrl('/privacy-policy'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/terms-conditions'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/enrollment-terms-and-conditions'), changeFrequency: 'yearly', priority: 0.3 },
     {
       url: absoluteUrl('/investors'),
       // Filings land quarterly, so the honest "last modified" is when the lists were last synced.
@@ -69,7 +73,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
-    ...posts.map((post) => ({
+    // A post canonicalised to another URL is a duplicate; only the canonical belongs here.
+    ...posts.filter((post) => !post.seo.canonicalPath || post.seo.canonicalPath === `/blog/${post.slug}`).map((post) => ({
       url: absoluteUrl(`/blog/${post.slug}`),
       lastModified: new Date(post.updatedAt),
       changeFrequency: 'yearly' as const,

@@ -99,9 +99,12 @@
   --ink-subtle: var(--color-gray-500);
   --ink-inverse: #ffffff;
 
-  --brand: var(--color-jk-500);
-  --brand-hover: var(--color-jk-600);
-  --brand-active: var(--color-jk-700);
+  /* --brand is a fill under white text; red text uses --brand-text. jk-500 clears
+     neither 4.5:1 against white nor against the dark canvas. */
+  --brand: var(--color-jk-600);
+  --brand-hover: var(--color-jk-700);
+  --brand-active: var(--color-jk-800);
+  --brand-text: var(--color-jk-600);
   --brand-soft: var(--color-jk-50);
   --brand-border: var(--color-jk-200);
   --brand-ink: #ffffff;
@@ -135,9 +138,10 @@
   --ink-subtle: #98a2b3;
   --ink-inverse: var(--color-gray-900);
 
-  --brand: var(--color-jk-500);
-  --brand-hover: var(--color-jk-400);
-  --brand-active: var(--color-jk-300);
+  --brand: var(--color-jk-600);
+  --brand-hover: var(--color-jk-700);
+  --brand-active: var(--color-jk-800);
+  --brand-text: var(--color-jk-400);
   --brand-soft: #ea1c241f;
   --brand-border: #ea1c244d;
   --brand-ink: #ffffff;
@@ -168,6 +172,7 @@
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
   --color-brand-active: var(--brand-active);
+  --color-brand-text: var(--brand-text);
   --color-brand-soft: var(--brand-soft);
   --color-brand-border: var(--brand-border);
   --color-brand-ink: var(--brand-ink);

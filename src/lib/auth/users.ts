@@ -85,9 +85,3 @@ export async function touchLastActive(id: string): Promise<void> {
   const db = requireDb();
   await db.update(adminUsers).set({ lastActiveAt: new Date() }).where(eq(adminUsers.id, id));
 }
-
-export async function countUsers(): Promise<number> {
-  const db = requireDb();
-  const rows = await db.select({ id: adminUsers.id }).from(adminUsers);
-  return rows.length;
-}

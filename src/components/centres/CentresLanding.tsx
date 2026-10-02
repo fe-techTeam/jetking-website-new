@@ -47,7 +47,7 @@ function CentresBottomCta() {
                 <li>
                   <a
                     href={ENQUIRY_PHONE.tel}
-                    className="flex items-center gap-2 text-[13px] font-semibold text-[var(--centres-ink-secondary)] transition-colors hover:text-[var(--centres-ink)]"
+                    className="flex min-h-11 items-center gap-2 text-[13px] font-semibold text-[var(--centres-ink-secondary)] transition-colors hover:text-[var(--centres-ink)]"
                   >
                     <Phone
                       className="h-4 w-4 text-[var(--centres-accent-soft)]"

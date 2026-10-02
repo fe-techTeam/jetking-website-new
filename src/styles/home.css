@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════════════
    HOMEPAGE LEAD SKIN — "FUTURE-READY"
-   Dark canvas, Jetking red highlights, soft atmospheric glow, hexagon chooser,
+   Dark canvas, Jetking red highlights, hexagon chooser,
    action bar, floating ActionRail. Shared by the live homepage (HomeV2) and
    the Professional persona page, which reuses the same `.home-v2` language.
 
@@ -23,8 +23,8 @@
   --v2-canvas: #07070c;
   --v2-card: #14141c;
   --v2-card-warm: #1a1210;
-  --v2-hairline: rgb(255 80 90 / 0.18);
-  --v2-hairline-warm: rgb(255 140 90 / 0.22);
+  --v2-hairline: rgb(255 255 255 / 0.12);
+  --v2-hairline-warm: rgb(255 255 255 / 0.16);
 
   --v2-ink: #f4f4f8;
   --v2-ink-secondary: #c4c4d0;
@@ -49,19 +49,12 @@
   --v2-ink-bar: #101018;
   --v2-ink-bar-muted: #a9abc4;
 
-  --v2-shadow-card:
-    0 8px 28px rgb(0 0 0 / 0.45),
-    0 0 20px rgb(232 36 43 / 0.05);
+  --v2-shadow-card: 0 8px 28px rgb(0 0 0 / 0.45);
   --v2-shadow-card-hover:
-    0 0 0 1px rgb(232 36 43 / 0.39),
-    0 0 36px rgb(232 36 43 / 0.27),
-    0 0 72px rgb(232 36 43 / 0.13),
+    0 0 0 1px rgb(232 36 43 / 0.45),
     0 16px 40px rgb(0 0 0 / 0.55);
   --v2-shadow-float: 0 14px 34px rgb(0 0 0 / 0.4);
-  --v2-glow-red:
-    0 0 18px rgb(232 36 43 / 0.39),
-    0 0 42px rgb(232 36 43 / 0.24),
-    0 0 80px rgb(232 36 43 / 0.13);
+  --v2-glow-red: 0 8px 20px rgb(0 0 0 / 0.35);
 
   background: var(--v2-canvas);
   color: var(--v2-ink);
@@ -75,16 +68,16 @@
 html:not(.dark) .home-v2-themeable {
   --v2-canvas: #ffffff;
   --v2-card: #ffffff;
-  --v2-card-warm: #fff7f4;
+  --v2-card-warm: #f8f9fb;
   --v2-hairline: rgb(20 20 31 / 0.12);
-  --v2-hairline-warm: rgb(199 20 28 / 0.2);
+  --v2-hairline-warm: rgb(20 20 31 / 0.16);
 
   --v2-ink: #14141f;
   --v2-ink-secondary: #464657;
   --v2-ink-muted: #666679;
 
-  --v2-accent: #d81f26;
-  --v2-accent-soft: #d81f26;
+  --v2-accent: var(--color-jk-600);
+  --v2-accent-soft: var(--color-jk-600);
   --v2-eyebrow: #a50d13;
 
   --v2-student-ink: #5f3aa8;
@@ -106,54 +99,7 @@ html:not(.dark) .home-v2-themeable {
     0 0 0 1px rgb(216 31 38 / 0.25),
     0 18px 44px rgb(60 50 90 / 0.14);
   --v2-shadow-float: 0 14px 34px rgb(20 20 31 / 0.14);
-  --v2-glow-red: 0 8px 26px rgb(199 20 28 / 0.14);
-}
-
-html:not(.dark) .home-v2-themeable::before {
-  background: radial-gradient(circle, rgb(232 36 43 / 0.08) 0%, transparent 68%);
-}
-
-html:not(.dark) .home-v2-themeable::after {
-  background: radial-gradient(circle, rgb(95 58 168 / 0.06) 0%, transparent 70%);
-}
-
-html:not(.dark) .home-v2-themeable .v2-heading-glow,
-html:not(.dark) .home-v2-themeable .v2-eyebrow-glow {
-  text-shadow: none;
-}
-
-html:not(.dark) .home-v2-themeable .v2-accent-glow {
-  animation: none;
-  text-shadow: 0 6px 22px rgb(216 31 38 / 0.1);
-}
-
-/* Soft red atmosphere — stronger, with a slow pulse. */
-.home-v2::before,
-.home-v2::after {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  z-index: 0;
-  border-radius: 50%;
-  filter: blur(90px);
-  animation: v2-orb-pulse 6.5s var(--ease-out-soft) infinite alternate;
-}
-
-.home-v2::before {
-  top: -12%;
-  right: -8%;
-  width: min(780px, 75vw);
-  height: min(780px, 75vw);
-  background: radial-gradient(circle, rgb(232 36 43 / 0.25) 0%, transparent 68%);
-}
-
-.home-v2::after {
-  bottom: -18%;
-  left: -12%;
-  width: min(700px, 70vw);
-  height: min(700px, 70vw);
-  background: radial-gradient(circle, rgb(200 24 48 / 0.19) 0%, transparent 70%);
-  animation-delay: -3.2s;
+  --v2-glow-red: 0 4px 12px rgb(16 24 40 / 0.12);
 }
 
 .home-v2 > .shell {
@@ -184,63 +130,24 @@ html:not(.dark) .home-v2-themeable .v2-accent-glow {
   border-color: rgb(232 36 43 / 0.7);
 }
 
-.v2-eyebrow-glow {
-  text-shadow:
-    0 0 12px rgb(255 138 144 / 0.33),
-    0 0 28px rgb(232 36 43 / 0.21);
-}
-
-.v2-accent-glow {
-  text-shadow:
-    0 0 16px rgb(232 36 43 / 0.51),
-    0 0 36px rgb(232 36 43 / 0.33),
-    0 0 72px rgb(232 36 43 / 0.21);
-  animation: v2-text-glow 3.8s var(--ease-out-soft) infinite alternate;
-}
-
-.v2-heading-glow {
-  text-shadow: 0 0 40px rgb(255 255 255 / 0.05);
-}
-
+/* The `*-glow` names are historical: these now carry colour and a plain
+   elevation only — no red bloom, no pulse (design-system/MASTER.md). */
+/* jk-600, not --v2-accent: the dark-mode accent (#e8242b) is only 4.45:1 under white text. */
 .v2-cta-glow {
-  background: var(--v2-accent);
+  background: var(--color-jk-600);
   box-shadow: var(--v2-glow-red);
-  animation: v2-cta-pulse 3.2s var(--ease-out-soft) infinite alternate;
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    transform var(--duration-base) var(--ease-out-soft);
 }
 
 .v2-cta-glow:hover {
-  background: var(--v2-accent);
-  animation: none;
-  box-shadow:
-    0 0 24px rgb(255 60 70 / 0.51),
-    0 0 56px rgb(232 36 43 / 0.33),
-    0 0 100px rgb(232 36 43 / 0.19);
+  background: var(--color-jk-700, #a50d13);
 }
 
 .v2-bar-glow {
-  border-color: rgb(232 36 43 / 0.27) !important;
-  box-shadow:
-    0 0 0 1px rgb(232 36 43 / 0.12),
-    0 0 28px rgb(232 36 43 / 0.17),
-    0 0 64px rgb(232 36 43 / 0.08),
-    inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
-
-.v2-icon-glow {
-  filter: drop-shadow(0 0 6px rgb(232 36 43 / 0.39)) drop-shadow(0 0 14px rgb(232 36 43 / 0.21));
-}
-
-.v2-hero-stage::before {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset: 5% 8% auto;
-  height: 70%;
-  z-index: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(232 36 43 / 0.17) 0%, transparent 68%);
-  filter: blur(48px);
-  animation: v2-orb-pulse 5.5s var(--ease-out-soft) infinite alternate;
+  border-color: var(--v2-hairline) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
 .v2-hero-stage > * {
@@ -248,99 +155,8 @@ html:not(.dark) .home-v2-themeable .v2-accent-glow {
   z-index: 1;
 }
 
-@keyframes v2-orb-pulse {
-  from {
-    opacity: 0.65;
-    transform: scale(0.92);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.06);
-  }
-}
-
-@keyframes v2-text-glow {
-  from {
-    text-shadow:
-      0 0 14px rgb(232 36 43 / 0.42),
-      0 0 30px rgb(232 36 43 / 0.24),
-      0 0 56px rgb(232 36 43 / 0.13);
-  }
-  to {
-    text-shadow:
-      0 0 22px rgb(255 70 80 / 0.57),
-      0 0 48px rgb(232 36 43 / 0.39),
-      0 0 90px rgb(232 36 43 / 0.24);
-  }
-}
-
-@keyframes v2-cta-pulse {
-  from {
-    box-shadow:
-      0 0 14px rgb(232 36 43 / 0.3),
-      0 0 32px rgb(232 36 43 / 0.18),
-      0 0 56px rgb(232 36 43 / 0.08);
-  }
-  to {
-    box-shadow:
-      0 0 24px rgb(255 60 70 / 0.48),
-      0 0 52px rgb(232 36 43 / 0.3),
-      0 0 96px rgb(232 36 43 / 0.17);
-  }
-}
-
-@keyframes v2-hex-glow {
-  from {
-    filter:
-      drop-shadow(0 0 6px rgb(232 36 43 / 0.23))
-      drop-shadow(0 0 14px rgb(232 36 43 / 0.13));
-  }
-  to {
-    filter:
-      drop-shadow(0 0 10px rgb(255 80 90 / 0.31))
-      drop-shadow(0 0 22px rgb(232 36 43 / 0.19));
-  }
-}
-
-/*
- * Hex glow shell — mid-strength drop-shadow (follows clip-path).
- */
 .v2-hex-shell {
   isolation: isolate;
-}
-
-@media (min-width: 1024px) {
-  .v2-hex-shell {
-    filter:
-      drop-shadow(0 0 8px rgb(232 36 43 / 0.25))
-      drop-shadow(0 0 18px rgb(232 36 43 / 0.14));
-    animation: v2-hex-glow 4.5s var(--ease-out-soft) infinite alternate;
-  }
-
-  .v2-hex-shell:nth-child(2) {
-    animation-delay: -0.9s;
-  }
-
-  .v2-hex-shell:nth-child(3) {
-    animation-delay: -1.8s;
-  }
-
-  .v2-hex-shell:nth-child(4) {
-    animation-delay: -2.7s;
-  }
-
-  .v2-hex-shell:nth-child(5) {
-    animation-delay: -3.6s;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .v2-hex-shell:has(.v2-hex:hover) {
-      animation: none;
-      filter:
-        drop-shadow(0 0 12px rgb(255 80 90 / 0.39))
-        drop-shadow(0 0 28px rgb(232 36 43 / 0.24));
-    }
-  }
 }
 
 /*
@@ -362,14 +178,12 @@ html:not(.dark) .home-v2-themeable .v2-accent-glow {
   .v2-hex-rim {
     border-radius: 50%;
     box-shadow:
-      inset 0 0 0 2px rgb(255 100 110 / 0.43),
-      inset 0 0 12px rgb(232 36 43 / 0.13);
+      inset 0 0 0 1.5px var(--v2-hairline);
   }
 
   .v2-hex-warm .v2-hex-rim {
     box-shadow:
-      inset 0 0 0 2px rgb(255 170 130 / 0.45),
-      inset 0 0 12px rgb(232 36 43 / 0.11);
+      inset 0 0 0 1.5px var(--v2-hairline-warm);
   }
 
   .v2-hex:focus-visible {
@@ -378,8 +192,7 @@ html:not(.dark) .home-v2-themeable .v2-accent-glow {
 
   .v2-hex:focus-visible .v2-hex-rim {
     box-shadow:
-      inset 0 0 0 2.5px var(--focus-ring),
-      inset 0 0 14px rgb(232 36 43 / 0.17);
+      inset 0 0 0 2.5px var(--focus-ring);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -389,43 +202,7 @@ html:not(.dark) .home-v2-themeable .v2-accent-glow {
 
     .v2-hex.v2-card-interactive:hover .v2-hex-rim {
       box-shadow:
-        inset 0 0 0 2px rgb(255 140 150 / 0.54),
-        inset 0 0 18px rgb(232 36 43 / 0.21);
+        inset 0 0 0 2px var(--v2-accent);
     }
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-v2::before,
-  .home-v2::after,
-  .v2-hero-stage::before,
-  .v2-accent-glow,
-  .v2-cta-glow,
-  .v2-hex-shell {
-    animation: none;
-  }
-
-  .home-v2::before,
-  .home-v2::after,
-  .v2-hero-stage::before {
-    filter: none;
-    opacity: 0.7;
-  }
-
-  .v2-hex-shell {
-    filter:
-      drop-shadow(0 0 8px rgb(232 36 43 / 0.24))
-      drop-shadow(0 0 16px rgb(232 36 43 / 0.13));
-  }
-}
-
-/* Light theme: the primary hero button gets a small, soft drop shadow — no red halo, no pulse.
-   (The wide glow suits the dark canvas only.) */
-html:not(.dark) .v2-cta-glow {
-  animation: none;
-  box-shadow: 0 4px 12px rgb(199 20 28 / 0.2);
-}
-
-html:not(.dark) .v2-cta-glow:hover {
-  box-shadow: 0 6px 16px rgb(199 20 28 / 0.28);
 }

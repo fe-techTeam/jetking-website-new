@@ -8,7 +8,7 @@ import type { Crumb } from '@/components/ui';
 import { categoryHref, formatPostDate, PostCard, postCover } from './BlogCards';
 import { cleanBlogBody } from '@/lib/content/cleanBlogBody';
 
-const FALLBACK_BANNER = '/blog/hero.png';
+const FALLBACK_BANNER = '/blog/hero.webp';
 
 function Block({ block }: { block: BodyBlock }) {
   switch (block.type) {
@@ -96,7 +96,7 @@ export function BlogArticle({
                   ) : (
                     <Link
                       href={href}
-                      className="transition-colors hover:text-[var(--blog-accent-soft)]"
+                      className="tap transition-colors hover:text-[var(--blog-accent-soft)]"
                     >
                       {item.name}
                     </Link>
@@ -122,7 +122,7 @@ export function BlogArticle({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <Link
               href={categoryHref(post.category)}
-              className="inline-flex rounded-full border border-[var(--blog-accent-soft)]/35 bg-[var(--blog-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--blog-accent-soft)] uppercase transition-colors hover:border-[var(--blog-accent-soft)]/60"
+              className="tap inline-flex rounded-full border border-[var(--blog-accent-soft)]/35 bg-[var(--blog-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--blog-accent-soft)] uppercase transition-colors hover:border-[var(--blog-accent-soft)]/60"
             >
               {post.category}
             </Link>
@@ -211,7 +211,7 @@ export function BlogArticle({
             </div>
             <Link
               href={'/blog' as Route}
-              className="inline-flex items-center gap-2 text-[13.5px] font-bold text-[var(--blog-accent-soft)] transition-colors hover:text-[var(--blog-ink)]"
+              className="tap inline-flex items-center gap-2 text-[13.5px] font-bold text-[var(--blog-accent-soft)] transition-colors hover:text-[var(--blog-ink)]"
             >
               All articles
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

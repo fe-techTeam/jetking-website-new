@@ -28,7 +28,7 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">From the blog</p>
             <h2
               id="home-blog-heading"
-              className="dc-heading-glow mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
             >
               Career guidance and industry notes
             </h2>
@@ -36,7 +36,7 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
           <div className="flex items-center justify-between gap-3 sm:justify-end">
             <Link
               href={'/blog' as Route}
-              className="inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
             >
               Visit the blog
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

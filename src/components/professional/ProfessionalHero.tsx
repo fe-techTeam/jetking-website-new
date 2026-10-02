@@ -21,14 +21,14 @@ export function ProfessionalHero() {
       role="group" aria-labelledby="pro-hero-heading"
     >
       <div className="flex flex-col justify-start">
-        <p className="v2-eyebrow-glow text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
+        <p className="text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
           For Working Professionals
         </p>
 
         <h1
           id="pro-hero-heading"
           className={[
-            'v2-heading-glow mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
+            'mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
             'text-[36px] xs:mt-5 xs:text-[40px]',
             'sm:text-[44px] md:text-[48px]',
             'lg:mt-6 lg:text-[48px]',
@@ -39,7 +39,7 @@ export function ProfessionalHero() {
         >
           Upgrade Your Career.
           <br />
-          <span className="v2-accent-glow text-[var(--v2-accent)]">Double</span> Your
+          <span className="text-[var(--v2-accent)]">Double</span> Your
           <br />
           Impact.
         </h1>
@@ -81,7 +81,7 @@ export function ProfessionalHero() {
 
         <Link
           href={'/enquiry' as Route}
-          className="mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-6"
+          className="tap mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-6"
         >
           Book a free career upgrade session
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
@@ -90,9 +90,9 @@ export function ProfessionalHero() {
 
       <div className="v2-hero-stage relative flex flex-col items-center justify-start">
         <div className="relative mx-auto w-full max-w-[360px] lg:max-w-[400px] xl:max-w-[420px] 2xl:max-w-[440px]">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] shadow-[0_28px_70px_rgb(0_0_0/0.55)] sm:rounded-[28px] lg:aspect-[5/6]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] shadow-media sm:rounded-[28px] lg:aspect-[5/6]">
             <Image
-              src="/professional/hero.png"
+              src="/professional/hero.webp"
               alt={`${siteConfig.name} working professional upskilling for career growth`}
               fill
               priority

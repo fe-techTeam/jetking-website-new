@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import {
   Award,
   Bot,
@@ -64,18 +65,11 @@ export const GROWTH_STEPS = [
   },
 ] as const;
 
-export const AI_QUICK_LINKS = [
-  'Which skills should I learn?',
-  'Best course for my experience?',
-  'Can I study while working?',
-  'What salary can I expect?',
-] as const;
-
 export const IMPACT_STATS = [
-  { value: '60–120%', label: 'Avg. Salary Increase', icon: TrendingUp },
-  { value: '75,000+', label: 'Professionals Upskilled', icon: Users },
-  { value: '1000+', label: 'Hiring Partners', icon: Briefcase },
-  { value: '90%', label: 'Placement Rate', icon: Trophy },
+  { value: 'Hands-on', label: 'Portfolio-ready lab projects', icon: TrendingUp },
+  { value: 'Certified', label: 'Industry credentials included', icon: Award },
+  { value: 'Placement', label: 'Assistance & interview prep', icon: Briefcase },
+  { value: SINCE_FOUNDED, label: 'Training IT talent', icon: Trophy },
 ] as const;
 
 export const PROFESSIONAL_BENEFITS = [
@@ -106,7 +100,7 @@ export const PROFESSIONAL_BENEFITS = [
   },
   {
     title: 'Hiring Network',
-    detail: 'Access to 1000+ hiring partners across roles, sectors, and cities.',
+    detail: 'Access to Jetking’s hiring partners across roles, sectors, and cities.',
     icon: Briefcase,
   },
 ] as const;
@@ -162,13 +156,13 @@ export interface ProgramMeta {
 }
 
 /** Illustrative salary bands for program cards — not authoritative fee data. */
-export const PROGRAM_META: Record<string, ProgramMeta> = {
+const PROGRAM_META: Record<string, ProgramMeta> = {
   'cloud-computing-engineer-ai': {
     icon: Cloud,
     salaryHint: '₹12 LPA',
     durationLabel: '3 – 6 Months',
     accent: 'var(--pro-cloud)',
-    accentSolid: '#2454a6',
+    accentSolid: 'var(--color-track-cloud)',
     accentTint: 'var(--pro-cloud-tint)',
     bullets: [
       { label: 'AWS / Azure Cloud Labs', icon: Cloud },
@@ -181,7 +175,7 @@ export const PROGRAM_META: Record<string, ProgramMeta> = {
     salaryHint: '₹10 LPA',
     durationLabel: '4 – 8 Months',
     accent: 'var(--pro-cyber)',
-    accentSolid: '#5f3aa8',
+    accentSolid: 'var(--color-track-cyber)',
     accentTint: 'var(--pro-cyber-tint)',
     bullets: [
       { label: 'Ethical Hacking & Pen Testing', icon: Fingerprint },
@@ -194,7 +188,7 @@ export const PROGRAM_META: Record<string, ProgramMeta> = {
     salaryHint: '₹15 LPA',
     durationLabel: '4 – 6 Months',
     accent: 'var(--pro-ai)',
-    accentSolid: '#b34c11',
+    accentSolid: 'var(--color-track-ai)',
     accentTint: 'var(--pro-ai-tint)',
     bullets: [
       { label: 'Cloud AI Service Landscape', icon: Bot },
@@ -207,7 +201,7 @@ export const PROGRAM_META: Record<string, ProgramMeta> = {
     salaryHint: '₹8 LPA',
     durationLabel: '3 – 6 Months',
     accent: 'var(--pro-network)',
-    accentSolid: '#17683b',
+    accentSolid: 'var(--color-track-network)',
     accentTint: 'var(--pro-network-tint)',
     bullets: [
       { label: 'Routing & Switching', icon: RouteIcon },
@@ -220,7 +214,7 @@ export const PROGRAM_META: Record<string, ProgramMeta> = {
     salaryHint: '₹6 LPA',
     durationLabel: '6 – 12 Months',
     accent: 'var(--pro-cyber)',
-    accentSolid: '#5f3aa8',
+    accentSolid: 'var(--color-track-cyber)',
     accentTint: 'var(--pro-cyber-tint)',
     bullets: [
       { label: 'Cloud Infrastructure Basics', icon: Cloud },
@@ -230,7 +224,7 @@ export const PROGRAM_META: Record<string, ProgramMeta> = {
   },
 };
 
-export const DEFAULT_PROGRAM_META: ProgramMeta = {
+const DEFAULT_PROGRAM_META: ProgramMeta = {
   icon: Sparkles,
   salaryHint: '₹8 LPA',
   durationLabel: '3 – 6 Months',
@@ -259,7 +253,7 @@ export const SUCCESS_STORIES = [
       'Evening batches meant I could upskill without quitting. Within 8 months I moved to a cloud role with a 70% salary hike.',
     name: 'Rahul M.',
     hike: '70%',
-    avatar: '/professional/avatar-rahul.png',
+    avatar: '/professional/avatar-rahul.webp',
   },
   {
     id: 'pro-story-2',
@@ -269,7 +263,7 @@ export const SUCCESS_STORIES = [
       'The hands-on labs and mock interviews made the career switch feel achievable — not just theoretical.',
     name: 'Priya K.',
     hike: '85%',
-    avatar: '/professional/avatar-priya.png',
+    avatar: '/professional/avatar-priya.webp',
   },
   {
     id: 'pro-story-3',
@@ -279,6 +273,6 @@ export const SUCCESS_STORIES = [
       'Jetking mapped my existing skills to what hiring managers actually wanted. The DevOps track was spot on.',
     name: 'Vikram S.',
     hike: '60%',
-    avatar: '/professional/avatar-vikram.png',
+    avatar: '/professional/avatar-vikram.webp',
   },
 ] as const;

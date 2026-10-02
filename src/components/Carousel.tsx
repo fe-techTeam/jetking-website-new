@@ -196,7 +196,7 @@ export function Carousel<T>({
                 onClick={() => setUserPaused((p) => !p)}
                 aria-label={userPaused ? `Resume ${label} rotation` : `Pause ${label} rotation`}
                 className={cx(
-                  'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                  'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                   classNames?.button ??
                     'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
                 )}
@@ -214,7 +214,7 @@ export function Carousel<T>({
               aria-controls={viewportId}
               onClick={() => go(-1)}
               className={cx(
-                'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                 classNames?.button ??
                   'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
               )}
@@ -227,7 +227,7 @@ export function Carousel<T>({
               aria-controls={viewportId}
               onClick={() => go(1)}
               className={cx(
-                'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                 classNames?.button ??
                   'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
               )}

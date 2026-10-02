@@ -8,6 +8,7 @@ import { toEnquiryCentres } from '@/lib/enquiry-centres';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
+import { AskAiLink } from '@/components/AskAiLink';
 import { CourseExplorer } from './CourseExplorer';
 
 export const metadata: Metadata = buildMetadata(
@@ -72,7 +73,7 @@ export default async function CoursesPage() {
                 <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[56%] lg:px-12 lg:py-16 xl:px-14">
                   <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
 
-                  <h1 className="dc-heading-glow mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[54px]">
+                  <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[54px]">
                     The Most In-Demand
                     <span className="dc-accent-glow mt-1 block sm:mt-1.5">Job-Ready Courses.</span>
                   </h1>
@@ -88,6 +89,8 @@ export default async function CoursesPage() {
                     {' · '}
                     {levelCount} levels
                   </p>
+
+                  <AskAiLink className="mt-3 text-[var(--dc-accent-soft)]" />
                 </div>
 
                 <HeroEnquiryCard

@@ -236,8 +236,8 @@ the **public site** to actually read from this store instead of the repo fixture
 admin layout shows a banner when it isn't set, since saves still succeed locally but won't
 affect the live site.
 
-Every save also fires a best-effort `POST /api/ingest` to re-trigger the chatbot's retrieval
-index.
+Saves don't refresh the chatbot's knowledge automatically — run `npm run build:chatbot-index`
+after content changes.
 
 ---
 

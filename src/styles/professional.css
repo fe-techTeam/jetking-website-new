@@ -119,10 +119,7 @@
 }
 
 .pro-journey-panel {
-  background:
-    radial-gradient(80% 60% at 10% 20%, rgb(232 36 43 / 0.16) 0%, transparent 55%),
-    radial-gradient(70% 50% at 90% 80%, rgb(196 168 255 / 0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
+  background: linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
   border: 1px solid var(--pro-hairline);
 }
 
@@ -146,18 +143,14 @@
 
 .pro-path-step-card-final {
   border-color: rgb(255 107 112 / 0.55);
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgb(232 36 43 / 0.14) 0%, transparent 60%),
-    rgb(20 20 28 / 0.72);
-  box-shadow:
-    0 0 24px rgb(232 36 43 / 0.18),
-    0 8px 24px rgb(0 0 0 / 0.25);
+  background: rgb(20 20 28 / 0.72);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
 }
 
 .pro-path-node-final {
   border-color: var(--pro-accent-soft);
   background: var(--pro-accent-tint);
-  box-shadow: 0 0 22px rgb(232 36 43 / 0.35);
+  box-shadow: none;
 }
 
 /* Continuous desktop connector — sits at vertical center of the step nodes. */
@@ -170,9 +163,7 @@
 }
 
 .pro-why {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.35) 0%, transparent 55%),
-    linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
+  background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
   border: 1px solid var(--pro-hairline);
 }
 
@@ -206,7 +197,7 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.45rem 0.85rem 0.45rem 0.7rem;
-  background: linear-gradient(135deg, #ff4d55 0%, #c41e24 52%, #a81820 100%);
+  background: linear-gradient(135deg, var(--color-jk-600) 0%, var(--color-jk-700) 100%);
   color: #fff;
   font-size: 12px;
   font-weight: 800;
@@ -239,16 +230,12 @@
 }
 
 .pro-quote {
-  background: linear-gradient(145deg, #c41e24 0%, #8b1519 100%);
-  box-shadow:
-    0 0 28px rgb(196 30 36 / 0.35),
-    0 20px 44px rgb(0 0 0 / 0.45);
+  background: linear-gradient(145deg, var(--color-jk-600) 0%, var(--color-jk-800) 100%);
+  box-shadow: 0 20px 44px rgb(0 0 0 / 0.3);
 }
 
 .pro-bottom-cta {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.28) 0%, transparent 55%),
-    linear-gradient(155deg, #0b1120 0%, #07070c 100%);
+  background: linear-gradient(155deg, #0b1120 0%, #07070c 100%);
   border-top: 1px solid var(--pro-hairline);
 }
 
@@ -279,30 +266,26 @@ html:not(.dark) .professional-page {
   --v2-ink: #14141f;
   --v2-ink-secondary: #475467;
   --v2-ink-muted: #5f6b7d;
-  --v2-accent: #c41e24;
+  --v2-accent: var(--color-jk-600);
   --v2-accent-soft: #a50d13;
   --v2-eyebrow: #a50d13;
   --v2-ink-bar: #171722;
   --v2-shadow-card: 0 10px 30px rgb(20 20 31 / 0.09);
-  --v2-shadow-card-hover:
-    0 0 0 1px rgb(196 30 36 / 0.35),
-    0 18px 44px rgb(60 50 90 / 0.14);
+  --v2-shadow-card-hover: 0 18px 44px rgb(60 50 90 / 0.14);
 
   --pro-ink: #14141f;
   --pro-ink-secondary: #475467;
   --pro-ink-muted: #5f6b7d;
-  --pro-accent: #c41e24;
+  --pro-accent: var(--color-jk-600);
   --pro-accent-soft: #a50d13;
   --pro-accent-tint: #fff0f1;
   --pro-canvas: #ffffff;
-  --pro-surface: #fff5f4;
+  --pro-surface: #f8f9fb;
   --pro-card: #ffffff;
-  --pro-navy: #c41e24;
+  --pro-navy: var(--color-jk-600);
   --pro-hairline: rgb(20 20 31 / 0.14);
   --pro-shadow: 0 10px 30px rgb(20 20 31 / 0.09);
-  --pro-shadow-hover:
-    0 0 0 1px rgb(196 30 36 / 0.35),
-    0 18px 44px rgb(60 50 90 / 0.14);
+  --pro-shadow-hover: 0 18px 44px rgb(60 50 90 / 0.14);
 
   --pro-cyber: #5f3aa8;
   --pro-cloud: #2454a6;
@@ -312,14 +295,6 @@ html:not(.dark) .professional-page {
   --pro-cloud-tint: #e9f0ff;
   --pro-network-tint: #e8f7ed;
   --pro-ai-tint: #fff0e7;
-}
-
-html:not(.dark) .professional-page::before {
-  background: radial-gradient(circle, rgb(232 36 43 / 0.13) 0%, transparent 68%);
-}
-
-html:not(.dark) .professional-page::after {
-  background: radial-gradient(circle, rgb(95 58 168 / 0.09) 0%, transparent 70%);
 }
 
 html:not(.dark) .professional-page .pro-float {
@@ -333,11 +308,11 @@ html:not(.dark) .professional-page .pro-journey-panel {
 }
 
 html:not(.dark) .professional-page .pro-why {
-  background: #fff5f4;
+  background: #f8f9fb;
 }
 
 html:not(.dark) .professional-page .pro-bottom-cta {
-  background: #fff5f4;
+  background: #f8f9fb;
 }
 
 html:not(.dark) .professional-page .pro-path-step-card {
@@ -347,7 +322,5 @@ html:not(.dark) .professional-page .pro-path-step-card {
 }
 
 html:not(.dark) .professional-page .pro-path-step-card-final {
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgb(232 36 43 / 0.08) 0%, transparent 60%),
-    #fff8f8;
+  background: #ffffff;
 }

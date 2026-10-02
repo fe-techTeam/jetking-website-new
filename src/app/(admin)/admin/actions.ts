@@ -252,10 +252,6 @@ export async function adminLogout(): Promise<void> {
   redirect('/admin/login' as Route);
 }
 
-export async function requireAdmin(): Promise<void> {
-  if (!(await isAdminAuthenticated())) redirect('/admin/login' as Route);
-}
-
 export async function saveCollectionItem(
   collection: CmsCollection,
   idKey: string,
@@ -281,7 +277,6 @@ export async function saveCollectionItem(
 
     await upsertRecord(collection, record, idKey, previousId);
     await publishContent();
-    void triggerIngest();
     const recordId = String(record[idKey]);
     void recordAudit(
       user,
@@ -306,7 +301,6 @@ export async function removeCollectionItem(
   assertKnownCollection(collection);
   await deleteRecord(collection, idKey, id);
   await publishContent();
-  void triggerIngest();
   void recordAudit(user, 'cms.delete', collection, id, `Deleted ${collection} "${id}"`);
 }
 
@@ -321,22 +315,4 @@ export async function getAdminCollection(collection: CmsCollection) {
   await requireRole(['admin', 'editor']);
   assertKnownCollection(collection);
   return listCollection(collection);
-}
-
-async function triggerIngest(): Promise<void> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-  const secret = process.env.REVALIDATE_SECRET;
-  try {
-    await fetch(`${base}/api/ingest`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...(secret ? { authorization: `Bearer ${secret}` } : {}),
-      },
-      body: JSON.stringify({ reason: 'cms-publish' }),
-      signal: AbortSignal.timeout(10_000),
-    });
-  } catch {
-    // best-effort
-  }
 }

@@ -21,7 +21,7 @@ export const JOURNEY_STAGES = [
 
 export type JourneyStage = (typeof JOURNEY_STAGES)[number];
 
-export type NextBestActionId =
+type NextBestActionId =
   | 'choose-intent'
   | 'continue-course'
   | 'explore-persona-path'
@@ -344,29 +344,6 @@ export function cacheUserProfile(profile: UserProfile): void {
   if (typeof window === 'undefined') return;
   try {
     window.localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(profile));
-  } catch {
-    // ignore
-  }
-}
-
-export function readCachedUserProfile(): UserProfile | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = window.localStorage.getItem(PROFILE_CACHE_KEY);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (typeof parsed !== 'object' || parsed === null) return null;
-    return parsed as UserProfile;
-  } catch {
-    return null;
-  }
-}
-
-export function clearUserProfileStorage(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.removeItem(INTENT_LOCK_KEY);
-    window.localStorage.removeItem(PROFILE_CACHE_KEY);
   } catch {
     // ignore
   }

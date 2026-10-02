@@ -47,7 +47,7 @@ export function RoadmapStep({
               className={[
                 'relative flex gap-4 pb-8 last:pb-0',
                 i < phases.length - 1
-                  ? 'before:absolute before:top-10 before:left-[19px] before:h-[calc(100%-2rem)] before:w-px before:bg-[rgb(255_80_90/0.35)]'
+                  ? 'before:absolute before:top-10 before:left-[19px] before:h-[calc(100%-2rem)] before:w-px before:bg-[var(--stu-accent-soft)]/35'
                   : '',
               ].join(' ')}
             >
