@@ -364,13 +364,6 @@ export function CoursePageTemplate({
                     </span>
                   </>
                 )}
-                {/* Phones: a one-tap call sits beside the main action (the banner form is below, not first). */}
-                <span className="contents lg:hidden">
-                  <a href={`tel:${siteConfig.helpline}`} className="cp-btn cp-btn-ghost">
-                    <Phone className="h-4 w-4" aria-hidden="true" />
-                    Call {siteConfig.helpline}
-                  </a>
-                </span>
               </div>
             </div>
 
