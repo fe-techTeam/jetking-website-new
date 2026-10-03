@@ -185,7 +185,7 @@ function LogoTile({ name }: { name: string }) {
             style={{ '--logo': `url(${mark.src})`, color: mark.color } as React.CSSProperties}
           />
         ) : (
-          <span className="font-display text-[15px] font-extrabold tracking-tight text-[var(--dc-ink-muted)]">
+          <span className="font-display text-[15px] font-extrabold tracking-tight text-[#4b5563]">
             {initialsOf(name) || '·'}
           </span>
         )}
