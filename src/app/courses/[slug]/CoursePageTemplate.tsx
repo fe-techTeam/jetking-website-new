@@ -356,12 +356,10 @@ export function CoursePageTemplate({
                       Talk to a Counsellor
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </EnquireCta>
-                    <span className="hidden sm:contents">
-                      <EnquireCta source={`course-${course.slug}-brochure`} className="cp-btn cp-btn-ghost">
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        Download Brochure
-                      </EnquireCta>
-                    </span>
+                    <EnquireCta source={`course-${course.slug}-brochure`} className="cp-btn cp-btn-ghost">
+                      <Download className="h-4 w-4" aria-hidden="true" />
+                      Download Brochure
+                    </EnquireCta>
                   </>
                 )}
               </div>
