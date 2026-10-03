@@ -64,7 +64,7 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
                   href={`/blog/${post.slug}` as Route}
                   className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--dc-shadow-hover)]"
                 >
-                  <div className="dc-card-media relative aspect-[840/300] w-full overflow-hidden">
+                  <div className="dc-card-media relative aspect-[12/5] w-full overflow-hidden">
                     {cover ? (
                       <>
                         {/* Blurred copy fills the letterbox bars so any cover ratio looks intentional. */}
