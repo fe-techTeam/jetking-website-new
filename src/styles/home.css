@@ -164,12 +164,12 @@ html:not(.dark) .home-v2-themeable {
  * The circular journey chooser (class names kept as `v2-hex*` — only the
  * shape changed, from a hexagon to a circle).
  *
- * Rounded only from `lg2` (1200px), and only alongside a fixed square box — a circle
+ * Rounded only from `lg` (1024px), and only alongside a fixed square box — a circle
  * needs room on all sides, and rounding a narrow phone-width card turns the
  * label into a sliver. Below that the same card renders as an ordinary row, which
  * is what the source design's own mobile layout does.
  */
-@media (min-width: 1200px) {
+@media (min-width: 1024px) {
   .v2-hex {
     border-radius: 50%;
     border: none;
