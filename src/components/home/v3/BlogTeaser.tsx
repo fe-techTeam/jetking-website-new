@@ -98,9 +98,14 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
                     <p className="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--dc-ink-muted)]">
                       {post.excerpt}
                     </p>
-                    <span className="mt-5 inline-flex items-center gap-2 border-t border-[var(--dc-hairline)] pt-4 text-[13px] font-bold text-[var(--dc-accent-soft)]">
+                    <span className="mt-5 inline-flex items-center justify-between gap-3 border-t border-[var(--dc-hairline)] pt-4 text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
                       Read article
-                      <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+                      <span
+                        aria-hidden="true"
+                        className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-jk-600 text-white"
+                      >
+                        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />
+                      </span>
                     </span>
                   </div>
                 </Link>
