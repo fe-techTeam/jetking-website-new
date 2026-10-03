@@ -23,7 +23,7 @@ export function CredibilityMarquee() {
   const [paused, setPaused] = useState(false);
 
   return (
-    <Section tone="plain" labelledBy="home-credibility-heading">
+    <Section tone="tint" labelledBy="home-credibility-heading">
         <div className="max-w-2xl">
           <h2
             id="home-credibility-heading"

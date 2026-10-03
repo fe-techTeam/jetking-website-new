@@ -27,7 +27,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <Section tone="plain" deco="grid" labelledBy="home-how-heading">
+    <Section tone="tint" deco="grid" labelledBy="home-how-heading">
       <SectionHeader
         id="home-how-heading"
         title="Build your career, step by step"

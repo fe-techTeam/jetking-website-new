@@ -37,7 +37,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
   const visible = courses.filter((c) => inTab(c, activeTab));
 
   return (
-    <Section tone="tint" labelledBy="home-programs-heading">
+    <Section tone="plain" labelledBy="home-programs-heading">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>

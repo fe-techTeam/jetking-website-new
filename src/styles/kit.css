@@ -22,6 +22,7 @@
   --k-r-sm: 14px;
 }
 .dark .kit {
+  --k-tint: #12121b;
   --k-red: #ff8a90;
   --k-red-wash: #221217;
   --k-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -12px rgb(0 0 0 / 0.55);
@@ -44,9 +45,14 @@
   background: var(--k-red-wash);
   border-block: 1px solid color-mix(in srgb, var(--k-red-fill) 14%, transparent);
 }
-/* Two plain sections in a row would double the padding. */
-.kit-section[data-tone='plain'] + .kit-section[data-tone='plain'] {
-  padding-top: 0;
+/* A plain section after another plain block (or the page hero) gets a hairline so the two never read as one.
+   Tint and wash already carry their own borders. */
+.kit-section[data-tone='plain'] {
+  border-top: 1px solid var(--k-line);
+}
+.kit-section[data-tone='tint'] + .kit-section,
+.kit-section[data-tone='wash'] + .kit-section {
+  border-top-width: 0;
 }
 
 /* Decorative layers that break up flat colour. Behind content, pointer-events none. */
