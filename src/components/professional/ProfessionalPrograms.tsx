@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useRef } from 'react';
@@ -115,11 +116,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
   };
 
   return (
-    <section
-      className="shell py-10 sm:py-12 lg:py-14"
-      aria-labelledby="pro-programs-heading"
-    >
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <Section tone="tint" labelledBy="pro-programs-heading"><div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0 flex-[1_1_18rem]">
           <h2
             id="pro-programs-heading"
@@ -196,6 +193,6 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
           );
         })}
       </ul>
-    </section>
+    </Section>
   );
 }

@@ -1,13 +1,13 @@
 import { EnquiryLink } from '@/components/EnquirySheet';
+import { Section } from '@/components/kit';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
 import { FLEXIBLE_OPTIONS, IMPACT_STATS, PROFESSIONAL_BENEFITS } from './data';
 
 export function ProfessionalImpact() {
   return (
-    <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-impact-heading">
-      <div className="shell">
-        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <Section tone="plain" deco="glow" labelledBy="pro-impact-heading">
+        <div>
           <div className="max-w-3xl">
             <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               Career outcomes
@@ -163,7 +163,6 @@ export function ProfessionalImpact() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
 import { ProfessionalPartnerMarquee } from './ProfessionalPartnerMarquee';
@@ -7,9 +8,8 @@ import { SUCCESS_STORIES } from './data';
 
 export function ProfessionalSocialProof() {
   return (
-    <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-stories-heading">
-      <div className="shell">
-        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <Section tone="tint" labelledBy="pro-stories-heading">
+        <div>
           <div className="flex flex-col gap-12 lg:gap-14">
             <div>
               <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
@@ -94,7 +94,6 @@ export function ProfessionalSocialProof() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

@@ -1,11 +1,11 @@
 import { EnquiryLink } from '@/components/EnquirySheet';
+import { Section } from '@/components/kit';
 import { ArrowRight } from 'lucide-react';
 import { BOTTOM_CTA_FEATURES } from './data';
 
 export function ProfessionalBottomCta() {
   return (
-    <section className="pro-bottom-cta py-10 sm:py-12 lg:py-14" aria-labelledby="pro-cta-heading">
-      <div className="shell">
+    <Section tone="wash" labelledBy="pro-cta-heading">
         <div
           className={[
             'flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10',
@@ -51,7 +51,6 @@ export function ProfessionalBottomCta() {
             </span>
           </EnquiryLink>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

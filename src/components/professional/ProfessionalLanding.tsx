@@ -32,12 +32,9 @@ export function ProfessionalLanding({
         </div>
       </section>
 
-      <div className="professional-page relative overflow-hidden">
-        <div className="relative z-10 -mt-6 rounded-t-[28px] bg-[var(--dc-surface)] xs:-mt-8 xs:rounded-t-[40px] sm:-mt-10">
-          <ProfessionalGrowthPath />
-          <ProfessionalPrograms courses={courses} />
-        </div>
-
+      <div className="professional-page relative">
+        <ProfessionalGrowthPath />
+        <ProfessionalPrograms courses={courses} />
         <ProfessionalImpact />
         <ProfessionalSocialProof />
         <ProfessionalBottomCta />
