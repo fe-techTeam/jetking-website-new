@@ -60,7 +60,30 @@ export function CentrePicker({
       </div>
 
       <div id={panelId} hidden={!open} className="mt-6 border-t border-[var(--cp-line)] pt-6">
-        <div role="tablist" aria-label="Choose a city" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+        <div className="sm:hidden">
+          <label htmlFor={`${panelId}-city`} className="mb-1.5 block text-[13px] font-bold text-[var(--cp-ink-2)]">
+            City
+          </label>
+          <div className="relative">
+            <select
+              id={`${panelId}-city`}
+              value={active?.slug}
+              onChange={(e) => setSelected(e.target.value)}
+              className="min-h-12 w-full appearance-none rounded-xl border border-[var(--cp-line)] bg-[var(--cp-bg)] py-2 pr-10 pl-4 text-[16px] font-bold text-[var(--cp-ink)]"
+            >
+              {cities.map((city) => (
+                <option key={city.slug} value={city.slug}>
+                  {city.name} ({city.centres.length})
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-[var(--cp-ink-2)]"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+        <div role="tablist" aria-label="Choose a city" className="-mx-1 hidden gap-2 overflow-x-auto px-1 pb-2 sm:flex">
           {cities.map((city) => {
             const on = city.slug === active?.slug;
             return (
