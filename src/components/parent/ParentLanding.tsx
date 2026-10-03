@@ -1,5 +1,6 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -55,7 +56,7 @@ const JOURNEY_STEPS = [
 const HELP_LINKS = [
   { label: 'Talk to Parent Advisor', href: '/enquiry', icon: Phone },
   { label: 'Download Course Brochure', href: '/enquiry', icon: Download },
-  { label: 'Visit Nearest Centre', href: '/centres', icon: Building2 },
+  { label: 'Find a Centre Near You', href: '/enquiry', icon: Building2 },
   { label: 'Fee & Scholarship Options', href: '/enquiry', icon: IndianRupee },
 ] as const;
 
@@ -149,12 +150,12 @@ export function ParentLanding({
                 </span>
               </Link>
 
-              <Link
-                href={'/enquiry' as Route}
+              <EnquiryLink
+                source="parent"
                 className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] px-5 py-3 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
               >
                 Book Free Career Guidance
-              </Link>
+              </EnquiryLink>
             </div>
           </div>
 
@@ -297,8 +298,8 @@ export function ParentLanding({
               <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
                 {HELP_LINKS.map((item) => (
                   <li key={item.label}>
-                    <Link
-                      href={item.href as Route}
+                    <EnquiryLink
+                      source="parent-help"
                       className="par-help-row flex items-center gap-3 rounded-2xl border px-3.5 py-3"
                     >
                       <span
@@ -315,7 +316,7 @@ export function ParentLanding({
                         strokeWidth={2.25}
                         aria-hidden="true"
                       />
-                    </Link>
+                    </EnquiryLink>
                   </li>
                 ))}
               </ul>
@@ -452,8 +453,8 @@ export function ParentLanding({
                   centres — no pressure to enrol.
                 </p>
 
-                <Link
-                  href={'/enquiry' as Route}
+                <EnquiryLink
+                  source="parent"
                   className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
                 >
                   Book Free Career Counselling
@@ -463,7 +464,7 @@ export function ParentLanding({
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                   </span>
-                </Link>
+                </EnquiryLink>
 
                 <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[12.5px] font-bold text-[var(--dc-ink-secondary)] sm:text-[13px]">
                   <CheckCircle2

@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import type { Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import { ArrowRight } from 'lucide-react';
 import { BOTTOM_CTA_FEATURES } from './data';
 
@@ -39,8 +38,8 @@ export function ProfessionalBottomCta() {
             </ul>
           </div>
 
-          <Link
-            href={'/enquiry' as Route}
+          <EnquiryLink
+            source="professional-bottom-cta"
             className="group/cta inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[var(--dc-navy)] py-3.5 pr-3 pl-7 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[16px] lg:self-center"
           >
             Book My Session Now
@@ -50,7 +49,7 @@ export function ProfessionalBottomCta() {
             >
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
             </span>
-          </Link>
+          </EnquiryLink>
         </div>
       </div>
     </section>

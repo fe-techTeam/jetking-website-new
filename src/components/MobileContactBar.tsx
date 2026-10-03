@@ -1,7 +1,7 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, MessageCircle, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
@@ -86,14 +86,14 @@ export function MobileContactBar() {
             <MessageCircle className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
           </a>
         ) : null}
-        <Link
-          href="/enquiry"
+        <EnquiryLink
+          source="mobile-contact-bar"
           onClick={() => track('enquiry_started', { surface: 'mobile-contact-bar', path: pathname })}
           className="inline-flex h-11 flex-[1.4] items-center justify-center gap-1.5 rounded-full bg-[var(--theme-accent)] px-4 text-[14px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
         >
           Enquire now
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
+        </EnquiryLink>
       </div>
     </div>
   );

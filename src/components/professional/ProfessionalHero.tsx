@@ -1,5 +1,6 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -69,13 +70,13 @@ export function ProfessionalHero() {
           </Link>
         </div>
 
-        <Link
-          href={'/enquiry' as Route}
+        <EnquiryLink
+          source="professional-hero"
           className="tap mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-6"
         >
           Book a free career upgrade session
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
+        </EnquiryLink>
       </div>
 
       <div className="v2-hero-stage relative flex flex-col items-center justify-start">

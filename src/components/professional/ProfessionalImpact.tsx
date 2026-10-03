@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import type { Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
 import { FLEXIBLE_OPTIONS, IMPACT_STATS, PROFESSIONAL_BENEFITS } from './data';
@@ -149,8 +148,8 @@ export function ProfessionalImpact() {
                 your work week.
               </p>
 
-              <Link
-                href={'/enquiry' as Route}
+              <EnquiryLink
+                source="professional-impact"
                 className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
               >
                 <span>Book My Session Now</span>
@@ -160,7 +159,7 @@ export function ProfessionalImpact() {
                 >
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                 </span>
-              </Link>
+              </EnquiryLink>
             </div>
           </div>
         </div>

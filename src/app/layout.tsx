@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { PersonaInspector } from '@/components/PersonaInspector';
 import { ExitIntentPopup } from '@/components/ExitIntentPopup';
 import { MobileContactBar } from '@/components/MobileContactBar';
+import { EnquirySheetServer } from '@/components/EnquirySheetServer';
 import { AccountProvider } from '@/components/account/AccountProvider';
 import { JsonLd } from '@/components/ui';
 import { AppProviders } from '@/components/providers/app-providers';
@@ -74,19 +75,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <PersonaProvider>
             <AccountProvider>
-              <SilentPersonaInfer />
-              <SiteChrome>
-                <SiteHeaderServer />
-              </SiteChrome>
-              <main id="main">{children}</main>
-              <FooterChrome>
-                <SiteFooter />
-              </FooterChrome>
-              <SiteChrome>
-                <MobileContactBar />
-                <ExitIntentPopup />
-                {showInspector ? <PersonaInspector /> : null}
-              </SiteChrome>
+              <EnquirySheetServer>
+                <SilentPersonaInfer />
+                <SiteChrome>
+                  <SiteHeaderServer />
+                </SiteChrome>
+                <main id="main">{children}</main>
+                <FooterChrome>
+                  <SiteFooter />
+                </FooterChrome>
+                <SiteChrome>
+                  <MobileContactBar />
+                  <ExitIntentPopup />
+                  {showInspector ? <PersonaInspector /> : null}
+                </SiteChrome>
+              </EnquirySheetServer>
             </AccountProvider>
           </PersonaProvider>
         </AppProviders>

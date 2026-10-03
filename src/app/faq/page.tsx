@@ -1,4 +1,5 @@
 import type { Metadata, Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -192,12 +193,12 @@ export default async function FaqPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link
-                href={'/enquiry' as Route}
+              <EnquiryLink
+                source="faq"
                 className="dc-cta inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold"
               >
                 Talk to a counsellor
-              </Link>
+              </EnquiryLink>
               <Link
                 href={'/chatbot' as Route}
                 className="inline-flex h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"

@@ -1,0 +1,124 @@
+'use client';
+
+import { useId, useState } from 'react';
+import { ChevronDown, MapPin, Navigation, Phone } from 'lucide-react';
+
+export interface PickerCentre {
+  slug: string;
+  name: string;
+  locality: string;
+  address: string;
+  phone?: string;
+}
+
+export interface PickerCity {
+  slug: string;
+  name: string;
+  centres: PickerCentre[];
+}
+
+/**
+ * Centre strip with an inline city picker: the learner chooses a city and sees only that city's
+ * centres (address, call, directions) without leaving the course page.
+ */
+export function CentrePicker({
+  cities,
+  centreCount,
+  fallbackPhone,
+}: {
+  cities: PickerCity[];
+  centreCount: number;
+  fallbackPhone: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(cities[0]?.slug ?? '');
+  const panelId = useId();
+  const active = cities.find((c) => c.slug === selected) ?? cities[0];
+
+  return (
+    <div className="cp-card mt-12 p-6">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-[1.375rem] leading-tight font-bold text-[var(--cp-ink)]">
+            Available at <span className="text-[var(--cp-red)]">{centreCount}</span>{' '}
+            {centreCount === 1 ? 'centre' : 'centres'}
+          </p>
+          <p className="mt-1 text-[15px] text-[var(--cp-ink-2)]">
+            Across {cities.length} {cities.length === 1 ? 'city' : 'cities'} — pick a location that works for you.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="cp-btn shrink-0"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? 'Hide centres' : 'Find your centre'}
+          <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+        </button>
+      </div>
+
+      <div id={panelId} hidden={!open} className="mt-6 border-t border-[var(--cp-line)] pt-6">
+        <div role="tablist" aria-label="Choose a city" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+          {cities.map((city) => {
+            const on = city.slug === active?.slug;
+            return (
+              <button
+                key={city.slug}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => setSelected(city.slug)}
+                className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-[14px] font-bold transition-colors ${
+                  on
+                    ? 'border-[var(--cp-red-fill)] bg-[var(--cp-red-fill)] text-white'
+                    : 'border-[var(--cp-line)] bg-[var(--cp-bg)] text-[var(--cp-ink)] hover:border-[var(--cp-red)]'
+                }`}
+              >
+                {city.name}
+                <span className={`text-[12px] ${on ? 'text-white/85' : 'text-[var(--cp-ink-2)]'}`}>{city.centres.length}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {active ? (
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {active.centres.map((centre) => {
+              const phone = centre.phone || fallbackPhone;
+              const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Jetking ${centre.name} ${centre.address}`)}`;
+              return (
+                <li key={centre.slug} className="rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-grey)] p-4">
+                  <p className="flex items-start gap-2 text-[16px] font-bold text-[var(--cp-ink)]">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
+                    {centre.name}
+                  </p>
+                  <p className="mt-1.5 text-[14px] leading-snug text-[var(--cp-ink-2)]">{centre.address}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={`tel:${phone.replace(/[^+\d]/g, '')}`}
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[var(--cp-red-fill)] px-4 text-[13.5px] font-bold text-white"
+                    >
+                      <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+                      Call
+                    </a>
+                    <a
+                      href={maps}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--cp-line)] bg-[var(--cp-bg)] px-4 text-[13.5px] font-bold text-[var(--cp-ink)]"
+                    >
+                      <Navigation className="h-3.5 w-3.5" aria-hidden="true" />
+                      Directions
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+      </div>
+    </div>
+  );
+}

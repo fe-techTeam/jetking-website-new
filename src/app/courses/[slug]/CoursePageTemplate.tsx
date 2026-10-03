@@ -30,6 +30,7 @@ import { BrandTile } from './brand';
 import { ZoomImage } from './ZoomImage';
 import { SnapSlider } from './SnapSlider';
 import { FeeDepthTracker } from './FeeDepthTracker';
+import { CentrePicker } from './CentrePicker';
 
 /*
  * Course page template (degree and short-term) — built from the client's "Website Design Feedback" deck.
@@ -239,21 +240,21 @@ export function CoursePageTemplate({
           </div>
 
           {offeringCentres.length ? (
-            <div className="cp-card mt-12 flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
-              <div className="min-w-0">
-                <p className="text-[1.375rem] leading-tight font-bold text-[var(--cp-ink)]">
-                  Available at <span className="text-[var(--cp-red)]">{offeringCentres.length}</span>{' '}
-                  {offeringCentres.length === 1 ? 'centre' : 'centres'}
-                </p>
-                <p className="mt-1 text-[15px] text-[var(--cp-ink-2)]">
-                  Across {cityGroups.length} {cityGroups.length === 1 ? 'city' : 'cities'} — pick a location that works for you.
-                </p>
-              </div>
-              <Link href="/centres" className="cp-btn shrink-0">
-                Browse centres
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
+            <CentrePicker
+              centreCount={offeringCentres.length}
+              fallbackPhone={siteConfig.helpline}
+              cities={cityGroups.map((g) => ({
+                slug: g.slug,
+                name: g.name,
+                centres: g.list.map((c) => ({
+                  slug: c.slug,
+                  name: c.name,
+                  locality: c.locality,
+                  address: [c.addressLine, c.locality, c.pincode].filter(Boolean).join(', '),
+                  phone: c.phone,
+                })),
+              }))}
+            />
           ) : null}
         </div>
       </section>

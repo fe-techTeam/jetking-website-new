@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
@@ -187,13 +187,13 @@ export default async function CoursesPage() {
                   commitment needed.
                 </p>
               </div>
-              <Link
-                href="/enquiry"
+              <EnquiryLink
+                source="courses-index"
                 className="dc-cta inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-7 text-sm font-bold sm:h-14 sm:px-8 sm:text-base"
               >
                 Talk to a counsellor
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              </Link>
+              </EnquiryLink>
             </div>
           </section>
         </div>

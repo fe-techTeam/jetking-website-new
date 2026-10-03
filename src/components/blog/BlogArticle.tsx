@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
@@ -252,8 +253,8 @@ export function BlogArticle({
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-                <Link
-                  href={'/enquiry' as Route}
+                <EnquiryLink
+                  source="blog-article"
                   className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-[var(--dc-accent-soft)] xs:text-[15px]"
                 >
                   <span>Enquire now</span>
@@ -263,7 +264,7 @@ export function BlogArticle({
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                   </span>
-                </Link>
+                </EnquiryLink>
                 <Link
                   href={'/courses' as Route}
                   className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] xs:text-[15px]"

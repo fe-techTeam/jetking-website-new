@@ -1,5 +1,6 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
@@ -172,8 +173,8 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                   </button>
                 )
               ) : null}
-              <Link
-                href="/enquiry"
+              <EnquiryLink
+                source="site-header"
                 onClick={close}
                 className="mt-6 inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-jk-600 px-7 py-3.5 text-[15px] font-bold text-white shadow-brand transition-colors hover:bg-jk-700"
               >
@@ -181,7 +182,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                 <span aria-hidden="true" className="text-lg leading-none">
                   →
                 </span>
-              </Link>
+              </EnquiryLink>
             </nav>
           </aside>
         </>,
@@ -313,12 +314,12 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
             />
             <span className="hidden sm:inline lg:hidden min-[1700px]:inline">Jetking AI</span>
           </Link>
-          <Link
-            href={'/enquiry' as Route}
+          <EnquiryLink
+            source="site-header"
             className="hidden h-[52px] items-center justify-center rounded-full bg-jk-600 px-5 text-sm font-bold whitespace-nowrap text-white transition-colors hover:bg-jk-700 lg:inline-flex"
           >
             Enquire Now
-          </Link>
+          </EnquiryLink>
           <button
             type="button"
             onClick={() => setOpen(!open)}
