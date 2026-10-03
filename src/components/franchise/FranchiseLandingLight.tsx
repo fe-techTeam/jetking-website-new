@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Reveal, Section, StepPath } from '@/components/kit';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -186,12 +187,8 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Why Franchise (student Why panel) ──────────────────────────── */}
-      <section
-        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="fra-why"
-      >
-        <div className="shell">
-          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="plain" deco="glow" labelledBy="fra-why">
+          <div>
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
                 <h2
@@ -213,7 +210,7 @@ export function FranchiseLandingLight({
                     return (
                     <div
                       key={stat.label}
-                      className="stu-card @container min-w-0 flex-[1_1_136px] rounded-2xl p-4"
+                      className="kit kit-card @container min-w-0 flex-[1_1_136px] p-4"
                     >
                       <dt className="sr-only">{stat.label}</dt>
                       <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
@@ -241,15 +238,10 @@ export function FranchiseLandingLight({
               <FranchiseTestimonialSliderLight testimonials={testimonials} />
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Partner benefits (student Benefits pattern) ────────────────── */}
-      <section
-        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="fra-benefits"
-      >
-        <div className="shell">
+      <Section tone="tint" labelledBy="fra-benefits">
           <div className="grid gap-6 xs:gap-7 sm:gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10">
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
               <h2
@@ -268,7 +260,7 @@ export function FranchiseLandingLight({
                 const Icon = JUMP_START_ICONS[i]!;
                 return (
                 <li key={item.title} className="min-w-0">
-                  <article className="stu-card flex h-full gap-3.5 rounded-[16px] p-4 xs:gap-4 xs:rounded-[20px] xs:p-5 sm:flex-col sm:gap-0">
+                  <article className="kit kit-card flex h-full gap-3.5 p-4 xs:gap-4 xs:p-5 sm:flex-col sm:gap-0">
                     <span
                       aria-hidden="true"
                       className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
@@ -290,7 +282,7 @@ export function FranchiseLandingLight({
             </ul>
 
             <div className="min-w-0 lg:col-span-5 lg:row-start-2 lg:self-stretch xl:col-span-4">
-              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
+              <div className="kit kit-card relative flex h-full flex-col justify-center overflow-hidden bg-[var(--k-red-wash)] p-6 xs:p-7 sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
                   className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] shadow-brand xs:h-12 xs:w-12"
@@ -325,12 +317,10 @@ export function FranchiseLandingLight({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
-      <section id="journey" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
+      <Section tone="plain" deco="grid" id="journey">
           <div className="max-w-xl">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
               Launch Plan
@@ -340,42 +330,24 @@ export function FranchiseLandingLight({
             </p>
           </div>
 
-          <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-            {LAUNCH_STEPS.map((step, i) => {
-              const Icon = LAUNCH_STEPS_ICONS[i]!;
-              return (
-              <li key={step.step}>
-                <article className="stu-card flex h-full flex-col rounded-[20px] p-5 sm:p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                    >
-                      <Icon className="h-5 w-5" strokeWidth={1.75} />
-                    </span>
-                    <span className="font-display text-[22px] font-extrabold text-[var(--dc-accent-soft)]/70">
-                      {step.step}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--dc-ink)]">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
-                    {step.body}
-                  </p>
-                </article>
-              </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
+          <div className="mt-10">
+            <Reveal>
+              <StepPath
+                steps={LAUNCH_STEPS.map((step, i) => ({
+                  icon: LAUNCH_STEPS_ICONS[i]!,
+                  label: String(step.step),
+                  title: step.title,
+                  body: <p className="lg:max-w-[13rem]">{step.body}</p>,
+                }))}
+              />
+            </Reveal>
+          </div>
+        </Section>
 
       {/* ── Market opportunity + image ─────────────────────────────────── */}
-      <section id="opportunity" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
+      <Section tone="tint" id="opportunity">
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
-            <div className="relative overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] lg:col-span-5">
+            <div className="kit kit-card relative overflow-hidden lg:col-span-5">
               <Image
                 src="/franchise/centre-interior.webp"
                 alt="Students learning in a modern Jetking-style IT training classroom"
@@ -400,7 +372,7 @@ export function FranchiseLandingLight({
 
               <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
                 {MARKET_STATS.map((stat) => (
-                  <li key={stat.label} className="stu-card rounded-[16px] p-3.5 sm:p-5">
+                  <li key={stat.label} className="kit kit-card p-3.5 sm:p-5">
                     <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
                       {stat.value}
                     </p>
@@ -412,12 +384,10 @@ export function FranchiseLandingLight({
               </ul>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Courses ────────────────────────────────────────────────────── */}
-      <section id="courses" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
+      <Section tone="plain" id="courses">
           <div className="max-w-xl">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
               Courses your centre will deliver
@@ -432,7 +402,7 @@ export function FranchiseLandingLight({
               const Icon = COURSES_ICONS[i]!;
               return (
               <li key={course.title}>
-                <article className="stu-card flex h-full flex-col rounded-[20px] p-5 sm:p-6">
+                <article className="kit kit-card flex h-full flex-col p-5 sm:p-6">
                   <span
                     aria-hidden="true"
                     className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
@@ -450,13 +420,11 @@ export function FranchiseLandingLight({
               );
             })}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── FAQs ───────────────────────────────────────────────────────── */}
       {faqs?.length ? (
-        <section id="faqs" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
-          <div className="shell">
+        <Section tone="tint" id="faqs">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
               Frequently Asked Questions
             </h2>
@@ -469,14 +437,12 @@ export function FranchiseLandingLight({
                 </Disclosure>
               ))}
             </div>
-          </div>
-        </section>
+          </Section>
       ) : null}
 
       {/* ── Enquire ────────────────────────────────────────────────────── */}
-      <section id="enquire" className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20">
-        <div className="shell">
-          <div className="stu-card overflow-hidden rounded-[28px]">
+      <Section tone="wash" deco="glow" id="enquire">
+          <div className="kit kit-card overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
@@ -502,8 +468,7 @@ export function FranchiseLandingLight({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Contact bar ────────────────────────────────────────────────── */}
       <footer className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-5">
