@@ -64,14 +64,14 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
                   href={`/blog/${post.slug}` as Route}
                   className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--dc-shadow-hover)]"
                 >
-                  <div className="dc-card-media relative aspect-[16/9] w-full overflow-hidden">
+                  <div className="dc-card-media relative aspect-[840/300] w-full overflow-hidden">
                     {cover ? (
                       <Image
                         src={cover.url}
                         alt={cover.alt || post.title}
                         fill
                         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
+                        className="object-contain"
                       />
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element -- brand asset on a placeholder plate
