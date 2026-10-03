@@ -105,7 +105,7 @@ export function FranchiseLandingLight({
               Become A Franchise Partner
             </p>
 
-            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+            <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
               Transform youth with a Jetking Franchise in your{' '}
               <span className="text-[var(--dc-accent-soft)]">City</span>
             </h1>

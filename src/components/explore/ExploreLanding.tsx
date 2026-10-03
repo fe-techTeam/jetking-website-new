@@ -280,7 +280,7 @@ export function ExploreLanding({
               Just Exploring? Welcome! <span aria-hidden="true">👋</span>
             </p>
 
-            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+            <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
               See everything <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span> has to offer
             </h1>
 

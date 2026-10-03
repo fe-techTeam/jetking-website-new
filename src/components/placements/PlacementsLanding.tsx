@@ -118,15 +118,15 @@ export function PlacementsLanding() {
               className="dc-banner-wash pointer-events-none absolute inset-0"
             />
 
-            <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[62%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
+            <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[68%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
               <p className="dc-eyebrow label-mono text-[14px]">{PLACEMENTS_HERO.eyebrow}</p>
 
-              <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
+              <h1 className="page-title-hero mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                 {PLACEMENTS_HERO.titleLead}{' '}
                 <span className="dc-accent-glow">{PLACEMENTS_HERO.titleAccent}</span>
               </h1>
 
-              <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
+              <p className="mt-4 max-w-[54ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
                 {PLACEMENTS_HERO.lede}
               </p>
 

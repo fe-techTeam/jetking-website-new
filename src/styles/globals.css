@@ -1116,3 +1116,22 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
   line-height: 1.2;
   letter-spacing: -0.015em;
 }
+
+/* Hero variant of the page title for two-column heroes (Home, Professional): capped at 46px while the
+   text column is narrow (up to 1535px), then steps up on large monitors where the column widens. */
+.page-title-hero {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.35rem + 2.9vw, 2.875rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 1536px) {
+  .page-title-hero { font-size: 3.625rem; }
+}
+@media (min-width: 1920px) {
+  .page-title-hero { font-size: 3.875rem; }
+}
+@media (min-width: 2560px) {
+  .page-title-hero { font-size: 4.25rem; }
+}

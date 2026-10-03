@@ -28,21 +28,21 @@ const homeV2Journeys = JOURNEYS.filter((journey) => HOME_V2_JOURNEY_IDS.includes
 );
 
 const STAGGER = [
-  'lg:mt-0',
-  'lg:mt-2 xl:mt-2 2xl:mt-2.5',
-  'lg:mt-0',
+  'lg2:mt-0',
+  'lg2:mt-2 xl:mt-2 2xl:mt-2.5',
+  'lg2:mt-0',
   /* Second row tucks into the first-row notches */
-  'lg:-mt-8 xl:-mt-7 2xl:-mt-10 3xl:-mt-11',
-  'lg:-mt-6 xl:-mt-5 2xl:-mt-8 3xl:-mt-9',
+  'lg2:-mt-8 xl:-mt-7 2xl:-mt-10 3xl:-mt-11',
+  'lg2:-mt-6 xl:-mt-5 2xl:-mt-8 3xl:-mt-9',
 ];
 
 /** Grid placement: top row fills cols 1–6; bottom row centres under gaps. */
 const GRID_PLACE = [
-  'lg:col-span-2',
-  'lg:col-span-2',
-  'lg:col-span-2',
-  'lg:col-span-2 lg:col-start-2',
-  'lg:col-span-2 lg:col-start-4',
+  'lg2:col-span-2',
+  'lg2:col-span-2',
+  'lg2:col-span-2',
+  'lg2:col-span-2 lg2:col-start-2',
+  'lg2:col-span-2 lg2:col-start-4',
 ];
 
 export function JourneyHexes() {
@@ -54,7 +54,7 @@ export function JourneyHexes() {
         'flex flex-col gap-3',
         /* One centred column of row cards up to lg — a 2-col grid orphaned the third card. */
         'sm:mx-auto sm:w-full sm:max-w-[560px]',
-        'lg:mx-auto lg:grid lg:w-full lg:max-w-[min(100%,960px)] lg:grid-cols-6 lg:gap-x-3 lg:gap-y-0',
+        'lg2:mx-auto lg2:grid lg2:w-full lg2:max-w-[min(100%,960px)] lg2:grid-cols-6 lg2:gap-x-3 lg2:gap-y-0',
         /* Two-column band (1200–1535): tighter column gap buys the hexes a little more width. */
         'lg2:gap-x-2',
         'xl:gap-x-2.5',
@@ -87,8 +87,8 @@ export function JourneyHexes() {
                 'xs:min-h-[92px] xs:p-4',
                 /* Hex from lg — square, capped, centred in its grid cell so
                    three always fit the stage column and never spill to 4+1. */
-                'lg:mx-auto lg:aspect-square lg:h-auto lg:w-full lg:max-w-[240px] lg:flex-col lg:items-stretch lg:justify-end lg:gap-0 lg:rounded-none lg:bg-transparent lg:p-0',
-                /* Label stays bottom-aligned (lg:justify-end) at every size. */
+                'lg2:mx-auto lg2:aspect-square lg2:h-auto lg2:w-full lg2:max-w-[240px] lg2:flex-col lg2:items-stretch lg2:justify-end lg2:gap-0 lg2:rounded-none lg2:bg-transparent lg2:p-0',
+                /* Label stays bottom-aligned (lg2:justify-end) at every size. */
                 /* Hexes stay full-size (240px) through the stacked lg/xl range so labels
                    never clip; they only shrink at 2xl where the two-column split begins. */
                 '2xl:max-w-[280px]',
@@ -100,35 +100,35 @@ export function JourneyHexes() {
               style={{ '--hex-ink': ink } as CSSProperties}
             >
               {/* Hex rim — sits above the photo so the border always reads */}
-              <span aria-hidden="true" className="v2-hex-rim pointer-events-none absolute inset-0 z-[6] hidden lg:block" />
+              <span aria-hidden="true" className="v2-hex-rim pointer-events-none absolute inset-0 z-[6] hidden lg2:block" />
 
               <span
                 aria-hidden="true"
-                className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[12px] ring-2 ring-[var(--v2-accent)]/40 xs:h-[72px] xs:w-[72px] lg:absolute lg:inset-0 lg:h-auto lg:w-auto lg:rounded-none lg:ring-0"
+                className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[12px] ring-2 ring-[var(--v2-accent)]/40 xs:h-[72px] xs:w-[72px] lg2:absolute lg2:inset-0 lg2:h-auto lg2:w-auto lg2:rounded-none lg2:ring-0"
               >
                 <Image
                   src={journey.image}
                   alt=""
                   fill
                   loading="eager"
-                  sizes="(min-width: 1024px) 320px, 72px"
+                  sizes="(min-width: 1200px) 320px, 72px"
                   className="object-cover object-[center_22%] transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover/hex:scale-105"
                 />
               </span>
 
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 hidden bg-linear-180 from-scrim/12 via-scrim/40 via-45% to-scrim/90 lg:block"
+                className="pointer-events-none absolute inset-0 hidden bg-linear-180 from-scrim/12 via-scrim/40 via-45% to-scrim/90 lg2:block"
               />
 
-              <span className="relative z-10 min-w-0 flex-1 lg:mt-auto lg:flex-none lg:px-5 lg:pt-8 lg:pb-5 lg:text-center lg2:px-3 lg2:pt-4 lg2:pb-4 2xl:px-6 2xl:pt-8 2xl:pb-6">
-                <span className="block text-[15px] leading-tight font-extrabold text-[color:var(--hex-ink)] xs:text-[15.5px] lg:text-[15px] lg:text-white lg2:text-[12.5px] lg2:leading-[1.15] 2xl:text-[16.5px] 2xl:leading-tight">
+              <span className="relative z-10 min-w-0 flex-1 lg2:mt-auto lg2:flex-none lg2:px-5 lg2:pt-8 lg2:pb-5 lg2:text-center lg2:px-3 lg2:pt-4 lg2:pb-4 2xl:px-6 2xl:pt-8 2xl:pb-6">
+                <span className="block text-[15px] leading-tight font-extrabold text-[color:var(--hex-ink)] xs:text-[15.5px] lg2:text-[15px] lg2:text-white lg2:text-[12.5px] lg2:leading-[1.15] 2xl:text-[16.5px] 2xl:leading-tight">
                   {journey.title}
                 </span>
                 {/* Sub-text shows at every size. In the compact band (1200–1535) the hex is
                     ~205px, so the detail steps down to 10.5px and tightens its spacing to sit
                     between the title and the arrow without crowding the rim. */}
-                <span className="mt-1 block text-[12.5px] leading-snug text-[var(--v2-ink-muted)] xs:mt-1.5 lg:mt-1.5 lg:text-[12.5px] lg:text-white/80 lg2:mt-0.5 lg2:text-[12px] lg2:leading-[1.25] 2xl:mt-1 2xl:text-[13.5px] 2xl:leading-snug">
+                <span className="mt-1 block text-[12.5px] leading-snug text-[var(--v2-ink-muted)] xs:mt-1.5 lg2:mt-1.5 lg2:text-[12.5px] lg2:text-white/80 lg2:mt-0.5 lg2:text-[12px] lg2:leading-[1.25] 2xl:mt-1 2xl:text-[13.5px] 2xl:leading-snug">
                   {journey.detail}
                 </span>
 
@@ -137,7 +137,7 @@ export function JourneyHexes() {
                   className={[
                     /* Smaller in the compact 1200–1535 band so it fits with the label;
                        full size again from 2xl. */
-                    'v2-hex-arrow mt-3 hidden h-9 w-9 place-items-center rounded-full lg:mx-auto lg:grid lg2:mt-2 lg2:h-7 lg2:w-7 2xl:mt-3.5 2xl:h-10 2xl:w-10',
+                    'v2-hex-arrow mt-3 hidden h-9 w-9 place-items-center rounded-full lg2:mx-auto lg2:grid lg2:mt-2 lg2:h-7 lg2:w-7 2xl:mt-3.5 2xl:h-10 2xl:w-10',
                     'border border-white/25 bg-white/10 text-white',
                     'transition-[transform,background-color,border-color] duration-200 ease-[var(--ease-out-soft)]',
                     'group-hover/hex:translate-x-0.5 group-hover/hex:border-jk-500',
@@ -151,7 +151,7 @@ export function JourneyHexes() {
               <span
                 aria-hidden="true"
                 className={[
-                  'v2-hex-arrow grid h-9 w-9 shrink-0 place-items-center rounded-full lg:hidden',
+                  'v2-hex-arrow grid h-9 w-9 shrink-0 place-items-center rounded-full lg2:hidden',
                   'border border-[color:var(--hex-ink)] text-[color:var(--hex-ink)]',
                   'transition-[transform,background-color] duration-200 ease-[var(--ease-out-soft)]',
                   'group-hover/hex:translate-x-0.5',

@@ -27,13 +27,11 @@ export function ProfessionalHero() {
 
         <h1
           id="pro-hero-heading"
-          className="page-title mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
+          className="page-title-hero mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
         >
           Upgrade Your Career.
           <br />
-          <span className="text-[var(--v2-accent)]">Double</span> Your
-          <br />
-          Impact.
+          <span className="text-[var(--v2-accent)]">Double</span> Your Impact.
         </h1>
 
         <p className="mt-5 max-w-[42ch] text-[15px] leading-[1.6] text-[var(--v2-ink-secondary)] xs:mt-6 xs:text-[15.5px] sm:text-[16px] lg:text-[17px] 3xl:text-[18px]">

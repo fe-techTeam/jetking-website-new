@@ -49,12 +49,13 @@ export function HomeV2({
           className={[
             'grid flex-1 items-center gap-8',
             'xs:gap-9 sm:gap-10 md:gap-12',
-            /* Stacked up to 1200px. From 1200px the hero is two-column — heading left,
+            /* Stacked up to 1024px. From 1024px the hero is two-column (circles from 1200px) — heading left,
                honeycomb right in the banner's first part — with a compact left column and
                NO rail gutter (the rail stays inline below until 2xl). That keeps the hexes
                ~240px so labels never clip. At 2xl the column widens, the rail goes fixed,
                and the hero reserves its gutter. */
-            'lg:gap-8',
+            /* 1024–1199: two-column too, with the chooser as compact row cards (circles need 1200px). */
+            'lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-8',
             'lg2:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg2:gap-6',
             '2xl:grid-cols-[minmax(0,470px)_minmax(0,1fr)] 2xl:gap-6',
             '3xl:grid-cols-[minmax(0,520px)_minmax(0,1fr)] 3xl:gap-10',
@@ -67,7 +68,7 @@ export function HomeV2({
             </p>
 
             <h1
-              className="page-title mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
+              className="page-title-hero mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
             >
               The Power of Three
               <br />
@@ -112,7 +113,7 @@ export function HomeV2({
 
           {/* Chooser occupies the former banner slot */}
           <div className="v2-hero-stage relative flex h-full flex-col items-center justify-center text-center">
-            <h2 className="subsection-title font-display text-[var(--v2-ink)] 3">
+            <h2 className="subsection-title font-display text-[var(--v2-ink)]">
               What brings you here today?
             </h2>
             <p className="mt-2.5 text-[14px] text-[var(--v2-ink-muted)] xs:mt-3 xs:text-[15px] sm:text-[15.5px]">

@@ -106,7 +106,7 @@ export function ParentLanding({
               Welcome Parent!
             </p>
 
-            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+            <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
               Your Child&rsquo;s Future Starts with the{' '}
               <span className="text-[var(--dc-accent-soft)]">Right Education</span> Today
             </h1>

@@ -82,7 +82,7 @@ export default async function CoursesPage() {
                 <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
                   <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
 
-                  <h1 className="page-title mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
+                  <h1 className="page-title-hero mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
                     The Most In-Demand
                     <span className="dc-accent-glow mt-1 block sm:mt-1.5">Job-Ready Courses.</span>
                   </h1>

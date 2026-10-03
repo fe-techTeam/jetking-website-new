@@ -68,7 +68,7 @@ export function StudentExploreHero({
             Welcome Future Tech Leader! <span aria-hidden="true">👋</span>
           </p>
 
-          <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+          <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
             Your Dream Career in Tech{' '}
             <span className="text-[var(--dc-accent-soft)]">Starts Now</span>
           </h1>
