@@ -27,6 +27,7 @@ import type { Course, Testimonial } from '@/lib/content/types';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
 import { siteConfig } from '@/lib/site';
 import { FOUNDED_YEAR, SINCE_FOUNDED, type NetworkCounts } from '@/lib/brand-facts';
+import { Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 import { ParentTestimonialSlider } from './ParentTestimonialSlider';
 
 const HERO_FEATURES = [
@@ -223,56 +224,18 @@ export function ParentLanding({
       </section>
 
       {/* ── Journey steps ────────────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-journey">
-        <div className="shell">
-          <div className="overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-5 py-7 sm:rounded-[28px] sm:px-8 sm:py-8 lg:px-10">
-            <div className="flex flex-wrap items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="grid h-10 w-10 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-              >
-                <ShieldCheck className="h-5 w-5" strokeWidth={1.85} />
-              </span>
-              <h2
-                id="par-journey"
-                className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
-              >
-                We&rsquo;re with you at every step
-              </h2>
-            </div>
-
-            <ol className="relative mt-8 grid grid-cols-2 gap-x-4 gap-y-7 xs:gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-3">
-              <div
-                aria-hidden="true"
-                className="par-journey-line absolute top-[22px] right-[10%] left-[10%] hidden lg:block"
-              />
-              {JOURNEY_STEPS.map((step, index) => (
-                <li
-                  key={step.title}
-                  className={[
-                    'relative z-10 flex flex-col items-center text-center',
-                    // On the 2-col mobile grid, 5 items leave a lone last item in
-                    // its own row — span both columns so it centers instead of
-                    // sitting left-aligned. Not needed at sm:/lg: (3/5 columns).
-                    index === JOURNEY_STEPS.length - 1 ? 'col-span-2 sm:col-span-1' : '',
-                  ].join(' ')}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full border-2 border-[var(--dc-accent-soft)] bg-[var(--dc-card)] text-[var(--dc-accent-soft)]"
-                  >
-                    <step.icon className="h-5 w-5" strokeWidth={1.85} />
-                  </span>
-                  <span className="mt-3 text-[13px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[13.5px]">
-                    {step.title}
-                  </span>
-                  <span className="text-[12px] text-[var(--dc-ink-muted)]">{step.detail}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
+      <Section tone="plain" deco="grid" labelledBy="par-journey">
+        <SectionHeader id="par-journey" title="We&rsquo;re with you at every step" />
+        <Reveal>
+          <StepPath
+            steps={JOURNEY_STEPS.map((step) => ({
+              icon: step.icon,
+              title: `${step.title} ${step.detail}`,
+              body: null,
+            }))}
+          />
+        </Reveal>
+      </Section>
 
       {/* ── Courses (student RecommendedCourses pattern) ─────────────────── */}
       <div id="courses" className="scroll-mt-24 bg-[var(--dc-surface)]">
@@ -285,10 +248,9 @@ export function ParentLanding({
       </div>
 
       {/* ── Let us help you ──────────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-help">
-        <div className="shell">
+      <Section tone="plain" labelledBy="par-help">
           <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
-            <div className="rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-5 sm:p-6 lg:col-span-8">
+            <div className="kit kit-card p-5 sm:p-6 lg:col-span-8">
               <h2
                 id="par-help"
                 className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
@@ -325,7 +287,7 @@ export function ParentLanding({
               </p>
             </div>
 
-            <div className="flex flex-col justify-center rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] p-5 sm:p-6 lg:col-span-4">
+            <div className="kit kit-card flex flex-col justify-center bg-[var(--k-red-wash)] p-5 sm:p-6 lg:col-span-4">
               <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                 <FileText
                   className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
@@ -343,16 +305,11 @@ export function ParentLanding({
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Success stories ──────────────────────────────────────────────── */}
-      <section
-        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="par-stories"
-      >
-        <div className="shell">
-          <div className="stu-why rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="tint" deco="glow" labelledBy="par-stories">
+          <div>
             <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
               <div>
                 <h2
@@ -400,15 +357,10 @@ export function ParentLanding({
               <ParentTestimonialSlider testimonials={testimonials} />
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Things parents love ──────────────────────────────────────────── */}
-      <section
-        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="par-loves"
-      >
-        <div className="shell">
+      <Section tone="plain" labelledBy="par-loves">
           <h2
             id="par-loves"
             className="subsection-title font-display text-[var(--dc-ink)]"
@@ -419,7 +371,7 @@ export function ParentLanding({
           <ul className="mt-6 flex flex-wrap gap-3 lg:gap-4">
             {PARENT_LOVES.map((item) => (
               <li key={item.label} className="@container min-w-0 flex-[1_1_140px]">
-                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[16px] p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
+                <article className="kit kit-card flex h-full flex-col items-start gap-3 p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
                   <span
                     aria-hidden="true"
                     className="grid h-11 w-11 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
@@ -433,13 +385,11 @@ export function ParentLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="par-cta">
-        <div className="shell">
-          <div className="rounded-[28px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] xs:rounded-[28px]">
+      <Section tone="wash" labelledBy="par-cta">
+          <div className="kit kit-card">
             <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 lg:grid-cols-12 lg:gap-8 lg:p-10 xl:gap-12">
               <div className="flex min-w-0 flex-col items-start lg:col-span-7">
                 <h2
@@ -510,8 +460,7 @@ export function ParentLanding({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
     </div>
   );
 }
