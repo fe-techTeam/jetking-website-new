@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════════════
    COURSE PAGE — degree programme template (`.cp`)
-   Client feedback: white background (not pink), one straight font (Arial /
+   Client feedback: white background (not pink), one straight font (Fira Sans /
    Helvetica) for every heading and body line, Jetking red plus yellow, black,
    light blue and grey in small doses. Tokens are `--cp-*`; the `--dc-*` aliases
    at the bottom of the block let the shared BrandTile / Disclosure pieces read
@@ -39,7 +39,7 @@
 
   background: var(--cp-bg);
   color: var(--cp-ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
 html.dark .cp {
@@ -69,7 +69,7 @@ html.dark .cp {
 .cp input,
 .cp select,
 .cp a {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .cp-h1 {
@@ -210,7 +210,7 @@ html.dark .cp {
 /* Shared pieces (Disclosure meta, numerals) use the site's mono face; the client wants one straight font. */
 .cp .label-mono,
 .cp .numeral {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   font-variant-numeric: normal;
 }
 

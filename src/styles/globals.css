@@ -94,10 +94,11 @@
   --color-track-ai: #c7141c;
 
   /* ── Typography ────────────────────────────────────────────────────────── */
-  /* One straight typeface across every page (client guideline: Arial / Helvetica, no per-page fonts).
+  /* One straight typeface across every page (client guideline: no per-page fonts). Fira Sans is chosen to sit
+     with the Jetking wordmark; Arial / Helvetica is the fallback while it loads.
      The display and mono tokens are kept so existing `font-display` / `label-mono` classes still resolve,
      but all three now share the same family. */
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-fira), Arial, Helvetica, sans-serif;
   --font-display: var(--font-sans);
   --font-body: var(--font-sans);
   --font-mono: var(--font-sans);

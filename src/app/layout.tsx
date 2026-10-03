@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import { Fira_Sans } from 'next/font/google';
 import { PersonaProvider } from '@/persona/PersonaProvider';
 import { SilentPersonaInfer } from '@/persona/SilentPersonaInfer';
 import { SiteChrome, FooterChrome } from '@/components/SiteShell';
@@ -43,6 +44,14 @@ export const viewport: Viewport = {
   // `iosInputZoomGuardScript` below — see src/lib/ios-input-zoom-guard.ts.
 };
 
+/** The one site typeface: chosen to sit with the Jetking wordmark (humanist sans, double-storey g, flat stroke cuts). */
+const fira = Fira_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-fira',
+});
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
@@ -50,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en-IN"
+      className={fira.variable}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

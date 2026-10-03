@@ -71,7 +71,7 @@ export default function NotFound() {
             <circle cx="76" cy="44" r="6" className="fill-[var(--color-border-medium)]" />
             <circle cx="96" cy="44" r="6" className="fill-[var(--color-border-medium)]" />
             <rect x="124" y="35" width="248" height="18" rx="9" className="fill-[var(--color-surface)]" />
-            <text x="224" y="190" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="112" letterSpacing="-4" className="fill-[var(--accent)]">
+            <text x="224" y="190" textAnchor="middle" style={{ fontFamily: 'var(--font-sans)' }} fontWeight="700" fontSize="112" letterSpacing="-4" className="fill-[var(--accent)]">
               404
             </text>
             <rect x="120" y="222" width="208" height="10" rx="5" className="fill-[var(--color-border)]" />
