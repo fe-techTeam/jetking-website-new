@@ -54,7 +54,21 @@ const EnquirySchema = z.object({
   journeyStage: z.enum(['discover', 'explore', 'compare', 'counsel', 'admit']).optional(),
   /** Locked or inferred career/topic intent label. */
   intent: z.string().max(120).optional(),
+  /** Bot trap: a hidden field real visitors never fill (see components/BotTrap). */
+  hp: z.string().max(500).optional(),
+  /** Milliseconds since the visitor's first interaction on the page; 0/absent for scripted posts. */
+  ft: z.number().min(0).max(1e10).optional(),
 });
+
+/** Faster than a person can read a form and fill it in. */
+const MIN_HUMAN_MS = 600;
+
+/**
+ * A post that carries no interaction signal at all (a script, or a visitor who typed before the page
+ * finished loading) is still accepted — losing a genuine lead is the worst outcome — but from the same
+ * connection only twice per window.
+ */
+const noSignalLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 2 });
 
 /**
  * Loose enough that a genuine visitor may legitimately submit two or
@@ -64,6 +78,20 @@ const EnquirySchema = z.object({
 const limiter = createRateLimiter({ windowMs: 10 * 60_000, max: 5 });
 
 export async function POST(request: Request) {
+  // A browser tells us when a request comes from another site's page; the form on our own pages is same-origin.
+  const fetchSite = request.headers.get('sec-fetch-site');
+  const origin = request.headers.get('origin');
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  let originHost: string | null = null;
+  try {
+    originHost = origin && origin !== 'null' ? new URL(origin).host : null;
+  } catch {
+    originHost = null;
+  }
+  if (fetchSite === 'cross-site' || (originHost && host && originHost !== host)) {
+    return NextResponse.json({ ok: false, error: 'Forbidden.' }, { status: 403 });
+  }
+
   const limit = await limiter.check(clientKey(request));
 
   if (!limit.allowed) {
@@ -92,6 +120,22 @@ export async function POST(request: Request) {
     );
   }
 
+  // Bot trap. A filled honeypot, or a post with no (or an impossibly short) human interaction before it,
+  // is dropped quietly: the response looks like success so a bot learns nothing, and nothing reaches the CRM.
+  const { hp, ft, ...lead } = parsed.data;
+  const tooFast = ft !== undefined && ft > 0 && ft < MIN_HUMAN_MS;
+  if (hp || tooFast) {
+    console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: hp ? 'honeypot' : 'too-fast', ft: ft ?? null }));
+    return NextResponse.json({ ok: true, routed: false });
+  }
+  if (!ft) {
+    const strict = await noSignalLimiter.check(clientKey(request));
+    if (!strict.allowed) {
+      console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: 'no-signal-limit' }));
+      return NextResponse.json({ ok: true, routed: false });
+    }
+  }
+
   // Tie the lead to the signed-in account, if any, so a counsellor can see it is a known user.
   // Best-effort: a lookup failure must never cost the visitor their enquiry.
   const account = await getSessionUser().catch(() => null);
@@ -101,7 +145,7 @@ export async function POST(request: Request) {
   const attribution = utmToFlat(decodeUtm(cookieValue(request.headers.get('cookie'), UTM_COOKIE)));
 
   const enquiry = {
-    ...parsed.data,
+    ...lead,
     ...attribution,
     accountId: account?.id,
     receivedAt: new Date().toISOString(),

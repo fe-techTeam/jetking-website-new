@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useRef, useState } from 'react';
 import { CalendarDays, CheckCircle2 } from 'lucide-react';
 import { Field, Input, Textarea } from '@/components/ui';
@@ -61,7 +62,7 @@ export function CounsellingStep({
       const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
           email: form.get('email') || undefined,
@@ -154,6 +155,7 @@ export function CounsellingStep({
         className="stu-card max-w-lg space-y-5 rounded-[24px] p-6 sm:p-7"
         noValidate
       >
+<BotTrap />
         <Field label="Your name" htmlFor="counsel-name" required>
           <Input
             id="counsel-name"

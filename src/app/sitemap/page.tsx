@@ -8,7 +8,7 @@ import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 
 export const metadata: Metadata = buildMetadata(
   {
-    title: 'Sitemap | Jetking',
+    title: 'Sitemap — All Pages | Jetking',
     description:
       'Every page on the Jetking website in one place — learner paths, courses, centres by state, company information and the blog.',
   },

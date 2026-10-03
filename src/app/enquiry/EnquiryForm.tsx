@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -109,7 +110,7 @@ export function EnquiryForm({
       const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
           email: form.get('email') || undefined,
@@ -212,6 +213,7 @@ export function EnquiryForm({
      * -aware errors for free (WCAG 3.3.1, 3.3.3).
      */
     <form onSubmit={handleSubmit} className="space-y-7">
+<BotTrap />
       <p className="text-base text-[var(--dc-ink-secondary)]">
         {classification.persona === 'franchise' ? (
           <>

@@ -11,7 +11,7 @@ import { disclosures, linkLabel, type DisclosureSection } from '@/lib/investors/
 export const metadata: Metadata = buildMetadata(
   {
     title: `Investor Information | ${siteConfig.name}`,
-    description: `Disclosures under Regulation 46 and 62 of SEBI (LODR) Regulations by ${siteConfig.legalName}: financial results, shareholding pattern, annual reports, policies, notices and investor contacts.`,
+    description: `SEBI (LODR) Regulation 46 and 62 disclosures by ${siteConfig.legalName}: financial results, shareholding, annual reports, policies and investor contacts.`,
   },
   '/investors',
 );

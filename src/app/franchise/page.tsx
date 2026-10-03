@@ -8,7 +8,7 @@ import { FranchiseViewTracker } from './FranchiseViewTracker';
 
 export const metadata: Metadata = buildMetadata(
   {
-    title: `Own a Jetking Franchise | Partner With India's Leading IT Training Brand`,
+    title: `Own a Jetking Franchise | India's Leading IT Training Brand`,
     description:
       'Build your future with a Jetking IT training franchise. Established brand, proven business model, end-to-end support, and attractive ROI. Investment from ₹15 Lakhs.',
   },

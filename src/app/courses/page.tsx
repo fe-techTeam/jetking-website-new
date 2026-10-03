@@ -22,9 +22,9 @@ const COURSE_DOMAINS = [
 
 export const metadata: Metadata = buildMetadata(
   {
-    title: 'IT Courses — Cloud, Cyber Security, AI, DevOps, Gaming & Networking | Jetking',
+    title: 'IT Courses in Cloud, Cyber Security, AI & DevOps | Jetking',
     description:
-      'Jetking courses in cloud computing, cyber security, AI engineering, DevOps, gaming & metaverse and networking — short-term courses to UG and PG degree programs for 10+2 students, graduates and young professionals.',
+      'Jetking IT courses in cloud, cyber security, AI, DevOps, gaming and networking — short-term courses to UG and PG degrees for students, graduates and professionals.',
   },
   '/courses',
 );

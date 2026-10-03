@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useState, type FormEvent } from 'react';
 import { Button, Field, Input } from '@/components/ui';
 import { usePersona } from '@/persona/PersonaProvider';
@@ -53,7 +54,7 @@ export function LeadCaptureForm({
       const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: String(form.get('name') ?? ''),
           phone,
           email: email || undefined,
@@ -109,6 +110,7 @@ export function LeadCaptureForm({
       onSubmit={handleSubmit}
       className="jk-msg-in mt-3 flex flex-col gap-3 rounded-xl border border-line bg-surface-sunken/60 p-3.5"
     >
+<BotTrap />
       <Field label="Your name" htmlFor="lead-name" required>
         <Input
           id="lead-name"

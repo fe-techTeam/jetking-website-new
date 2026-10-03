@@ -20,7 +20,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const course = await content.getCourse(slug);
   if (!course) return {};
-  return buildMetadata(course.seo, `/courses/${course.slug}`);
+  // A per-course social card (course title, level, duration and photo) instead of the shared site image.
+  return buildMetadata({ ...course.seo, ogImage: course.seo.ogImage ?? `/og/course/${course.slug}` }, `/courses/${course.slug}`);
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {

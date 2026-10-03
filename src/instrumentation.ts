@@ -12,3 +12,15 @@ export async function register() {
       );
     });
 }
+
+/** Server-side render, route-handler and action errors: logged (and optionally webhooked) once per signature. */
+export const onRequestError: import('next').Instrumentation.onRequestError = async (error, request, context) => {
+  if (process.env.NEXT_RUNTIME !== 'nodejs') return;
+  const { reportError } = await import('@/lib/error-report');
+  const e = error instanceof Error ? error : new Error(String(error));
+  await reportError(
+    'server',
+    { message: e.message, stack: e.stack, digest: (error as { digest?: string } | null)?.digest },
+    { path: request.path, method: request.method, route: context.routePath, routeType: context.routeType },
+  );
+};

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { ArrowRight, Award, Briefcase, Cpu, GraduationCap, MapPin, MessageCircle, Users, Wrench } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
 import { EnquiryLink } from '@/components/EnquirySheet';
@@ -32,6 +33,8 @@ const BTN =
 
 /** Internal reference: every kit component, in the tone rhythm a real page should follow. Placeholder content only. */
 export default function DesignKitPage() {
+  // Internal reference only: not served in production unless explicitly enabled.
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_SHOW_DESIGN_KIT !== 'true') notFound();
   return (
     <>
       <Section tone="plain" deco="glow" labelledBy="k-hero">

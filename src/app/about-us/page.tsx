@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     {
       title: `About ${siteConfig.name} — Training IT Talent ${SINCE_FOUNDED}`,
-      description: `Jetking is India's foremost computer networking and IT training institute — training IT talent ${SINCE_FOUNDED.toLowerCase()}, with ${centres.length} centres and placement support for students across India.`,
+      description: `Jetking is India's foremost IT and networking training institute, training IT talent ${SINCE_FOUNDED.toLowerCase()}, with ${centres.length} centres and placement support across India.`,
     },
     '/about-us',
   );

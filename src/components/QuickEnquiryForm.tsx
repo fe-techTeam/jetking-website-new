@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { useAccount } from '@/components/account/AccountProvider';
 import { Button, Field, Input, Select } from '@/components/ui';
@@ -79,7 +80,7 @@ export function QuickEnquiryForm({
       const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: String(form.get('name') ?? ''),
           phone,
           state: loc.state || undefined,
@@ -130,6 +131,7 @@ export function QuickEnquiryForm({
 
   return (
     <form onSubmit={handleSubmit} className={compact ? 'space-y-4 lg:space-y-2' : 'space-y-4'}>
+<BotTrap />
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
         <Field label="Your name" htmlFor={`${id}-name`} required compact={compact}>
           <Input

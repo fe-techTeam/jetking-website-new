@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useRef, useState } from 'react';
 import { ChevronDown, Clock3 } from 'lucide-react';
 import { Field, Input } from '@/components/ui';
@@ -45,7 +46,7 @@ export function FranchiseEnquiryFormLight() {
       const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, ...botFields() }),
       });
 
       if (!res.ok) {
@@ -88,6 +89,7 @@ export function FranchiseEnquiryFormLight() {
 
   return (
     <form onSubmit={handleSubmit} onFocus={handleFocus} className="space-y-5">
+<BotTrap />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" required htmlFor="fra-name">
           <Input

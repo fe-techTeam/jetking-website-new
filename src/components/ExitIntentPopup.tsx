@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
@@ -90,7 +91,7 @@ export function ExitIntentPopup() {
       const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, ...botFields() }),
       });
 
       if (!res.ok) {
@@ -156,6 +157,7 @@ export function ExitIntentPopup() {
             </p>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+<BotTrap />
               <Field label="Name" required htmlFor="exit-name">
                 <Input
                   id="exit-name"
