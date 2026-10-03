@@ -37,12 +37,17 @@
   background: var(--k-bg);
   color: var(--k-ink);
 }
+/* Legacy page scopes (.student-page / .professional-page) force alternate children to white; the kit
+   owns its own tone rhythm, so these win over that. */
+.kit-section[data-tone='plain'] {
+  background: var(--k-bg) !important;
+}
 .kit-section[data-tone='tint'] {
-  background: var(--k-tint);
+  background: var(--k-tint) !important;
   border-block: 1px solid var(--k-line);
 }
 .kit-section[data-tone='wash'] {
-  background: var(--k-red-wash);
+  background: var(--k-red-wash) !important;
   border-block: 1px solid color-mix(in srgb, var(--k-red-fill) 14%, transparent);
 }
 /* A plain section after another plain block (or the page hero) gets a hairline so the two never read as one.

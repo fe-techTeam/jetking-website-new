@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Section } from '@/components/kit';
 import Link from 'next/link';
 import type { Route } from 'next';
 import {
@@ -350,9 +351,8 @@ export function ExploreLanding({
       </section>
 
       {/* ── Quick enquiry (optional — no pressure) ───────────────────────── */}
-      <section id="enquire" className="py-10 sm:py-12 lg:py-14">
-        <div className="shell">
-          <div className="stu-card overflow-hidden rounded-[28px]">
+      <Section tone="wash" deco="glow" id="enquire">
+          <div className="kit kit-card overflow-hidden ">
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[200px] overflow-hidden lg:min-h-full">
                 <Image
@@ -378,12 +378,10 @@ export function ExploreLanding({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── About Jetking ─────────────────────────────────────────────────── */}
-      <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-about">
-        <div className="shell">
+      <Section tone="plain" labelledBy="exp-about">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
             <div>
               <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
@@ -409,7 +407,7 @@ export function ExploreLanding({
 
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {PURPOSE.map((item) => (
-                <div key={item.title} className="stu-card rounded-[16px] p-4">
+                <div key={item.title} className="kit kit-card p-4">
                   <dt className="text-[13px] font-extrabold text-[var(--dc-ink)]">{item.title}</dt>
                   <dd className="mt-1.5 text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {item.body}
@@ -418,8 +416,7 @@ export function ExploreLanding({
               ))}
             </dl>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Programmes (shared RecommendedCourses card design) ──────────── */}
       <div className="bg-[var(--dc-surface)]">
@@ -450,9 +447,8 @@ export function ExploreLanding({
       </div>
 
       {/* ── Why Jetking + testimonial slider ─────────────────────────────── */}
-      <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-why">
-        <div className="shell">
-          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="tint" deco="glow" labelledBy="exp-why">
+          <div>
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
                 <h2
@@ -487,12 +483,10 @@ export function ExploreLanding({
               <ExploreTestimonialSlider />
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Awards & recognition ─────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-awards">
-        <div className="shell">
+      <Section tone="plain" labelledBy="exp-awards">
           <h2
             id="exp-awards"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -502,7 +496,7 @@ export function ExploreLanding({
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {ACHIEVEMENTS.slice(0, 4).map((item) => (
               <li key={item.title}>
-                <article className="stu-card flex h-full flex-col items-center rounded-[16px] p-5 text-center">
+                <article className="kit kit-card flex h-full flex-col items-center p-5 text-center">
                   <div className="relative h-24 w-full sm:h-28">
                     <Image
                       src={item.imageSrc}
@@ -519,12 +513,10 @@ export function ExploreLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── 10 reasons why Jetking is every student's choice ─────────────── */}
-      <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-benefits">
-        <div className="shell">
+      <Section tone="tint" labelledBy="exp-benefits">
           <h2
             id="exp-benefits"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -534,7 +526,7 @@ export function ExploreLanding({
           <ul className="mt-7 grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-4">
             {REASONS.map((card) => (
               <li key={card.title} className="min-w-0">
-                <article className="stu-card flex h-full flex-col gap-0 rounded-[16px] p-4 sm:rounded-[20px] sm:p-5">
+                <article className="kit kit-card flex h-full flex-col gap-0 p-4 sm:rounded-[20px] sm:p-5">
                   <span
                     aria-hidden="true"
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:h-11 sm:w-11"
@@ -551,12 +543,10 @@ export function ExploreLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Collaboration with top universities & learning entities ──────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-university-partners">
-        <div className="shell">
+      <Section tone="plain" labelledBy="exp-university-partners">
           <h2
             id="exp-university-partners"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -566,7 +556,7 @@ export function ExploreLanding({
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {UNIVERSITY_PARTNERS.map((partner) => (
               <li key={partner.name}>
-                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[16px] p-5 text-center">
+                <div className="kit kit-card flex h-full flex-col items-center gap-3 p-5 text-center">
                   <span className="relative h-16 w-full sm:h-20">
                     <Image src={partner.src} alt="" fill sizes="200px" className="object-contain" />
                   </span>
@@ -577,12 +567,10 @@ export function ExploreLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Certifications & technology partners ─────────────────────────── */}
-      <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-certs">
-        <div className="shell">
+      <Section tone="tint" labelledBy="exp-certs">
           <h2
             id="exp-certs"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -599,12 +587,10 @@ export function ExploreLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Where our alumni work ────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-alumni">
-        <div className="shell">
+      <Section tone="plain" labelledBy="exp-alumni">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2
               id="exp-alumni"
@@ -632,12 +618,10 @@ export function ExploreLanding({
           <p className="mt-7 max-w-2xl text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
             {PLACEMENT_DISCLAIMER}
           </p>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Our Placement Partners (individual logos; same list as jetking.com's collage) ───────── */}
-      <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-partners">
-        <div className="shell">
+      <Section tone="tint" labelledBy="exp-partners">
           <h2
             id="exp-partners"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -665,12 +649,10 @@ export function ExploreLanding({
             Note: Placements are subject to recruitment norms. Jetking does not guarantee
             placements in the above organisations.
           </p>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Our Affiliation ───────────────────────────────────────────────── */}
-      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-affiliation">
-        <div className="shell">
+      <Section tone="plain" labelledBy="exp-affiliation">
           <h2
             id="exp-affiliation"
             className="section-title font-display text-[var(--dc-ink)]"
@@ -680,7 +662,7 @@ export function ExploreLanding({
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {AFFILIATIONS.map((item) => (
               <li key={item.name}>
-                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[16px] p-5 text-center">
+                <div className="kit kit-card flex h-full flex-col items-center gap-3 p-5 text-center">
                   <span className="relative h-16 w-full sm:h-20">
                     <Image src={item.src} alt="" fill sizes="200px" className="object-contain" />
                   </span>
@@ -691,13 +673,11 @@ export function ExploreLanding({
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── From the blog ────────────────────────────────────────────────── */}
       {posts.length > 0 ? (
-        <section className="blog-page relative overflow-hidden py-10 sm:py-12 lg:py-14" aria-labelledby="exp-blog">
-          <div className="shell relative">
+        <Section tone="tint" labelledBy="exp-blog"><div className="blog-page relative">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2
                 id="exp-blog"
@@ -720,14 +700,12 @@ export function ExploreLanding({
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
+          </div></Section>
       ) : null}
 
       {/* ── Locations + final CTA ────────────────────────────────────────── */}
-      <section className="py-14 sm:py-16 lg:py-20" aria-labelledby="exp-cta">
-        <div className="shell">
-          <div className="stu-card flex flex-col gap-6 rounded-[24px] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+      <Section tone="wash" deco="glow" labelledBy="exp-cta">
+          <div className="kit kit-card flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
               <span
                 aria-hidden="true"
@@ -759,8 +737,7 @@ export function ExploreLanding({
               </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
     </div>
   );
 }
