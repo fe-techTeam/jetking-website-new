@@ -66,13 +66,24 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
                 >
                   <div className="dc-card-media relative aspect-[840/300] w-full overflow-hidden">
                     {cover ? (
-                      <Image
-                        src={cover.url}
-                        alt={cover.alt || post.title}
-                        fill
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-contain"
-                      />
+                      <>
+                        {/* Blurred copy fills the letterbox bars so any cover ratio looks intentional. */}
+                        <Image
+                          src={cover.url}
+                          alt=""
+                          fill
+                          sizes="64px"
+                          aria-hidden="true"
+                          className="scale-125 object-cover opacity-70 blur-xl"
+                        />
+                        <Image
+                          src={cover.url}
+                          alt={cover.alt || post.title}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="relative object-contain"
+                        />
+                      </>
                     ) : (
                       // eslint-disable-next-line @next/next/no-img-element -- brand asset on a placeholder plate
                       <img
