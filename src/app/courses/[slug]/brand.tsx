@@ -53,7 +53,7 @@ export function BrandMark({ name, small = false }: { name: string; small?: boole
             }
           />
         ) : (
-          <span className={`font-display font-extrabold tracking-tight text-ink-500 ${small ? 'text-[11px]' : 'text-[15px]'}`}>
+          <span className={`font-display font-extrabold tracking-tight text-ink-500 ${small ? 'text-[12px]' : 'text-[15px]'}`}>
             {initials || '·'}
           </span>
         )}

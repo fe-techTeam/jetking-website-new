@@ -21,7 +21,7 @@ import { cx } from './ui';
  * The placeholder goes smaller still, via `::placeholder`'s own independent font-size.
  */
 const fieldControl =
-  'w-full rounded-[var(--radius-input)] border border-border bg-background px-4 text-sm text-foreground transition-colors duration-200 placeholder:text-xs sm:placeholder:text-[13px] placeholder:text-foreground-disabled hover:border-border-medium focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface disabled:text-foreground-disabled aria-[invalid=true]:border-jk-600';
+  'w-full rounded-[var(--radius-input)] border border-border bg-background px-4 text-base text-foreground sm:text-sm transition-colors duration-200 placeholder:text-[15px] sm:placeholder:text-[13px] placeholder:text-foreground-disabled hover:border-border-medium focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface disabled:text-foreground-disabled aria-[invalid=true]:border-jk-600';
 
 /**
  * Wiring that a `Field` hands down to whichever control sits inside it.
@@ -93,10 +93,10 @@ export function Field({
 
   return (
     <FieldContext.Provider value={{ describedBy, invalid: Boolean(error), required }}>
-      <div className={compact ? 'space-y-0.5' : 'space-y-2'}>
+      <div className={compact ? 'space-y-2 lg:space-y-0.5' : 'space-y-2'}>
         <label
           htmlFor={htmlFor}
-          className={cx('block font-semibold text-foreground', compact ? 'text-xs' : 'text-sm')}
+          className={cx('block font-semibold text-foreground', compact ? 'text-sm lg:text-xs' : 'text-sm')}
         >
           {label}
           {/*
@@ -135,7 +135,7 @@ export function Input({
     <input
       className={cx(
         fieldControl,
-        compact ? 'h-10 px-3 text-[11px] placeholder:text-[10px]' : 'h-12',
+        compact ? 'h-12 lg:h-10 lg:px-3 lg:text-[11px] lg:placeholder:text-[10px]' : 'h-12',
         className,
       )}
       {...rest}
@@ -155,7 +155,7 @@ export function Select({
   const { className, children, ...rest } = useFieldProps(props);
   return (
     <select
-      className={cx(fieldControl, compact ? 'h-10 pr-9 pl-3 text-[11px]' : 'h-12 pr-10', className)}
+      className={cx(fieldControl, compact ? 'h-12 pr-10 lg:h-10 lg:pr-9 lg:pl-3 lg:text-[11px]' : 'h-12 pr-10', className)}
       {...rest}
     >
       {children}

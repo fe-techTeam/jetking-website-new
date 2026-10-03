@@ -632,7 +632,7 @@ export function CoursePageTemplate({
                 <span className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[var(--cp-red-tint)]">
                   {/* eslint-disable-next-line @next/next/no-img-element -- local icon */}
                   <img src={STEP_ICONS[i]} alt="" className="h-7 w-7" />
-                  <span className="absolute -top-1 -left-1 grid h-6 w-6 place-items-center rounded-full bg-[var(--cp-red-fill)] text-[11px] font-bold text-white">{s.step}</span>
+                  <span className="absolute -top-1 -left-1 grid h-6 w-6 place-items-center rounded-full bg-[var(--cp-red-fill)] text-[12px] font-bold text-white">{s.step}</span>
                 </span>
                 <div>
                   <h3 className="cp-h3 sm:mt-4">{s.title}</h3>
@@ -679,7 +679,7 @@ export function CoursePageTemplate({
               </span>
               <p className="mt-4 text-[17px] font-bold">{c.name}</p>
               <span aria-hidden="true" className="my-3 h-px w-10 bg-white/40" />
-              <p className="text-[11px] font-bold tracking-[0.1em] text-white/70 uppercase">Placed at</p>
+              <p className="text-[12px] font-bold tracking-[0.1em] text-white/80 uppercase">Placed at</p>
               <p className="mt-1 text-[15px] font-bold text-white">{c.company}</p>
             </li>
           ))}
@@ -712,7 +712,7 @@ export function CoursePageTemplate({
                 {siteConfig.helpline}
               </a>{' '}
               or email{' '}
-              <a href="mailto:info@jetking.com" className="inline-flex items-center gap-1 font-bold underline">
+              <a href="mailto:info@jetking.com" className="tap inline-flex items-center gap-1 font-bold underline">
                 <Mail className="h-3.5 w-3.5" aria-hidden="true" />
                 info@jetking.com
               </a>

@@ -41,7 +41,7 @@ export function FilterSheet({
         {activeCount ? (
           <span
             aria-hidden="true"
-            className="numeral grid h-5 min-w-5 place-items-center rounded-full bg-[var(--theme-accent)] px-1.5 text-[11px] text-white"
+            className="numeral grid h-5 min-w-5 place-items-center rounded-full bg-[var(--theme-accent)] px-1.5 text-[12px] text-white"
           >
             {activeCount}
           </span>

@@ -129,7 +129,7 @@ export function QuickEnquiryForm({
   const gridGap = compact ? 'gap-3' : 'gap-4';
 
   return (
-    <form onSubmit={handleSubmit} className={compact ? 'space-y-2' : 'space-y-4'}>
+    <form onSubmit={handleSubmit} className={compact ? 'space-y-4 lg:space-y-2' : 'space-y-4'}>
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
         <Field label="Your name" htmlFor={`${id}-name`} required compact={compact}>
           <Input
@@ -244,7 +244,7 @@ export function QuickEnquiryForm({
         type="submit"
         size={compact ? 'sm' : 'md'}
         disabled={status === 'submitting'}
-        className="w-full"
+        className={compact ? 'w-full max-lg:min-h-12 max-lg:text-base' : 'w-full'}
       >
         {status === 'submitting' ? 'Submitting…' : 'Submit'}
       </Button>
