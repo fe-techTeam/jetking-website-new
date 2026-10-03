@@ -9,7 +9,7 @@ import {
   Users,
 } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
-import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
+import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
 import {
   ABOUT_HERO,
   ACHIEVEMENTS,
@@ -38,8 +38,8 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
       data-reveal
       className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]"
     >
-      <article className="dc-card-shell h-full">
-        <div className={`dc-card flex h-full flex-col sm:p-6 ${compact ? 'p-3.5' : 'p-4'}`}>
+      <article className="kit kit-card h-full">
+        <div className={`flex h-full flex-col sm:p-6 ${compact ? 'p-3.5' : 'p-4'}`}>
           <div className={`relative mx-auto shrink-0 overflow-hidden rounded-full bg-[var(--dc-surface)] ring-1 ring-[var(--dc-hairline)] sm:h-32 sm:w-32 ${compact ? 'h-16 w-16' : 'h-20 w-20'}`}>
             <LeaderAvatar leader={leader} />
           </div>
@@ -48,7 +48,7 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
               {leader.name}
             </h3>
             {leader.role ? (
-              <p className={`mt-1 font-bold text-[var(--dc-accent-soft)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
+              <p className={`mt-1 font-bold text-[var(--k-red)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
             ) : null}
             {leader.bio ? <LeaderDetailModal leader={leader} /> : null}
           </div>
@@ -59,10 +59,8 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
 }
 
 export function AboutLanding({ counts }: { counts: NetworkCounts }) {
-  const { ref: awardsRef, edge: awardsEdge, scrollByItem: scrollAwardsBy } = useScrollTrack<HTMLUListElement>();
-
   return (
-    <div className="dark-canvas pb-14 sm:pb-16 lg:pb-20">
+    <div className="dark-canvas">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
         <Breadcrumbs trail={trail} />
@@ -99,94 +97,65 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       </section>
 
       {/* ── Legacy stats ─────────────────────────────────────────────────── */}
-      <section className="shell relative mt-8 sm:mt-10" aria-label="Legacy at a glance">
-        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {legacyStats(counts).map((stat, index) => {
-            const Icon = STAT_ICONS[index] ?? Award;
-            return (
-              <div
-                key={stat.label}
-                className="dc-panel rounded-[20px] px-4 py-5 sm:rounded-[24px] sm:px-5 sm:py-6"
-                data-reveal
-              >
-                <Icon
-                  className="h-5 w-5 text-[var(--dc-accent-soft)]"
-                  strokeWidth={1.75}
-                  aria-hidden="true"
-                />
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <span className="mt-3 block font-display text-[28px] leading-none font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] sm:text-[32px]">
-                    {stat.value}
-                  </span>
-                  <span className="mt-2 block text-[13px] font-semibold text-[var(--dc-ink-muted)]">
-                    {stat.label}
-                  </span>
-                </dd>
-              </div>
-            );
-          })}
-        </dl>
-      </section>
+      <Section tone="plain" labelledBy="about-legacy">
+        <h2 id="about-legacy" className="sr-only">
+          Legacy at a glance
+        </h2>
+        <Reveal>
+          <StatBadges
+            stats={legacyStats(counts).map((stat, index) => ({
+              value: stat.value,
+              label: stat.label,
+              icon: STAT_ICONS[index] ?? Award,
+            }))}
+          />
+        </Reveal>
+      </Section>
 
       {/* ── Purpose & values ─────────────────────────────────────────────── */}
-      <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-purpose">
-        <p className="dc-eyebrow label-mono">Purpose</p>
-        <h2
+      <Section tone="tint" deco="grid" labelledBy="about-purpose">
+        <SectionHeader
           id="about-purpose"
-          className="section-title mt-3 font-display text-[var(--dc-ink)]"
-        >
-          Our purpose &amp;{' '}
-          <span className="dc-accent-glow">values</span>
-        </h2>
-        <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[16px]">
-          What we aim for, how we work, and the standards we hold ourselves to.
-        </p>
-
-        <ol className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-3 sm:gap-5">
-          {PURPOSE.map((item, index) => (
-            <li key={item.title} data-reveal>
-              <article className="dc-card-shell h-full">
-                <div className="dc-card flex h-full flex-col p-5 sm:p-6 lg:p-7">
-                  <span className="numeral text-[13px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)]">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="mt-4 font-display text-[20px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[22px]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-                    {item.body}
-                  </p>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ol>
-      </section>
+          eyebrow="Purpose"
+          title={
+            <>
+              Our purpose &amp; <span className="text-[var(--k-red)]">values</span>
+            </>
+          }
+          lede="What we aim for, how we work, and the standards we hold ourselves to."
+        />
+        <Reveal>
+          <CardRail label="Our purpose and values" cols={3}>
+            {PURPOSE.map((item, index) => (
+              <FeatureCard key={item.title} title={item.title} badge={String(index + 1).padStart(2, '0')}>
+                {item.body}
+              </FeatureCard>
+            ))}
+          </CardRail>
+        </Reveal>
+      </Section>
 
       {/* ── Leadership ───────────────────────────────────────────────────── */}
-      <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-leaders">
-        <p className="dc-eyebrow label-mono">Leadership</p>
-        <h2
+      <Section tone="plain" labelledBy="about-leaders">
+        <SectionHeader
           id="about-leaders"
-          className="section-title mt-3 max-w-[20ch] font-display text-[var(--dc-ink)]"
-        >
-          The leaders who drive our{' '}
-          <span className="dc-accent-glow">growth</span>
-        </h2>
-        <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[16px]">
-          Learn from passionate instructors with expertise who believe in practical teaching
-          methodologies.
-        </p>
+          eyebrow="Leadership"
+          title={
+            <>
+              The leaders who drive our <span className="text-[var(--k-red)]">growth</span>
+            </>
+          }
+          lede="Learn from passionate instructors with expertise who believe in practical teaching methodologies."
+        />
 
         {/* Cards set their own widths (LeaderCard); a short last row centres instead of hugging the left. */}
-        <ul className="mt-10 flex flex-wrap justify-center gap-3 sm:mt-12 sm:gap-5 lg:gap-6">
+        <ul className="flex flex-wrap justify-center gap-3 sm:gap-5 lg:gap-6">
           {DIRECTORS.filter((leader) => leader.name).map((leader) => (
             <LeaderCard key={leader.name} leader={leader} />
           ))}
         </ul>
 
-        <h3 className="mt-14 font-display text-[20px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:mt-16 sm:text-[22px]">
+        <h3 className="mt-14 text-[20px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mt-16 sm:text-[22px]">
           Management team
         </h3>
         <ul className="mt-8 flex flex-wrap justify-center gap-3 sm:mt-9 sm:gap-5 lg:gap-6">
@@ -194,62 +163,40 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             <LeaderCard key={leader.name} leader={leader} compact />
           ))}
         </ul>
-      </section>
+      </Section>
 
       {/* ── Legacy timeline ──────────────────────────────────────────────── */}
-      <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-timeline">
-        <p className="dc-eyebrow label-mono">History</p>
-        <h2
+      <Section tone="tint" labelledBy="about-timeline">
+        <SectionHeader
           id="about-timeline"
-          className="section-title mt-3 max-w-[22ch] font-display text-[var(--dc-ink)]"
-        >
-          A legacy that we take{' '}
-          <span className="dc-accent-glow">pride in</span>
-        </h2>
-        <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[16px]">
-          Over the course of decades, we have achieved some glorious feats. Check out the
-          timeline of how our journey unfolded.
-        </p>
-
+          eyebrow="History"
+          title={
+            <>
+              A legacy that we take <span className="text-[var(--k-red)]">pride in</span>
+            </>
+          }
+          lede="Over the course of decades, we have achieved some glorious feats. Check out the timeline of how our journey unfolded."
+        />
         {/* Decade tabs — click a range to see that era's milestones (AboutTimeline.tsx). */}
         <AboutTimeline />
-      </section>
+      </Section>
 
       {/* ── Achievements ─────────────────────────────────────────────────── */}
-      <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-awards">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="dc-eyebrow label-mono">Recognition</p>
-            <h2
-              id="about-awards"
-              className="section-title mt-3 font-display text-[var(--dc-ink)]"
-            >
-              Our <span className="dc-accent-glow">achievements</span>
-            </h2>
-          </div>
-          <ScrollNavButtons
-            edge={awardsEdge}
-            onPrev={() => scrollAwardsBy(-1)}
-            onNext={() => scrollAwardsBy(1)}
-            label="achievements"
-            className="mb-1 shrink-0"
-          />
-        </div>
-        <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[16px]">
-          Over the decades, we’ve accomplished remarkable milestones. Explore the timeline that
-          showcases how our journey has evolved.
-        </p>
-
-        <ul
-          ref={awardsRef}
-          // Phones: a swipeable row (12 tall cards stacked was a very long scroll). sm+: the grid.
-          className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] sm:mt-12 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-4 lg:gap-5 [&::-webkit-scrollbar]:hidden"
-          aria-label="Awards and achievements"
-          tabIndex={0}
-        >
-          {ACHIEVEMENTS.map((item) => (
-            <li key={item.title} data-reveal className="w-[78%] shrink-0 snap-start sm:w-auto sm:shrink">
-              <article className="dc-panel flex h-full flex-col rounded-[20px] p-5 sm:rounded-[24px] sm:p-6">
+      <Section tone="plain" labelledBy="about-awards">
+        <SectionHeader
+          id="about-awards"
+          eyebrow="Recognition"
+          title={
+            <>
+              Our <span className="text-[var(--k-red)]">achievements</span>
+            </>
+          }
+          lede="Over the decades, we’ve accomplished remarkable milestones. Explore the timeline that showcases how our journey has evolved."
+        />
+        <Reveal>
+          <CardRail label="Awards and achievements" cols={4} colsMd={2}>
+            {ACHIEVEMENTS.map((item) => (
+              <article key={item.title} className="kit kit-card kit-card-lift flex h-full flex-col p-5 sm:p-6">
                 <div className="relative flex h-36 w-full items-center justify-center sm:h-40 lg:h-44">
                   <Image
                     src={item.imageSrc}
@@ -260,77 +207,68 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <h3 className="mt-5 font-display text-[15px] font-extrabold tracking-[-0.015em] text-[var(--dc-ink)] sm:text-[16px]">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[13.5px]">
-                  {item.body}
-                </p>
+                <h3 className="mt-5 text-[16px] font-extrabold text-[var(--k-ink)]">{item.title}</h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-[var(--k-ink-2)]">{item.body}</p>
               </article>
-            </li>
-          ))}
-        </ul>
-      </section>
+            ))}
+          </CardRail>
+        </Reveal>
+      </Section>
 
       {/* ── Partnerships ─────────────────────────────────────────────────── */}
-      <section className="shell relative mt-10 sm:mt-12 lg:mt-14" aria-labelledby="about-partnerships">
-        <p className="dc-eyebrow label-mono">Alliances</p>
-        <h2
+      <Section tone="tint" labelledBy="about-partnerships">
+        <SectionHeader
           id="about-partnerships"
-          className="section-title mt-3 font-display text-[var(--dc-ink)]"
-        >
-          Our <span className="dc-accent-glow">partnerships</span>
-        </h2>
-
-        <ul className="mt-10 grid gap-4 sm:mt-12 sm:grid-cols-3 sm:gap-5">
-          {PARTNERSHIPS.map((partner) => (
-            <li key={partner.name} data-reveal>
-              <article className="dc-card-shell h-full">
-                <div className="dc-card flex h-full flex-col p-5 sm:p-6">
-                  <div className="relative flex h-28 w-full items-center justify-center sm:h-32">
-                    <Image
-                      src={partner.logo}
-                      alt=""
-                      width={200}
-                      height={200}
-                      sizes="(min-width: 640px) 33vw, 90vw"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                  <h3 className="mt-5 font-display text-[16px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)]">
-                    {partner.name}
-                  </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                    {partner.body}
-                  </p>
+          eyebrow="Alliances"
+          title={
+            <>
+              Our <span className="text-[var(--k-red)]">partnerships</span>
+            </>
+          }
+        />
+        <Reveal>
+          <CardRail label="Our partnerships" cols={3}>
+            {PARTNERSHIPS.map((partner) => (
+              <article key={partner.name} className="kit kit-card flex h-full flex-col p-5 sm:p-6">
+                <div className="relative flex h-28 w-full items-center justify-center sm:h-32">
+                  <Image
+                    src={partner.logo}
+                    alt=""
+                    width={200}
+                    height={200}
+                    sizes="(min-width: 640px) 33vw, 90vw"
+                    className="h-full w-full object-contain"
+                  />
                 </div>
+                <h3 className="mt-5 text-[17px] font-extrabold text-[var(--k-ink)]">{partner.name}</h3>
+                <p className="mt-2 text-[14.5px] leading-relaxed text-[var(--k-ink-2)]">{partner.body}</p>
               </article>
-            </li>
-          ))}
-        </ul>
-      </section>
+            ))}
+          </CardRail>
+        </Reveal>
+      </Section>
 
       {/* ── Toward the Future ───────────────────────────────────────────────
          New venture announcement — deliberately its own section, closing the
          page, so it reads as a forward-looking postscript to the legacy
          story above rather than being folded into it. */}
-      <section className="shell relative mt-14 sm:mt-16 lg:mt-20" aria-labelledby="about-future">
+      <Section tone="plain" labelledBy="about-future">
         <a
           href="https://www.jetking.org"
           target="_blank"
           rel="noopener noreferrer"
-          className="dc-panel group flex flex-col items-start gap-3 rounded-[20px] p-6 transition-colors hover:border-[var(--dc-accent)]/40 sm:flex-row sm:items-center sm:justify-between sm:rounded-[24px] sm:p-8"
+          className="kit kit-card kit-card-lift group flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
         >
           <div>
-            <p id="about-future" className="text-[17px] font-extrabold text-[var(--dc-ink)] sm:text-[19px]">
+            <p id="about-future" className="text-[18px] font-extrabold text-[var(--k-ink)] sm:text-[20px]">
               First Bitcoin Company in India Listed on the Bombay Stock Exchange
             </p>
-            <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+            <p className="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">
               Secure your company&rsquo;s future with Bitcoin. Unparalleled transparency, unmatched
               security, and proven value retention. Join the movement!
             </p>
           </div>
-          <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--accent-ink)]">
+          <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--k-red)]">
             jetking.org
             <ArrowUpRight
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -338,7 +276,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             />
           </span>
         </a>
-      </section>
+      </Section>
     </div>
   );
 }
