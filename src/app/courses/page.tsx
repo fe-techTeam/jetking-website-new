@@ -70,7 +70,7 @@ export default async function CoursesPage() {
                 alt=""
                 fill
                 priority
-                sizes="100vw"
+                sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
                 className="object-cover object-[center_22%]"
               />
               <div

@@ -249,7 +249,7 @@ export function QuickEnquiryForm({
         {status === 'submitting' ? 'Submitting…' : 'Submit'}
       </Button>
 
-      <p className="text-center text-xs text-foreground-muted">
+      <p className="text-center text-sm text-foreground-muted">
         We use your details only to respond to this enquiry.
       </p>
     </form>

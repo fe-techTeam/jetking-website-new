@@ -218,3 +218,8 @@ html.dark .cp {
 .cp-section:not([class*='cp-band']) + .cp-section:not([class*='cp-band']) {
   padding-top: 0;
 }
+
+/* Two plain sections in a row would read as one block: a hairline between them (bands already separate themselves). */
+.cp > section:not([class*='cp-band-']) + section:not([class*='cp-band-']) {
+  border-top: 1px solid var(--cp-line);
+}

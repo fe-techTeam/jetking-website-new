@@ -46,7 +46,7 @@ export function JetkingLoader() {
         <div className="mt-9 h-[2px] w-52 overflow-hidden rounded-full bg-ink/10 opacity-0 [animation:jk-rise_0.45s_ease_0.4s_forwards]">
           <div className="h-full w-2/5 rounded-full bg-linear-90 from-jk-500 to-jk-400 [animation:jk-load_1.5s_var(--ease-out-soft)_infinite]" />
         </div>
-        <p className="mt-4 text-[12px] font-semibold tracking-[0.32em] text-ink-subtle uppercase opacity-0 [animation:jk-rise_0.45s_ease_0.5s_forwards,jk-blink_1.6s_ease-in-out_0.5s_infinite]">
+        <p className="mt-4 text-[12px] font-semibold tracking-[0.32em] text-ink-muted uppercase opacity-0 [animation:jk-rise_0.45s_ease_0.5s_forwards,jk-blink_1.6s_ease-in-out_0.5s_infinite]">
           Initializing
         </p>
       </div>

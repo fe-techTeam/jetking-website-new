@@ -1282,7 +1282,7 @@ export function JetkingAiClient() {
 
       <header className="flex h-14 shrink-0 items-center gap-1 border-b border-line bg-surface px-1.5 min-[360px]:h-[62px] min-[360px]:gap-2 min-[360px]:px-2.5 sm:h-[68px] sm:gap-4 sm:px-6">
         <button
-          className="grid size-9 shrink-0 place-items-center rounded-lg text-ink hover:bg-surface-hover min-[360px]:size-11"
+          className="grid size-10 shrink-0 place-items-center rounded-lg text-ink hover:bg-surface-hover min-[360px]:size-11"
           onClick={() => {
             setInfoOpen(false);
             setDrawerOpen(true);
@@ -1295,7 +1295,7 @@ export function JetkingAiClient() {
         <div className="ml-auto flex shrink-0 items-center gap-1 min-[360px]:gap-1.5 sm:gap-3">
           <Link
             href="/"
-            className="inline-flex size-9 shrink-0 items-center justify-center gap-2 rounded-full border border-line text-ink transition-colors hover:bg-surface-hover min-[360px]:size-11 sm:w-auto sm:px-3"
+            className="inline-flex size-10 shrink-0 items-center justify-center gap-2 rounded-full border border-line text-ink transition-colors hover:bg-surface-hover min-[360px]:size-11 sm:w-auto sm:px-3"
             aria-label="Switch to Jetking website"
           >
             <Globe2 className="size-[15px] min-[360px]:size-4" />
@@ -1316,7 +1316,7 @@ export function JetkingAiClient() {
                 setAuthOpen(true);
               }
             }}
-            className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-ink hover:bg-surface-hover min-[360px]:size-11"
+            className="grid size-10 shrink-0 place-items-center rounded-full border border-line text-ink hover:bg-surface-hover min-[360px]:size-11"
             aria-label={account.user ? `Account: ${account.user.name}` : 'Log in or sign up'}
             title={account.user ? account.user.name : 'Log in or sign up'}
           >
@@ -1492,6 +1492,7 @@ export function JetkingAiClient() {
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
+                aria-label="Ask Jetking AI"
                 placeholder="Ask Jetking AI… English or Hinglish"
                 className="h-10 min-w-0 flex-1 bg-transparent text-[12px] text-ink min-[360px]:h-11 outline-none placeholder:text-[12px] placeholder:text-ink-subtle min-[360px]:text-[13px] min-[360px]:placeholder:text-[12px] sm:text-[14.5px] sm:placeholder:text-[14.5px]"
                 disabled={busy}
@@ -1509,7 +1510,7 @@ export function JetkingAiClient() {
                 )}
               </button>
             </form>
-            <div className="mt-2.5 flex items-start justify-center gap-1.5 px-1 text-center text-[12px] leading-4 text-ink-subtle sm:items-center sm:text-[12px]">
+            <div className="mt-2.5 flex items-start justify-center gap-1.5 px-1 text-center text-[13.5px] leading-5 text-ink-subtle sm:items-center sm:text-[13.5px]">
               <Bot className="mt-px size-3.5 shrink-0 sm:mt-0" />
               <p className="max-w-full min-w-0 text-balance">
                 Powered by <span className="font-semibold text-brand-text">Jetking AI</span> · answers

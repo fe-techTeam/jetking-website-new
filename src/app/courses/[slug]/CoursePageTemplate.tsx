@@ -305,8 +305,7 @@ export function CoursePageTemplate({
               src={course.heroImage.url}
               alt={course.heroImage.alt}
               fill
-              priority
-              sizes="100vw"
+              sizes="(min-width: 768px) 100vw, 1px"
               className="hidden object-cover object-right md:block"
             />
             <span

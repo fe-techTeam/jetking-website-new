@@ -1137,3 +1137,19 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
 @media (min-width: 2560px) {
   .page-title-hero { font-size: 4.25rem; }
 }
+
+/*
+ * Phones: every text field is 16px. Below that, iOS Safari zooms the page when a field gets focus, and it is
+ * hard to read in any case. Unlayered on purpose, so it wins over per-component text-size utilities.
+ */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='submit']):not([type='button']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 1em;
+  }
+}

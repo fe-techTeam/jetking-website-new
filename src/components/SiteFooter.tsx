@@ -85,8 +85,9 @@ export async function SiteFooter() {
             <Image
               src="/brand/jetking-wordmark.png"
               alt={siteConfig.name}
-              width={7789}
-              height={2448}
+              width={360}
+              height={113}
+              sizes="120px"
               className="h-8 w-auto object-contain object-left"
             />
             <p className="mt-5 max-w-sm text-base text-foreground-secondary text-balance">
