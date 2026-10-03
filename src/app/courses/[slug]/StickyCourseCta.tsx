@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import { track } from '@/lib/analytics';
 import { siteConfig } from '@/lib/site';
 
@@ -62,14 +63,13 @@ export function StickyCourseCta({
         >
           <Phone className="h-[18px] w-[18px]" strokeWidth={2.25} aria-hidden="true" />
         </a>
-        <a
-          href="#cp-enquiry"
-          onClick={() => track('enquiry_started', { surface: 'sticky-course-cta' })}
+        <EnquiryLink
+          source="course-sticky-bar"
           className="dc-cta inline-flex h-11 flex-1 shrink-0 items-center justify-center gap-1.5 rounded-full px-4 text-[14px] font-bold xs:px-5 sm:flex-none"
         >
           Enquire now
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </a>
+        </EnquiryLink>
       </div>
     </div>
   );

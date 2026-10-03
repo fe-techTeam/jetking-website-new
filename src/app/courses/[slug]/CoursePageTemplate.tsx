@@ -30,6 +30,8 @@ import { BrandTile } from './brand';
 import { ZoomImage } from './ZoomImage';
 import { SnapSlider } from './SnapSlider';
 import { FeeDepthTracker } from './FeeDepthTracker';
+import { JumpNav, type JumpItem } from './JumpNav';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import { CentrePicker } from './CentrePicker';
 
 /*
@@ -110,6 +112,27 @@ function Heading({ children, kicker }: { children: React.ReactNode; kicker?: str
 /** "BCA in Cloud Computing & Cyber Security" → "BCA". */
 function degreeName(title: string) {
   return (title.split(/\s+in\s+/i)[0] ?? title).trim();
+}
+
+/**
+ * Enquiry button that follows the viewport: below lg (phones/tablets, where the banner form is not shown)
+ * it opens the in-page enquiry sheet; from lg up it scrolls to the banner form as before.
+ */
+function EnquireCta({ source, className, children }: { source: string; className: string; children: React.ReactNode }) {
+  return (
+    <>
+      <span className="contents lg:hidden">
+        <EnquiryLink source={source} className={className}>
+          {children}
+        </EnquiryLink>
+      </span>
+      <span className="hidden lg:contents">
+        <a href="#cp-enquiry" className={className}>
+          {children}
+        </a>
+      </span>
+    </>
+  );
 }
 
 export function CoursePageTemplate({
@@ -202,8 +225,20 @@ export function CoursePageTemplate({
 
   const internshipPoints = (course.highlights ?? []).filter((h) => /intern|placement|offer/i.test(h));
 
+  // Phone/tablet "on this page" strip: only the sections this course actually has, in page order.
+  const jumpItems: JumpItem[] = [
+    { id: 'cp-why', label: 'Overview' },
+    ...(!isDegree && offeringCentres.length ? [{ id: 'cp-centres', label: 'Centres' }] : []),
+    { id: 'cp-curriculum', label: 'Curriculum' },
+    ...(course.tools?.length ? [{ id: 'cp-tools', label: 'Tools' }] : []),
+    ...(course.certifications.length ? [{ id: 'cp-certs', label: 'Certifications' }] : []),
+    { id: isDegree ? 'cp-placement' : 'cp-records', label: 'Placement' },
+    ...(isDegree && offeringCentres.length ? [{ id: 'cp-centres', label: 'Centres' }] : []),
+    ...(ownFaqs.length + feeFaqs.length ? [{ id: 'cp-faqs', label: 'FAQs' }] : []),
+  ];
+
   const centreSection = (
-      <section id="cp-centres" className="cp-band-grey cp-section scroll-mt-24">
+      <section id="cp-centres" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
         <div className="shell">
           <Heading kicker="The Jetking centre advantage">{isDegree ? 'A mini campus near your home' : 'Your learning journey, with a mini campus near your home'}</Heading>
           {!isDegree && course.phases?.length ? (
@@ -309,28 +344,37 @@ export function CoursePageTemplate({
               </h1>
               <p className="cp-lede mt-5 max-w-[52ch]">{tagline}</p>
 
-              <div id="course-hero-cta" className="mt-7 flex flex-wrap gap-3">
+              <div id="course-hero-cta" className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {isDegree ? (
-                  <a href="#cp-enquiry" className="cp-btn">
+                  <EnquireCta source={`course-${course.slug}-hero`} className="cp-btn">
                     Brochure
                     <Download className="h-4 w-4" aria-hidden="true" />
-                  </a>
+                  </EnquireCta>
                 ) : (
                   <>
-                    <a href="#cp-enquiry" className="cp-btn">
+                    <EnquireCta source={`course-${course.slug}-hero`} className="cp-btn">
                       Talk to a Counsellor
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </a>
-                    <a href="#cp-enquiry" className="cp-btn cp-btn-ghost">
-                      <Download className="h-4 w-4" aria-hidden="true" />
-                      Download Brochure
-                    </a>
+                    </EnquireCta>
+                    <span className="hidden sm:contents">
+                      <EnquireCta source={`course-${course.slug}-brochure`} className="cp-btn cp-btn-ghost">
+                        <Download className="h-4 w-4" aria-hidden="true" />
+                        Download Brochure
+                      </EnquireCta>
+                    </span>
                   </>
                 )}
+                {/* Phones: a one-tap call sits beside the main action (the banner form is below, not first). */}
+                <span className="contents lg:hidden">
+                  <a href={`tel:${siteConfig.helpline}`} className="cp-btn cp-btn-ghost">
+                    <Phone className="h-4 w-4" aria-hidden="true" />
+                    Call {siteConfig.helpline}
+                  </a>
+                </span>
               </div>
             </div>
 
-            <aside id="cp-enquiry" aria-labelledby="cp-form-title" className="scroll-mt-24 rounded-[20px] border border-[var(--cp-line)] bg-[var(--cp-bg)] p-4 shadow-[0_18px_40px_-20px_rgba(17,24,39,0.35)] sm:p-5">
+            <aside id="cp-enquiry" aria-labelledby="cp-form-title" className="hidden scroll-mt-24 rounded-[20px] lg:block border border-[var(--cp-line)] bg-[var(--cp-bg)] p-4 shadow-[0_18px_40px_-20px_rgba(17,24,39,0.35)] sm:p-5">
               <h2 id="cp-form-title" className="mb-3 text-[1.0625rem] leading-snug font-bold text-[var(--cp-red)]">
                 Sign up for a free career counselling session!
               </h2>
@@ -343,6 +387,8 @@ export function CoursePageTemplate({
           </div>
         </div>
       </section>
+
+      <JumpNav items={jumpItems} />
 
       {/* ── 2. Key programme highlights ─────────────────────────────────── */}
       <section className="shell pt-10" aria-label="Programme at a glance">
@@ -365,7 +411,7 @@ export function CoursePageTemplate({
       </section>
 
       {/* ── 3. Why this degree & why now (job roles) ────────────────────── */}
-      <section className="cp-section shell">
+      <section id="cp-why" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         <Heading kicker={isDegree ? 'Why now' : 'Industry demand'}>
           {isDegree ? `Why ${degree} and why now` : `Industry demand for ${label} professionals`}
         </Heading>
@@ -413,6 +459,17 @@ export function CoursePageTemplate({
         </div>
       </section>
 
+      {/* Phones/tablets: the enquiry form sits mid-page, after the reader has seen what the course is (the hero offers the
+          main action first). From lg up the same form is the banner card above. */}
+      <section aria-labelledby="cp-form-title-m" className="shell pb-[clamp(2.25rem,5vw,3.5rem)] lg:hidden">
+        <div id="cp-enquiry-m" className="cp-card scroll-mt-36 p-5 sm:p-6">
+          <h2 id="cp-form-title-m" className="mb-4 text-[1.0625rem] leading-snug font-bold text-[var(--cp-red)]">
+            Sign up for a free career counselling session!
+          </h2>
+          <QuickEnquiryForm centres={toEnquiryCentres(centres, cities)} source={`course-${course.slug}-mid`} />
+        </div>
+      </section>
+
       {/* Breathing-space photo (slide 3: images between content blocks). */}
       <section className="shell pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label="Learn by doing">
         <div className="relative min-h-[240px] overflow-hidden rounded-[28px] sm:min-h-[280px]">
@@ -423,10 +480,10 @@ export function CoursePageTemplate({
             <p className="text-2xl leading-tight font-bold text-white sm:text-3xl">
               Labs with mentors beside you, and a placement team behind you.
             </p>
-            <a href="#cp-enquiry" className="cp-btn cp-btn-light self-start">
+            <EnquireCta source={`course-${course.slug}-photo`} className="cp-btn cp-btn-light self-start">
               Talk to a counsellor
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </EnquireCta>
           </div>
         </div>
       </section>
@@ -535,7 +592,7 @@ export function CoursePageTemplate({
       {!isDegree ? centreSection : null}
 
       {/* ── 7. Curriculum ───────────────────────────────────────────────── */}
-      <section className="cp-section shell">
+      <section id="cp-curriculum" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         <div className="flex items-baseline justify-between gap-4">
           <Heading kicker="Curriculum">What you will study</Heading>
           <span className="shrink-0 text-[13px] font-bold text-[var(--cp-muted)]">
@@ -578,7 +635,7 @@ export function CoursePageTemplate({
 
       {/* ── 8. Tools & technologies — all logos in two lines on a light band ─ */}
       {course.tools?.length ? (
-        <section className="cp-band-grey cp-section">
+        <section id="cp-tools" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
           <div className="shell">
             <Heading kicker="Tools & technologies">Tools you will work with</Heading>
             <ul className="cp-two-lines mt-8">
@@ -594,7 +651,7 @@ export function CoursePageTemplate({
 
       {/* ── 9. Industry certifications ──────────────────────────────────── */}
       {course.certifications.length ? (
-        <section className="cp-section shell">
+        <section id="cp-certs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker="Industry certifications">Certifications you can prepare for</Heading>
           <ul className="mt-8 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4 lg:grid-cols-6">
             {course.certifications.map((cert) => (
@@ -623,7 +680,7 @@ export function CoursePageTemplate({
       {isDegree ? (
         <>
       {/* ── 10. How placement works (kept on this page) ─────────────────── */}
-      <section id="cp-placement" className="cp-band-grey cp-section scroll-mt-24">
+      <section id="cp-placement" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
         <div className="shell">
           <Heading kicker="How placement works">Five steps from classroom to offer</Heading>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -647,7 +704,7 @@ export function CoursePageTemplate({
       ) : null}
 
       {/* ── 11. Placement records — 4 learner cards per scroll, no testimonials ─── */}
-      <section id="cp-records" className="cp-section shell scroll-mt-24">
+      <section id="cp-records" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         {/* Slide 10: stat beside the heading, four learner cards per scroll, no testimonials.
             No learner photos are in the repo yet, so a monogram stands in until they are supplied. */}
         <SnapSlider
@@ -702,10 +759,10 @@ export function CoursePageTemplate({
           <div className="relative max-w-xl">
             <h2 className="cp-h2">Got more questions? Talk to us</h2>
             <p className="cp-lede mt-3">Connect with our advisors and get your queries resolved.</p>
-            <a href="#cp-enquiry" className="cp-btn mt-6">
+            <EnquireCta source={`course-${course.slug}-closing`} className="cp-btn mt-6">
               <Phone className="h-4 w-4" aria-hidden="true" />
               Contact us
-            </a>
+            </EnquireCta>
             <p className="mt-5 text-[14.5px] text-[var(--cp-ink-2)]">
               Speak with our expert{' '}
               <a href={`tel:${siteConfig.helpline}`} className="font-bold underline">
@@ -723,7 +780,7 @@ export function CoursePageTemplate({
 
       {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
       {ownFaqs.length + feeFaqs.length ? (
-        <section className="shell pb-[clamp(2.25rem,5vw,3.5rem)]">
+        <section id="cp-faqs" className="shell scroll-mt-36 pb-[clamp(2.25rem,5vw,3.5rem)] lg:scroll-mt-24">
           <Heading kicker="FAQs">Frequently asked questions</Heading>
           <div className="mt-8 border-t border-[var(--cp-line)]">
             {ownFaqs.map((faq) => (
