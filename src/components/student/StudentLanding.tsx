@@ -131,7 +131,7 @@ export function StudentLanding({
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:row-start-2 xl:col-span-8">
             {BENEFITS.map((benefit) => (
               <li key={benefit.title} className="min-w-0">
-                <FeatureCard icon={benefit.icon} title={benefit.title}>
+                <FeatureCard icon={benefit.icon} title={benefit.title} compact>
                   {benefit.detail}
                 </FeatureCard>
               </li>

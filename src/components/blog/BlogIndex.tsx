@@ -291,7 +291,7 @@ export function BlogIndex({
               aria-label="Blog pages"
               className="mt-10 flex flex-col items-center gap-4 sm:mt-12 sm:flex-row sm:justify-between"
             >
-              <p className="numeral text-[12.5px] font-semibold text-[var(--dc-ink-muted)]">
+              <p className="numeral text-[14px] font-semibold text-[var(--dc-ink-muted)]">
                 Page {currentPage} of {totalPages}
               </p>
 
@@ -325,7 +325,7 @@ export function BlogIndex({
                       <li
                         key={`gap-${index}`}
                         aria-hidden="true"
-                        className="px-1 text-[12px] font-bold text-[var(--dc-ink-muted)]"
+                        className="px-1 text-[14px] font-bold text-[var(--dc-ink-muted)]"
                       >
                         …
                       </li>

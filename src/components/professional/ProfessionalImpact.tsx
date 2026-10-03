@@ -59,7 +59,7 @@ export function ProfessionalImpact() {
                 >
                   Flexible Learning That Fits Your Life
                 </h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14px]">
+                <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
                   Choose a schedule that works around your job — not the other way around.
                 </p>
               </div>
@@ -78,7 +78,7 @@ export function ProfessionalImpact() {
                     >
                       <option.icon className="h-5 w-5" strokeWidth={1.75} />
                     </span>
-                    <p className="text-[13px] font-bold leading-snug text-[var(--dc-ink)] sm:text-[13.5px]">
+                    <p className="text-[14px] font-bold leading-snug text-[var(--dc-ink)]">
                       {option.label}
                     </p>
                   </div>
@@ -122,7 +122,7 @@ export function ProfessionalImpact() {
                     <h4 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
                       {benefit.title}
                     </h4>
-                    <p className="mt-1 text-[13px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
+                    <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 sm:leading-relaxed">
                       {benefit.detail}
                     </p>
                   </div>

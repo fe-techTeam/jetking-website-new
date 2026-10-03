@@ -25,7 +25,7 @@ export function ProfessionalBottomCta() {
               {BOTTOM_CTA_FEATURES.map((item) => (
                 <li
                   key={item.label}
-                  className="flex items-center gap-2 text-[13px] font-semibold text-[var(--dc-ink-secondary)]"
+                  className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]"
                 >
                   <item.icon
                     className="h-4 w-4 text-[var(--dc-accent-soft)]"

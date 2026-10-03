@@ -74,7 +74,7 @@ export function RecommendStep({
                 <span className="mt-2 text-[13px] font-semibold text-[var(--dc-accent-soft)]">
                   {course.duration} · {course.level}
                 </span>
-                <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
+                <p className="mt-3 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
                   {course.summary.slice(0, 140)}
                   {course.summary.length > 140 ? '…' : ''}
                 </p>
@@ -82,7 +82,7 @@ export function RecommendStep({
                   {course.outcomes.slice(0, 2).map((o) => (
                     <li
                       key={o}
-                      className="flex items-start gap-2 text-[12.5px] text-[var(--dc-ink-muted)]"
+                      className="flex items-start gap-2 text-[14px] text-[var(--dc-ink-muted)]"
                     >
                       <CheckCircle2
                         className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--dc-accent-soft)]"

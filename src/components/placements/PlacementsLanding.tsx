@@ -151,7 +151,7 @@ export function PlacementsLanding() {
                 {HERO_CHECKLIST.map((label) => (
                   <li
                     key={label}
-                    className="flex items-center gap-2 text-[12.5px] font-semibold text-[var(--dc-ink-secondary)]"
+                    className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]"
                   >
                     <Check className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2.5} aria-hidden="true" />
                     {label}
@@ -187,7 +187,7 @@ export function PlacementsLanding() {
       {/* ── Honest disclaimer — load-bearing, not decorative ─────────────── */}
       <section className="shell relative mt-8 pb-12 sm:mt-10 sm:pb-14 lg:pb-16">
         <div className="dc-panel rounded-[16px] px-5 py-5 sm:rounded-[20px] sm:px-6 sm:py-6">
-          <p className="text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">
+          <p className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">
             {PLACEMENT_DISCLAIMER}
           </p>
         </div>
@@ -229,7 +229,7 @@ export function PlacementsLanding() {
           }
         />
         <RecruiterMarquee items={RECRUITERS} />
-        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[12.5px] leading-relaxed text-[var(--k-ink-3)] sm:text-[13px]">
+        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[14px] leading-relaxed text-[var(--k-ink-3)]">
           {RECRUITERS_DISCLAIMER}
         </p>
       </Section>

@@ -33,7 +33,7 @@ export function PlacementProof() {
           ))}
         </CardRail>
       </Reveal>
-      <p className="mt-5 text-[12.5px] leading-relaxed text-[var(--k-ink-3)]">{PLACEMENT_DISCLAIMER}</p>
+      <p className="mt-5 text-[14px] leading-relaxed text-[var(--k-ink-3)]">{PLACEMENT_DISCLAIMER}</p>
     </Section>
   );
 }

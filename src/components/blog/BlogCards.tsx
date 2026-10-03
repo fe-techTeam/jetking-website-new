@@ -103,7 +103,7 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
           <h3 className="mt-3 font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] transition-colors group-hover/post:text-[var(--dc-accent-soft)] xs:text-[18px] sm:text-[19px]">
             {post.title}
           </h3>
-          <p className="mt-2 line-clamp-2 flex-1 sm:line-clamp-3 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)] xs:text-[14px]">
+          <p className="mt-2 line-clamp-2 flex-1 sm:line-clamp-3 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             {post.excerpt}
           </p>
 

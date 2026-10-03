@@ -106,7 +106,7 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
                     <h3 className="mt-3.5 font-display text-[16px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[17px]">
                       {post.title}
                     </h3>
-                    <p className="mt-2 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--dc-ink-muted)]">
+                    <p className="mt-2 line-clamp-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                       {post.excerpt}
                     </p>
                     <span className="mt-5 inline-flex items-center justify-between gap-3 border-t border-[var(--dc-hairline)] pt-4 text-[13.5px] font-bold text-[var(--dc-accent-soft)]">

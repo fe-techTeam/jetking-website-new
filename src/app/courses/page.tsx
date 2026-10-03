@@ -92,7 +92,7 @@ export default async function CoursesPage() {
                     {COURSE_DOMAINS.map((domain) => (
                       <li
                         key={domain}
-                        className="rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3 py-1 text-[13px] font-bold text-[var(--dc-ink)]"
+                        className="rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3 py-1 text-[14px] font-bold text-[var(--dc-ink)]"
                       >
                         {domain}
                       </li>

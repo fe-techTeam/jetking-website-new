@@ -110,10 +110,10 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
                     <h3 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[18px]">
                       {course.shortTitle}
                     </h3>
-                    <p className="mt-2 line-clamp-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                    <p className="mt-2 line-clamp-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                       {course.summary}
                     </p>
-                    <p className="mt-2.5 line-clamp-2 flex-1 text-[12.5px] leading-snug text-[var(--dc-ink-secondary)]">
+                    <p className="mt-2.5 line-clamp-2 flex-1 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
                       <span className="font-bold text-[var(--dc-ink)]">Eligibility: </span>
                       {course.eligibility}
                     </p>

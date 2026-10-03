@@ -214,7 +214,7 @@ export function CentreNetwork({
                   );
                 })}
                 {filtered.length === 0 ? (
-                  <li className="py-3 text-[13px] text-[var(--dc-ink-muted)]">No centre found for &ldquo;{query}&rdquo;.</li>
+                  <li className="py-3 text-[14px] text-[var(--dc-ink-muted)]">No centre found for &ldquo;{query}&rdquo;.</li>
                 ) : null}
               </ul>
 

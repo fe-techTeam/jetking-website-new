@@ -20,7 +20,7 @@ export function ZoomImage({ src, alt, caption }: { src: string; alt: string; cap
         aria-label={`Enlarge: ${alt}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- local specimen, shown contained at full resolution */}
-        <img src={src} alt={alt} className="aspect-[3/4] w-full object-contain" />
+        <img src={src} alt={alt} loading="lazy" decoding="async" className="aspect-[3/4] w-full object-contain" />
         <span className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-[#111827] px-3 py-1.5 text-[12.5px] font-bold text-white shadow-md">
           <ZoomIn className="h-4 w-4" aria-hidden="true" />
           Enlarge
@@ -44,7 +44,7 @@ export function ZoomImage({ src, alt, caption }: { src: string; alt: string; cap
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
         {/* eslint-disable-next-line @next/next/no-img-element -- local specimen */}
-        <img src={src} alt={alt} className="mx-auto max-h-[86vh] w-auto max-w-full object-contain" />
+        <img src={src} alt={alt} loading="lazy" decoding="async" className="mx-auto max-h-[86vh] w-auto max-w-full object-contain" />
       </dialog>
     </>
   );

@@ -66,7 +66,7 @@ export function ProfessionalSocialProof() {
                         </span>
                         <cite className="not-italic">
                           <span className="block text-[14.5px] font-bold">{story.name}</span>
-                          <span className="mt-0.5 block text-[13px] text-white/85">
+                          <span className="mt-0.5 block text-[14px] text-white/85">
                             {story.from} → {story.to}
                           </span>
                         </cite>

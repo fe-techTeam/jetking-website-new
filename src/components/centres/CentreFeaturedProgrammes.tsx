@@ -274,7 +274,7 @@ function ProgrammeCardShell({
           </div>
 
           {subtitle ? (
-            <p className="mt-2 text-[12.5px] text-[var(--dc-ink-muted)]">{subtitle}</p>
+            <p className="mt-2 text-[14px] text-[var(--dc-ink-muted)]">{subtitle}</p>
           ) : null}
 
           <ul className="mt-4 flex flex-1 flex-col gap-0 border-t border-[var(--dc-hairline-strong)]/60 pt-1">

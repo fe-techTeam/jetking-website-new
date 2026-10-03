@@ -516,14 +516,14 @@ export function CentresIndex({
               {hasActiveFilters ? ' matching' : null}
             </p>
             {activeCity ? (
-              <p className="text-[13px] text-[var(--dc-ink-secondary)]">
+              <p className="text-[14px] text-[var(--dc-ink-secondary)]">
                 Showing{' '}
                 <span className="font-bold text-[var(--dc-ink)]">
                   {cities.find((c) => c.slug === activeCity)?.name}
                 </span>
               </p>
             ) : activeState ? (
-              <p className="text-[13px] text-[var(--dc-ink-secondary)]">
+              <p className="text-[14px] text-[var(--dc-ink-secondary)]">
                 Showing{' '}
                 <span className="font-bold text-[var(--dc-ink)]">
                   {activeState}
@@ -766,7 +766,7 @@ function CentreCard({
               {centre.name}
             </Link>
           </h3>
-          <p className="mt-1 text-[13px] font-semibold text-[var(--dc-accent-soft)]">
+          <p className="mt-1 text-[14px] font-semibold text-[var(--dc-accent-soft)]">
             {localityCityLabel}
           </p>
         </div>

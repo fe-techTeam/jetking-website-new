@@ -10,6 +10,7 @@ export function Section({
   deco,
   id,
   labelledBy,
+  className,
   children,
 }: {
   tone?: 'plain' | 'tint' | 'wash';
@@ -17,10 +18,12 @@ export function Section({
   id?: string;
   /** id of the section's heading, for the landmark name. */
   labelledBy?: string;
+  /** Extra utility classes on the section element (e.g. `max-lg:order-last` inside a flex-column page). */
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <section id={id} aria-labelledby={labelledBy} data-tone={tone} data-deco={deco} className="kit kit-section">
+    <section id={id} aria-labelledby={labelledBy} data-tone={tone} data-deco={deco} className={`kit kit-section${className ? ` ${className}` : ''}`}>
       <div className="shell">{children}</div>
     </section>
   );

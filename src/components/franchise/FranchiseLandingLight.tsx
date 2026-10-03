@@ -105,7 +105,7 @@ export function FranchiseLandingLight({
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
               Become A Franchise Partner
             </p>
 
@@ -274,7 +274,7 @@ export function FranchiseLandingLight({
                       <h3 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
                         {item.title}
                       </h3>
-                      <p className="mt-1 text-[13px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
+                      <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 sm:leading-relaxed">
                         {item.detail}
                       </p>
                     </div>
@@ -314,7 +314,7 @@ export function FranchiseLandingLight({
                   </span>
                 </a>
 
-                <p className="relative mt-4 text-[12.5px] text-[var(--dc-ink-muted)]">
+                <p className="relative mt-4 text-[14px] text-[var(--dc-ink-muted)]">
                   Capacity bands: UPTO 50 L · UPTO 1 CR · UPTO 3 CR
                 </p>
               </div>
@@ -379,7 +379,7 @@ export function FranchiseLandingLight({
                     <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
                       {stat.value}
                     </p>
-                    <p className="mt-2 text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13px]">
+                    <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
                       {stat.label}
                     </p>
                   </li>
@@ -415,7 +415,7 @@ export function FranchiseLandingLight({
                   <h3 className="mt-4 text-[16px] font-extrabold text-[var(--dc-ink)]">
                     {course.title}
                   </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {course.body}
                   </p>
                 </article>

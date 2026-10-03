@@ -47,7 +47,7 @@ export default async function EnquiryPage() {
       ].join(' ')}
     >
       <section className="shell relative pt-10 pb-8 xs:pt-12 sm:pt-14 sm:pb-10 lg:pt-16">
-        <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
+        <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
           💬 Enquiry
         </p>
         <h1 className="page-title-sm mt-4 max-w-xl font-display text-[var(--dc-ink)]">
@@ -86,7 +86,7 @@ export default async function EnquiryPage() {
                     </span>
                     <div className="min-w-0 pt-0.5">
                       <p className="text-[14.5px] font-bold text-[var(--dc-ink)]">{step.title}</p>
-                      <p className="mt-0.5 text-[13.5px] leading-snug text-[var(--dc-ink-secondary)]">
+                      <p className="mt-0.5 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
                         {step.detail}
                       </p>
                     </div>

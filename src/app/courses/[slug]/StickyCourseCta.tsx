@@ -53,7 +53,7 @@ export function StickyCourseCta({
       <div className="shell flex items-center gap-3 py-3">
         <div className="hidden min-w-0 flex-1 sm:block">
           <p className="truncate text-[14px] font-extrabold text-[var(--dc-ink)]">{title}</p>
-          <p className="text-[12px] font-semibold text-[var(--dc-ink-muted)]">{duration}</p>
+          <p className="text-[14px] font-semibold text-[var(--dc-ink-muted)]">{duration}</p>
         </div>
         <a
           href={`tel:${siteConfig.phone || siteConfig.helpline}`}

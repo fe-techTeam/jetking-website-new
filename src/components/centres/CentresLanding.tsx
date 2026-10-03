@@ -58,7 +58,7 @@ function CentresBottomCta() {
                     {ENQUIRY_PHONE.display}
                   </a>
                 </li>
-                <li className="flex items-center gap-2 text-[13px] font-semibold text-[var(--dc-ink-secondary)]">
+                <li className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                   <MessageCircle
                     className="h-4 w-4 text-[var(--dc-accent-soft)]"
                     strokeWidth={2}
@@ -66,7 +66,7 @@ function CentresBottomCta() {
                   />
                   Free career counselling
                 </li>
-                <li className="flex items-center gap-2 text-[13px] font-semibold text-[var(--dc-ink-secondary)]">
+                <li className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                   <Building2
                     className="h-4 w-4 text-[var(--dc-accent-soft)]"
                     strokeWidth={2}

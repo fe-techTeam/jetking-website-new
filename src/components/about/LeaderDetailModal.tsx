@@ -76,7 +76,7 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
                   {leader.name}
                 </h3>
                 {leader.role ? (
-                  <p className="mt-1 text-[13.5px] font-bold text-[var(--accent-ink)]">{leader.role}</p>
+                  <p className="mt-1 text-[14px] font-bold text-[var(--accent-ink)]">{leader.role}</p>
                 ) : null}
               </div>
 

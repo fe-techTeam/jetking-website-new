@@ -84,7 +84,7 @@ export function AboutTimeline() {
               {item.title}
             </h3>
             {item.body ? (
-              <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
+              <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
                 {item.body}
               </p>
             ) : null}

@@ -223,7 +223,7 @@ export default async function SitemapPage() {
             </section>
           )}
 
-          <p className="text-center text-[13px] text-[var(--dc-ink-muted)]">
+          <p className="text-center text-[14px] text-[var(--dc-ink-muted)]">
             Looking for the machine-readable version?{' '}
             <a href="/sitemap.xml" className="font-semibold text-[var(--dc-accent-soft)] hover:underline">
               sitemap.xml

@@ -373,7 +373,7 @@ export function CentreDetail({
                           {step.items.map((item) => (
                             <li
                               key={item}
-                              className="text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)]"
+                              className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]"
                             >
                               {item}
                             </li>
@@ -460,7 +460,7 @@ export function CentreDetail({
                                     {bioLines.map((line) => (
                                       <li
                                         key={line.slice(0, 40)}
-                                        className="text-[13px] leading-relaxed text-[var(--dc-ink-secondary)]"
+                                        className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]"
                                       >
                                         {line}
                                       </li>
@@ -531,7 +531,7 @@ export function CentreDetail({
                               <h3 className="font-display text-[14.5px] leading-snug font-extrabold tracking-[-0.02em] break-words text-[var(--dc-ink)] sm:text-[17px]">
                                 {p.name}
                               </h3>
-                              <p className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-[var(--dc-ink-muted)] sm:mt-1.5 sm:text-[13px]">
+                              <p className="mt-1 line-clamp-2 text-[14px] leading-snug text-[var(--dc-ink-muted)] sm:mt-1.5">
                                 {p.company}
                               </p>
                               {p.package && /\d/.test(p.package) ? (

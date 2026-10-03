@@ -111,7 +111,7 @@ export default function InvestorsPage() {
             ))}
           </div>
 
-          <p className="mx-auto mt-8 max-w-[56rem] text-center text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[13px]">
+          <p className="mx-auto mt-8 max-w-[56rem] text-center text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             Documents open in a new tab and are hosted by {siteConfig.legalName} on external
             file storage. Source: jetking.com/investors, last updated{' '}
             {formatDate(disclosures.syncedAt)}. Questions about a disclosure? Write to{' '}

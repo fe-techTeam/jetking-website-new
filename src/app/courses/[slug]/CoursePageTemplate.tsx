@@ -428,7 +428,7 @@ export function CoursePageTemplate({
               {course.careerRoles.map((role) => (
                 <li
                   key={role}
-                  className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-grey)] px-3.5 py-1.5 text-[13.5px] font-bold text-[var(--cp-ink)]"
+                  className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-grey)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--cp-ink)]"
                 >
                   {role}
                 </li>
@@ -736,7 +736,7 @@ export function CoursePageTemplate({
         <div className="mt-14 border-t border-[var(--cp-line)] pt-10">
           <h3 className="cp-h3">Brands that are our placement partners</h3>
           <RecruiterMarquee items={RECRUITERS} />
-          <p className="mt-4 text-[12.5px] text-[var(--cp-muted)]">{RECRUITERS_DISCLAIMER}</p>
+          <p className="mt-4 text-[14px] text-[var(--cp-muted)]">{RECRUITERS_DISCLAIMER}</p>
         </div>
       </section>
 

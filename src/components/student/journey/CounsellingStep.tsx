@@ -223,7 +223,7 @@ export function CounsellingStep({
           {status === 'submitting' ? 'Sending…' : 'Book free counselling'}
         </button>
 
-        <p className="text-[12.5px] text-[var(--dc-ink-muted)]">
+        <p className="text-[14px] text-[var(--dc-ink-muted)]">
           We use your details only to arrange this counselling session.
         </p>
       </form>

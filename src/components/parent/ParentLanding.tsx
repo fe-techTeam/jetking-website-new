@@ -107,7 +107,7 @@ export function ParentLanding({
 
         <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
           <div className="lg:col-span-7 xl:col-span-7">
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
               Welcome Parent!
             </p>
 
@@ -285,7 +285,7 @@ export function ParentLanding({
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[12.5px] text-[var(--dc-ink-muted)]">
+              <p className="mt-4 text-[14px] text-[var(--dc-ink-muted)]">
                 {counts.centres} centres across {counts.cities} cities — visit before you decide.
               </p>
             </div>
@@ -328,7 +328,7 @@ export function ParentLanding({
                     <p className="font-display text-[48px] leading-none font-extrabold text-[var(--dc-accent-soft)] sm:text-[56px]">
                       {FOUNDED_YEAR}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                       Training IT talent since
                     </p>
                   </div>
@@ -336,7 +336,7 @@ export function ParentLanding({
                     <p className="font-display text-[32px] leading-none font-extrabold text-[var(--dc-ink)] sm:text-[36px]">
                       {counts.cities}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">Cities with a Jetking centre</p>
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">Cities with a Jetking centre</p>
                   </div>
                 </div>
 
@@ -419,7 +419,7 @@ export function ParentLanding({
                   </span>
                 </EnquiryLink>
 
-                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[12.5px] font-bold text-[var(--dc-ink-secondary)] sm:text-[13px]">
+                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-ink-secondary)]">
                   <CheckCircle2
                     className="h-3.5 w-3.5 shrink-0 text-[var(--dc-accent-soft)]"
                     strokeWidth={2.5}

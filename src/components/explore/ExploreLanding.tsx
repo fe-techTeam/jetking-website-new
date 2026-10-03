@@ -265,7 +265,7 @@ export function ExploreLanding({
   return (
     <div
       className={[
-        'student-page relative overflow-hidden',
+        'student-page relative flex flex-col overflow-hidden',
         '-mt-[72px] pt-[72px]',
         'xs:-mt-[80px] xs:pt-[80px]',
         'sm:-mt-[88px] sm:pt-[88px]',
@@ -277,7 +277,7 @@ export function ExploreLanding({
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
               Just Exploring? Welcome! <span aria-hidden="true">👋</span>
             </p>
 
@@ -351,7 +351,7 @@ export function ExploreLanding({
       </section>
 
       {/* ── Quick enquiry (optional — no pressure) ───────────────────────── */}
-      <Section tone="wash" deco="glow" id="enquire">
+      <Section tone="tint" deco="glow" id="enquire" className="max-lg:order-last">
           <div className="kit kit-card overflow-hidden ">
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[200px] overflow-hidden lg:min-h-full">
@@ -409,7 +409,7 @@ export function ExploreLanding({
               {PURPOSE.map((item) => (
                 <div key={item.title} className="kit kit-card p-4">
                   <dt className="text-[13px] font-extrabold text-[var(--dc-ink)]">{item.title}</dt>
-                  <dd className="mt-1.5 text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                  <dd className="mt-1.5 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {item.body}
                   </dd>
                 </div>
@@ -475,7 +475,7 @@ export function ExploreLanding({
                   ))}
                 </dl>
 
-                <p className="mt-8 max-w-md text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+                <p className="mt-8 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                   {PLACEMENT_DISCLAIMER}
                 </p>
               </div>
@@ -536,7 +536,7 @@ export function ExploreLanding({
                   <h3 className="mt-3 text-[14px] leading-snug font-extrabold text-[var(--dc-ink)] sm:mt-4 sm:text-[15px]">
                     {card.title}
                   </h3>
-                  <p className="mt-1.5 text-[12.5px] leading-snug text-[var(--dc-ink-muted)] sm:text-[13px]">
+                  <p className="mt-1.5 text-[14px] leading-snug text-[var(--dc-ink-muted)]">
                     {card.detail}
                   </p>
                 </article>
@@ -615,7 +615,7 @@ export function ExploreLanding({
             render={(company) => <LogoTile name={company} />}
             noun="companies"
           />
-          <p className="mt-7 max-w-2xl text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+          <p className="mt-7 max-w-2xl text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             {PLACEMENT_DISCLAIMER}
           </p>
         </Section>
@@ -645,7 +645,7 @@ export function ExploreLanding({
               </span>
             )}
           />
-          <p className="mt-4 max-w-2xl text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+          <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             Note: Placements are subject to recruitment norms. Jetking does not guarantee
             placements in the above organisations.
           </p>
@@ -716,7 +716,7 @@ export function ExploreLanding({
               <h2 id="exp-cta" className="subsection-title mt-4 text-[var(--dc-ink)]">
                 {counts.centres} centres across {counts.cities} cities
               </h2>
-              <p className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
+              <p className="mt-1.5 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
                 Not ready to talk to anyone yet? Just browse — every centre and every
                 course is listed, no form required.
               </p>

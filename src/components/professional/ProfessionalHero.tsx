@@ -44,7 +44,7 @@ export function ProfessionalHero() {
           {HERO_FEATURES.map((item) => (
             <li
               key={item.label}
-              className="flex items-center gap-2 text-[12.5px] font-semibold text-[var(--v2-ink-secondary)] sm:text-[13px]"
+              className="flex items-center gap-2 text-[14px] font-semibold text-[var(--v2-ink-secondary)]"
             >
               <item.icon
                 className="h-4 w-4 shrink-0 text-[var(--v2-accent-soft)]"

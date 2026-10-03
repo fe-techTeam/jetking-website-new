@@ -77,7 +77,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
   return (
     <div role="region" aria-roledescription="carousel" aria-label={label} className="relative">
       <div className="flex items-center justify-between gap-3">
-        <p id={hintId} className="text-[13px] font-semibold text-[var(--dc-ink-muted)]">
+        <p id={hintId} className="text-[14px] font-semibold text-[var(--dc-ink-muted)]">
           Tap a letter to view it full size
         </p>
         <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
               </button>
               <figcaption className="mt-3 px-1">
                 <p className="text-[15px] font-bold text-[var(--dc-ink)]">{item.title}</p>
-                <p className="mt-1 text-[13px] leading-snug text-[var(--dc-ink-muted)]">
+                <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)]">
                   {item.sector} · {NOTE}
                 </p>
               </figcaption>
@@ -200,12 +200,12 @@ function OfferLetterGallery({
             <p id={titleId} className="truncate font-display text-[17px] font-extrabold text-white sm:text-[19px]">
               {item.title}
             </p>
-            <p className="mt-0.5 text-[12.5px] leading-snug text-white/65">
+            <p className="mt-0.5 text-[14px] leading-snug text-white/65">
               {item.sector} · {NOTE}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
-            <p aria-live="polite" className="numeral text-[13px] font-bold text-white/70">
+            <p aria-live="polite" className="numeral text-[14px] font-bold text-white/70">
               {index + 1} / {items.length}
             </p>
             <button
