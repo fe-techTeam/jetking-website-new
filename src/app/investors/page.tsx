@@ -50,7 +50,7 @@ export default function InvestorsPage() {
           <Breadcrumbs trail={trail} />
 
           <div className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[240px] overflow-hidden rounded-[24px] xs:min-h-[260px] xs:rounded-[28px] sm:min-h-[300px] sm:rounded-[32px] lg:min-h-[320px]">
+            <div className="dc-banner relative min-h-[240px] overflow-hidden rounded-[24px] xs:min-h-[260px] xs:rounded-[28px] sm:min-h-[300px] sm:rounded-[28px] lg:min-h-[320px]">
               <Image
                 src="/home/journey-franchise-v2.jpg"
                 alt=""
@@ -63,7 +63,7 @@ export default function InvestorsPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
                 <p className="dc-eyebrow label-mono text-[14px]">Investors</p>
-                <h1 className="mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-4 sm:text-[44px] lg:text-[50px]">
+                <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)] sm:mt-4">
                   Investor <span className="dc-accent-glow">Information</span>
                 </h1>
                 <p className="mt-3 max-w-[52ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-4 sm:text-[16px]">
@@ -88,7 +88,7 @@ export default function InvestorsPage() {
             </p>
             <h2
               id="investors-reports"
-              className="mt-4 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+              className="section-title mt-4 font-display text-[var(--dc-ink)]"
             >
               Access our <span className="dc-accent-glow">reports</span>
             </h2>
@@ -218,7 +218,7 @@ function DocumentRow({ label, href }: { label: string; href: string }) {
     <div className="flex flex-wrap items-center gap-3 rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-3.5 py-3 sm:flex-nowrap sm:px-4">
       <span
         aria-hidden="true"
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
       >
         <FileText className="h-[18px] w-[18px]" strokeWidth={1.75} />
       </span>

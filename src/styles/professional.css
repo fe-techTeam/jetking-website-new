@@ -18,31 +18,10 @@
   --v2-shadow-card: var(--theme-shadow);
   --v2-shadow-card-hover: var(--theme-shadow-hover);
 
-  --pro-ink: var(--theme-ink);
-  --pro-ink-secondary: var(--theme-ink-secondary);
-  --pro-ink-muted: var(--theme-ink-muted);
-  --pro-accent: var(--theme-accent);
-  --pro-accent-soft: var(--theme-accent-soft);
-  --pro-accent-tint: var(--theme-accent-tint);
-  --pro-canvas: var(--theme-canvas);
-  --pro-surface: var(--theme-surface);
-  --pro-card: var(--theme-card);
-  --pro-navy: var(--theme-accent);
-  --pro-hairline: var(--theme-hairline-strong);
-  --pro-shadow: var(--theme-shadow);
-  --pro-shadow-hover: var(--theme-shadow-hover);
 
-  --pro-cyber: var(--theme-cyber-ink);
-  --pro-cloud: var(--theme-cloud-ink);
-  --pro-network: var(--theme-network-ink);
-  --pro-ai: var(--theme-ai-ink);
-  --pro-cyber-tint: var(--theme-cyber-tint);
-  --pro-cloud-tint: var(--theme-cloud-tint);
-  --pro-network-tint: var(--theme-network-tint);
-  --pro-ai-tint: var(--theme-ai-tint);
 
-  background: var(--pro-canvas);
-  color: var(--pro-ink);
+  background: var(--dc-canvas);
+  color: var(--dc-ink);
   isolation: isolate;
 }
 
@@ -91,9 +70,9 @@
 }
 
 .pro-card {
-  background: var(--pro-card);
-  border: 1px solid var(--pro-hairline);
-  box-shadow: var(--pro-shadow);
+  background: var(--dc-card);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
   transition:
     box-shadow var(--duration-base) var(--ease-out-soft),
     transform var(--duration-base) var(--ease-out-soft);
@@ -101,7 +80,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .pro-card-interactive:hover {
-    box-shadow: var(--pro-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-3px);
   }
 }
@@ -114,13 +93,13 @@
 }
 
 .pro-surface-band {
-  background: var(--pro-surface);
-  color: var(--pro-ink);
+  background: var(--dc-surface);
+  color: var(--dc-ink);
 }
 
 .pro-journey-panel {
   background: linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
-  border: 1px solid var(--pro-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .pro-path-track {
@@ -148,8 +127,8 @@
 }
 
 .pro-path-node-final {
-  border-color: var(--pro-accent-soft);
-  background: var(--pro-accent-tint);
+  border-color: var(--dc-accent-soft);
+  background: var(--dc-accent-tint);
   box-shadow: none;
 }
 
@@ -164,7 +143,7 @@
 
 .pro-why {
   background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--pro-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .pro-program-track,
@@ -221,7 +200,7 @@
   .pro-program-card:hover,
   .pro-course-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--pro-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
   }
 
   .pro-course-track .pro-course-card:hover {
@@ -236,7 +215,7 @@
 
 .pro-bottom-cta {
   background: linear-gradient(155deg, #0b1120 0%, #07070c 100%);
-  border-top: 1px solid var(--pro-hairline);
+  border-top: 1px solid var(--dc-hairline-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -273,28 +252,7 @@ html:not(.dark) .professional-page {
   --v2-shadow-card: 0 10px 30px rgb(20 20 31 / 0.09);
   --v2-shadow-card-hover: 0 18px 44px rgb(60 50 90 / 0.14);
 
-  --pro-ink: #14141f;
-  --pro-ink-secondary: #475467;
-  --pro-ink-muted: #5f6b7d;
-  --pro-accent: var(--color-jk-600);
-  --pro-accent-soft: #a50d13;
-  --pro-accent-tint: #fff0f1;
-  --pro-canvas: #ffffff;
-  --pro-surface: #f8f9fb;
-  --pro-card: #ffffff;
-  --pro-navy: var(--color-jk-600);
-  --pro-hairline: rgb(20 20 31 / 0.14);
-  --pro-shadow: 0 10px 30px rgb(20 20 31 / 0.09);
-  --pro-shadow-hover: 0 18px 44px rgb(60 50 90 / 0.14);
 
-  --pro-cyber: #5f3aa8;
-  --pro-cloud: #2454a6;
-  --pro-network: #17683b;
-  --pro-ai: #9a4312;
-  --pro-cyber-tint: #eee8ff;
-  --pro-cloud-tint: #e9f0ff;
-  --pro-network-tint: #e8f7ed;
-  --pro-ai-tint: #fff0e7;
 }
 
 html:not(.dark) .professional-page .pro-float {
@@ -317,7 +275,7 @@ html:not(.dark) .professional-page .pro-bottom-cta {
 
 html:not(.dark) .professional-page .pro-path-step-card {
   background: rgb(255 255 255 / 0.82);
-  border-color: var(--pro-hairline);
+  border-color: var(--dc-hairline-strong);
   box-shadow: 0 8px 24px rgb(20 20 31 / 0.08);
 }
 

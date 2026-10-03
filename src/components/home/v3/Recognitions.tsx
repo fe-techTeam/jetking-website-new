@@ -15,7 +15,7 @@ export function Recognitions() {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Recognition</p>
             <h2
               id="home-recognition-heading"
-              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="section-title mt-2 font-display text-[var(--dc-ink)]"
             >
               Recognised by industry, regulators and peers
             </h2>
@@ -38,7 +38,7 @@ export function Recognitions() {
             const { accent, tint } = HUE_VARS[item.hue];
             return (
               <li key={item.title} className="w-[80%] shrink-0 snap-start sm:w-auto">
-                <article className="flex h-full flex-col gap-3.5 rounded-[22px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
+                <article className="flex h-full flex-col gap-3.5 rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
                   <div className="flex items-center justify-between gap-3">
                     <span
                       aria-hidden="true"
@@ -69,7 +69,7 @@ export function Recognitions() {
           <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             {UNIVERSITY_PARTNERS.map((partner) => (
               <li key={partner.name}>
-                <div className="flex h-full flex-col items-center gap-2 rounded-[18px] border border-[var(--dc-hairline)] bg-white p-4 text-center shadow-[var(--dc-shadow)]">
+                <div className="flex h-full flex-col items-center gap-2 rounded-[16px] border border-[var(--dc-hairline)] bg-white p-4 text-center shadow-[var(--dc-shadow)]">
                   {/* eslint-disable-next-line @next/next/no-img-element -- small static partner logos */}
                   <img src={partner.src} alt="" draggable={false} className="h-14 w-full object-contain" />
                   <span className="text-[12px] leading-snug font-semibold text-ink-600">{partner.name}</span>

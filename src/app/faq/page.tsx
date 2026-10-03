@@ -71,7 +71,7 @@ export default async function FaqPage() {
           <Breadcrumbs trail={trail} />
 
           <div className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[260px] overflow-hidden rounded-[24px] xs:min-h-[280px] xs:rounded-[28px] sm:min-h-[320px] sm:rounded-[32px] lg:min-h-[360px]">
+            <div className="dc-banner relative min-h-[260px] overflow-hidden rounded-[24px] xs:min-h-[280px] xs:rounded-[28px] sm:min-h-[320px] sm:rounded-[28px] lg:min-h-[360px]">
               <Image
                 src="/home/journey-explore-v2.jpg"
                 alt=""
@@ -84,7 +84,7 @@ export default async function FaqPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
                 <p className="dc-eyebrow label-mono text-[14px]">FAQ</p>
-                <h1 className="mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
+                <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                   Questions people <span className="dc-accent-glow">ask us most</span>
                 </h1>
                 <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
@@ -141,7 +141,7 @@ export default async function FaqPage() {
                   <div>
                     <h2
                       id={`faq-${topic}-heading`}
-                      className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
+                      className="section-title font-display text-[var(--dc-ink)]"
                     >
                       {label}
                     </h2>
@@ -152,9 +152,9 @@ export default async function FaqPage() {
                   {topicFaqs.map((faq) => (
                     <details
                       key={faq.id}
-                      className="group rounded-[14px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] transition-colors hover:border-[var(--dc-hairline-strong)] open:border-[var(--dc-accent-soft)]/50 open:bg-[var(--dc-accent-tint)]"
+                      className="group rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] transition-colors hover:border-[var(--dc-hairline-strong)] open:border-[var(--dc-accent-soft)]/50 open:bg-[var(--dc-accent-tint)]"
                     >
-                      <summary className="flex cursor-pointer list-none items-center gap-4 rounded-[14px] px-4 py-4 text-left marker:hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:px-5 [&::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer list-none items-center gap-4 rounded-[12px] px-4 py-4 text-left marker:hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:px-5 [&::-webkit-details-marker]:hidden">
                         <span className="min-w-0 flex-1 text-[15px] leading-snug font-bold text-[var(--dc-ink)] sm:text-[16px]">
                           {faq.question}
                         </span>
@@ -183,7 +183,7 @@ export default async function FaqPage() {
               <p className="dc-eyebrow label-mono">Need more help?</p>
               <h2
                 id="faq-more"
-                className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
+                className="section-title mt-2 font-display text-[var(--dc-ink)]"
               >
                 Still have a <span className="dc-accent-glow">question?</span>
               </h2>

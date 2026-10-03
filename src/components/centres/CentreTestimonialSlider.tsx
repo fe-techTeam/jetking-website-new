@@ -33,11 +33,11 @@ export function CentreTestimonialSlider({
       itemLabel={(item) => (item.role ? `${item.name}, ${item.role}` : item.name)}
       classNames={{
         viewport: 'rounded-[24px]',
-        controls: 'text-[var(--centres-ink)]',
+        controls: 'text-[var(--dc-ink)]',
         button:
-          'border-[var(--centres-hairline)] bg-[var(--centres-card)] text-[var(--centres-ink)] hover:border-[var(--centres-accent-soft)]',
-        dotActive: 'bg-[var(--centres-accent-soft)]',
-        dotIdle: 'bg-[var(--centres-ink-muted)]/40',
+          'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] hover:border-[var(--dc-accent-soft)]',
+        dotActive: 'bg-[var(--dc-accent-soft)]',
+        dotIdle: 'bg-[var(--dc-ink-muted)]/40',
       }}
     >
       {(item, i) => (

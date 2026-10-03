@@ -15,8 +15,8 @@
 }
 
 .par-trust-card {
-  background: color-mix(in srgb, var(--stu-card) 92%, transparent);
-  border: 1px solid var(--stu-hairline);
+  background: color-mix(in srgb, var(--dc-card) 92%, transparent);
+  border: 1px solid var(--dc-hairline-strong);
   box-shadow:
     0 12px 36px rgb(0 0 0 / 0.5),
     0 0 24px rgb(232 36 43 / 0.12);
@@ -25,14 +25,14 @@
 }
 
 .par-help-row {
-  border-color: var(--stu-hairline);
+  border-color: var(--dc-hairline-strong);
   transition:
     background 0.15s var(--ease-out-soft),
     border-color 0.15s var(--ease-out-soft);
 }
 
 .par-help-row:hover {
-  background: var(--stu-accent-tint);
+  background: var(--dc-accent-tint);
   border-color: rgb(255 107 112 / 0.55);
 }
 

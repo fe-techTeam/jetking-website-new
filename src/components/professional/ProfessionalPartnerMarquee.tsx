@@ -31,7 +31,7 @@ export function ProfessionalPartnerMarquee() {
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
           aria-label={paused ? 'Resume scrolling partner logos' : 'Pause scrolling partner logos'}
-          className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] px-4 text-[12.5px] font-bold text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pro-accent-soft)]"
+          className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           {paused ? (
             <Play className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -56,7 +56,7 @@ function PartnerList({ clone = false }: { clone?: boolean }) {
         <li
           key={partner.name}
           // White tiles in both themes: the logos are artwork drawn for a white ground.
-          className="flex h-20 w-40 shrink-0 items-center justify-center rounded-[14px] bg-white px-5 py-3.5 shadow-logo sm:h-24 sm:w-48"
+          className="flex h-20 w-40 shrink-0 items-center justify-center rounded-[12px] bg-white px-5 py-3.5 shadow-logo sm:h-24 sm:w-48"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
           <img

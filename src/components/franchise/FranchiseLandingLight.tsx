@@ -101,16 +101,16 @@ export function FranchiseLandingLight({
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
               Become A Franchise Partner
             </p>
 
-            <h1 className="mt-5 font-display text-[36px] leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--stu-ink)] xs:text-[42px] sm:mt-6 sm:text-[48px] md:text-[52px] lg:text-[50px] xl:text-[58px]">
+            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
               Transform youth with a Jetking Franchise in your{' '}
-              <span className="text-[var(--stu-accent-soft)]">City</span>
+              <span className="text-[var(--dc-accent-soft)]">City</span>
             </h1>
 
-            <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
+            <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
               Join India&rsquo;s trusted IT training network. Proven model, end-to-end
               support, and a path to build lasting local impact — and wealth.
             </p>
@@ -118,7 +118,7 @@ export function FranchiseLandingLight({
             <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
                 href="#enquire"
-                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--stu-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
+                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--dc-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
                 Enquire Now
                 <span
@@ -131,7 +131,7 @@ export function FranchiseLandingLight({
 
               <Link
                 href="#enquire"
-                className="group/path inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-3.5 py-2 text-[13px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
+                className="group/path inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-3.5 py-2 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
               >
                 <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden="true" />
                 Download Brochure
@@ -144,23 +144,23 @@ export function FranchiseLandingLight({
                   {PARTNER_AVATARS.map((src) => (
                     <span
                       key={src}
-                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--stu-card)] shadow-sm"
+                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)] shadow-sm"
                     >
                       <Image src={src} alt="" fill sizes="36px" className="object-cover" />
                     </span>
                   ))}
                 </span>
-                <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+                <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                   Partners across India
                 </span>
               </div>
               <span
-                className="hidden h-4 w-px shrink-0 bg-[var(--stu-hairline)] min-[720px]:block"
+                className="hidden h-4 w-px shrink-0 bg-[var(--dc-hairline-strong)] min-[720px]:block"
                 aria-hidden="true"
               />
-              <span className="inline-flex items-center gap-2 whitespace-nowrap text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+              <span className="inline-flex items-center gap-2 whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                 <ShieldCheck
-                  className="h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]"
+                  className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
                   strokeWidth={2.25}
                   aria-hidden="true"
                 />
@@ -170,7 +170,7 @@ export function FranchiseLandingLight({
 
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               Prefer to talk? Call franchise manager
@@ -187,22 +187,22 @@ export function FranchiseLandingLight({
 
       {/* ── Why Franchise (student Why panel) ──────────────────────────── */}
       <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
+        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
         aria-labelledby="fra-why"
       >
         <div className="shell">
-          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--stu-ink)] xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
                 <h2
                   id="fra-why"
-                  className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title font-display text-[var(--dc-ink)]"
                 >
                   Why Partners Choose{' '}
-                  <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span>
+                  <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
-                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] sm:text-[15px]">
+                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
                   The numbers behind a franchise model built on decades of trust.
                 </p>
 
@@ -219,15 +219,15 @@ export function FranchiseLandingLight({
                       <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
                         <span
                           aria-hidden="true"
-                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                         >
                           <Icon className="h-5 w-5" strokeWidth={1.75} />
                         </span>
                         <span className="min-w-0">
-                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--stu-ink)] sm:text-[22px]">
+                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--dc-ink)] sm:text-[22px]">
                             {stat.value}
                           </span>
-                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13px]">
                             {stat.label}
                           </span>
                         </span>
@@ -246,7 +246,7 @@ export function FranchiseLandingLight({
 
       {/* ── Partner benefits (student Benefits pattern) ────────────────── */}
       <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
+        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
         aria-labelledby="fra-benefits"
       >
         <div className="shell">
@@ -254,11 +254,11 @@ export function FranchiseLandingLight({
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
               <h2
                 id="fra-benefits"
-                className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px] lg:text-[30px]"
+                className="section-title font-display text-[var(--dc-ink)]"
               >
                 Jump-start your centre
               </h2>
-              <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+              <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
                 What you get when you partner with Jetking.
               </p>
             </div>
@@ -268,18 +268,18 @@ export function FranchiseLandingLight({
                 const Icon = JUMP_START_ICONS[i]!;
                 return (
                 <li key={item.title} className="min-w-0">
-                  <article className="stu-card flex h-full gap-3.5 rounded-[18px] p-4 xs:gap-4 xs:rounded-[20px] xs:p-5 sm:flex-col sm:gap-0">
+                  <article className="stu-card flex h-full gap-3.5 rounded-[16px] p-4 xs:gap-4 xs:rounded-[20px] xs:p-5 sm:flex-col sm:gap-0">
                     <span
                       aria-hidden="true"
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
                     >
                       <Icon className="h-5 w-5" strokeWidth={1.75} />
                     </span>
                     <div className="min-w-0 sm:mt-4">
-                      <h3 className="text-[15px] font-extrabold text-[var(--stu-ink)] xs:text-[16px]">
+                      <h3 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
                         {item.title}
                       </h3>
-                      <p className="mt-1 text-[13px] leading-snug text-[var(--stu-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
+                      <p className="mt-1 text-[13px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
                         {item.detail}
                       </p>
                     </div>
@@ -290,25 +290,25 @@ export function FranchiseLandingLight({
             </ul>
 
             <div className="min-w-0 lg:col-span-5 lg:row-start-2 lg:self-stretch xl:col-span-4">
-              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
+              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
-                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-brand xs:h-12 xs:w-12"
+                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] shadow-brand xs:h-12 xs:w-12"
                 >
                   <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} />
                 </span>
 
-                <h2 className="relative mt-4 font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:mt-5 xs:text-[24px] sm:text-[26px]">
+                <h2 className="subsection-title relative mt-4 font-display text-[var(--dc-ink)] xs:mt-5">
                   Ready to partner?
                 </h2>
-                <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] xs:mt-3 xs:text-[15px]">
+                <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] xs:mt-3 xs:text-[15px]">
                   Tell us your preferred city and investment capacity — our franchise team
                   replies within 24 hours.
                 </p>
 
                 <a
                   href="#enquire"
-                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--stu-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
+                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
                 >
                   <span>Start franchise enquiry</span>
                   <span
@@ -319,7 +319,7 @@ export function FranchiseLandingLight({
                   </span>
                 </a>
 
-                <p className="relative mt-4 text-[12.5px] text-[var(--stu-ink-muted)]">
+                <p className="relative mt-4 text-[12.5px] text-[var(--dc-ink-muted)]">
                   Capacity bands: UPTO 50 L · UPTO 1 CR · UPTO 3 CR
                 </p>
               </div>
@@ -329,13 +329,13 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
-      <section id="journey" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
+      <section id="journey" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
         <div className="shell">
           <div className="max-w-xl">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
+            <h2 className="section-title font-display text-[var(--dc-ink)]">
               Launch Plan
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
               A clear path from territory selection to day-to-day operations.
             </p>
           </div>
@@ -349,18 +349,18 @@ export function FranchiseLandingLight({
                   <div className="flex items-center justify-between gap-3">
                     <span
                       aria-hidden="true"
-                      className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                      className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                     >
                       <Icon className="h-5 w-5" strokeWidth={1.75} />
                     </span>
-                    <span className="font-display text-[22px] font-extrabold text-[var(--stu-accent-soft)]/70">
+                    <span className="font-display text-[22px] font-extrabold text-[var(--dc-accent-soft)]/70">
                       {step.step}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--stu-ink)]">
+                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--dc-ink)]">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {step.body}
                   </p>
                 </article>
@@ -372,10 +372,10 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Market opportunity + image ─────────────────────────────────── */}
-      <section id="opportunity" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
+      <section id="opportunity" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
         <div className="shell">
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
-            <div className="relative overflow-hidden rounded-[24px] border border-[var(--stu-hairline)] lg:col-span-5">
+            <div className="relative overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] lg:col-span-5">
               <Image
                 src="/franchise/centre-interior.webp"
                 alt="Students learning in a modern Jetking-style IT training classroom"
@@ -390,21 +390,21 @@ export function FranchiseLandingLight({
             </div>
 
             <div className="lg:col-span-7">
-              <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
+              <h2 className="section-title font-display text-[var(--dc-ink)]">
                 The opportunity is real
               </h2>
-              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
                 Skill gaps in cloud, cyber and emerging tech create lasting demand for
                 job-ready training centres in every city.
               </p>
 
               <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
                 {MARKET_STATS.map((stat) => (
-                  <li key={stat.label} className="stu-card rounded-[18px] p-3.5 sm:p-5">
-                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--stu-accent-soft)] sm:text-[26px]">
+                  <li key={stat.label} className="stu-card rounded-[16px] p-3.5 sm:p-5">
+                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
                       {stat.value}
                     </p>
-                    <p className="mt-2 text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                    <p className="mt-2 text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13px]">
                       {stat.label}
                     </p>
                   </li>
@@ -416,13 +416,13 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Courses ────────────────────────────────────────────────────── */}
-      <section id="courses" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
+      <section id="courses" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
         <div className="shell">
           <div className="max-w-xl">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
+            <h2 className="section-title font-display text-[var(--dc-ink)]">
               Courses your centre will deliver
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
               Proven courses parents trust and employers recognise.
             </p>
           </div>
@@ -435,14 +435,14 @@ export function FranchiseLandingLight({
                 <article className="stu-card flex h-full flex-col rounded-[20px] p-5 sm:p-6">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
                     <Icon className="h-5 w-5" strokeWidth={1.75} />
                   </span>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--stu-ink)]">
+                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--dc-ink)]">
                     {course.title}
                   </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {course.body}
                   </p>
                 </article>
@@ -455,15 +455,15 @@ export function FranchiseLandingLight({
 
       {/* ── FAQs ───────────────────────────────────────────────────────── */}
       {faqs?.length ? (
-        <section id="faqs" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
+        <section id="faqs" className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14">
           <div className="shell">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
+            <h2 className="section-title font-display text-[var(--dc-ink)]">
               Frequently Asked Questions
             </h2>
             <div className="fra-faq mt-8 space-y-3">
               {faqs.map((faq) => (
                 <Disclosure key={faq.id} summary={faq.question}>
-                  <p className="text-[14.5px] leading-relaxed text-[var(--stu-ink-secondary)]">
+                  <p className="text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
                     {faq.answer}
                   </p>
                 </Disclosure>
@@ -474,7 +474,7 @@ export function FranchiseLandingLight({
       ) : null}
 
       {/* ── Enquire ────────────────────────────────────────────────────── */}
-      <section id="enquire" className="bg-[var(--stu-surface)] py-14 sm:py-16 lg:py-20">
+      <section id="enquire" className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20">
         <div className="shell">
           <div className="stu-card overflow-hidden rounded-[28px]">
             <div className="grid lg:grid-cols-2">
@@ -506,15 +506,15 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Contact bar ────────────────────────────────────────────────── */}
-      <footer className="border-t border-[var(--stu-hairline)] bg-[var(--stu-surface)] py-5">
+      <footer className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-5">
         <div className="shell">
           <div className="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:flex-wrap sm:gap-8">
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
@@ -522,10 +522,10 @@ export function FranchiseLandingLight({
             </a>
             <a
               href="mailto:franchise@jetking.com"
-              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Mail
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
@@ -533,10 +533,10 @@ export function FranchiseLandingLight({
             </a>
             <Link
               href="/franchise"
-              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Download
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />

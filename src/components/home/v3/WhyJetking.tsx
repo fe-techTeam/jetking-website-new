@@ -23,7 +23,7 @@ export function WhyJetking() {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Why Jetking</p>
             <h2
               id="home-why-heading"
-              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="section-title mt-2 font-display text-[var(--dc-ink)]"
             >
               What makes Jetking different?
             </h2>

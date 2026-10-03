@@ -6,7 +6,7 @@ export function FranchiseBand() {
   return (
     <section className="py-8 sm:py-10" aria-labelledby="home-franchise-heading">
       <div className="shell">
-        <div className="flex flex-col gap-5 rounded-[22px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-6 shadow-[var(--dc-shadow)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="flex flex-col gap-5 rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-6 shadow-[var(--dc-shadow)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div className="flex items-start gap-4">
             <span
               aria-hidden="true"

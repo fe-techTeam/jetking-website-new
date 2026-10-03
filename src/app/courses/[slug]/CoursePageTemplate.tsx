@@ -87,13 +87,13 @@ const UNIVERSITY_LOGOS: Array<{ match: RegExp; src: string }> = [
 ];
 
 /** Cycled across journey / stat cards so the page carries red, yellow and blue, not red alone. */
-const ACCENT_TOPS = ['border-t-[var(--cp-red)]', 'border-t-[var(--cp-yellow)]', 'border-t-[var(--cp-blue)]'];
-const ACCENT_DOTS = ['bg-[var(--cp-red-fill)] text-white', 'bg-[var(--cp-yellow)] text-[#111827]', 'bg-[var(--cp-blue-fill)] text-white'];
+const ACCENT_TOPS = ['border-t-[var(--cp-red)]', 'border-t-[var(--cp-red)]', 'border-t-[var(--cp-red)]'];
+const ACCENT_DOTS = ['bg-[var(--cp-red-fill)] text-white', 'bg-[var(--cp-red-fill)] text-white', 'bg-[var(--cp-red-fill)] text-white'];
 
 const HIGHLIGHT_ACCENTS = [
   'bg-[var(--cp-red-tint)] text-[var(--cp-red)]',
-  'bg-[var(--cp-yellow-tint)] text-[var(--cp-yellow-ink)]',
-  'bg-[var(--cp-sky)] text-[var(--cp-blue)]',
+  'bg-[var(--cp-red-tint)] text-[var(--cp-red)]',
+  'bg-[var(--cp-red-tint)] text-[var(--cp-red)]',
   'bg-[var(--cp-grey)] text-[var(--cp-ink)]',
 ];
 
@@ -377,7 +377,7 @@ export function CoursePageTemplate({
         <ul className="mt-6 grid gap-3">
           {course.outcomes.map((o) => (
             <li key={o} className="flex gap-3 text-[15px] leading-relaxed text-[var(--cp-ink-2)]">
-              <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--cp-yellow)]" />
+              <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--cp-red)]" />
               {o}
             </li>
           ))}
@@ -390,7 +390,7 @@ export function CoursePageTemplate({
               {course.careerRoles.map((role) => (
                 <li
                   key={role}
-                  className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-sky)] px-3.5 py-1.5 text-[13.5px] font-bold text-[var(--cp-ink)]"
+                  className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-grey)] px-3.5 py-1.5 text-[13.5px] font-bold text-[var(--cp-ink)]"
                 >
                   {role}
                 </li>
@@ -400,7 +400,7 @@ export function CoursePageTemplate({
         ) : null}
 
         {/* Slide 2: the "how does placement work" prompt, answered on this page rather than a new one. */}
-        <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-yellow-tint)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-grey)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
             <p className="cp-eyebrow">Placement</p>
             <p className="mt-1 text-[17px] font-bold text-[var(--cp-ink)]">Want to know how our Placement works?</p>
@@ -413,16 +413,16 @@ export function CoursePageTemplate({
       </section>
 
       {/* Breathing-space photo (slide 3: images between content blocks). */}
-      <section className="shell pb-[clamp(2.5rem,6vw,4.5rem)]" aria-label="Learn by doing">
+      <section className="shell pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label="Learn by doing">
         <div className="relative min-h-[240px] overflow-hidden rounded-[28px] sm:min-h-[280px]">
           <Image src="/home/journey-student-v2.jpg" alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_25%]" />
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#0f1115]/95 via-[#0f1115]/80 to-[#0f1115]/10" />
           <div className="relative flex min-h-[inherit] max-w-xl flex-col justify-center gap-4 p-7 sm:p-10">
-            <span className="cp-eyebrow !text-[var(--cp-yellow)]">Learn by doing</span>
+            <span className="cp-eyebrow !text-white/80">Learn by doing</span>
             <p className="text-2xl leading-tight font-bold text-white sm:text-3xl">
               Labs with mentors beside you, and a placement team behind you.
             </p>
-            <a href="#cp-enquiry" className="cp-btn cp-btn-yellow self-start">
+            <a href="#cp-enquiry" className="cp-btn cp-btn-light self-start">
               Talk to a counsellor
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </a>
@@ -456,8 +456,8 @@ export function CoursePageTemplate({
               <>
                 <h3 className="cp-h3 mt-10">Internship &amp; placement opportunities</h3>
                 <ul className="mt-4 grid gap-4 md:grid-cols-2">
-                  {internshipPoints.map((item, i) => (
-                    <li key={item} className={`flex gap-4 rounded-2xl p-5 ${i % 2 ? 'bg-[var(--cp-sky)]' : 'bg-[var(--cp-yellow-tint)]'}`}>
+                  {internshipPoints.map((item) => (
+                    <li key={item} className={`flex gap-4 rounded-2xl p-5 bg-[var(--cp-grey)]`}>
                       <Briefcase className="mt-0.5 h-6 w-6 shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
                       <span className="text-[15px] leading-snug font-bold text-[var(--cp-ink)]">{item}</span>
                     </li>
@@ -490,13 +490,13 @@ export function CoursePageTemplate({
             <ul className="mt-5 grid gap-2.5">
               {['Recognised degree awarded by the university', 'Jetking labs, mentors and master sessions at your centre'].map((t) => (
                 <li key={t} className="flex gap-2.5 text-[15px] text-[var(--cp-ink-2)]">
-                  <BadgeCheck className="mt-px h-[18px] w-[18px] shrink-0 text-[var(--cp-blue)]" aria-hidden="true" />
+                  <BadgeCheck className="mt-px h-[18px] w-[18px] shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
                   {t}
                 </li>
               ))}
             </ul>
           </div>
-          <figure className="rounded-[24px] bg-[var(--cp-yellow-tint)] p-4 sm:p-6">
+          <figure className="rounded-[24px] bg-[var(--cp-grey)] p-4 sm:p-6">
             <div className="flex h-64 items-center justify-center overflow-hidden rounded-xl bg-white sm:h-72">
               {/* eslint-disable-next-line @next/next/no-img-element -- local SVG specimen */}
               <img src="/courses/sample-degree.svg" alt="Sample degree certificate" className="h-full w-full object-contain" />
@@ -510,7 +510,7 @@ export function CoursePageTemplate({
 
       {/* ── 6. Your learning journey ────────────────────────────────────── */}
       {course.phases?.length ? (
-        <section className="cp-band-sky cp-section">
+        <section className="cp-section">
           <div className="shell">
             <Heading kicker="Your learning journey">From first lab to first job</Heading>
             <ol className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -544,8 +544,8 @@ export function CoursePageTemplate({
           </span>
         </div>
         <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {curriculumStats.map((stat, i) => (
-            <li key={stat.label} className={`rounded-2xl p-4 text-center ${['bg-[var(--cp-red-tint)]', 'bg-[var(--cp-yellow-tint)]', 'bg-[var(--cp-sky)]', 'bg-[var(--cp-grey)]'][i % 4]}`}>
+          {curriculumStats.map((stat) => (
+            <li key={stat.label} className={`rounded-2xl p-4 text-center ${'bg-[var(--cp-grey)]'}`}>
               <span className="block text-3xl leading-none font-bold text-[var(--cp-ink)]">{stat.value}</span>
               <span className="mt-1.5 block text-[12.5px] font-bold tracking-[0.06em] text-[var(--cp-muted)] uppercase">{stat.label}</span>
             </li>
@@ -577,7 +577,7 @@ export function CoursePageTemplate({
 
       {/* ── 8. Tools & technologies — all logos in two lines on a light band ─ */}
       {course.tools?.length ? (
-        <section className="cp-band-sky cp-section">
+        <section className="cp-band-grey cp-section">
           <div className="shell">
             <Heading kicker="Tools & technologies">Tools you will work with</Heading>
             <ul className="cp-two-lines mt-8">
@@ -603,11 +603,11 @@ export function CoursePageTemplate({
             ))}
           </ul>
           {course.certificateImage ? (
-            <figure className="mt-10 grid items-center gap-6 rounded-[20px] bg-[var(--cp-sky)] p-5 sm:grid-cols-[minmax(0,22rem)_1fr] sm:gap-10 sm:p-8">
+            <figure className="mt-10 grid items-center gap-6 rounded-[20px] bg-[var(--cp-grey)] p-5 sm:grid-cols-[minmax(0,22rem)_1fr] sm:gap-10 sm:p-8">
               <ZoomImage src={course.certificateImage.url} alt={course.certificateImage.alt} caption="Jetking certificate specimen" />
               <figcaption>
                 <p className="cp-h2 flex items-center gap-3">
-                  <Award className="h-7 w-7 shrink-0 text-[var(--cp-yellow-ink)]" aria-hidden="true" />
+                  <Award className="h-7 w-7 shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
                   Jetking Certificate
                 </p>
                 <p className="mt-3 max-w-[44ch] text-[1.0625rem] leading-relaxed text-[var(--cp-ink-2)]">
@@ -622,7 +622,7 @@ export function CoursePageTemplate({
       {isDegree ? (
         <>
       {/* ── 10. How placement works (kept on this page) ─────────────────── */}
-      <section id="cp-placement" className="cp-band-yellow cp-section scroll-mt-24">
+      <section id="cp-placement" className="cp-band-grey cp-section scroll-mt-24">
         <div className="shell">
           <Heading kicker="How placement works">Five steps from classroom to offer</Heading>
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -679,7 +679,7 @@ export function CoursePageTemplate({
               <p className="mt-4 text-[17px] font-bold">{c.name}</p>
               <span aria-hidden="true" className="my-3 h-px w-10 bg-white/40" />
               <p className="text-[11px] font-bold tracking-[0.1em] text-white/70 uppercase">Placed at</p>
-              <p className="mt-1 text-[15px] font-bold text-[var(--cp-yellow)]">{c.company}</p>
+              <p className="mt-1 text-[15px] font-bold text-white">{c.company}</p>
             </li>
           ))}
         </SnapSlider>
@@ -696,8 +696,8 @@ export function CoursePageTemplate({
       {/* ── 13. Call to action ──────────────────────────────────────────── */}
       <section className="cp-section shell">
         <div className="relative overflow-hidden rounded-[28px] border border-[var(--cp-line)] bg-[var(--cp-bg)] p-6 shadow-[0_20px_50px_-30px_rgba(17,24,39,0.4)] sm:p-10">
-          <span aria-hidden="true" className="absolute -right-10 -bottom-16 hidden h-56 w-56 rounded-full bg-[var(--cp-yellow)] sm:block" />
-          <span aria-hidden="true" className="absolute right-24 -bottom-24 hidden h-48 w-48 rounded-full bg-[var(--cp-blue)] opacity-90 sm:block" />
+          <span aria-hidden="true" className="absolute -right-10 -bottom-16 hidden h-56 w-56 rounded-full bg-[var(--cp-red-fill)] sm:block" />
+          <span aria-hidden="true" className="absolute right-24 -bottom-24 hidden h-48 w-48 rounded-full bg-[var(--cp-grey)] sm:block" />
           <div className="relative max-w-xl">
             <h2 className="cp-h2">Got more questions? Talk to us</h2>
             <p className="cp-lede mt-3">Connect with our advisors and get your queries resolved.</p>
@@ -722,7 +722,7 @@ export function CoursePageTemplate({
 
       {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
       {ownFaqs.length + feeFaqs.length ? (
-        <section className="shell pb-[clamp(2.5rem,6vw,4.5rem)]">
+        <section className="shell pb-[clamp(2.25rem,5vw,3.5rem)]">
           <Heading kicker="FAQs">Frequently asked questions</Heading>
           <div className="mt-8 border-t border-[var(--cp-line)]">
             {ownFaqs.map((faq) => (

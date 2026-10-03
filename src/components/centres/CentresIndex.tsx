@@ -248,12 +248,12 @@ export function CentresIndex({
       aria-labelledby="centres-index-heading"
     >
       <div className="max-w-2xl">
-        <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--centres-ink-muted)] uppercase">
+        <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
           Browse by city
         </p>
         <h2
           id="centres-index-heading"
-          className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] xs:text-[26px] sm:text-[28px] lg:text-[30px]"
+          className="section-title mt-2 font-display text-[var(--dc-ink)]"
         >
           Centres across India
         </h2>
@@ -263,20 +263,20 @@ export function CentresIndex({
         {/* ── Left: filters ─────────────────────────────────────────────── */}
         <div
           role="group"
-          className="centres-card hidden flex-col self-start rounded-[20px] xs:rounded-[22px] lg:flex lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
+          className="centres-card hidden flex-col self-start rounded-[20px] xs:rounded-[24px] lg:flex lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
           aria-label="Filter centres"
         >
           {/* Pinned: title + search always visible while lists scroll */}
-          <div className="centres-filter-sticky shrink-0 rounded-t-[20px] border-b border-[var(--centres-accent-soft)]/18 p-5 xs:rounded-t-[22px] sm:p-6">
+          <div className="centres-filter-sticky shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 p-5 xs:rounded-t-[24px] sm:p-6">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--centres-ink-muted)] uppercase">
+              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
                 Filters
               </p>
               {hasActiveFilters ? (
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="-my-2 inline-block cursor-pointer py-2 text-[12px] font-bold text-[var(--centres-accent-soft)] transition-colors hover:text-[var(--centres-ink)]"
+                  className="-my-2 inline-block cursor-pointer py-2 text-[12px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
                 >
                   Clear all
                 </button>
@@ -286,7 +286,7 @@ export function CentresIndex({
             <label htmlFor={inputId} className="relative mt-5 block">
               <span className="sr-only">Search centres</span>
               <Search
-                className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--centres-ink-muted)]"
+                className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
                 strokeWidth={2.25}
                 aria-hidden="true"
               />
@@ -297,14 +297,14 @@ export function CentresIndex({
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search cities, states..."
                 autoComplete="off"
-                className="centres-sidebar-search-input w-full rounded-full border border-[var(--centres-hairline)] bg-[var(--centres-surface)] py-2.5 pr-10 pl-10 text-[13.5px] text-[var(--centres-ink)] placeholder:text-[var(--centres-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--centres-accent-soft)]/70 focus:ring-3 focus:ring-[var(--centres-accent-soft)]/20"
+                className="centres-sidebar-search-input w-full rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-2.5 pr-10 pl-10 text-[13.5px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
               />
               {query ? (
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
                   aria-label="Clear search"
-                  className="absolute top-1/2 right-2.5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[var(--centres-ink-muted)] transition-colors hover:bg-[var(--centres-accent-tint)] hover:text-[var(--centres-ink)]"
+                  className="absolute top-1/2 right-2.5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-ink)]"
                 >
                   <X
                     className="h-3.5 w-3.5"
@@ -401,7 +401,7 @@ export function CentresIndex({
               <label htmlFor={`${inputId}-m`} className="relative block min-w-0 flex-1">
                 <span className="sr-only">Search centres</span>
                 <Search
-                  className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--centres-ink-muted)]"
+                  className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
                   strokeWidth={2.25}
                   aria-hidden="true"
                 />
@@ -413,14 +413,14 @@ export function CentresIndex({
                   placeholder="Search cities, states..."
                   autoComplete="off"
                   enterKeyHint="search"
-                  className="centres-sidebar-search-input h-11 w-full rounded-full border border-[var(--centres-hairline)] bg-[var(--centres-surface)] pr-11 pl-10 text-[14px] text-[var(--centres-ink)] placeholder:text-[var(--centres-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--centres-accent-soft)]/70 focus:ring-3 focus:ring-[var(--centres-accent-soft)]/20"
+                  className="centres-sidebar-search-input h-11 w-full rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] pr-11 pl-10 text-[14px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
                 />
                 {query ? (
                   <button
                     type="button"
                     onClick={() => onSearchChange('')}
                     aria-label="Clear search"
-                    className="absolute top-1/2 right-0 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--centres-ink-muted)] hover:text-[var(--centres-ink)]"
+                    className="absolute top-1/2 right-0 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] hover:text-[var(--dc-ink)]"
                   >
                     <X className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                   </button>
@@ -509,23 +509,23 @@ export function CentresIndex({
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <p
               aria-live="polite"
-              className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--centres-ink-muted)] uppercase"
+              className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
             >
               {visibleCentreCount}{' '}
               {visibleCentreCount === 1 ? 'centre' : 'centres'}
               {hasActiveFilters ? ' matching' : null}
             </p>
             {activeCity ? (
-              <p className="text-[13px] text-[var(--centres-ink-secondary)]">
+              <p className="text-[13px] text-[var(--dc-ink-secondary)]">
                 Showing{' '}
-                <span className="font-bold text-[var(--centres-ink)]">
+                <span className="font-bold text-[var(--dc-ink)]">
                   {cities.find((c) => c.slug === activeCity)?.name}
                 </span>
               </p>
             ) : activeState ? (
-              <p className="text-[13px] text-[var(--centres-ink-secondary)]">
+              <p className="text-[13px] text-[var(--dc-ink-secondary)]">
                 Showing{' '}
-                <span className="font-bold text-[var(--centres-ink)]">
+                <span className="font-bold text-[var(--dc-ink)]">
                   {activeState}
                 </span>
               </p>
@@ -569,10 +569,10 @@ export function CentresIndex({
                     className="centres-accordion-trigger px-5 py-4 sm:px-6"
                   >
                     <span className="min-w-0 text-left">
-                      <span className="block font-display text-[19px] font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[21px]">
+                      <span className="block font-display text-[19px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[21px]">
                         {state}
                       </span>
-                      <span className="mt-0.5 block text-[12px] font-bold tracking-[0.08em] text-[var(--centres-ink-muted)] uppercase">
+                      <span className="mt-0.5 block text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
                         {count} {count === 1 ? 'centre' : 'centres'}
                       </span>
                     </span>
@@ -590,8 +590,8 @@ export function CentresIndex({
                     <div
                       className={
                         stateOpen
-                          ? 'divide-y divide-[var(--centres-hairline)] border-t border-[var(--centres-hairline)]'
-                          : 'divide-y divide-[var(--centres-hairline)]'
+                          ? 'divide-y divide-[var(--dc-hairline-strong)] border-t border-[var(--dc-hairline-strong)]'
+                          : 'divide-y divide-[var(--dc-hairline-strong)]'
                       }
                     >
                       {stateCities.length === 1 ? (
@@ -602,7 +602,7 @@ export function CentresIndex({
                         <ul
                           className={
                             stateOpen
-                              ? 'divide-y divide-[var(--centres-hairline)]'
+                              ? 'divide-y divide-[var(--dc-hairline-strong)]'
                               : ''
                           }
                         >
@@ -655,11 +655,11 @@ export function CentresIndex({
                                 <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                                   <span
                                     id={`city-heading-${city.slug}`}
-                                    className="font-display text-[16px] font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[17px]"
+                                    className="font-display text-[16px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[17px]"
                                   >
                                     {city.name}
                                   </span>
-                                  <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--centres-ink-muted)] uppercase">
+                                  <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
                                     {matchCountByCity.get(city.slug) ?? 0}{' '}
                                     {matchCountByCity.get(city.slug) === 1
                                       ? 'centre'
@@ -680,8 +680,8 @@ export function CentresIndex({
                                 <ul
                                   className={
                                     cityOpen
-                                      ? 'divide-y divide-[var(--centres-hairline)] border-t border-[var(--centres-hairline)]'
-                                      : 'divide-y divide-[var(--centres-hairline)]'
+                                      ? 'divide-y divide-[var(--dc-hairline-strong)] border-t border-[var(--dc-hairline-strong)]'
+                                      : 'divide-y divide-[var(--dc-hairline-strong)]'
                                   }
                                 >
                                   {cityCentres.map((centre) => (
@@ -707,16 +707,16 @@ export function CentresIndex({
 
           {visibleCentreCount === 0 ? (
             <div className="centres-card mt-5 rounded-[20px] px-6 py-12 text-center sm:px-8">
-              <p className="font-display text-[18px] font-extrabold text-[var(--centres-ink)]">
+              <p className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
                 No centres match your filters
               </p>
-              <p className="mt-2 text-[14px] text-[var(--centres-ink-secondary)]">
+              <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)]">
                 Try a different city, state, or search term.
               </p>
               <button
                 type="button"
                 onClick={clearFilters}
-                className="-my-2 mt-5 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--centres-accent-soft)] transition-colors hover:text-[var(--centres-ink)]"
+                className="-my-2 mt-5 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
               >
                 Clear all filters
               </button>
@@ -758,35 +758,35 @@ function CentreCard({
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-4 sm:gap-y-2">
         <div className="min-w-0">
-          <h3 className="font-display text-[17px] font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] sm:text-[18px] lg:text-[20px]">
+          <h3 className="font-display text-[17px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[18px] lg:text-[20px]">
             <Link
               href={centrePath(centre.slug) as Route}
-              className="transition-colors hover:text-[var(--centres-accent-soft)]"
+              className="transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               {centre.name}
             </Link>
           </h3>
-          <p className="mt-1 text-[13px] font-semibold text-[var(--centres-accent-soft)]">
+          <p className="mt-1 text-[13px] font-semibold text-[var(--dc-accent-soft)]">
             {localityCityLabel}
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           <Link
             href={centrePath(centre.slug) as Route}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--centres-hairline)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--centres-ink)] transition-colors hover:border-[var(--centres-accent-soft)]/60 hover:bg-[var(--centres-accent-tint)] sm:px-4 sm:text-[13px]"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/60 hover:bg-[var(--dc-accent-tint)] sm:px-4 sm:text-[13px]"
           >
             View details
           </Link>
           <Link
             href={`/enquiry?centre=${centre.slug}` as Route}
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--centres-accent)] px-3.5 py-2 text-[12.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:px-4 sm:text-[13px]"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--dc-accent)] px-3.5 py-2 text-[12.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:px-4 sm:text-[13px]"
           >
             Enquire
           </Link>
         </div>
       </div>
 
-      <address className="mt-4 flex-1 text-[13.5px] leading-relaxed text-[var(--centres-ink-secondary)] not-italic sm:text-[14px]">
+      <address className="mt-4 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)] not-italic sm:text-[14px]">
         {centre.addressLine}
         <br />
         {localityCityLabel}
@@ -797,17 +797,17 @@ function CentreCard({
       {centre.phone ? (
         <p className="mt-3 flex flex-wrap items-center gap-2 text-[14px]">
           <Phone
-            className="h-3.5 w-3.5 text-[var(--centres-accent-soft)]"
+            className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]"
             strokeWidth={2}
             aria-hidden="true"
           />
-          <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--centres-ink-muted)] uppercase">
+          <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
             Phone
           </span>
           {telHref ? (
             <a
               href={telHref}
-              className="tap numeral font-semibold text-[var(--centres-ink)] transition-colors hover:text-[var(--centres-accent-soft)]"
+              className="tap numeral font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
               onClick={() =>
                 track('phone_clicked', { centre_slug: centre.slug })
               }
@@ -815,7 +815,7 @@ function CentreCard({
               {centre.phone}
             </a>
           ) : (
-            <span className="numeral font-semibold text-[var(--centres-ink)]">
+            <span className="numeral font-semibold text-[var(--dc-ink)]">
               {centre.phone}
             </span>
           )}
@@ -862,27 +862,27 @@ function FilterGroup({
         aria-expanded={open}
         aria-controls={panelId}
         className={[
-          'centres-accordion-trigger rounded-[12px] border px-3.5 py-3 transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--centres-accent-soft)]',
+          'centres-accordion-trigger rounded-[12px] border px-3.5 py-3 transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]',
           highlighted
-            ? 'border-[var(--centres-accent-soft)]/55 bg-[var(--centres-accent-tint)]'
-            : 'border-[var(--centres-hairline)] bg-[var(--centres-surface)] hover:border-[var(--centres-accent-soft)]/35 hover:bg-[var(--centres-accent-soft)]/6',
+            ? 'border-[var(--dc-accent-soft)]/55 bg-[var(--dc-accent-tint)]'
+            : 'border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] hover:border-[var(--dc-accent-soft)]/35 hover:bg-[var(--dc-accent-soft)]/6',
         ].join(' ')}
       >
         <Icon
-          className={`h-4 w-4 shrink-0 ${highlighted ? 'text-[var(--centres-accent-soft)]' : 'text-[var(--centres-ink-muted)]'}`}
+          className={`h-4 w-4 shrink-0 ${highlighted ? 'text-[var(--dc-accent-soft)]' : 'text-[var(--dc-ink-muted)]'}`}
           strokeWidth={2}
           aria-hidden="true"
         />
-        <span className="text-[12.5px] font-extrabold tracking-[0.1em] text-[var(--centres-ink)] uppercase">
+        <span className="text-[12.5px] font-extrabold tracking-[0.1em] text-[var(--dc-ink)] uppercase">
           {label}
         </span>
         {value ? (
-          <span className="ml-auto min-w-0 max-w-[9rem] truncate rounded-full border border-[var(--centres-accent-soft)]/50 bg-[var(--centres-card)] px-2.5 py-0.5 text-[12px] font-bold text-[var(--centres-accent-soft)]">
+          <span className="ml-auto min-w-0 max-w-[9rem] truncate rounded-full border border-[var(--dc-accent-soft)]/50 bg-[var(--dc-card)] px-2.5 py-0.5 text-[12px] font-bold text-[var(--dc-accent-soft)]">
             {value}
             <span className="sr-only"> selected</span>
           </span>
         ) : (
-          <span className="ml-auto text-[12px] font-semibold text-[var(--centres-ink-muted)]">All</span>
+          <span className="ml-auto text-[12px] font-semibold text-[var(--dc-ink-muted)]">All</span>
         )}
         <ChevronDown
           className="centres-accordion-chevron h-4 w-4"
@@ -918,8 +918,8 @@ function FilterButton({
       className={[
         'centres-filter-btn flex w-full items-center justify-between gap-3 rounded-[12px] px-3 py-2.5 text-left text-[13.5px] font-semibold transition-[background-color,border-color,color] duration-200',
         active
-          ? 'border border-[var(--centres-accent-soft)]/55 bg-[var(--centres-accent-tint)] text-[var(--centres-ink)]'
-          : 'border border-transparent text-[var(--centres-ink-secondary)] hover:border-[var(--centres-accent-soft)]/20 hover:bg-[var(--centres-accent-soft)]/6 hover:text-[var(--centres-ink)]',
+          ? 'border border-[var(--dc-accent-soft)]/55 bg-[var(--dc-accent-tint)] text-[var(--dc-ink)]'
+          : 'border border-transparent text-[var(--dc-ink-secondary)] hover:border-[var(--dc-accent-soft)]/20 hover:bg-[var(--dc-accent-soft)]/6 hover:text-[var(--dc-ink)]',
       ].join(' ')}
     >
       <span className="flex min-w-0 items-center gap-2">
@@ -928,8 +928,8 @@ function FilterButton({
             className={[
               'h-3.5 w-3.5 shrink-0',
               active
-                ? 'text-[var(--centres-accent-soft)]'
-                : 'text-[var(--centres-ink-muted)]',
+                ? 'text-[var(--dc-accent-soft)]'
+                : 'text-[var(--dc-ink-muted)]',
             ].join(' ')}
             strokeWidth={2}
             aria-hidden="true"
@@ -937,7 +937,7 @@ function FilterButton({
         ) : null}
         <span className="truncate">{label}</span>
       </span>
-      <span className="numeral shrink-0 text-[12px] font-bold tracking-[0.06em] text-[var(--centres-ink-muted)]">
+      <span className="numeral shrink-0 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-ink-muted)]">
         {count}
       </span>
     </button>

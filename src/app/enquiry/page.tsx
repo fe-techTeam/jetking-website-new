@@ -47,23 +47,23 @@ export default async function EnquiryPage() {
       ].join(' ')}
     >
       <section className="shell relative pt-10 pb-8 xs:pt-12 sm:pt-14 sm:pb-10 lg:pt-16">
-        <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
+        <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
           💬 Enquiry
         </p>
-        <h1 className="mt-4 max-w-xl font-display text-[30px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[32px] sm:text-[36px]">
+        <h1 className="page-title-sm mt-4 max-w-xl font-display text-[var(--dc-ink)]">
           Talk to a counsellor
         </h1>
-        <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
+        <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
           Tell us a little about what you are looking for. A counsellor from your nearest
           centre will get in touch — usually within one working day.
         </p>
       </section>
 
-      <section className="relative bg-[var(--stu-surface)] pt-10 pb-14 sm:pt-12 sm:pb-16 lg:pb-20">
+      <section className="relative bg-[var(--dc-surface)] pt-10 pb-14 sm:pt-12 sm:pb-16 lg:pb-20">
         <div className="shell">
           <div className="stu-card overflow-hidden rounded-[24px] xs:rounded-[28px] lg:grid lg:grid-cols-[1.1fr_0.9fr]">
             <div className="p-6 xs:p-7 sm:p-8 lg:p-10">
-              <Suspense fallback={<p className="text-sm text-[var(--stu-ink-muted)]">Loading form…</p>}>
+              <Suspense fallback={<p className="text-sm text-[var(--dc-ink-muted)]">Loading form…</p>}>
                 <EnquiryForm
                   courses={courses.map((c) => ({ slug: c.slug, title: c.shortTitle }))}
                   centres={toEnquiryCentres(centres, cities)}
@@ -71,8 +71,8 @@ export default async function EnquiryPage() {
               </Suspense>
             </div>
 
-            <div className="border-t border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] p-6 xs:p-7 sm:p-8 lg:border-t-0 lg:border-l lg:p-10">
-              <h2 className="font-display text-[19px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[20px]">
+            <div className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] p-6 xs:p-7 sm:p-8 lg:border-t-0 lg:border-l lg:p-10">
+              <h2 className="font-display text-[19px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[20px]">
                 What happens next
               </h2>
               <ol className="mt-6 space-y-5">
@@ -80,13 +80,13 @@ export default async function EnquiryPage() {
                   <li key={step.title} className="flex items-start gap-3.5">
                     <span
                       aria-hidden="true"
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-[var(--stu-accent-soft)] bg-[var(--stu-card)] text-[13px] font-extrabold text-[var(--stu-accent-soft)]"
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-[var(--dc-accent-soft)] bg-[var(--dc-card)] text-[13px] font-extrabold text-[var(--dc-accent-soft)]"
                     >
                       {index + 1}
                     </span>
                     <div className="min-w-0 pt-0.5">
-                      <p className="text-[14.5px] font-bold text-[var(--stu-ink)]">{step.title}</p>
-                      <p className="mt-0.5 text-[13.5px] leading-snug text-[var(--stu-ink-secondary)]">
+                      <p className="text-[14.5px] font-bold text-[var(--dc-ink)]">{step.title}</p>
+                      <p className="mt-0.5 text-[13.5px] leading-snug text-[var(--dc-ink-secondary)]">
                         {step.detail}
                       </p>
                     </div>
@@ -94,8 +94,8 @@ export default async function EnquiryPage() {
                 ))}
               </ol>
 
-              <div className="mt-7 flex items-center gap-2 border-t border-[var(--stu-hairline)] pt-6 text-[13.5px] text-[var(--stu-ink-muted)]">
-                <Clock3 className="h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]" strokeWidth={2} aria-hidden="true" />
+              <div className="mt-7 flex items-center gap-2 border-t border-[var(--dc-hairline-strong)] pt-6 text-[13.5px] text-[var(--dc-ink-muted)]">
+                <Clock3 className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
                 Usually within one working day.
               </div>
 
@@ -104,7 +104,7 @@ export default async function EnquiryPage() {
                   href={`https://wa.me/${siteConfig.whatsappNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-bold text-[var(--stu-accent-soft)] hover:underline"
+                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-bold text-[var(--dc-accent-soft)] hover:underline"
                 >
                   Prefer WhatsApp? Message us now
                   <span aria-hidden="true">→</span>

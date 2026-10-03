@@ -18,19 +18,22 @@
   --cp-red-bright: #ea1c24;
   /* Backgrounds that carry white text stay dark enough in both themes (>= 4.5:1); --cp-red is the text/accent shade. */
   --cp-red-fill: #c7141c;
-  --cp-blue-fill: #0b6fc2;
-  --cp-yellow-ink: #7a5200;
+  --cp-blue-fill: #c7141c;
+  --cp-yellow-ink: #c7141c;
   --cp-red-tint: #fdecec;
-  --cp-yellow: #fdb913;
-  --cp-yellow-tint: #fff6dd;
-  --cp-blue: #0b6fc2;
-  --cp-sky: #eaf4fd;
+  --cp-yellow: #c7141c;
+  --cp-yellow-tint: #f3f4f6;
+  --cp-blue: #c7141c;
+  --cp-sky: #f4f5f7;
   --cp-black: #0f1115;
 
   --dc-ink: var(--cp-ink);
   --dc-ink-secondary: var(--cp-ink-2);
   --dc-ink-muted: var(--cp-muted);
   --dc-hairline: var(--cp-line);
+  --dc-hairline-strong: var(--cp-line);
+  --dc-card: var(--cp-bg);
+  --dc-accent-tint: var(--cp-red-tint);
   --dc-accent: var(--cp-red);
   --dc-accent-soft: var(--cp-red);
 
@@ -48,10 +51,10 @@ html.dark .cp {
   --cp-grey: #171a21;
   --cp-red: #f0585e;
   --cp-red-tint: #2a1416;
-  --cp-yellow-tint: #2b2410;
-  --cp-blue: #6db6f2;
-  --cp-sky: #101c2a;
-  --cp-yellow-ink: #f5c84c;
+  --cp-yellow-tint: #171a21;
+  --cp-blue: #f0585e;
+  --cp-sky: #151820;
+  --cp-yellow-ink: #f0585e;
   --cp-black: #05060a;
 }
 
@@ -70,7 +73,7 @@ html.dark .cp {
 }
 
 .cp-h1 {
-  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  font-size: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
   line-height: 1.1;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -78,7 +81,7 @@ html.dark .cp {
 }
 
 .cp-h2 {
-  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2rem);
   line-height: 1.2;
   font-weight: 700;
   letter-spacing: -0.015em;
@@ -108,7 +111,7 @@ html.dark .cp {
 }
 
 .cp-section {
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
 }
 
 .cp-band-sky {
@@ -157,12 +160,12 @@ html.dark .cp {
   background: var(--cp-ink);
   color: var(--cp-bg);
 }
-.cp-btn-yellow {
-  background: var(--cp-yellow);
+.cp-btn-light {
+  background: #fff;
   color: #111827;
 }
-.cp-btn-yellow:hover {
-  background: #e8a600;
+.cp-btn-light:hover {
+  background: #f3f4f6;
 }
 
 /* Horizontally scrolling rows that snap a fixed number of cards per view. */

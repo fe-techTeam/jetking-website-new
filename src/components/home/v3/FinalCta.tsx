@@ -17,11 +17,11 @@ export function FinalCta({ centres }: { centres: EnquiryCentre[] }) {
   return (
     <section className="border-y border-[var(--dc-hairline)] bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="home-final-cta-heading">
       <div className="shell">
-        <div className="dc-banner relative grid gap-8 overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
+        <div className="dc-banner relative grid gap-8 overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center lg:gap-12">
           <div>
             <h2
               id="home-final-cta-heading"
-              className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[34px]"
+              className="section-title font-display text-[var(--dc-ink)]"
             >
               Ready to start? Talk to a counsellor today.
             </h2>
@@ -49,7 +49,7 @@ export function FinalCta({ centres }: { centres: EnquiryCentre[] }) {
             </Link>
           </div>
 
-          <div className="rounded-[22px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
+          <div className="rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
             <p className="mb-4 font-display text-[18px] font-extrabold text-[var(--dc-ink)]">Request a callback</p>
             <QuickEnquiryForm centres={centres} source="home-final-cta-form" />
           </div>

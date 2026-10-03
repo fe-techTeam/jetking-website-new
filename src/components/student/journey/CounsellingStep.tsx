@@ -107,22 +107,22 @@ export function CounsellingStep({
   if (status === 'done') {
     return (
       <div className="space-y-6 text-center sm:text-left">
-        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:mx-0">
+        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:mx-0">
           <CheckCircle2 className="h-7 w-7" strokeWidth={2} aria-hidden="true" />
         </span>
         <div>
-          <h2 className="font-display text-[26px] font-extrabold text-[var(--stu-ink)] sm:text-[30px]">
+          <h2 className="section-title font-display text-[var(--dc-ink)]">
             You&rsquo;re booked in
           </h2>
-          <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-            A counsellor will reach out about <strong className="text-[var(--stu-ink)]">{course.title}</strong>, usually within one working day.
+          <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
+            A counsellor will reach out about <strong className="text-[var(--dc-ink)]">{course.title}</strong>, usually within one working day.
           </p>
           {siteConfig.whatsappNumber ? (
             <a
               href={`https://wa.me/${siteConfig.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex text-[14px] font-bold text-[var(--stu-accent-soft)] underline-offset-2 hover:underline"
+              className="mt-4 inline-flex text-[14px] font-bold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
             >
               Prefer WhatsApp? Message us now
               <span aria-hidden="true">→</span>
@@ -137,13 +137,13 @@ export function CounsellingStep({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--stu-accent-soft)] uppercase">
+        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
           Step 5 · Book counselling
         </p>
-        <h2 className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[30px]">
+        <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
           Talk to a counsellor about {course.shortTitle}
         </h2>
-        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
+        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
           Free session — we&rsquo;ll help you confirm the course, nearest centre, and
           next steps. No obligation.
         </p>
@@ -163,7 +163,7 @@ export function CounsellingStep({
             maxLength={120}
             autoComplete="name"
             defaultValue={softName}
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
@@ -182,7 +182,7 @@ export function CounsellingStep({
             autoComplete="tel"
             pattern="[\d\s+\(\)\-]{10,20}"
             defaultValue={softPhone}
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
@@ -193,7 +193,7 @@ export function CounsellingStep({
             type="email"
             maxLength={200}
             autoComplete="email"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
@@ -204,12 +204,12 @@ export function CounsellingStep({
             rows={3}
             maxLength={2000}
             placeholder="e.g. weekend batches, nearest centre in Mumbai…"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
         {error ? (
-          <p role="alert" className="text-sm font-medium text-[var(--stu-accent-soft)]">
+          <p role="alert" className="text-sm font-medium text-[var(--dc-accent-soft)]">
             {error}
           </p>
         ) : null}
@@ -217,13 +217,13 @@ export function CounsellingStep({
         <button
           type="submit"
           disabled={status === 'submitting'}
-          className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--stu-navy)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-navy)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
         >
           <CalendarDays className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           {status === 'submitting' ? 'Sending…' : 'Book free counselling'}
         </button>
 
-        <p className="text-[12.5px] text-[var(--stu-ink-muted)]">
+        <p className="text-[12.5px] text-[var(--dc-ink-muted)]">
           We use your details only to arrange this counselling session.
         </p>
       </form>

@@ -67,17 +67,7 @@ export function HomeV2({
             </p>
 
             <h1
-              className={[
-                'mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
-                'text-[36px] xs:mt-5 xs:text-[40px]',
-                'sm:text-[44px] md:text-[48px]',
-                'lg:mt-6 lg:text-[48px]',
-                /* Two-column from 1200: heading stays large; the hexes and their label
-                   text shrink instead (see JourneyHexes) so both read clearly. */
-                'lg2:text-[46px]',
-                '2xl:text-[58px]',
-                '3xl:text-[62px] 4xl:text-[68px]',
-              ].join(' ')}
+              className="page-title mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
             >
               The Power of Three
               <br />
@@ -122,7 +112,7 @@ export function HomeV2({
 
           {/* Chooser occupies the former banner slot */}
           <div className="v2-hero-stage relative flex h-full flex-col items-center justify-center text-center">
-            <h2 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--v2-ink)] xs:text-[23px] sm:text-[26px] md:text-[28px] 3xl:text-[30px]">
+            <h2 className="subsection-title font-display text-[var(--v2-ink)] 3">
               What brings you here today?
             </h2>
             <p className="mt-2.5 text-[14px] text-[var(--v2-ink-muted)] xs:mt-3 xs:text-[15px] sm:text-[15.5px]">

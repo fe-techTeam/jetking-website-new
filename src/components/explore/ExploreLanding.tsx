@@ -157,7 +157,7 @@ function initialsOf(name: string): string {
  * instead of breaking when the browser zoom or viewport changes.
  */
 const LOGO_TILE =
-  'flex h-16 w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--stu-hairline)] p-3 sm:h-[4.5rem]';
+  'flex h-16 w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--dc-hairline-strong)] p-3 sm:h-[4.5rem]';
 const LOGO_IMG = 'max-h-full max-w-full object-contain';
 /** Auto-fit columns: as many equal cards per row as fit at >= 6.25rem (phone) / 7.5rem each. */
 const LOGO_GRID =
@@ -184,12 +184,12 @@ function LogoTile({ name }: { name: string }) {
             style={{ '--logo': `url(${mark.src})`, color: mark.color } as React.CSSProperties}
           />
         ) : (
-          <span className="font-display text-[15px] font-extrabold tracking-tight text-[var(--stu-ink-muted)]">
+          <span className="font-display text-[15px] font-extrabold tracking-tight text-[var(--dc-ink-muted)]">
             {initialsOf(name) || '·'}
           </span>
         )}
       </span>
-      <span className="min-h-[2.5em] max-w-full text-[12px] leading-snug font-semibold text-[var(--stu-ink-secondary)] [overflow-wrap:anywhere]">
+      <span className="min-h-[2.5em] max-w-full text-[12px] leading-snug font-semibold text-[var(--dc-ink-secondary)] [overflow-wrap:anywhere]">
         {name}
       </span>
     </div>
@@ -226,7 +226,7 @@ function CollapsibleLogoGrid<T>({
       </ul>
       {rest.length ? (
         <details className="group mt-5 sm:hidden">
-          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-5 text-[14px] font-bold text-[var(--stu-ink)] [&::-webkit-details-marker]:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-5 text-[14px] font-bold text-[var(--dc-ink)] [&::-webkit-details-marker]:hidden">
             <span className="group-open:hidden">Show all {items.length} {noun}</span>
             <span className="hidden group-open:inline">Show fewer</span>
             <ChevronDown
@@ -276,15 +276,15 @@ export function ExploreLanding({
 
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
               Just Exploring? Welcome! <span aria-hidden="true">👋</span>
             </p>
 
-            <h1 className="mt-5 font-display text-[34px] leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--stu-ink)] xs:text-[40px] sm:mt-6 sm:text-[46px] md:text-[50px] lg:text-[48px] xl:text-[54px]">
-              See everything <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span> has to offer
+            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+              See everything <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span> has to offer
             </h1>
 
-            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
+            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
               No commitment needed. Browse courses, see why students and franchise
               partners choose {siteConfig.name}, and find a centre near you — at your own
               pace.
@@ -293,7 +293,7 @@ export function ExploreLanding({
             <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
                 href={'/courses' as Route}
-                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--stu-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
+                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--dc-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
                 Explore courses
                 <span
@@ -306,7 +306,7 @@ export function ExploreLanding({
 
               <Link
                 href={'/centres' as Route}
-                className="inline-flex min-h-11 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] px-3.5 py-2 text-[13px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)] sm:min-h-12 sm:px-5 sm:py-3 sm:text-[15px]"
+                className="inline-flex min-h-11 items-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] px-3.5 py-2 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)] sm:min-h-12 sm:px-5 sm:py-3 sm:text-[15px]"
               >
                 Find a centre
               </Link>
@@ -318,20 +318,20 @@ export function ExploreLanding({
                   {AVATARS.map((src) => (
                     <span
                       key={src}
-                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--stu-card)] shadow-sm"
+                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)] shadow-sm"
                     >
                       <Image src={src} alt="" fill sizes="36px" className="object-cover" />
                     </span>
                   ))}
                 </span>
-                <span className="text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+                <span className="text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                   Centres in {counts.cities} cities
                 </span>
               </div>
-              <span className="hidden h-4 w-px bg-[var(--stu-hairline)] sm:block" aria-hidden="true" />
-              <span className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+              <span className="hidden h-4 w-px bg-[var(--dc-hairline-strong)] sm:block" aria-hidden="true" />
+              <span className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                 <ShieldCheck
-                  className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                  className="h-4 w-4 text-[var(--dc-accent-soft)]"
                   strokeWidth={2.25}
                   aria-hidden="true"
                 />
@@ -386,21 +386,21 @@ export function ExploreLanding({
         <div className="shell">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
             <div>
-              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--stu-accent-soft)] uppercase">
+              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
                 {ABOUT_HERO.eyebrow}
               </p>
               <h2
                 id="exp-about"
-                className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+                className="section-title mt-2 font-display text-[var(--dc-ink)]"
               >
                 {ABOUT_HERO.titleLead} {ABOUT_HERO.titleAccent}
               </h2>
-              <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] sm:text-[15px]">
+              <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
                 {ABOUT_HERO.lede}
               </p>
               <Link
                 href={'/about-us' as Route}
-                className="tap mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
+                className="tap mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)]"
               >
                 Read our story
                 <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -409,9 +409,9 @@ export function ExploreLanding({
 
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {PURPOSE.map((item) => (
-                <div key={item.title} className="stu-card rounded-[18px] p-4">
-                  <dt className="text-[13px] font-extrabold text-[var(--stu-ink)]">{item.title}</dt>
-                  <dd className="mt-1.5 text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+                <div key={item.title} className="stu-card rounded-[16px] p-4">
+                  <dt className="text-[13px] font-extrabold text-[var(--dc-ink)]">{item.title}</dt>
+                  <dd className="mt-1.5 text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                     {item.body}
                   </dd>
                 </div>
@@ -422,20 +422,20 @@ export function ExploreLanding({
       </section>
 
       {/* ── Programmes (shared RecommendedCourses card design) ──────────── */}
-      <div className="bg-[var(--stu-surface)]">
+      <div className="bg-[var(--dc-surface)]">
         <div className="shell pt-8 xs:pt-10">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[13px] font-bold text-[var(--stu-ink-muted)]">Browse by format:</span>
+            <span className="text-[13px] font-bold text-[var(--dc-ink-muted)]">Browse by format:</span>
             {levelGroups.map((group) => {
               const meta = LEVEL_META[group.level];
               return (
                 <Link
                   key={group.level}
                   href={'/courses' as Route}
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--stu-ink-secondary)] transition-colors hover:border-[var(--stu-accent-soft)] hover:text-[var(--stu-accent-soft)]"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--dc-ink-secondary)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]"
                 >
                   {meta.label}
-                  <span className="text-[var(--stu-ink-muted)]">{group.courses.length}</span>
+                  <span className="text-[var(--dc-ink-muted)]">{group.courses.length}</span>
                 </Link>
               );
             })}
@@ -452,15 +452,15 @@ export function ExploreLanding({
       {/* ── Why Jetking + testimonial slider ─────────────────────────────── */}
       <section className="py-10 sm:py-12 lg:py-14" aria-labelledby="exp-why">
         <div className="shell">
-          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--stu-ink)] xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
                 <h2
                   id="exp-why"
-                  className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title font-display text-[var(--dc-ink)]"
                 >
                   Why People Choose{' '}
-                  <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span>
+                  <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
                 <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4 lg:grid-cols-2">
@@ -468,10 +468,10 @@ export function ExploreLanding({
                     <div key={stat.label}>
                       <dt className="sr-only">{stat.label}</dt>
                       <dd>
-                        <span className="block font-display text-[24px] leading-none font-extrabold text-[var(--stu-accent-soft)] sm:text-[28px]">
+                        <span className="block font-display text-[24px] leading-none font-extrabold text-[var(--dc-accent-soft)] sm:text-[28px]">
                           {stat.value}
                         </span>
-                        <span className="mt-2 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)] sm:text-[13.5px]">
+                        <span className="mt-2 block text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13.5px]">
                           {stat.label}
                         </span>
                       </dd>
@@ -479,7 +479,7 @@ export function ExploreLanding({
                   ))}
                 </dl>
 
-                <p className="mt-8 max-w-md text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+                <p className="mt-8 max-w-md text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                   {PLACEMENT_DISCLAIMER}
                 </p>
               </div>
@@ -491,18 +491,18 @@ export function ExploreLanding({
       </section>
 
       {/* ── Awards & recognition ─────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-awards">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-awards">
         <div className="shell">
           <h2
             id="exp-awards"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Awards &amp; recognition
           </h2>
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {ACHIEVEMENTS.slice(0, 4).map((item) => (
               <li key={item.title}>
-                <article className="stu-card flex h-full flex-col items-center rounded-[18px] p-5 text-center">
+                <article className="stu-card flex h-full flex-col items-center rounded-[16px] p-5 text-center">
                   <div className="relative h-24 w-full sm:h-28">
                     <Image
                       src={item.imageSrc}
@@ -512,7 +512,7 @@ export function ExploreLanding({
                       className="object-contain"
                     />
                   </div>
-                  <h3 className="mt-4 text-[13px] leading-snug font-extrabold text-[var(--stu-ink)]">
+                  <h3 className="mt-4 text-[13px] leading-snug font-extrabold text-[var(--dc-ink)]">
                     {item.title}
                   </h3>
                 </article>
@@ -527,24 +527,24 @@ export function ExploreLanding({
         <div className="shell">
           <h2
             id="exp-benefits"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             10 reasons why {siteConfig.name} is every student&rsquo;s choice
           </h2>
           <ul className="mt-7 grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-4">
             {REASONS.map((card) => (
               <li key={card.title} className="min-w-0">
-                <article className="stu-card flex h-full flex-col gap-0 rounded-[18px] p-4 sm:rounded-[20px] sm:p-5">
+                <article className="stu-card flex h-full flex-col gap-0 rounded-[16px] p-4 sm:rounded-[20px] sm:p-5">
                   <span
                     aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:h-11 sm:w-11"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:h-11 sm:w-11"
                   >
                     <card.icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={1.75} />
                   </span>
-                  <h3 className="mt-3 text-[14px] leading-snug font-extrabold text-[var(--stu-ink)] sm:mt-4 sm:text-[15px]">
+                  <h3 className="mt-3 text-[14px] leading-snug font-extrabold text-[var(--dc-ink)] sm:mt-4 sm:text-[15px]">
                     {card.title}
                   </h3>
-                  <p className="mt-1.5 text-[12.5px] leading-snug text-[var(--stu-ink-muted)] sm:text-[13px]">
+                  <p className="mt-1.5 text-[12.5px] leading-snug text-[var(--dc-ink-muted)] sm:text-[13px]">
                     {card.detail}
                   </p>
                 </article>
@@ -555,22 +555,22 @@ export function ExploreLanding({
       </section>
 
       {/* ── Collaboration with top universities & learning entities ──────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-university-partners">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-university-partners">
         <div className="shell">
           <h2
             id="exp-university-partners"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Collaboration with top universities &amp; learning entities
           </h2>
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {UNIVERSITY_PARTNERS.map((partner) => (
               <li key={partner.name}>
-                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[18px] p-5 text-center">
+                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[16px] p-5 text-center">
                   <span className="relative h-16 w-full sm:h-20">
                     <Image src={partner.src} alt="" fill sizes="200px" className="object-contain" />
                   </span>
-                  <span className="text-[12px] leading-snug font-semibold text-[var(--stu-ink-secondary)]">
+                  <span className="text-[12px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
                     {partner.name}
                   </span>
                 </div>
@@ -585,11 +585,11 @@ export function ExploreLanding({
         <div className="shell">
           <h2
             id="exp-certs"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Certifications you can train towards
           </h2>
-          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
             Industry-recognised technologies built into Jetking&rsquo;s curriculum.
           </p>
           <ul className={`mt-7 ${LOGO_GRID}`}>
@@ -603,24 +603,24 @@ export function ExploreLanding({
       </section>
 
       {/* ── Where our alumni work ────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-alumni">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-alumni">
         <div className="shell">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2
               id="exp-alumni"
-              className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+              className="section-title font-display text-[var(--dc-ink)]"
             >
               Where our alumni work
             </h2>
             <Link
               href={'/placements' as Route}
-              className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--stu-accent-soft)]"
+              className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)]"
             >
               See placement records
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
             </Link>
           </div>
-          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
+          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
             Companies from Jetking&rsquo;s own published placement records.
           </p>
           <CollapsibleLogoGrid
@@ -629,7 +629,7 @@ export function ExploreLanding({
             render={(company) => <LogoTile name={company} />}
             noun="companies"
           />
-          <p className="mt-7 max-w-2xl text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+          <p className="mt-7 max-w-2xl text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
             {PLACEMENT_DISCLAIMER}
           </p>
         </div>
@@ -640,7 +640,7 @@ export function ExploreLanding({
         <div className="shell">
           <h2
             id="exp-partners"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Our Placement Partners
           </h2>
@@ -654,14 +654,14 @@ export function ExploreLanding({
                   // eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do
                   <img src={partner.file} alt={partner.name} loading="lazy" className={LOGO_IMG} />
                 ) : (
-                  <span className="text-center font-display text-[14px] leading-tight font-extrabold text-[var(--stu-ink-secondary)] [overflow-wrap:anywhere]">
+                  <span className={`text-center font-display text-[14px] leading-tight font-extrabold [overflow-wrap:anywhere] ${partner.dark ? 'text-white' : 'text-[#374151]'}`}>
                     {partner.name}
                   </span>
                 )}
               </span>
             )}
           />
-          <p className="mt-4 max-w-2xl text-[12.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+          <p className="mt-4 max-w-2xl text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
             Note: Placements are subject to recruitment norms. Jetking does not guarantee
             placements in the above organisations.
           </p>
@@ -669,22 +669,22 @@ export function ExploreLanding({
       </section>
 
       {/* ── Our Affiliation ───────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-affiliation">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="exp-affiliation">
         <div className="shell">
           <h2
             id="exp-affiliation"
-            className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Our Affiliation
           </h2>
           <ul className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {AFFILIATIONS.map((item) => (
               <li key={item.name}>
-                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[18px] p-5 text-center">
+                <div className="stu-card flex h-full flex-col items-center gap-3 rounded-[16px] p-5 text-center">
                   <span className="relative h-16 w-full sm:h-20">
                     <Image src={item.src} alt="" fill sizes="200px" className="object-contain" />
                   </span>
-                  <span className="text-[12px] leading-snug font-semibold text-[var(--stu-ink-secondary)]">
+                  <span className="text-[12px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
                     {item.name}
                   </span>
                 </div>
@@ -701,13 +701,13 @@ export function ExploreLanding({
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2
                 id="exp-blog"
-                className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] xs:text-[26px] sm:text-[28px]"
+                className="section-title font-display text-[var(--dc-ink)]"
               >
                 From the blog
               </h2>
               <Link
                 href={'/blog' as Route}
-                className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--blog-accent-soft)]"
+                className="tap inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)]"
               >
                 Read more
                 <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -731,14 +731,14 @@ export function ExploreLanding({
             <div>
               <span
                 aria-hidden="true"
-                className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
               >
                 <MapPin className="h-5 w-5" strokeWidth={1.75} />
               </span>
-              <h2 id="exp-cta" className="mt-4 text-[20px] font-extrabold text-[var(--stu-ink)] sm:text-[22px]">
+              <h2 id="exp-cta" className="subsection-title mt-4 text-[var(--dc-ink)]">
                 {counts.centres} centres across {counts.cities} cities
               </h2>
-              <p className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
+              <p className="mt-1.5 max-w-md text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
                 Not ready to talk to anyone yet? Just browse — every centre and every
                 course is listed, no form required.
               </p>
@@ -746,14 +746,14 @@ export function ExploreLanding({
             <div className="flex flex-col gap-3 xs:flex-row xs:flex-wrap">
               <Link
                 href={'/centres' as Route}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--stu-navy)] px-6 py-3.5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--dc-navy)] px-6 py-3.5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 Browse centres
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
               </Link>
               <Link
                 href={'/courses' as Route}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--stu-hairline)] px-6 py-3.5 text-[14.5px] font-bold text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent-soft)]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3.5 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
               >
                 Browse courses
               </Link>

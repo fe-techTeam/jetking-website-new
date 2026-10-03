@@ -104,7 +104,7 @@ export function PlacementsLanding() {
         <Breadcrumbs trail={trail} />
 
         <div className="relative mt-5 sm:mt-6">
-          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[32px] lg:min-h-[520px]">
+          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
             <Image
               src="/placements/photos/hero-male.webp"
               alt=""
@@ -121,7 +121,7 @@ export function PlacementsLanding() {
             <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[62%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
               <p className="dc-eyebrow label-mono text-[14px]">{PLACEMENTS_HERO.eyebrow}</p>
 
-              <h1 className="mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
+              <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                 {PLACEMENTS_HERO.titleLead}{' '}
                 <span className="dc-accent-glow">{PLACEMENTS_HERO.titleAccent}</span>
               </h1>
@@ -187,7 +187,7 @@ export function PlacementsLanding() {
 
       {/* ── Honest disclaimer — load-bearing, not decorative ─────────────── */}
       <section className="shell relative mt-8 sm:mt-10">
-        <div className="dc-panel rounded-[18px] px-5 py-5 sm:rounded-[20px] sm:px-6 sm:py-6">
+        <div className="dc-panel rounded-[16px] px-5 py-5 sm:rounded-[20px] sm:px-6 sm:py-6">
           <p className="text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">
             {PLACEMENT_DISCLAIMER}
           </p>
@@ -199,7 +199,7 @@ export function PlacementsLanding() {
         <p className="dc-eyebrow label-mono">How it works</p>
         <h2
           id="placements-process"
-          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+          className="section-title mt-3 font-display text-[var(--dc-ink)]"
         >
           Five steps from <span className="dc-accent-glow">classroom to offer</span>
         </h2>
@@ -251,7 +251,7 @@ export function PlacementsLanding() {
           <p className="dc-eyebrow label-mono">Our recruiters</p>
           <h2
             id="placements-recruiters"
-            className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+            className="section-title mt-3 font-display text-[var(--dc-ink)]"
           >
             Brands that are our <span className="dc-accent-glow">placement partners</span>
           </h2>
@@ -272,7 +272,7 @@ export function PlacementsLanding() {
               <p className="dc-eyebrow label-mono">What you build</p>
               <h2
                 id="placements-benefits"
-                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+                className="section-title mt-3 font-display text-[var(--dc-ink)]"
               >
                 What placement preparation covers
               </h2>
@@ -310,7 +310,7 @@ export function PlacementsLanding() {
         <p className="dc-eyebrow label-mono">What an offer looks like</p>
         <h2
           id="placements-offers"
-          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
+          className="section-title mt-3 font-display text-[var(--dc-ink)]"
         >
           Sample <span className="dc-accent-glow">offer letters</span>
         </h2>
@@ -332,7 +332,7 @@ export function PlacementsLanding() {
               <p className="dc-eyebrow label-mono">In their words</p>
               <h2
                 id="placements-testimonials"
-                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+                className="section-title mt-3 font-display text-[var(--dc-ink)]"
               >
                 What placed learners <span className="dc-accent-glow">say</span>
               </h2>
@@ -347,13 +347,13 @@ export function PlacementsLanding() {
 
       {/* ── Close CTA ─────────────────────────────────────────────────────── */}
       <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-cta">
-        <div className="dc-panel overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[32px]">
+        <div className="dc-panel overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[28px]">
           <div className="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-10 xl:px-12">
             <div className="max-w-2xl">
               <p className="dc-eyebrow label-mono">Next step</p>
               <h2
                 id="placements-cta"
-                className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.025em] text-[var(--dc-ink)] xs:text-[26px] sm:text-[30px]"
+                className="section-title mt-3 font-display text-[var(--dc-ink)]"
               >
                 Ask about a <span className="dc-accent-glow">specific centre</span>
               </h2>

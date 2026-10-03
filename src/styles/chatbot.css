@@ -77,8 +77,8 @@
 .chatbot-app {
   color-scheme: light;
 
-  --font-jakarta: var(--font-body-src);
-  --font-bricolage: var(--font-display-src);
+  --font-jakarta: var(--font-body);
+  --font-bricolage: var(--font-display);
 
   --canvas: #ffffff;
   --surface: #ffffff;

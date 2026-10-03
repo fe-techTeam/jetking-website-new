@@ -58,7 +58,7 @@ export function CentreNetwork({
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Centre network</p>
             <h2
               id="home-centres-heading"
-              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="section-title mt-2 font-display text-[var(--dc-ink)]"
             >
               {counts.centres} centres across {counts.cities} cities
             </h2>
@@ -137,7 +137,7 @@ export function CentreNetwork({
           </div>
 
           {/* One card: search + city list on the left, the selected city's centres on the right */}
-          <div className="min-w-0 rounded-[22px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
+          <div className="min-w-0 rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
             <label htmlFor="home-city-search" className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
               Find a centre near you
             </label>

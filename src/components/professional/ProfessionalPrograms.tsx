@@ -31,7 +31,7 @@ function ProgramCard({
   return (
     <Link
       href={`/courses/${course.slug}` as Route}
-      className="pro-course-card group/course relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[22px] border border-[var(--pro-hairline)] bg-[var(--pro-card)] p-5 text-left shadow-[var(--pro-shadow)] transition-[box-shadow,transform] duration-200 hover:shadow-[var(--pro-shadow-hover)] sm:min-h-[380px] sm:p-6 lg:min-h-0"
+      className="pro-course-card group/course relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-5 text-left shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:shadow-[var(--dc-shadow-hover)] sm:min-h-[380px] sm:p-6 lg:min-h-0"
     >
       {featured ? (
         <>
@@ -41,7 +41,7 @@ function ProgramCard({
       ) : null}
 
       <div className={`flex flex-wrap items-center gap-2 ${featured ? 'max-w-[72%]' : ''}`}>
-        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-surface)] px-2 py-0.5 text-[12px] font-semibold text-[var(--pro-ink-muted)]">
+        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] px-2 py-0.5 text-[12px] font-semibold text-[var(--dc-ink-muted)]">
           <Clock3 className="h-3 w-3 shrink-0" strokeWidth={2.25} aria-hidden="true" />
           {course.duration || visual.durationLabel}
         </span>
@@ -57,21 +57,21 @@ function ProgramCard({
       <div className="mt-4 flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl ring-1 ring-[color-mix(in_srgb,var(--pro-hairline)_80%,transparent)] sm:h-12 sm:w-12"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl ring-1 ring-[color-mix(in_srgb,var(--dc-hairline-strong)_80%,transparent)] sm:h-12 sm:w-12"
           style={{ background: visual.accentTint, color: visual.accent }}
         >
           <CoverIcon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} />
         </span>
-        <h3 className="min-w-0 flex-1 font-display text-[16px] leading-snug font-extrabold tracking-[-0.01em] text-[var(--pro-ink)] sm:text-[17px]">
+        <h3 className="min-w-0 flex-1 font-display text-[16px] leading-snug font-extrabold tracking-[-0.01em] text-[var(--dc-ink)] sm:text-[17px]">
           {course.title}
         </h3>
       </div>
 
-      <ul className="mt-4 flex flex-1 flex-col gap-0 border-t border-[var(--pro-hairline)]/60 pt-1">
+      <ul className="mt-4 flex flex-1 flex-col gap-0 border-t border-[var(--dc-hairline-strong)]/60 pt-1">
         {visual.bullets.map((item) => (
           <li
             key={item.label}
-            className="flex items-start gap-2.5 border-b border-[var(--pro-hairline)]/40 py-2.5 last:border-b-0"
+            className="flex items-start gap-2.5 border-b border-[var(--dc-hairline-strong)]/40 py-2.5 last:border-b-0"
           >
             <span
               aria-hidden="true"
@@ -80,14 +80,14 @@ function ProgramCard({
             >
               <item.icon className="h-3.5 w-3.5" strokeWidth={1.85} />
             </span>
-            <span className="min-w-0 flex-1 text-[12.5px] leading-snug font-semibold text-[var(--pro-ink-secondary)] sm:text-[13px]">
+            <span className="min-w-0 flex-1 text-[12.5px] leading-snug font-semibold text-[var(--dc-ink-secondary)] sm:text-[13px]">
               {item.label}
             </span>
           </li>
         ))}
       </ul>
 
-      <span className="mt-auto inline-flex items-center justify-between gap-3 border-t border-[var(--pro-hairline)] pt-4 text-[14px] font-bold">
+      <span className="mt-auto inline-flex items-center justify-between gap-3 border-t border-[var(--dc-hairline-strong)] pt-4 text-[14px] font-bold">
         <span style={{ color: visual.accent }}>Explore Course</span>
         <span
           aria-hidden="true"
@@ -123,16 +123,16 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
         <div className="min-w-0 flex-[1_1_18rem]">
           <h2
             id="pro-programs-heading"
-            className="inline-flex items-center gap-2.5 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[28px] sm:text-[32px]"
+            className="section-title inline-flex items-center gap-2.5 font-display text-[var(--dc-ink)]"
           >
             <Sparkles
-              className="h-6 w-6 text-[var(--pro-accent-soft)]"
+              className="h-6 w-6 text-[var(--dc-accent-soft)]"
               strokeWidth={1.75}
               aria-hidden="true"
             />
             Top Courses for High-Growth Careers
           </h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-muted)] sm:text-[15px]">
+          <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
             Short and professional tracks designed to fit around a full-time job.
           </p>
         </div>
@@ -140,7 +140,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
         <div className="flex items-center gap-3">
           <Link
             href={'/courses' as Route}
-            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--pro-accent-soft)]"
+            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
             View all
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -151,7 +151,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
                 type="button"
                 aria-label="Previous courses"
                 onClick={() => scrollBy(-1)}
-                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent)]"
               >
                 <ArrowLeft className="h-4 w-4" strokeWidth={2} />
               </button>
@@ -159,7 +159,7 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
                 type="button"
                 aria-label="Next courses"
                 onClick={() => scrollBy(1)}
-                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent)]"
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent)]"
               >
                 <ArrowRight className="h-4 w-4" strokeWidth={2} />
               </button>

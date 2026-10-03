@@ -21,11 +21,11 @@ function StepNode({
     <span
       aria-hidden="true"
       className={[
-        'relative z-10 grid shrink-0 place-items-center rounded-full border-2 bg-[var(--pro-card)]',
+        'relative z-10 grid shrink-0 place-items-center rounded-full border-2 bg-[var(--dc-card)]',
         dimension,
         isFinal
-          ? 'pro-path-node-final border-[var(--pro-accent-soft)] text-[var(--pro-accent-soft)]'
-          : 'border-[var(--pro-hairline)] text-[var(--pro-accent-soft)]',
+          ? 'pro-path-node-final border-[var(--dc-accent-soft)] text-[var(--dc-accent-soft)]'
+          : 'border-[var(--dc-hairline-strong)] text-[var(--dc-accent-soft)]',
       ].join(' ')}
     >
       <step.icon className={iconSize} strokeWidth={1.75} />
@@ -33,8 +33,8 @@ function StepNode({
         className={[
           'absolute -top-1.5 -right-1.5 grid h-5 w-5 place-items-center rounded-full text-[12px] font-extrabold',
           isFinal
-            ? 'bg-[var(--pro-accent)] text-white'
-            : 'border border-[var(--pro-hairline)] bg-[var(--pro-surface)] text-[var(--pro-ink-muted)]',
+            ? 'bg-[var(--dc-accent)] text-white'
+            : 'border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink-muted)]',
         ].join(' ')}
       >
         {index + 1}
@@ -59,14 +59,14 @@ function StepCopy({
       <p
         className={[
           'text-[12px] font-bold tracking-[0.06em] uppercase',
-          isFinal ? 'text-[var(--pro-accent-soft)]' : 'text-[var(--pro-ink-muted)]',
+          isFinal ? 'text-[var(--dc-accent-soft)]' : 'text-[var(--dc-ink-muted)]',
         ].join(' ')}
       >
         Step {index + 1}
       </p>
       <h3
         className={[
-          'mt-1 font-display font-extrabold text-[var(--pro-ink)]',
+          'mt-1 font-display font-extrabold text-[var(--dc-ink)]',
           align === 'center' ? 'text-[15px] leading-snug sm:text-[16px]' : 'text-[17px] sm:text-[18px]',
         ].join(' ')}
       >
@@ -74,7 +74,7 @@ function StepCopy({
       </h3>
       <p
         className={[
-          'mt-1.5 leading-relaxed text-[var(--pro-ink-secondary)]',
+          'mt-1.5 leading-relaxed text-[var(--dc-ink-secondary)]',
           align === 'center' ? 'text-[13px] sm:text-[14px]' : 'text-[14px]',
         ].join(' ')}
       >
@@ -97,16 +97,16 @@ export function ProfessionalGrowthPath() {
       <div className="shell">
         <header className="flex items-end justify-between gap-4">
           <div className="max-w-2xl">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
+            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               Career progression
             </p>
             <h2
               id="pro-growth-heading"
-              className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[28px]"
+              className="section-title mt-2 font-display text-[var(--dc-ink)]"
             >
               Your Career Growth Path with Jetking
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
+            <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
               From your current role to your next promotion — five practical milestones that fit around
               a full-time schedule.
             </p>
@@ -122,7 +122,7 @@ export function ProfessionalGrowthPath() {
 
         <div
           className={[
-            'pro-journey-panel mt-8 overflow-hidden rounded-[28px] px-5 py-8 xs:rounded-[32px] xs:px-6 sm:mt-10 sm:px-8 sm:py-10',
+            'pro-journey-panel mt-8 overflow-hidden rounded-[28px] px-5 py-8 xs:rounded-[28px] xs:px-6 sm:mt-10 sm:px-8 sm:py-10',
             
           ].join(' ')}
         >
@@ -156,7 +156,7 @@ export function ProfessionalGrowthPath() {
             })}
           </ol>
 
-          <p className="mt-3 text-center text-[12px] font-semibold tracking-[0.04em] text-[var(--pro-ink-muted)] uppercase lg:hidden">
+          <p className="mt-3 text-center text-[12px] font-semibold tracking-[0.04em] text-[var(--dc-ink-muted)] uppercase lg:hidden">
             Swipe to see all {stepCount} milestones
           </p>
 
@@ -187,7 +187,7 @@ export function ProfessionalGrowthPath() {
                     key={`copy-${step.title}`}
                     className={[
                       'flex flex-col items-center px-2 text-center',
-                      isFinal ? 'pro-path-step-card-final rounded-[18px] px-3 py-3 xl:px-4' : '',
+                      isFinal ? 'pro-path-step-card-final rounded-[16px] px-3 py-3 xl:px-4' : '',
                     ].join(' ')}
                     aria-current={isFinal ? 'step' : undefined}
                   >

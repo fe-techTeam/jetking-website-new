@@ -53,7 +53,7 @@ export function HowItWorks() {
           <div className="max-w-2xl">
             <h2
               id="home-how-heading"
-              className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="section-title font-display text-[var(--dc-ink)]"
             >
               Build your career, step by step
             </h2>
@@ -80,7 +80,7 @@ export function HowItWorks() {
             return (
               <li key={step.title} className="relative w-[80%] shrink-0 snap-start sm:w-auto">
                 <div
-                  className="h-full rounded-[22px] border border-[var(--dc-hairline)] p-5 shadow-[var(--dc-shadow)] sm:p-6"
+                  className="h-full rounded-[24px] border border-[var(--dc-hairline)] p-5 shadow-[var(--dc-shadow)] sm:p-6"
                   style={{ background: `linear-gradient(160deg, ${tint}, var(--dc-card) 70%)` }}
                 >
                   <div className="flex items-center gap-3">

@@ -102,16 +102,16 @@ export function ParentLanding({
 
         <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
           <div className="lg:col-span-7 xl:col-span-7">
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
               Welcome Parent!
             </p>
 
-            <h1 className="mt-5 font-display text-[34px] leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--stu-ink)] xs:text-[40px] sm:mt-6 sm:text-[46px] md:text-[50px] lg:text-[48px] xl:text-[54px]">
+            <h1 className="page-title mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
               Your Child&rsquo;s Future Starts with the{' '}
-              <span className="text-[var(--stu-accent-soft)]">Right Education</span> Today
+              <span className="text-[var(--dc-accent-soft)]">Right Education</span> Today
             </h1>
 
-            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
+            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
               Help your child build a future-ready IT career with industry-aligned courses,
               practical labs, and placement support — with fee clarity before you commit.
             </p>
@@ -124,11 +124,11 @@ export function ParentLanding({
                 >
                   <span
                     aria-hidden="true"
-                    className="grid h-10 w-10 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="grid h-10 w-10 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
                     <item.icon className="h-4 w-4" strokeWidth={1.85} />
                   </span>
-                  <span className="text-[12px] leading-snug font-semibold text-[var(--stu-ink-secondary)] sm:text-[12.5px]">
+                  <span className="text-[12px] leading-snug font-semibold text-[var(--dc-ink-secondary)] sm:text-[12.5px]">
                     {item.label}
                   </span>
                 </li>
@@ -138,7 +138,7 @@ export function ParentLanding({
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
                 href="#courses"
-                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 Explore Courses for Your Child
                 <span
@@ -151,7 +151,7 @@ export function ParentLanding({
 
               <Link
                 href={'/enquiry' as Route}
-                className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+                className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] px-5 py-3 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
               >
                 Book Free Career Guidance
               </Link>
@@ -161,7 +161,7 @@ export function ParentLanding({
           <div className="relative lg:col-span-5 xl:col-span-5">
             {/* Extra bottom/side room so the trust card can hang off the photo */}
             <div className="relative pb-6 sm:pb-8 lg:pb-10 lg:pr-4 xl:pr-6">
-              <div className="relative overflow-hidden rounded-[28px] border border-[var(--stu-hairline)] shadow-[var(--stu-shadow)]">
+              <div className="relative overflow-hidden rounded-[28px] border border-[var(--dc-hairline-strong)] shadow-[var(--dc-shadow)]">
                 <Image
                   src="/parent/hero.jpg"
                   alt="Parent and student exploring career options together"
@@ -188,11 +188,11 @@ export function ParentLanding({
                    * unconditionally; the "hanging off the photo" overlay look
                    * only turns on from sm: up, where there's enough room.
                    */
-                  'sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-2 sm:z-10 sm:mt-0 sm:w-[min(92%,268px)] sm:rounded-[22px] sm:p-5',
+                  'sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-2 sm:z-10 sm:mt-0 sm:w-[min(92%,268px)] sm:rounded-[24px] sm:p-5',
                   'lg:right-0 lg:bottom-0 xl:-right-3',
                 ].join(' ')}
               >
-                <h2 className="font-display text-[15px] font-extrabold text-[var(--stu-ink)] sm:text-[16px]">
+                <h2 className="font-display text-[15px] font-extrabold text-[var(--dc-ink)] sm:text-[16px]">
                   Why Parents Trust {siteConfig.name}
                 </h2>
                 <ul className="mt-3 space-y-2.5 sm:mt-3.5 sm:space-y-3">
@@ -200,15 +200,15 @@ export function ParentLanding({
                     <li key={stat.label} className="flex items-start gap-2.5 sm:gap-3">
                       <span
                         aria-hidden="true"
-                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:h-8 sm:w-8"
+                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:h-8 sm:w-8"
                       >
                         <stat.icon className="h-3.5 w-3.5" strokeWidth={2} />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[13px] font-extrabold text-[var(--stu-ink)] sm:text-[13.5px]">
+                        <span className="block text-[13px] font-extrabold text-[var(--dc-ink)] sm:text-[13.5px]">
                           {stat.value}
                         </span>
-                        <span className="block text-[12px] leading-snug text-[var(--stu-ink-muted)] sm:text-[12px]">
+                        <span className="block text-[12px] leading-snug text-[var(--dc-ink-muted)] sm:text-[12px]">
                           {stat.label}
                         </span>
                       </span>
@@ -222,19 +222,19 @@ export function ParentLanding({
       </section>
 
       {/* ── Journey steps ────────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-journey">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-journey">
         <div className="shell">
-          <div className="overflow-hidden rounded-[24px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-5 py-7 sm:rounded-[28px] sm:px-8 sm:py-8 lg:px-10">
+          <div className="overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-5 py-7 sm:rounded-[28px] sm:px-8 sm:py-8 lg:px-10">
             <div className="flex flex-wrap items-center gap-3">
               <span
                 aria-hidden="true"
-                className="grid h-10 w-10 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                className="grid h-10 w-10 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
               >
                 <ShieldCheck className="h-5 w-5" strokeWidth={1.85} />
               </span>
               <h2
                 id="par-journey"
-                className="font-display text-[18px] font-extrabold text-[var(--stu-ink)] sm:text-[20px]"
+                className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
               >
                 We&rsquo;re with you at every step
               </h2>
@@ -258,14 +258,14 @@ export function ParentLanding({
                 >
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full border-2 border-[var(--stu-accent-soft)] bg-[var(--stu-card)] text-[var(--stu-accent-soft)]"
+                    className="grid h-11 w-11 place-items-center rounded-full border-2 border-[var(--dc-accent-soft)] bg-[var(--dc-card)] text-[var(--dc-accent-soft)]"
                   >
                     <step.icon className="h-5 w-5" strokeWidth={1.85} />
                   </span>
-                  <span className="mt-3 text-[13px] leading-snug font-extrabold text-[var(--stu-ink)] sm:text-[13.5px]">
+                  <span className="mt-3 text-[13px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[13.5px]">
                     {step.title}
                   </span>
-                  <span className="text-[12px] text-[var(--stu-ink-muted)]">{step.detail}</span>
+                  <span className="text-[12px] text-[var(--dc-ink-muted)]">{step.detail}</span>
                 </li>
               ))}
             </ol>
@@ -274,7 +274,7 @@ export function ParentLanding({
       </section>
 
       {/* ── Courses (student RecommendedCourses pattern) ─────────────────── */}
-      <div id="courses" className="scroll-mt-24 bg-[var(--stu-surface)]">
+      <div id="courses" className="scroll-mt-24 bg-[var(--dc-surface)]">
         <RecommendedCourses
           courses={courses}
           headingId="par-courses"
@@ -284,13 +284,13 @@ export function ParentLanding({
       </div>
 
       {/* ── Let us help you ──────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-help">
+      <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-help">
         <div className="shell">
           <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
-            <div className="rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-5 sm:p-6 lg:col-span-8">
+            <div className="rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-5 sm:p-6 lg:col-span-8">
               <h2
                 id="par-help"
-                className="font-display text-[18px] font-extrabold text-[var(--stu-ink)] sm:text-[20px]"
+                className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
               >
                 Let Us Help You
               </h2>
@@ -303,15 +303,15 @@ export function ParentLanding({
                     >
                       <span
                         aria-hidden="true"
-                        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                       >
                         <item.icon className="h-4 w-4" strokeWidth={1.85} />
                       </span>
-                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--stu-ink)]">
+                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--dc-ink)]">
                         {item.label}
                       </span>
                       <ChevronRight
-                        className="h-4 w-4 shrink-0 text-[var(--stu-ink-muted)]"
+                        className="h-4 w-4 shrink-0 text-[var(--dc-ink-muted)]"
                         strokeWidth={2.25}
                         aria-hidden="true"
                       />
@@ -319,15 +319,15 @@ export function ParentLanding({
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[12.5px] text-[var(--stu-ink-muted)]">
+              <p className="mt-4 text-[12.5px] text-[var(--dc-ink-muted)]">
                 {counts.centres} centres across {counts.cities} cities — visit before you decide.
               </p>
             </div>
 
-            <div className="flex flex-col justify-center rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-surface)] p-5 sm:p-6 lg:col-span-4">
-              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)]">
+            <div className="flex flex-col justify-center rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] p-5 sm:p-6 lg:col-span-4">
+              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                 <FileText
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
@@ -335,7 +335,7 @@ export function ParentLanding({
               </p>
               <Link
                 href={'/chatbot' as Route}
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--stu-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--dc-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                 Chat with Us
@@ -347,35 +347,35 @@ export function ParentLanding({
 
       {/* ── Success stories ──────────────────────────────────────────────── */}
       <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
+        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
         aria-labelledby="par-stories"
       >
         <div className="shell">
-          <div className="stu-why rounded-[28px] px-6 py-10 text-[var(--stu-ink)] xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+          <div className="stu-why rounded-[28px] px-6 py-10 text-[var(--dc-ink)] xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
             <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
               <div>
                 <h2
                   id="par-stories"
-                  className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title font-display text-[var(--dc-ink)]"
                 >
                   Real Success Stories.{' '}
-                  <span className="text-[var(--stu-accent-soft)]">Real Parents.</span> Real Results.
+                  <span className="text-[var(--dc-accent-soft)]">Real Parents.</span> Real Results.
                 </h2>
 
                 <div className="mt-8 flex flex-wrap items-end gap-8">
                   <div>
-                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--stu-accent-soft)] sm:text-[56px]">
+                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--dc-accent-soft)] sm:text-[56px]">
                       {FOUNDED_YEAR}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                       Training IT talent since
                     </p>
                   </div>
                   <div>
-                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--stu-ink)] sm:text-[36px]">
+                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--dc-ink)] sm:text-[36px]">
                       {counts.cities}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">Cities with a Jetking centre</p>
+                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">Cities with a Jetking centre</p>
                   </div>
                 </div>
 
@@ -384,13 +384,13 @@ export function ParentLanding({
                     {STORY_AVATARS.map((src) => (
                       <span
                         key={src}
-                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--stu-card)]"
+                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)]"
                       >
                         <Image src={src} alt="" fill sizes="36px" className="object-cover" />
                       </span>
                     ))}
                   </span>
-                  <span className="text-[13px] font-semibold text-[var(--stu-ink-secondary)]">
+                  <span className="text-[13px] font-semibold text-[var(--dc-ink-secondary)]">
                     Parents &amp; learners across India
                   </span>
                 </div>
@@ -404,13 +404,13 @@ export function ParentLanding({
 
       {/* ── Things parents love ──────────────────────────────────────────── */}
       <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
+        className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14"
         aria-labelledby="par-loves"
       >
         <div className="shell">
           <h2
             id="par-loves"
-            className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[26px]"
+            className="subsection-title font-display text-[var(--dc-ink)]"
           >
             Things Parents Love About {siteConfig.name}
           </h2>
@@ -418,14 +418,14 @@ export function ParentLanding({
           <ul className="mt-6 flex flex-wrap gap-3 lg:gap-4">
             {PARENT_LOVES.map((item) => (
               <li key={item.label} className="@container min-w-0 flex-[1_1_140px]">
-                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[18px] p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
+                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[16px] p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="grid h-11 w-11 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
                     <item.icon className="h-5 w-5" strokeWidth={1.75} />
                   </span>
-                  <span className="text-[13px] leading-snug font-bold text-[var(--stu-ink-secondary)] sm:text-[13.5px]">
+                  <span className="text-[13px] leading-snug font-bold text-[var(--dc-ink-secondary)] sm:text-[13.5px]">
                     {item.label}
                   </span>
                 </article>
@@ -436,25 +436,25 @@ export function ParentLanding({
       </section>
 
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="par-cta">
+      <section className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="par-cta">
         <div className="shell">
-          <div className="rounded-[28px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] xs:rounded-[32px]">
+          <div className="rounded-[28px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] xs:rounded-[28px]">
             <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 lg:grid-cols-12 lg:gap-8 lg:p-10 xl:gap-12">
               <div className="flex min-w-0 flex-col items-start lg:col-span-7">
                 <h2
                   id="par-cta"
-                  className="max-w-[22ch] font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[32px]"
+                  className="section-title max-w-[22ch] font-display text-[var(--dc-ink)]"
                 >
                   Not sure which course is right for your child?
                 </h2>
-                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] sm:text-[15px]">
+                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
                   Book a free counselling session with a parent advisor. Compare tracks, fees, and
                   centres — no pressure to enrol.
                 </p>
 
                 <Link
                   href={'/enquiry' as Route}
-                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
+                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
                 >
                   Book Free Career Counselling
                   <span
@@ -465,9 +465,9 @@ export function ParentLanding({
                   </span>
                 </Link>
 
-                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[12.5px] font-bold text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[12.5px] font-bold text-[var(--dc-ink-secondary)] sm:text-[13px]">
                   <CheckCircle2
-                    className="h-3.5 w-3.5 shrink-0 text-[var(--stu-accent-soft)]"
+                    className="h-3.5 w-3.5 shrink-0 text-[var(--dc-accent-soft)]"
                     strokeWidth={2.5}
                     aria-hidden="true"
                   />
@@ -477,7 +477,7 @@ export function ParentLanding({
 
               <div className="relative mx-auto w-full max-w-[340px] lg:col-span-5 lg:mx-0 lg:ml-auto lg:max-w-[360px]">
                 <div className="relative aspect-square w-full">
-                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--stu-hairline)] bg-[linear-gradient(160deg,var(--stu-card),var(--stu-surface),var(--stu-card))] shadow-media">
+                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--dc-hairline-strong)] bg-[linear-gradient(160deg,var(--dc-card),var(--dc-surface),var(--dc-card))] shadow-media">
                     <Image
                       src="/parent/hero.jpg"
                       alt={`Parent researching ${siteConfig.name} career guidance for their child`}
@@ -489,19 +489,19 @@ export function ParentLanding({
 
                   <div
                     aria-hidden="true"
-                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-accent-soft)] shadow-[var(--stu-shadow)]"
+                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-accent-soft)] shadow-[var(--dc-shadow)]"
                   >
                     <GraduationCap className="h-5 w-5" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-cyber)] shadow-[var(--stu-shadow)]"
+                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cyber)] shadow-[var(--dc-shadow)]"
                   >
                     <Sparkles className="h-4 w-4" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-cloud)] shadow-[var(--stu-shadow)]"
+                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cloud)] shadow-[var(--dc-shadow)]"
                   >
                     <Briefcase className="h-4 w-4" strokeWidth={1.85} />
                   </div>

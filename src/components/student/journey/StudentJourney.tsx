@@ -199,7 +199,7 @@ export function StudentJourney({
         onStartJourney={openJourney}
       />
 
-      <div className="rounded-t-[32px] bg-[var(--stu-surface)] xs:rounded-t-[40px]">
+      <div className="rounded-t-[28px] bg-[var(--dc-surface)] xs:rounded-t-[40px]">
         <RecommendedCourses courses={courses} />
       </div>
 
@@ -210,19 +210,19 @@ export function StudentJourney({
           aria-label="Guided career journey"
         >
           <div className="mb-6 max-w-2xl">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--stu-accent-soft)] uppercase">
+            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               Personalised path
             </p>
-            <h2 className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px]">
+            <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
               Your guided career journey
             </h2>
-            <p className="mt-2 text-[14px] text-[var(--stu-ink-secondary)] sm:text-[15px]">
+            <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
               Answer a few questions — we&rsquo;ll recommend courses, build your roadmap, and
               connect you with a counsellor.
             </p>
           </div>
 
-          <div className="stu-card overflow-hidden rounded-[28px] p-5 xs:rounded-[32px] xs:p-6 sm:p-8 lg:p-10">
+          <div className="stu-card overflow-hidden rounded-[28px] p-5 xs:rounded-[28px] xs:p-6 sm:p-8 lg:p-10">
             <JourneyProgress current={journey.step} />
 
             {/*
@@ -280,10 +280,10 @@ export function StudentJourney({
 
               {journey.step === 'complete' ? (
                 <div className="space-y-4 text-center sm:text-left">
-                  <h2 className="font-display text-[26px] font-extrabold text-[var(--stu-ink)]">
+                  <h2 className="section-title font-display text-[var(--dc-ink)]">
                     Journey complete
                   </h2>
-                  <p className="max-w-[48ch] text-[15px] text-[var(--stu-ink-secondary)]">
+                  <p className="max-w-[48ch] text-[15px] text-[var(--dc-ink-secondary)]">
                     Your counsellor will follow up soon. Keep exploring below or start a new
                     path anytime.
                   </p>
@@ -298,7 +298,7 @@ export function StudentJourney({
                         selectedCourseSlug: undefined,
                       })
                     }
-                    className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--stu-accent-soft)] underline-offset-2 hover:underline"
+                    className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
                   >
                     Start a new journey
                   </button>

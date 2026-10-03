@@ -64,7 +64,7 @@ export default async function CoursesPage() {
 
           {/* ── Cinematic banner (blog / centres hero language) ───────────── */}
           <section className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[32px] lg:min-h-[480px]">
+            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[28px] lg:min-h-[480px]">
               <Image
                 src="/home/journey-student-v2.jpg"
                 alt=""
@@ -82,7 +82,7 @@ export default async function CoursesPage() {
                 <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
                   <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
 
-                  <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[clamp(40px,4.3vw,56px)]">
+                  <h1 className="page-title mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
                     The Most In-Demand
                     <span className="dc-accent-glow mt-1 block sm:mt-1.5">Job-Ready Courses.</span>
                   </h1>
@@ -178,7 +178,7 @@ export default async function CoursesPage() {
                 <p className="dc-eyebrow label-mono">Still deciding</p>
                 <h2
                   id="courses-cta"
-                  className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
+                  className="section-title mt-3 font-display text-[var(--dc-ink)]"
                 >
                   Not sure which course fits?
                 </h2>

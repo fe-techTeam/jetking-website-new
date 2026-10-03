@@ -14,13 +14,13 @@ function OrbitCard({ item, className }: { item: OrbitItem; className: string }) 
     <div className={`stu-float items-start gap-2.5 rounded-2xl p-3 sm:p-3.5 ${className}`}>
       <span
         aria-hidden="true"
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
       >
         <item.icon className="h-4 w-4" strokeWidth={1.75} />
       </span>
       <span className="min-w-0 pt-0.5">
-        <span className="block text-[13px] font-extrabold text-[var(--stu-ink)]">{item.label}</span>
-        <span className="mt-0.5 block text-[12px] leading-snug text-[var(--stu-ink-secondary)]">{item.detail}</span>
+        <span className="block text-[13px] font-extrabold text-[var(--dc-ink)]">{item.label}</span>
+        <span className="mt-0.5 block text-[12px] leading-snug text-[var(--dc-ink-secondary)]">{item.detail}</span>
       </span>
     </div>
   );
@@ -48,7 +48,7 @@ export function HeroOrbit({
         <div aria-hidden="true" className="stu-orbit-ring absolute inset-[3%] rounded-full sm:inset-[10%]" />
         <div
           aria-hidden="true"
-          className="absolute inset-[8%] rounded-full border border-dashed border-[var(--stu-accent)]/28 sm:inset-[16%]"
+          className="absolute inset-[8%] rounded-full border border-dashed border-[var(--dc-accent)]/28 sm:inset-[16%]"
         />
 
         <div className="absolute inset-[12%] overflow-hidden sm:inset-[20%] rounded-full bg-[linear-gradient(160deg,var(--card),var(--surface-sunken),var(--card))] shadow-media">

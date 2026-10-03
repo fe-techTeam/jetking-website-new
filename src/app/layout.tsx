@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from 'next/font/google';
 import Script from 'next/script';
 import { PersonaProvider } from '@/persona/PersonaProvider';
 import { SilentPersonaInfer } from '@/persona/SilentPersonaInfer';
@@ -17,18 +16,6 @@ import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
 import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import '@/styles/globals.css';
-
-const display = Bricolage_Grotesque({
-  subsets: ['latin'],
-  variable: '--font-display-src',
-  display: 'swap',
-});
-
-const body = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-body-src',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -62,7 +49,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en-IN"
-      className={`${display.variable} ${body.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

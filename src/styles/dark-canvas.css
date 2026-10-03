@@ -42,7 +42,11 @@
    these tokens incrementally.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.dark-canvas {
+/* ── The one set of page tokens ────────────────────────────────────────────
+   Every page group (dark-canvas, student, professional, centres, blog) reads these `--dc-*` tokens.
+   They used to be re-declared per page under `--stu-`, `--pro-`, `--centres-` and `--blog-` prefixes with
+   identical values; one definition here keeps the pages from drifting apart. */
+:is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
   /* Use global theme colors */
   /* ── Canvas & surfaces ─────────────────────────────────────────────── */
   --dc-canvas: var(--theme-canvas);
@@ -71,10 +75,31 @@
   --dc-shadow-hover: var(--theme-shadow-hover);
   --dc-glow-red: var(--theme-glow);
 
+  --dc-navy: var(--theme-accent);
+
+  /* ── Category / track accents (one scheme: see --theme-*-ink in globals.css) ── */
+  --dc-cyber: var(--theme-cyber-ink);
+  --dc-cloud: var(--theme-cloud-ink);
+  --dc-network: var(--theme-network-ink);
+  --dc-ai: var(--theme-ai-ink);
+  --dc-cyber-tint: var(--theme-cyber-tint);
+  --dc-cloud-tint: var(--theme-cloud-tint);
+  --dc-network-tint: var(--theme-network-tint);
+  --dc-ai-tint: var(--theme-ai-tint);
+
   /* ── Card corner radius (matches `.dc-panel`'s rounded corners) ──────── */
   --dc-cut: 20px;
   --dc-cut-inner: 18px;
+}
 
+@media (min-width: 640px) {
+  :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
+    --dc-cut: 24px;
+    --dc-cut-inner: 22px;
+  }
+}
+
+.dark-canvas {
   background: var(--dc-canvas);
   color: var(--dc-ink);
   position: relative;
@@ -82,15 +107,8 @@
   overflow: hidden;
 }
 
-@media (min-width: 640px) {
-  .dark-canvas {
-    --dc-cut: 24px;
-    --dc-cut-inner: 22px;
-  }
-}
-
 /* Light mode overrides — when .dark class is NOT on html element */
-:where(html:not(.dark)) .dark-canvas {
+:where(html:not(.dark)) :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
   /* Override to use light mode global variables */
   --dc-canvas: var(--theme-canvas);
   --dc-surface: var(--theme-surface);
@@ -106,7 +124,7 @@
    * .dark-canvas's near-black background — reused as-is here they fail AA
    * text contrast against this light card/canvas (~2.5:1 / ~1.8:1). Fixed
    * dark red instead, matching the same light-mode fix already applied to
-   * --stu-accent-soft (student.css) and --v2-accent-soft/--v2-eyebrow
+   * --dc-accent-soft (student.css) and --v2-accent-soft/--v2-eyebrow
    * (professional.css, home.css).
    */
   --dc-accent-soft: #a50d13;

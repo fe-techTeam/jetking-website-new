@@ -268,11 +268,11 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] xl:gap-12">
       {/* ── Left: filter sidebar ─────────────────────────────────────────── */}
       <aside
-        className="dc-panel hidden flex-col self-start rounded-[20px] lg:flex xs:rounded-[22px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
+        className="dc-panel hidden flex-col self-start rounded-[20px] lg:flex xs:rounded-[24px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
         aria-label="Filter courses"
       >
         {/* Pinned: title + search always visible while the lists scroll */}
-        <div className="shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 bg-[var(--dc-card)] p-5 xs:rounded-t-[22px] sm:p-6">
+        <div className="shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 bg-[var(--dc-card)] p-5 xs:rounded-t-[24px] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <p className="label-mono">Filters</p>
             {hasActiveFilters ? (

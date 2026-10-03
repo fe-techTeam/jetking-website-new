@@ -46,7 +46,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>
             <h2
               id="home-programs-heading"
-              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
+              className="section-title mt-2 font-display text-[var(--dc-ink)]"
             >
               Explore our courses
             </h2>
@@ -93,7 +93,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
               >
                 <Link
                   href={`/courses/${course.slug}` as Route}
-                  className="flex h-full flex-col overflow-hidden rounded-[22px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--dc-shadow-hover)]"
+                  className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--dc-shadow-hover)]"
                 >
                   <div className="dc-card-media relative aspect-[16/9] w-full overflow-hidden lg:aspect-[16/8]">
                     {course.heroImage ? (

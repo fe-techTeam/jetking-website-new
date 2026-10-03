@@ -84,7 +84,7 @@ export default async function SitemapPage() {
           <Breadcrumbs trail={trail} />
 
           <div className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[220px] overflow-hidden rounded-[24px] xs:min-h-[240px] xs:rounded-[28px] sm:min-h-[260px] sm:rounded-[32px]">
+            <div className="dc-banner relative min-h-[220px] overflow-hidden rounded-[24px] xs:min-h-[240px] xs:rounded-[28px] sm:min-h-[260px] sm:rounded-[28px]">
               <Image
                 src="/home/journey-explore-v2.jpg"
                 alt=""
@@ -97,7 +97,7 @@ export default async function SitemapPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 sm:justify-center sm:px-10 sm:py-12 lg:max-w-[62%] lg:px-12 xl:px-14">
                 <p className="dc-eyebrow label-mono text-[14px]">Sitemap</p>
-                <h1 className="mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:text-[44px] lg:text-[48px]">
+                <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)]">
                   Every page, <span className="dc-accent-glow">in one place</span>
                 </h1>
                 <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] sm:text-[16px]">
@@ -118,7 +118,7 @@ export default async function SitemapPage() {
               >
                 <h2
                   id={`sm-${group.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                  className="font-display text-[20px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[22px]"
+                  className="subsection-title font-display text-[var(--dc-ink)]"
                 >
                   {group.title}
                 </h2>
@@ -140,7 +140,7 @@ export default async function SitemapPage() {
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h2
                 id="sm-courses"
-                className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]"
+                className="subsection-title font-display text-[var(--dc-ink)]"
               >
                 Courses
               </h2>
@@ -167,7 +167,7 @@ export default async function SitemapPage() {
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h2
                 id="sm-centres"
-                className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]"
+                className="subsection-title font-display text-[var(--dc-ink)]"
               >
                 Centres
               </h2>
@@ -202,7 +202,7 @@ export default async function SitemapPage() {
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h2
                   id="sm-blog"
-                  className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]"
+                  className="subsection-title font-display text-[var(--dc-ink)]"
                 >
                   Latest from the blog
                 </h2>

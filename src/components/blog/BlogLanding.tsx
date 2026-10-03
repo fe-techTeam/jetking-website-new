@@ -49,21 +49,21 @@ export function BlogLanding({
         initialPage={initialPage}
       />
 
-      <section className="bg-[var(--blog-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="blog-cta">
+      <section className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="blog-cta">
         <div className="shell">
-          <div className="blog-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+          <div className="blog-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
               <div>
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--blog-accent-soft)] uppercase">
+                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
                   Still deciding
                 </p>
                 <h2
                   id="blog-cta"
-                  className="mt-3 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title mt-3 font-display text-[var(--dc-ink)]"
                 >
                   Talk it through with a counsellor
                 </h2>
-                <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--blog-ink-secondary)] sm:text-[15.5px]">
+                <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
                   A short conversation about your goals, background and nearest centre — no
                   obligation, no scripted pitch.
                 </p>
@@ -72,7 +72,7 @@ export function BlogLanding({
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
                 <Link
                   href={'/enquiry' as Route}
-                  className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--blog-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-[var(--blog-accent-soft)] xs:text-[15px]"
+                  className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-[var(--dc-accent-soft)] xs:text-[15px]"
                 >
                   <span>Enquire now</span>
                   <span
@@ -84,7 +84,7 @@ export function BlogLanding({
                 </Link>
                 <Link
                   href={'/courses' as Route}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--blog-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)] hover:bg-[var(--blog-accent-tint)] xs:text-[15px]"
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] xs:text-[15px]"
                 >
                   Browse courses
                 </Link>

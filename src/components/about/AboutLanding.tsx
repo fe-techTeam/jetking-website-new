@@ -68,7 +68,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <Breadcrumbs trail={trail} />
 
         <div className="relative mt-5 sm:mt-6">
-          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[32px] lg:min-h-[520px]">
+          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
             <Image
               src="/home/journey-explore-v2.jpg"
               alt=""
@@ -85,7 +85,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
               <p className="dc-eyebrow label-mono text-[14px]">{ABOUT_HERO.eyebrow}</p>
 
-              <h1 className="mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[56px]">
+              <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                 <span className="dc-accent-glow">{ABOUT_HERO.titleLead}</span>
                 <span className="mt-1 block sm:mt-1.5">{ABOUT_HERO.titleAccent}</span>
               </h1>
@@ -134,7 +134,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <p className="dc-eyebrow label-mono">Purpose</p>
         <h2
           id="about-purpose"
-          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="section-title mt-3 font-display text-[var(--dc-ink)]"
         >
           Our purpose &amp;{' '}
           <span className="dc-accent-glow">values</span>
@@ -169,7 +169,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <p className="dc-eyebrow label-mono">Leadership</p>
         <h2
           id="about-leaders"
-          className="mt-3 max-w-[20ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="section-title mt-3 max-w-[20ch] font-display text-[var(--dc-ink)]"
         >
           The leaders who drive our{' '}
           <span className="dc-accent-glow">growth</span>
@@ -201,7 +201,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <p className="dc-eyebrow label-mono">History</p>
         <h2
           id="about-timeline"
-          className="mt-3 max-w-[22ch] font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="section-title mt-3 max-w-[22ch] font-display text-[var(--dc-ink)]"
         >
           A legacy that we take{' '}
           <span className="dc-accent-glow">pride in</span>
@@ -222,7 +222,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             <p className="dc-eyebrow label-mono">Recognition</p>
             <h2
               id="about-awards"
-              className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+              className="section-title mt-3 font-display text-[var(--dc-ink)]"
             >
               Our <span className="dc-accent-glow">achievements</span>
             </h2>
@@ -249,7 +249,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         >
           {ACHIEVEMENTS.map((item) => (
             <li key={item.title} data-reveal className="w-[78%] shrink-0 snap-start sm:w-auto sm:shrink">
-              <article className="dc-panel flex h-full flex-col rounded-[20px] p-5 sm:rounded-[22px] sm:p-6">
+              <article className="dc-panel flex h-full flex-col rounded-[20px] p-5 sm:rounded-[24px] sm:p-6">
                 <div className="relative flex h-36 w-full items-center justify-center sm:h-40 lg:h-44">
                   <Image
                     src={item.imageSrc}
@@ -277,7 +277,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <p className="dc-eyebrow label-mono">Alliances</p>
         <h2
           id="about-partnerships"
-          className="mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px] lg:text-[40px]"
+          className="section-title mt-3 font-display text-[var(--dc-ink)]"
         >
           Our <span className="dc-accent-glow">partnerships</span>
         </h2>
@@ -330,7 +330,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
               security, and proven value retention. Join the movement!
             </p>
           </div>
-          <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--dc-accent)]">
+          <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--accent-ink)]">
             jetking.org
             <ArrowUpRight
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

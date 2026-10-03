@@ -83,7 +83,7 @@ export function JourneyHexes() {
                 });
               }}
               className={cx(
-                'v2-card v2-card-interactive group/hex relative flex min-h-[88px] items-center gap-3.5 overflow-hidden rounded-[14px] p-3.5',
+                'v2-card v2-card-interactive group/hex relative flex min-h-[88px] items-center gap-3.5 overflow-hidden rounded-[12px] p-3.5',
                 'xs:min-h-[92px] xs:p-4',
                 /* Hex from lg — square, capped, centred in its grid cell so
                    three always fit the stage column and never spill to 4+1. */

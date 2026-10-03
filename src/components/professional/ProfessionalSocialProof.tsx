@@ -7,21 +7,21 @@ import { SUCCESS_STORIES } from './data';
 
 export function ProfessionalSocialProof() {
   return (
-    <section className="bg-[var(--pro-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-stories-heading">
+    <section className="bg-[var(--dc-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-stories-heading">
       <div className="shell">
-        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
           <div className="flex flex-col gap-12 lg:gap-14">
             <div>
-              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
+              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
                 Success stories
               </p>
               <h2
                 id="pro-stories-heading"
-                className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[28px] sm:text-[32px]"
+                className="section-title mt-2 font-display text-[var(--dc-ink)]"
               >
                 Real career transitions
               </h2>
-              <p className="mt-2 text-[14px] text-[var(--pro-ink-secondary)] sm:text-[15px]">
+              <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
                 Working professionals like you who upskilled without quitting their day job.
               </p>
 
@@ -33,10 +33,10 @@ export function ProfessionalSocialProof() {
                 itemLabel={(story) => `${story.name}, ${story.from} to ${story.to}`}
                 classNames={{
                   viewport: 'rounded-[24px]',
-                  dotActive: 'bg-[var(--pro-accent-soft)]',
-                  dotIdle: 'bg-[var(--pro-ink-muted)]/40',
+                  dotActive: 'bg-[var(--dc-accent-soft)]',
+                  dotIdle: 'bg-[var(--dc-ink-muted)]/40',
                   button:
-                    'border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent-soft)] hover:text-[var(--pro-accent-soft)]',
+                    'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]',
                 }}
               >
                 {(story) => (
@@ -80,11 +80,11 @@ export function ProfessionalSocialProof() {
               </Carousel>
             </div>
 
-            <div className="border-t border-[var(--pro-hairline)] pt-10 lg:pt-12">
-              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[26px]">
+            <div className="border-t border-[var(--dc-hairline-strong)] pt-10 lg:pt-12">
+              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]">
                 Our Hiring Partners
               </h3>
-              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--pro-ink-secondary)] sm:text-[15px]">
+              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
                 Recruiters featured on jetking.com. Placements are subject to recruitment norms —
                 Jetking does not guarantee placement in any organisation.
               </p>

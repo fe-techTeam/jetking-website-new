@@ -50,10 +50,10 @@ const ACCENT: Record<Accent, { ink: string; tint: string; chip: string }> = {
   // mode for use as text-on-card — this solid circle needs to stay a dark,
   // saturated tone in both themes so the white arrow stays legible. Values
   // match each accent's light-mode `ink` colour from student.css.
-  cyber: { ink: 'var(--stu-cyber)', tint: 'var(--stu-cyber-tint)', chip: 'var(--color-track-cyber)' },
-  cloud: { ink: 'var(--stu-cloud)', tint: 'var(--stu-cloud-tint)', chip: 'var(--color-track-cloud)' },
-  network: { ink: 'var(--stu-network)', tint: 'var(--stu-network-tint)', chip: 'var(--color-track-network)' },
-  ai: { ink: 'var(--stu-ai)', tint: 'var(--stu-ai-tint)', chip: 'var(--color-track-ai)' },
+  cyber: { ink: 'var(--dc-cyber)', tint: 'var(--dc-cyber-tint)', chip: 'var(--color-track-cyber)' },
+  cloud: { ink: 'var(--dc-cloud)', tint: 'var(--dc-cloud-tint)', chip: 'var(--color-track-cloud)' },
+  network: { ink: 'var(--dc-network)', tint: 'var(--dc-network-tint)', chip: 'var(--color-track-network)' },
+  ai: { ink: 'var(--dc-ai)', tint: 'var(--dc-ai-tint)', chip: 'var(--color-track-ai)' },
 };
 
 const COURSE_VISUALS: Record<string, CourseVisual> = {
@@ -171,7 +171,7 @@ function CourseCard({
   return (
     <Link
       href={`/courses/${course.slug}` as Route}
-      className="stu-course-card group/course relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-5 text-left shadow-[var(--stu-shadow)] transition-[box-shadow,transform] duration-200 hover:shadow-[var(--stu-shadow-hover)] sm:min-h-[380px] sm:p-6 lg:min-h-0"
+      className="stu-course-card group/course relative flex h-full min-h-[360px] flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-5 text-left shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:shadow-[var(--dc-shadow-hover)] sm:min-h-[380px] sm:p-6 lg:min-h-0"
     >
       {popular ? (
         <>
@@ -181,7 +181,7 @@ function CourseCard({
       ) : null}
 
       <div className={`flex flex-wrap items-center gap-2 ${popular ? 'max-w-[72%]' : ''}`}>
-        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-surface)] px-2 py-0.5 text-[12px] font-semibold text-[var(--stu-ink-muted)]">
+        <span className="inline-flex items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] px-2 py-0.5 text-[12px] font-semibold text-[var(--dc-ink-muted)]">
           <Clock3 className="h-3 w-3 shrink-0" strokeWidth={2.25} aria-hidden="true" />
           {course.duration}
         </span>
@@ -196,19 +196,19 @@ function CourseCard({
       <div className="mt-4 flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl ring-1 ring-[color-mix(in_srgb,var(--stu-hairline)_80%,transparent)] sm:h-12 sm:w-12"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl ring-1 ring-[color-mix(in_srgb,var(--dc-hairline-strong)_80%,transparent)] sm:h-12 sm:w-12"
           style={{ background: theme.tint, color: theme.ink }}
         >
           <CoverIcon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} />
         </span>
-        <h3 className="min-w-0 flex-1 font-display text-[16px] leading-snug font-extrabold tracking-[-0.01em] text-[var(--stu-ink)] sm:text-[17px]">
+        <h3 className="min-w-0 flex-1 font-display text-[16px] leading-snug font-extrabold tracking-[-0.01em] text-[var(--dc-ink)] sm:text-[17px]">
           {course.title}
         </h3>
       </div>
 
-      <ul className="mt-4 flex flex-1 flex-col gap-0 border-t border-[var(--stu-hairline)]/60 pt-1">
+      <ul className="mt-4 flex flex-1 flex-col gap-0 border-t border-[var(--dc-hairline-strong)]/60 pt-1">
         {visual.bullets.map((item) => (
-          <li key={item.label} className="flex items-start gap-2.5 border-b border-[var(--stu-hairline)]/40 py-2.5 last:border-b-0">
+          <li key={item.label} className="flex items-start gap-2.5 border-b border-[var(--dc-hairline-strong)]/40 py-2.5 last:border-b-0">
             <span
               aria-hidden="true"
               className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg"
@@ -216,14 +216,14 @@ function CourseCard({
             >
               <item.icon className="h-3.5 w-3.5" strokeWidth={1.85} />
             </span>
-            <span className="min-w-0 flex-1 text-[12.5px] leading-snug font-semibold text-[var(--stu-ink-secondary)] sm:text-[13px]">
+            <span className="min-w-0 flex-1 text-[12.5px] leading-snug font-semibold text-[var(--dc-ink-secondary)] sm:text-[13px]">
               {item.label}
             </span>
           </li>
         ))}
       </ul>
 
-      <span className="mt-auto inline-flex items-center justify-between gap-3 border-t border-[var(--stu-hairline)] pt-4 text-[14px] font-bold">
+      <span className="mt-auto inline-flex items-center justify-between gap-3 border-t border-[var(--dc-hairline-strong)] pt-4 text-[14px] font-bold">
         <span style={{ color: theme.ink }}>Explore Course</span>
         <span
           aria-hidden="true"
@@ -266,16 +266,16 @@ export function RecommendedCourses({
         <div>
           <h2
             id={headingId}
-            className="inline-flex items-center gap-2.5 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+            className="section-title inline-flex items-center gap-2.5 font-display text-[var(--dc-ink)]"
           >
             <Sparkles
-              className="h-6 w-6 text-[var(--stu-accent-soft)]"
+              className="h-6 w-6 text-[var(--dc-accent-soft)]"
               strokeWidth={1.75}
               aria-hidden="true"
             />
             {title}
           </h2>
-          <p className="mt-2 max-w-[42ch] text-[14px] text-[var(--stu-ink-muted)] sm:text-[15px]">
+          <p className="mt-2 max-w-[42ch] text-[14px] text-[var(--dc-ink-muted)] sm:text-[15px]">
             {description}
           </p>
         </div>
@@ -283,7 +283,7 @@ export function RecommendedCourses({
         <div className="flex items-center gap-3">
           <Link
             href={'/courses' as Route}
-            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--stu-accent-soft)]"
+            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
             View all
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -293,7 +293,7 @@ export function RecommendedCourses({
               type="button"
               aria-label="Previous courses"
               onClick={() => scrollBy(-1)}
-              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
+              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent)]"
             >
               <ArrowLeft className="h-4 w-4" strokeWidth={2} />
             </button>
@@ -301,7 +301,7 @@ export function RecommendedCourses({
               type="button"
               aria-label="Next courses"
               onClick={() => scrollBy(1)}
-              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent)]"
+              className="grid h-11 w-11 cursor-pointer place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent)]"
             >
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </button>

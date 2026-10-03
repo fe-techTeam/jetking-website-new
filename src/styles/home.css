@@ -35,16 +35,16 @@
   --v2-eyebrow: #ff8a90;
 
   /* Brighter wayfinding hues for dark fills (AA on --v2-card). */
-  --v2-student-ink: #c4a8ff;
-  --v2-student-tint: #2a2240;
-  --v2-parent-ink: #7ddea0;
-  --v2-parent-tint: #1a2e22;
-  --v2-professional-ink: #8eb6ff;
-  --v2-professional-tint: #1a2438;
-  --v2-franchise-ink: #ffb07a;
-  --v2-franchise-tint: #2e1c14;
+  --v2-student-ink: #ff6b70;
+  --v2-student-tint: #1b1c24;
+  --v2-parent-ink: #ff6b70;
+  --v2-parent-tint: #1b1c24;
+  --v2-professional-ink: #ff6b70;
+  --v2-professional-tint: #1b1c24;
+  --v2-franchise-ink: #ff6b70;
+  --v2-franchise-tint: #1b1c24;
   --v2-explore-ink: #d4d4de;
-  --v2-explore-tint: #22222c;
+  --v2-explore-tint: #1b1c24;
 
   --v2-ink-bar: #101018;
   --v2-ink-bar-muted: #a9abc4;
@@ -80,16 +80,17 @@ html:not(.dark) .home-v2-themeable {
   --v2-accent-soft: var(--color-jk-600);
   --v2-eyebrow: #a50d13;
 
-  --v2-student-ink: #5f3aa8;
-  --v2-student-tint: #eee8ff;
-  --v2-parent-ink: #17683b;
-  --v2-parent-tint: #e8f7ed;
-  --v2-professional-ink: #2454a6;
-  --v2-professional-tint: #e9f0ff;
-  --v2-franchise-ink: #9a4312;
-  --v2-franchise-tint: #fff0e7;
+  /* One quiet scheme for every persona (red on neutral grey) — purple / green / blue / orange per persona read as unprofessional. */
+  --v2-student-ink: #c7141c;
+  --v2-student-tint: #f3f4f6;
+  --v2-parent-ink: #c7141c;
+  --v2-parent-tint: #f3f4f6;
+  --v2-professional-ink: #c7141c;
+  --v2-professional-tint: #f3f4f6;
+  --v2-franchise-ink: #c7141c;
+  --v2-franchise-tint: #f3f4f6;
   --v2-explore-ink: #464657;
-  --v2-explore-tint: #ececf2;
+  --v2-explore-tint: #f3f4f6;
 
   --v2-ink-bar: #171722;
   --v2-ink-bar-muted: #c2c4d8;

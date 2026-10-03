@@ -45,7 +45,7 @@ type Status = 'idle' | 'submitting' | 'done' | 'error';
  * the 3:1 WCAG 1.4.11 needs for a field boundary.
  */
 const fieldClass =
-  'stu-field bg-[var(--stu-card)] text-[var(--stu-ink)] placeholder:text-[var(--stu-ink-muted)]';
+  'stu-field bg-[var(--dc-card)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)]';
 
 const INTRO: Record<string, string> = {
   student: 'Tell us where you are in your studies and we will point you to the right track.',
@@ -212,7 +212,7 @@ export function EnquiryForm({
      * -aware errors for free (WCAG 3.3.1, 3.3.3).
      */
     <form onSubmit={handleSubmit} className="space-y-7">
-      <p className="text-base text-[var(--stu-ink-secondary)]">
+      <p className="text-base text-[var(--dc-ink-secondary)]">
         {classification.persona === 'franchise' ? (
           <>
             This form reaches a course counsellor. Looking to open a Jetking centre?{' '}
@@ -228,11 +228,11 @@ export function EnquiryForm({
 
       {account.ready ? (
         accountUser ? (
-          <p className="text-sm text-[var(--stu-ink-muted)]">
+          <p className="text-sm text-[var(--dc-ink-muted)]">
             Signed in as {accountUser.name} — your details are filled in below.
           </p>
         ) : (
-          <p className="text-sm text-[var(--stu-ink-muted)]">
+          <p className="text-sm text-[var(--dc-ink-muted)]">
             Have a Jetking account?{' '}
             <button
               type="button"
@@ -411,12 +411,12 @@ export function EnquiryForm({
         type="submit"
         size="lg"
         disabled={status === 'submitting'}
-        className="w-full bg-[var(--stu-accent)] hover:bg-jk-700"
+        className="w-full bg-[var(--dc-accent)] hover:bg-jk-700"
       >
         {status === 'submitting' ? 'Sending…' : 'Send enquiry'}
       </Button>
 
-      <p className="text-sm text-[var(--stu-ink-muted)]">
+      <p className="text-sm text-[var(--dc-ink-muted)]">
         We use your details only to respond to this enquiry.
       </p>
     </form>

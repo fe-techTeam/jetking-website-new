@@ -54,7 +54,7 @@
 
   /* ── Surfaces ──────────────────────────────────────────────────────────── */
   --color-background: #ffffff;
-  --color-surface: #fff5f4;
+  --color-surface: #f8f9fb;
   --color-elevated: #ffffff;
   --color-card: #ffffff;
 
@@ -87,15 +87,19 @@
   --color-tile-dark: #14141f;
   --color-whatsapp: #25d366;
   /* Solid track hues for circles behind white icons; identical in both themes. */
-  --color-track-cyber: #5f3aa8;
-  --color-track-cloud: #2454a6;
-  --color-track-network: #17683b;
-  --color-track-ai: #9a4312;
+  --color-track-cyber: #c7141c;
+  --color-track-cloud: #c7141c;
+  --color-track-network: #c7141c;
+  --color-track-ai: #c7141c;
 
   /* ── Typography ────────────────────────────────────────────────────────── */
-  --font-display: var(--font-display-src), 'Segoe UI', system-ui, sans-serif;
-  --font-body: var(--font-body-src), 'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+  /* One straight typeface across every page (client guideline: Arial / Helvetica, no per-page fonts).
+     The display and mono tokens are kept so existing `font-display` / `label-mono` classes still resolve,
+     but all three now share the same family. */
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: var(--font-sans);
 
   /* Body sizes hold a reading line-height; display sizes hold a tight one. */
   --text-2xs: 0.75rem;
@@ -220,7 +224,7 @@
   --color-ink-950: #0b111e;
 
   --color-background: #ffffff;
-  --color-surface: #fff5f4;
+  --color-surface: #f8f9fb;
   --color-elevated: #ffffff;
   --color-card: #ffffff;
 
@@ -257,7 +261,7 @@
   --accent-ink: var(--color-jk-600); /* red used AS text or under white text */
   --accent-hover: var(--color-jk-500);
   --accent-active: var(--color-jk-700);
-  --accent-soft: var(--color-jk-50);
+  --accent-soft: #f4f5f7;
   --accent-border: var(--color-jk-200);
 
   --focus-ring: var(--color-jk-600);
@@ -297,7 +301,7 @@
   --theme-accent-hover: var(--color-jk-700);
   --theme-accent-soft: #f97066;
   --theme-accent-soft-light: #fda29b;
-  --theme-accent-tint: #fef3f2;
+  --theme-accent-tint: #f4f5f7; /* neutral, not pink: red stays the accent, surfaces stay white/grey */
   --theme-eyebrow: #fda29b;
 
   /* Lines & Borders */
@@ -311,22 +315,25 @@
   --theme-glow: 0 4px 12px rgb(16 24 40 / 0.12);
 
   /* Persona & Track Colors (Light Mode) */
-  --theme-student-ink: #5f3aa8;
-  --theme-student-tint: #eee8ff;
-  --theme-parent-ink: #17683b;
-  --theme-parent-tint: #e8f7ed;
-  --theme-professional-ink: #2454a6;
-  --theme-professional-tint: #dde7fb;
-  --theme-franchise-ink: #9a4312;
-  --theme-franchise-tint: #fde7d4;
-  --theme-cyber-ink: #5f3aa8;
-  --theme-cyber-tint: #eee8ff;
-  --theme-cloud-ink: #2454a6;
-  --theme-cloud-tint: #dde7fb;
-  --theme-network-ink: #17683b;
-  --theme-network-tint: #e8f7ed;
-  --theme-ai-ink: #9a4312;
-  --theme-ai-tint: #fde7d4;
+  --theme-student-ink: #c7141c;
+  --theme-student-tint: #f3f4f6;
+  --theme-parent-ink: #c7141c;
+  --theme-parent-tint: #f3f4f6;
+  --theme-professional-ink: #c7141c;
+  --theme-professional-tint: #f3f4f6;
+  --theme-franchise-ink: #c7141c;
+  --theme-franchise-tint: #f3f4f6;
+  /* One quiet scheme for all four category hues: Jetking red on a neutral grey tint. Per-category
+     purple / blue / green / orange read as unprofessional next to the brand red, so the "hue" API
+     is kept (callers still pick cyber / cloud / network / ai) but every hue resolves identically. */
+  --theme-cyber-ink: #c7141c;
+  --theme-cyber-tint: #f3f4f6;
+  --theme-cloud-ink: #c7141c;
+  --theme-cloud-tint: #f3f4f6;
+  --theme-network-ink: #c7141c;
+  --theme-network-tint: #f3f4f6;
+  --theme-ai-ink: #c7141c;
+  --theme-ai-tint: #f3f4f6;
 }
 
 /*
@@ -426,22 +433,22 @@
   --theme-glow: 0 8px 20px rgb(0 0 0 / 0.35);
 
   /* Persona & Track Colors (Dark Mode) */
-  --theme-student-ink: #c4a8ff;
-  --theme-student-tint: #2a2240;
-  --theme-parent-ink: #7ddea0;
-  --theme-parent-tint: #1a2e22;
-  --theme-professional-ink: #8eb6ff;
-  --theme-professional-tint: #1a2438;
-  --theme-franchise-ink: #ffb07a;
-  --theme-franchise-tint: #2e1c14;
-  --theme-cyber-ink: #c4a8ff;
-  --theme-cyber-tint: #2a2240;
-  --theme-cloud-ink: #8eb6ff;
-  --theme-cloud-tint: #1a2438;
-  --theme-network-ink: #7ddea0;
-  --theme-network-tint: #1a2e22;
-  --theme-ai-ink: #ffb07a;
-  --theme-ai-tint: #2e1c14;
+  --theme-student-ink: #ff6b70;
+  --theme-student-tint: #1b1c24;
+  --theme-parent-ink: #ff6b70;
+  --theme-parent-tint: #1b1c24;
+  --theme-professional-ink: #ff6b70;
+  --theme-professional-tint: #1b1c24;
+  --theme-franchise-ink: #ff6b70;
+  --theme-franchise-tint: #1b1c24;
+  --theme-cyber-ink: #ff6b70;
+  --theme-cyber-tint: #1b1c24;
+  --theme-cloud-ink: #ff6b70;
+  --theme-cloud-tint: #1b1c24;
+  --theme-network-ink: #ff6b70;
+  --theme-network-tint: #1b1c24;
+  --theme-ai-ink: #ff6b70;
+  --theme-ai-tint: #1b1c24;
 
   background: var(--color-background);
   color: var(--color-foreground);
@@ -497,7 +504,7 @@
   --accent: var(--color-jk-500);
   --accent-hover: var(--color-jk-600);
   --accent-active: var(--color-jk-700);
-  --accent-soft: var(--color-jk-50);
+  --accent-soft: #f4f5f7;
   --accent-border: var(--color-jk-200);
   --accent-ink: var(--color-jk-600);
   --focus-ring: var(--color-jk-600);
@@ -1075,4 +1082,37 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
   .sheet-up {
     animation: sheet-in var(--duration-nudge) var(--ease-out-soft) both;
   }
+}
+
+/* ── Shared heading scale ────────────────────────────────────────────────────
+   Page titles and section headings were re-declared per component at drifting sizes (an h1 of 52, 54, 56
+   or 58px; section headings of 24 / 26 / 28 / 30 / 32 / 36 / 40px). One scale, used by every public page.
+   Unlayered on purpose so it wins over any leftover utility sizes. */
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.page-title-sm {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.subsection-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
 }

@@ -80,13 +80,13 @@ export function SaveRecommendationsStep({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--stu-accent-soft)] uppercase">
+        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
           Step 3 · Save your path
         </p>
-        <h2 className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[30px]">
+        <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
           Save your {intent} recommendations
         </h2>
-        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
+        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
           We&rsquo;ll text or WhatsApp your matched courses and career roadmap. No
           spam — just your saved path.
         </p>
@@ -107,7 +107,7 @@ export function SaveRecommendationsStep({
             inputMode="tel"
             autoComplete="tel"
             pattern="[\d\s+\(\)\-]{10,20}"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
@@ -118,12 +118,12 @@ export function SaveRecommendationsStep({
             type="text"
             maxLength={120}
             autoComplete="given-name"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
         {error ? (
-          <p role="alert" className="text-sm font-medium text-[var(--stu-accent-soft)]">
+          <p role="alert" className="text-sm font-medium text-[var(--dc-accent-soft)]">
             {error}
           </p>
         ) : null}
@@ -131,7 +131,7 @@ export function SaveRecommendationsStep({
         <button
           type="submit"
           disabled={status === 'submitting'}
-          className="group/save inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--stu-accent)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
+          className="group/save inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-accent)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
         >
           <Bookmark className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
           {status === 'submitting' ? 'Saving…' : 'Save my recommendations'}
@@ -144,7 +144,7 @@ export function SaveRecommendationsStep({
           track('journey_soft_save_skipped', { intent });
           onSkip();
         }}
-        className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] underline-offset-2 hover:text-[var(--stu-ink-secondary)] hover:underline"
+        className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] underline-offset-2 hover:text-[var(--dc-ink-secondary)] hover:underline"
       >
         Skip for now — show my roadmap
       </button>

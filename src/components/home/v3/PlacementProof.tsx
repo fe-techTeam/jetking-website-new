@@ -27,7 +27,7 @@ export function PlacementProof() {
       <div className="shell">
         <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-jk-600 to-jk-800 p-6 text-white shadow-xl shadow-jk-800/30 sm:p-10 lg:grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-10">
           <div>
-            <h2 id="home-proof-heading" className="font-display text-[28px] font-extrabold tracking-[-0.02em] text-white sm:text-[34px]">
+            <h2 id="home-proof-heading" className="section-title font-display text-white">
               Our learners, our pride
             </h2>
             <p className="mt-3 max-w-[38ch] text-[14.5px] leading-relaxed text-white/85">

@@ -35,10 +35,10 @@ export function JourneyProgress({ current }: { current: StudentJourneyStep }) {
                   className={[
                     'grid h-8 w-8 shrink-0 place-items-center rounded-full text-[12px] font-bold transition-colors sm:h-9 sm:w-9',
                     done
-                      ? 'bg-[var(--stu-accent)] text-white'
+                      ? 'bg-[var(--dc-accent)] text-white'
                       : active
-                        ? 'border-2 border-[var(--stu-accent-soft)] bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]'
-                        : 'border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink-muted)]',
+                        ? 'border-2 border-[var(--dc-accent-soft)] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]'
+                        : 'border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink-muted)]',
                   ].join(' ')}
                 >
                   {done ? <Check className="h-4 w-4" strokeWidth={2.5} /> : i + 1}
@@ -47,7 +47,7 @@ export function JourneyProgress({ current }: { current: StudentJourneyStep }) {
                   aria-hidden="true"
                   className={[
                     'hidden text-[12px] font-semibold tracking-wide uppercase xs:block sm:text-[12px]',
-                    active ? 'text-[var(--stu-accent-soft)]' : 'text-[var(--stu-ink-muted)]',
+                    active ? 'text-[var(--dc-accent-soft)]' : 'text-[var(--dc-ink-muted)]',
                   ].join(' ')}
                 >
                   {label}
@@ -63,7 +63,7 @@ export function JourneyProgress({ current }: { current: StudentJourneyStep }) {
                   aria-hidden="true"
                   className={[
                     'mx-0.5 h-px flex-1 sm:mx-1',
-                    done ? 'bg-[var(--stu-accent-soft)]/60' : 'bg-[var(--stu-hairline)]/40',
+                    done ? 'bg-[var(--dc-accent-soft)]/60' : 'bg-[var(--dc-hairline-strong)]/40',
                   ].join(' ')}
                 />
               ) : null}

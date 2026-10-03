@@ -139,19 +139,19 @@ export function BlogIndex({
     >
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--blog-ink-muted)] uppercase">
+          <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
             Index
           </p>
           <h2
             id="blog-index-heading"
-            className="mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] xs:text-[26px] sm:text-[28px] lg:text-[30px]"
+            className="section-title mt-2 font-display text-[var(--dc-ink)]"
           >
             {activeCategory ?? 'All writing'}
           </h2>
         </div>
         <p
           aria-live="polite"
-          className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--blog-ink-muted)] uppercase"
+          className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
         >
           {needle
             ? `${visibleCount} of ${posts.length} ${posts.length === 1 ? 'article' : 'articles'}`
@@ -165,7 +165,7 @@ export function BlogIndex({
         <label htmlFor={inputId} className="relative block w-full max-w-md">
           <span className="sr-only">Search articles</span>
           <Search
-            className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[var(--blog-ink-muted)]"
+            className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
             strokeWidth={2}
             aria-hidden="true"
           />
@@ -176,14 +176,14 @@ export function BlogIndex({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search titles, topics, keywords…"
             autoComplete="off"
-            className="blog-search-input w-full rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-11 text-[14.5px] text-[var(--blog-ink)] placeholder:text-[var(--blog-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:ring-3 focus:ring-[var(--blog-accent-soft)]/20"
+            className="blog-search-input w-full rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] py-3 pr-11 pl-11 text-[14.5px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--dc-accent-soft)]/50 focus:border-[var(--dc-accent-soft)] focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
           />
           {query ? (
             <button
               type="button"
               onClick={() => onSearchChange('')}
               aria-label="Clear search"
-              className="absolute top-1/2 right-3 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--blog-ink-muted)] transition-colors hover:bg-[var(--blog-accent-tint)] hover:text-[var(--blog-accent-soft)]"
+              className="absolute top-1/2 right-3 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)]"
             >
               <X className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
             </button>
@@ -202,8 +202,8 @@ export function BlogIndex({
                       aria-current={active ? 'page' : undefined}
                       className={`inline-flex min-h-11 items-center rounded-full border px-4 text-[13.5px] font-bold whitespace-nowrap transition-colors ${
                         active
-                          ? 'border-[var(--blog-accent)] bg-[var(--blog-accent)] text-white'
-                          : 'border-[var(--blog-hairline)] bg-[var(--blog-card)] text-[var(--blog-ink-secondary)] hover:border-[var(--blog-accent-soft)]/50'
+                          ? 'border-[var(--dc-accent)] bg-[var(--dc-accent)] text-white'
+                          : 'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink-secondary)] hover:border-[var(--dc-accent-soft)]/50'
                       }`}
                     >
                       {category ?? 'All topics'}
@@ -224,7 +224,7 @@ export function BlogIndex({
               id={categoryId}
               value={activeCategory ?? ''}
               onChange={(e) => router.push(categoryHref(e.target.value || null, query))}
-              className="w-full cursor-pointer appearance-none rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] py-3 pr-11 pl-5 text-[14.5px] font-semibold text-[var(--blog-ink)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--blog-accent-soft)]/50 focus:border-[var(--blog-accent-soft)] focus:ring-3 focus:ring-[var(--blog-accent-soft)]/20"
+              className="w-full cursor-pointer appearance-none rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] py-3 pr-11 pl-5 text-[14.5px] font-semibold text-[var(--dc-ink)] transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--dc-accent-soft)]/50 focus:border-[var(--dc-accent-soft)] focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
             >
               <option value="">All topics</option>
               {categories.map((category) => (
@@ -234,7 +234,7 @@ export function BlogIndex({
               ))}
             </select>
             <ChevronDown
-              className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-[var(--blog-ink-muted)]"
+              className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
               strokeWidth={2}
               aria-hidden="true"
             />
@@ -243,11 +243,11 @@ export function BlogIndex({
       </div>
 
       {posts.length === 0 ? (
-        <p className="mt-10 text-[15px] text-[var(--blog-ink-secondary)]">
+        <p className="mt-10 text-[15px] text-[var(--dc-ink-secondary)]">
           No articles in this topic yet.{' '}
           <Link
             href="/blog"
-            className="font-semibold text-[var(--blog-accent-soft)] underline-offset-2 hover:underline"
+            className="font-semibold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
           >
             View all writing
           </Link>
@@ -256,12 +256,12 @@ export function BlogIndex({
       ) : (
         <>
           {needle && visibleCount === 0 ? (
-            <p className="mt-10 text-[15px] text-[var(--blog-ink-secondary)]">
+            <p className="mt-10 text-[15px] text-[var(--dc-ink-secondary)]">
               No articles match &ldquo;{query.trim()}&rdquo;.{' '}
               <button
                 type="button"
                 onClick={() => onSearchChange('')}
-                className="font-semibold text-[var(--blog-accent-soft)] underline-offset-2 hover:underline"
+                className="font-semibold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
               >
                 Clear search
               </button>
@@ -291,7 +291,7 @@ export function BlogIndex({
               aria-label="Blog pages"
               className="mt-10 flex flex-col items-center gap-4 sm:mt-12 sm:flex-row sm:justify-between"
             >
-              <p className="numeral text-[12.5px] font-semibold text-[var(--blog-ink-muted)]">
+              <p className="numeral text-[12.5px] font-semibold text-[var(--dc-ink-muted)]">
                 Page {currentPage} of {totalPages}
               </p>
 
@@ -307,13 +307,13 @@ export function BlogIndex({
                       event.preventDefault();
                       goToPage(currentPage - 1);
                     }}
-                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/50 hover:text-[var(--dc-accent-soft)]"
                   >
                     <ChevronLeft className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                     Prev
                   </Link>
                 ) : (
-                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
+                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink-muted)]/50">
                     <ChevronLeft className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                     Prev
                   </span>
@@ -325,7 +325,7 @@ export function BlogIndex({
                       <li
                         key={`gap-${index}`}
                         aria-hidden="true"
-                        className="px-1 text-[12px] font-bold text-[var(--blog-ink-muted)]"
+                        className="px-1 text-[12px] font-bold text-[var(--dc-ink-muted)]"
                       >
                         …
                       </li>
@@ -345,8 +345,8 @@ export function BlogIndex({
                           }}
                           className={
                             item === currentPage
-                              ? 'grid h-11 min-w-11 place-items-center rounded-full bg-[var(--blog-accent)] px-3 text-[12.5px] font-bold text-white'
-                              : 'grid h-11 min-w-11 place-items-center rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3 text-[12.5px] font-bold text-[var(--blog-ink-muted)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-ink)]'
+                              ? 'grid h-11 min-w-11 place-items-center rounded-full bg-[var(--dc-accent)] px-3 text-[12.5px] font-bold text-white'
+                              : 'grid h-11 min-w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-3 text-[12.5px] font-bold text-[var(--dc-ink-muted)] transition-colors hover:border-[var(--dc-accent-soft)]/50 hover:text-[var(--dc-ink)]'
                           }
                         >
                           {item}
@@ -367,13 +367,13 @@ export function BlogIndex({
                       event.preventDefault();
                       goToPage(currentPage + 1);
                     }}
-                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--blog-hairline)] bg-[var(--blog-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)]/50 hover:text-[var(--blog-accent-soft)]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/50 hover:text-[var(--dc-accent-soft)]"
                   >
                     Next
                     <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                   </Link>
                 ) : (
-                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--blog-hairline)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--blog-ink-muted)]/50">
+                  <span role="link" aria-disabled="true" className="inline-flex min-h-11 cursor-not-allowed items-center gap-1 rounded-full border border-[var(--dc-hairline-strong)]/40 px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink-muted)]/50">
                     Next
                     <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                   </span>

@@ -46,7 +46,7 @@ export function ActionBar() {
   return (
     <nav
       aria-label="Next steps"
-      className="v2-bar-glow overflow-hidden rounded-[12px] border border-[var(--v2-accent)]/28 bg-[var(--v2-ink-bar)] text-white xs:rounded-[14px] lg:rounded-[12px]"
+      className="v2-bar-glow overflow-hidden rounded-[12px] border border-[var(--v2-accent)]/28 bg-[var(--v2-ink-bar)] text-white xs:rounded-[12px] lg:rounded-[12px]"
     >
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:h-[68px] lg:grid-cols-none lg:flex-row lg:items-stretch 3xl:h-[72px]">
         {actions.map((action, index) => (

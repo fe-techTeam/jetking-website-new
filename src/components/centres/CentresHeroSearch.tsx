@@ -75,12 +75,12 @@ export function CentresHeroSearch({ initialQuery = '' }: { initialQuery?: string
         onChange={(e) => setValue(e.target.value)}
         placeholder="Search cities, states, localities..."
         autoComplete="off"
-        className="centres-hero-search-input w-full rounded-full border border-white/12 bg-scrim/72 py-3.5 pr-14 pl-5 text-[14.5px] text-white shadow-[inset_3px_0_0_0_var(--centres-accent)] backdrop-blur-md placeholder:text-white/50 transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--centres-accent-soft)]/45 focus:border-[var(--centres-accent-soft)]/70 focus:ring-3 focus:ring-[var(--centres-accent-soft)]/20"
+        className="centres-hero-search-input w-full rounded-full border border-white/12 bg-scrim/72 py-3.5 pr-14 pl-5 text-[14.5px] text-white shadow-[inset_3px_0_0_0_var(--dc-accent)] backdrop-blur-md placeholder:text-white/50 transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--dc-accent-soft)]/45 focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
       />
       <button
         type="submit"
         aria-label="Search centres"
-        className="absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-white transition-colors hover:bg-[var(--centres-accent-tint)] hover:text-[var(--centres-accent-soft)]"
+        className="absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-white transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)]"
       >
         <Search className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
       </button>

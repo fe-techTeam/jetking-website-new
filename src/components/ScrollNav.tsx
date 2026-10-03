@@ -16,6 +16,8 @@ import { cx } from '@/components/ui';
 export function useScrollTrack<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
+  /** 0 → 1 position along the row, for callers that draw a progress bar. */
+  const [progress, setProgress] = useState(0);
 
   const updateEdges = useCallback(() => {
     const el = ref.current;
@@ -24,6 +26,8 @@ export function useScrollTrack<T extends HTMLElement>() {
       start: el.scrollLeft <= 2,
       end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2,
     });
+    const max = el.scrollWidth - el.clientWidth;
+    setProgress(max > 0 ? el.scrollLeft / max : 0);
   }, []);
 
   useEffect(() => {
@@ -48,7 +52,15 @@ export function useScrollTrack<T extends HTMLElement>() {
     el.scrollBy({ left: direction * (first.offsetWidth + gap), behavior: reduce ? 'auto' : 'smooth' });
   }, []);
 
-  return { ref, edge, updateEdges, scrollByItem };
+  /** Scroll a full visible page (e.g. four cards at a time) instead of a single item. */
+  const scrollByPage = useCallback((direction: 1 | -1) => {
+    const el = ref.current;
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollBy({ left: direction * el.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+  }, []);
+
+  return { ref, edge, progress, updateEdges, scrollByItem, scrollByPage };
 }
 
 const roundButton =
@@ -65,15 +77,18 @@ export function ScrollNavButtons({
   onNext,
   label,
   className,
+  alwaysVisible = false,
 }: {
   edge: { start: boolean; end: boolean };
   onPrev: () => void;
   onNext: () => void;
   label: string;
   className?: string;
+  /** Keep the buttons at every width — for rows that stay a scrolling slider on desktop too. */
+  alwaysVisible?: boolean;
 }) {
   return (
-    <div className={cx('flex gap-2 sm:hidden', className)}>
+    <div className={cx('flex gap-2', !alwaysVisible && 'sm:hidden', className)}>
       <button
         type="button"
         onClick={onPrev}

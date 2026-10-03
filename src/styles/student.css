@@ -6,32 +6,11 @@
 
 .student-page {
   /* Use global theme colors */
-  --stu-ink: var(--theme-ink);
-  --stu-ink-secondary: var(--theme-ink-secondary);
-  --stu-ink-muted: var(--theme-ink-muted);
-  --stu-accent: var(--theme-accent);
-  --stu-accent-soft: var(--theme-accent-soft);
-  --stu-accent-tint: var(--theme-accent-tint);
-  --stu-canvas: var(--theme-canvas);
-  --stu-surface: var(--theme-surface);
-  --stu-card: var(--theme-card);
-  --stu-navy: var(--theme-accent);
-  --stu-hairline: var(--theme-hairline-strong);
-  --stu-shadow: var(--theme-shadow);
-  --stu-shadow-hover: var(--theme-shadow-hover);
 
   /* Track hues use global persona colors */
-  --stu-cyber: var(--theme-cyber-ink);
-  --stu-cloud: var(--theme-cloud-ink);
-  --stu-network: var(--theme-network-ink);
-  --stu-ai: var(--theme-ai-ink);
-  --stu-cyber-tint: var(--theme-cyber-tint);
-  --stu-cloud-tint: var(--theme-cloud-tint);
-  --stu-network-tint: var(--theme-network-tint);
-  --stu-ai-tint: var(--theme-ai-tint);
 
-  background: var(--stu-canvas);
-  color: var(--stu-ink);
+  background: var(--dc-canvas);
+  color: var(--dc-ink);
   isolation: isolate;
 }
 
@@ -81,9 +60,9 @@
 }
 
 .stu-card {
-  background: var(--stu-card);
-  border: 1px solid var(--stu-hairline);
-  box-shadow: var(--stu-shadow);
+  background: var(--dc-card);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
   transition:
     box-shadow var(--duration-base) var(--ease-out-soft),
     transform var(--duration-base) var(--ease-out-soft);
@@ -91,7 +70,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .stu-card-interactive:hover {
-    box-shadow: var(--stu-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-3px);
   }
 }
@@ -111,7 +90,7 @@
 
 .stu-journey-panel {
   background: linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
-  border: 1px solid var(--stu-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .stu-journey-wave {
@@ -122,7 +101,7 @@
 
 .stu-why {
   background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--stu-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .stu-quote {
@@ -136,8 +115,8 @@
   position: absolute;
   top: 14px;
   right: -2px;
-  background: var(--stu-accent);
-  color: var(--stu-ink);
+  background: var(--dc-accent);
+  color: var(--dc-ink);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -158,8 +137,8 @@
   gap: 0.3rem;
   padding: 0.45rem 0.85rem 0.45rem 0.7rem;
   background: linear-gradient(135deg, var(--color-jk-600) 0%, var(--color-jk-700) 100%);
-  /* Fixed white, not var(--stu-ink): the gradient never flips with the
-     theme, but --stu-ink does (near-black in light mode), which produced
+  /* Fixed white, not var(--dc-ink): the gradient never flips with the
+     theme, but --dc-ink does (near-black in light mode), which produced
      low-contrast dark text on this red badge in light mode. */
   color: #fff;
   font-size: 12px;
@@ -228,30 +207,6 @@
 }
 
 /* Light counterpart for every student-token consumer: student, parent and franchise. */
-html:not(.dark) .student-page {
-  --stu-ink: #14141f;
-  --stu-ink-secondary: #475467;
-  --stu-ink-muted: #5f6b7d;
-  --stu-accent: var(--color-jk-600);
-  --stu-accent-soft: #a50d13;
-  --stu-accent-tint: #fff0f1;
-  --stu-canvas: #ffffff;
-  --stu-surface: #f8f9fb;
-  --stu-card: #ffffff;
-  --stu-navy: var(--color-jk-600);
-  --stu-hairline: rgb(20 20 31 / 0.14);
-  --stu-shadow: 0 10px 30px rgb(20 20 31 / 0.09);
-  --stu-shadow-hover: 0 18px 44px rgb(60 50 90 / 0.14);
-
-  --stu-cyber: #5f3aa8;
-  --stu-cloud: #2454a6;
-  --stu-network: #17683b;
-  --stu-ai: #9a4312;
-  --stu-cyber-tint: #eee8ff;
-  --stu-cloud-tint: #e9f0ff;
-  --stu-network-tint: #e8f7ed;
-  --stu-ai-tint: #fff0e7;
-}
 
 html:not(.dark) .student-page .stu-orbit-ring {
   border-color: #e4e7ec;
@@ -286,15 +241,15 @@ html:not(.dark) .student-page .stu-why {
  * A real stylesheet rule with `!important` is unambiguous either way.
  */
 .stu-field {
-  border-color: var(--stu-ink-muted) !important;
+  border-color: var(--dc-ink-muted) !important;
 }
 
 .stu-field:hover {
-  border-color: var(--stu-accent-soft) !important;
+  border-color: var(--dc-accent-soft) !important;
 }
 
 .stu-field:focus {
-  border-color: var(--stu-accent-soft) !important;
-  outline: 2px solid var(--stu-accent) !important;
+  border-color: var(--dc-accent-soft) !important;
+  outline: 2px solid var(--dc-accent) !important;
   outline-offset: 2px !important;
 }

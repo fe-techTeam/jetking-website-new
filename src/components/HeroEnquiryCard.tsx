@@ -12,8 +12,8 @@ const TONES = {
   // Each `eyebrow` matches that host banner's own eyebrow style (CentresHero / dc-eyebrow
   // label-mono), so this card's heading reads as part of the same banner, not a one-off.
   centres: {
-    card: 'border-[var(--centres-hairline)] bg-[var(--centres-card)] shadow-[var(--centres-shadow)]',
-    eyebrow: 'text-[14px] font-bold tracking-[0.18em] text-[var(--centres-accent-soft)] uppercase sm:text-[14.5px]',
+    card: 'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)]',
+    eyebrow: 'text-[14px] font-bold tracking-[0.18em] text-[var(--dc-accent-soft)] uppercase sm:text-[14.5px]',
   },
   dc: {
     card: 'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)]',
@@ -38,7 +38,7 @@ export function HeroEnquiryCard({
   return (
     <aside
       aria-labelledby={titleId}
-      className="hidden lg:block lg:w-[400px] lg:shrink-0 lg:py-7 lg:pr-8 xl:w-[456px] xl:pr-14"
+      className="hidden lg:block lg:w-[400px] lg:shrink-0 lg:py-7 lg:pr-8 xl:w-[440px] xl:pr-10"
     >
       <div className={`rounded-[24px] border p-4 ${t.card}`}>
         <h2 id={titleId} className={`mb-3 ${t.eyebrow}`}>

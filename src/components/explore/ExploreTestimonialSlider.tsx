@@ -118,10 +118,10 @@ export function ExploreTestimonialSlider() {
       itemLabel={(slide) => (slide.kind === 'video' ? `${slide.data.name}, video` : `${slide.data.name}, ${slide.data.role}`)}
       classNames={{
         viewport: 'rounded-[24px]',
-        dotActive: 'bg-[var(--stu-accent-soft)]',
-        dotIdle: 'bg-[var(--stu-ink-muted)]/40',
+        dotActive: 'bg-[var(--dc-accent-soft)]',
+        dotIdle: 'bg-[var(--dc-ink-muted)]/40',
         button:
-          'border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent-soft)] hover:text-[var(--stu-accent-soft)]',
+          'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]',
       }}
     >
       {(slide, i) =>

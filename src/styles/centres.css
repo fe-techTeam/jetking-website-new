@@ -5,37 +5,15 @@
 
 .centres-page {
   /* Use global theme colors */
-  --centres-ink: var(--theme-ink);
-  --centres-ink-secondary: var(--theme-ink-secondary);
-  --centres-ink-muted: var(--theme-ink-muted);
-  --centres-accent: var(--theme-accent);
-  --centres-accent-soft: var(--theme-accent-soft);
-  --centres-accent-tint: var(--theme-accent-tint);
-  --centres-canvas: var(--theme-canvas);
-  --centres-surface: var(--theme-surface);
-  --centres-card: var(--theme-card);
-  --centres-hairline: var(--theme-hairline-strong);
-  --centres-shadow: var(--theme-shadow);
-  --centres-shadow-hover: var(--theme-shadow-hover);
 
   /* Track accents use global persona colors */
-  --centres-cyber: var(--theme-cyber-ink);
-  --centres-cloud: var(--theme-cloud-ink);
-  --centres-network: var(--theme-network-ink);
-  --centres-ai: var(--theme-ai-ink);
-  --centres-cyber-tint: var(--theme-cyber-tint);
-  --centres-cloud-tint: var(--theme-cloud-tint);
-  --centres-network-tint: var(--theme-network-tint);
-  --centres-ai-tint: var(--theme-ai-tint);
 
   /* Card corner radii — the same values as `.dc-card-shell` (--dc-cut / --dc-cut-inner),
      so cards here match every other page. (The old chamfered clip-path corners were the
      one place the site still cut corners instead of rounding them.) */
-  --centres-card-cut: 20px;
-  --centres-card-cut-inner: 18px;
 
-  background: var(--centres-canvas);
-  color: var(--centres-ink);
+  background: var(--dc-canvas);
+  color: var(--dc-ink);
   isolation: isolate;
   /* Clip decorative orbs so they don't cause horizontal page scroll.
      Use `clip` (not `hidden`) so sticky filter sidebar still works. */
@@ -98,9 +76,9 @@
 }
 
 .centres-card {
-  background: var(--centres-card);
-  border: 1px solid var(--centres-hairline);
-  box-shadow: var(--centres-shadow);
+  background: var(--dc-card);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
   transition:
     box-shadow var(--duration-base) var(--ease-out-soft),
     transform var(--duration-base) var(--ease-out-soft),
@@ -109,21 +87,15 @@
 
 @media (hover: hover) and (pointer: fine) {
   .centres-card-interactive:hover {
-    box-shadow: var(--centres-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-2px);
   }
 }
 
 .centres-card-interactive:focus-within {
-  box-shadow: var(--centres-shadow-hover);
+  box-shadow: var(--dc-shadow-hover);
 }
 
-@media (min-width: 640px) {
-  .centres-page {
-    --centres-card-cut: 24px;
-    --centres-card-cut-inner: 22px;
-  }
-}
 
 /* Hairline-rim card shell + inner card — rounded like `.dc-card-shell` / `.dc-card`.
    The "clip" in the class names is a leftover from the chamfered design. */
@@ -132,7 +104,7 @@
   height: 100%;
   padding: 1.5px;
   background: rgb(255 255 255 / 0.26);
-  border-radius: var(--centres-card-cut);
+  border-radius: var(--dc-cut);
   overflow: hidden;
   filter: drop-shadow(0 8px 24px rgb(0 0 0 / 0.3));
   transition:
@@ -143,10 +115,10 @@
 
 .centres-clip-card {
   height: 100%;
-  background: var(--centres-card);
+  background: var(--dc-card);
   border: none;
   box-shadow: none;
-  border-radius: var(--centres-card-cut-inner);
+  border-radius: var(--dc-cut-inner);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -199,7 +171,7 @@
 
 .centres-cta-band {
   background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--centres-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 :where(html:not(.dark)) .centres-cta-band {
@@ -208,7 +180,7 @@
 
 .centres-why {
   background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--centres-hairline);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 :where(html:not(.dark)) .centres-why {
@@ -216,9 +188,9 @@
 }
 
 .centres-detail-hero {
-  border: 1px solid var(--centres-hairline);
-  box-shadow: var(--centres-shadow);
-  background: var(--centres-canvas);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
+  background: var(--dc-canvas);
 }
 
 .centres-detail-wash {
@@ -407,9 +379,9 @@
 }
 
 .centres-hero-banner {
-  border: 1px solid var(--centres-hairline);
-  box-shadow: var(--centres-shadow);
-  background: var(--centres-canvas);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
+  background: var(--dc-canvas);
 }
 
 .centres-hero-wash {
@@ -478,7 +450,7 @@
 }
 
 .centres-filter-sticky {
-  background: var(--centres-card);
+  background: var(--dc-card);
 }
 
 .centres-filter-scroll {
@@ -515,7 +487,7 @@
 
 .centres-accordion-chevron {
   flex-shrink: 0;
-  color: var(--centres-ink-muted);
+  color: var(--dc-ink-muted);
   transition: transform var(--duration-base) var(--ease-out-soft);
 }
 
@@ -571,33 +543,6 @@
 }
 
 /* Light mode overrides — when HTML element doesn't have .dark class */
-html:not(.dark) .centres-page {
-  --centres-ink: #14141f;
-  --centres-ink-secondary: #464657;
-  --centres-ink-muted: #666679;
-  --centres-accent: var(--color-jk-600);
-  /* #f97066 is tuned for the dark canvas; on this light card it fails AA
-     text contrast (~2.5:1) — same fix as --stu-accent-soft/--dc-accent-soft. */
-  --centres-accent-soft: #a50d13;
-  --centres-accent-tint: #fef3f2;
-  --centres-canvas: #ffffff;
-  --centres-surface: #f8f9fb;
-  --centres-card: #ffffff;
-  --centres-hairline: rgb(20 20 31 / 0.12);
-  --centres-shadow: 0 6px 20px rgb(16 24 40 / 0.06);
-  --centres-shadow-hover:
-    0 0 0 1px rgb(199 20 28 / 0.35), 0 12px 36px rgb(16 24 40 / 0.1);
-
-  /* Light mode track accents */
-  --centres-cyber: #5f3aa8;
-  --centres-cloud: #2454a6;
-  --centres-network: #17683b;
-  --centres-ai: #9a4312;
-  --centres-cyber-tint: #eee8ff;
-  --centres-cloud-tint: #dde7fb;
-  --centres-network-tint: #e8f7ed;
-  --centres-ai-tint: #fde7d4;
-}
 
 html:not(.dark) .centres-page::before {
   background: radial-gradient(

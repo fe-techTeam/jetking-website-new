@@ -49,7 +49,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       return (
         <h2
           id={id}
-          className="mt-10 scroll-mt-28 font-display text-[21px] leading-snug font-extrabold tracking-[-0.015em] text-[var(--dc-ink)] first:mt-0 sm:text-[24px]"
+          className="subsection-title mt-10 scroll-mt-28 font-display leading-snug text-[var(--dc-ink)] first:mt-0"
         >
           {block.text}
         </h2>
@@ -100,7 +100,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
           role="region"
           aria-label={block.caption || 'Table'}
           tabIndex={0}
-          className="mt-5 overflow-x-auto rounded-[14px] border border-[var(--dc-hairline-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
+          className="mt-5 overflow-x-auto rounded-[12px] border border-[var(--dc-hairline-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           <table className="w-full min-w-[28rem] border-collapse text-left text-[14px] text-[var(--dc-ink-secondary)]">
             {block.caption ? (
@@ -137,7 +137,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
     case 'img':
       return (
         // Screenshots of forms and tables drawn on white: keep a white ground in dark mode too.
-        <figure className="mt-5 flex justify-center rounded-[14px] border border-[var(--dc-hairline-strong)] bg-white p-2 sm:p-3">
+        <figure className="mt-5 flex justify-center rounded-[12px] border border-[var(--dc-hairline-strong)] bg-white p-2 sm:p-3">
           <Image
             src={block.src}
             alt={block.alt}
@@ -182,7 +182,7 @@ export function LegalDocument({
         <Breadcrumbs trail={trail} />
         <div className="mt-6 sm:mt-8">
           <p className="dc-eyebrow label-mono text-[14px]">Legal</p>
-          <h1 className="mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-[42px] lg:text-[48px]">
+          <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
             {doc.title}
           </h1>
           <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[16px]">{intro}</p>

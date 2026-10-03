@@ -27,15 +27,7 @@ export function ProfessionalHero() {
 
         <h1
           id="pro-hero-heading"
-          className={[
-            'mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
-            'text-[36px] xs:mt-5 xs:text-[40px]',
-            'sm:text-[44px] md:text-[48px]',
-            'lg:mt-6 lg:text-[48px]',
-            'xl:text-[52px]',
-            '2xl:text-[58px]',
-            '3xl:text-[62px] 4xl:text-[68px]',
-          ].join(' ')}
+          className="page-title mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
         >
           Upgrade Your Career.
           <br />
