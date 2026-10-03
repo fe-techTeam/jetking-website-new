@@ -179,7 +179,7 @@ export default async function FaqPage() {
 
         {/* ── Still have a question ─────────────────────────────────────── */}
         <section className="shell relative mt-10 sm:mt-12" aria-labelledby="faq-more">
-          <div className="dc-panel flex flex-col gap-6 rounded-[24px] px-6 py-8 xs:rounded-[28px] sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10">
+          <div className="kit kit-card flex flex-col gap-6 bg-[var(--k-red-wash)] px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10">
             <div>
               <p className="dc-eyebrow label-mono">Need more help?</p>
               <h2

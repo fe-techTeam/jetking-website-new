@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Section } from '@/components/kit';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
@@ -50,9 +51,8 @@ export function BlogLanding({
         initialPage={initialPage}
       />
 
-      <section className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="blog-cta">
-        <div className="shell">
-          <div className="blog-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="wash" deco="glow" labelledBy="blog-cta">
+          <div>
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
               <div>
                 <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
@@ -92,8 +92,7 @@ export function BlogLanding({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
     </div>
   );
 }

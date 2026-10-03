@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { EnquiryLink } from '@/components/EnquirySheet';
+import { Section } from '@/components/kit';
 import type { Route } from 'next';
 import { ArrowRight, Building2, MessageCircle, Phone } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
@@ -25,9 +27,8 @@ const ENQUIRY_PHONE = {
 
 function CentresBottomCta() {
   return (
-    <section className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="centres-cta">
-      <div className="shell">
-        <div className="centres-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <Section tone="wash" deco="glow" labelledBy="centres-cta">
+        <div>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
             <div>
               <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
@@ -77,8 +78,8 @@ function CentresBottomCta() {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-              <Link
-                href={'/enquiry' as Route}
+              <EnquiryLink
+                source="centres-cta"
                 className="group/enq inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:text-[15px]"
               >
                 <span>Enquire now</span>
@@ -88,7 +89,7 @@ function CentresBottomCta() {
                 >
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                 </span>
-              </Link>
+              </EnquiryLink>
               <Link
                 href={'/courses' as Route}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/60 hover:bg-[var(--dc-accent-tint)] xs:text-[15px]"
@@ -98,8 +99,7 @@ function CentresBottomCta() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }
 

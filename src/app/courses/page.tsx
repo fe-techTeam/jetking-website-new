@@ -173,7 +173,7 @@ export default async function CoursesPage() {
             className="mt-16 border-t border-[var(--dc-hairline)] pt-12 sm:mt-20 sm:pt-14"
             aria-labelledby="courses-cta"
           >
-            <div className="dc-panel flex flex-col items-start gap-6 rounded-[24px] p-7 sm:flex-row sm:items-center sm:justify-between sm:rounded-[28px] sm:p-9">
+            <div className="kit kit-card flex flex-col items-start gap-6 bg-[var(--k-red-wash)] p-7 sm:flex-row sm:items-center sm:justify-between sm:p-9">
               <div className="max-w-lg">
                 <p className="dc-eyebrow label-mono">Still deciding</p>
                 <h2
