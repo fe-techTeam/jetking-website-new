@@ -1,4 +1,15 @@
-import { Award, Building2, Handshake, Heart, Landmark, Laptop, Lightbulb, ShieldCheck, Smile, Sparkles } from 'lucide-react';
+import {
+  Briefcase,
+  Building2,
+  Handshake,
+  Heart,
+  Laptop,
+  Lightbulb,
+  Network,
+  Smile,
+  Sparkles,
+  UserCheck,
+} from 'lucide-react';
 
 /** Website content shared by the Explore page and the homepage. */
 
@@ -14,7 +25,7 @@ export const REASONS = [
   {
     title: 'Trained & Certified Faculty',
     detail: 'Award winning and internationally bench-marked training faculty.',
-    icon: Award,
+    icon: UserCheck,
   },
   {
     title: 'Practical Foundation through Labs',
@@ -24,7 +35,7 @@ export const REASONS = [
   {
     title: 'Placement Support',
     detail: 'We take every necessary step to help you get a suitable job on completing the course.',
-    icon: ShieldCheck,
+    icon: Briefcase,
   },
   {
     title: 'Scenario Based Learning',
@@ -39,7 +50,7 @@ export const REASONS = [
   {
     title: 'Countrywide Network',
     detail: 'A well-established, nationally recognised institute with centres across India.',
-    icon: Building2,
+    icon: Network,
   },
   {
     title: 'Personality Development',
@@ -49,7 +60,7 @@ export const REASONS = [
   {
     title: 'State-of-the-Art Infrastructure',
     detail: 'Every centre is equipped for a successful learning environment.',
-    icon: Landmark,
+    icon: Building2,
   },
   {
     title: 'De-stress with Yoga',

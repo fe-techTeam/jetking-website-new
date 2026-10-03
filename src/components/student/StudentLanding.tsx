@@ -1,14 +1,15 @@
 import {
   ArrowRight,
-  Award,
+  BookOpen,
+  Briefcase,
   Building2,
   CalendarDays,
-  CheckCircle2,
   Clock3,
-  Handshake,
-  ShieldCheck,
-  Sparkles,
-  Users,
+  FolderKanban,
+  Headset,
+  MapPin,
+  Monitor,
+  UserCheck,
 } from 'lucide-react';
 import type { Course, Testimonial, TrustSignal } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
@@ -20,12 +21,12 @@ const BENEFITS = [
   {
     title: 'Live Projects',
     detail: 'Build portfolio-ready work in guided labs, not slide decks.',
-    icon: Sparkles,
+    icon: FolderKanban,
   },
   {
     title: 'Expert Trainers',
     detail: 'Learn from faculty who teach what centres actually run.',
-    icon: Users,
+    icon: UserCheck,
   },
   {
     title: 'Flexible Batches',
@@ -35,7 +36,7 @@ const BENEFITS = [
   {
     title: '100% Support',
     detail: 'Counsellors guide courses, centres and next steps — no pressure.',
-    icon: CheckCircle2,
+    icon: Headset,
   },
 ] as const;
 
@@ -46,10 +47,10 @@ function buildWhyStats(counts: {
 }): Array<{ icon: typeof Building2; value: string; label: string }> {
   return [
     { icon: Building2, value: `${counts.centres}`, label: 'Learning Centres' },
-    { icon: ShieldCheck, value: 'Support', label: 'Placement Assistance' },
-    { icon: Handshake, value: `${counts.cities}`, label: 'Cities Across India' },
-    { icon: Users, value: `${counts.courses}`, label: 'Courses On Offer' },
-    { icon: Award, value: 'In Person', label: 'Labs & Assessment' },
+    { icon: Briefcase, value: 'Support', label: 'Placement Assistance' },
+    { icon: MapPin, value: `${counts.cities}`, label: 'Cities Across India' },
+    { icon: BookOpen, value: `${counts.courses}`, label: 'Courses On Offer' },
+    { icon: Monitor, value: 'In Person', label: 'Labs & Assessment' },
   ];
 }
 

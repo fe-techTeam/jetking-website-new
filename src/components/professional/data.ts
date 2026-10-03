@@ -14,9 +14,12 @@ import {
   Fingerprint,
   GitBranch,
   GraduationCap,
+  HeartHandshake,
+  Landmark,
   LockKeyhole,
-  Moon,
+  Mic,
   MonitorPlay,
+  Moon,
   Radar,
   Route as RouteIcon,
   Server,
@@ -27,6 +30,7 @@ import {
   Users,
   Wifi,
   Workflow,
+  Wrench,
 } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
 
@@ -66,10 +70,10 @@ export const GROWTH_STEPS = [
 ] as const;
 
 export const IMPACT_STATS = [
-  { value: 'Hands-on', label: 'Portfolio-ready lab projects', icon: TrendingUp },
+  { value: 'Hands-on', label: 'Portfolio-ready lab projects', icon: Wrench },
   { value: 'Certified', label: 'Industry credentials included', icon: Award },
   { value: 'Placement', label: 'Assistance & interview prep', icon: Briefcase },
-  { value: SINCE_FOUNDED, label: 'Training IT talent', icon: Trophy },
+  { value: SINCE_FOUNDED, label: 'Training IT talent', icon: Landmark },
 ] as const;
 
 export const PROFESSIONAL_BENEFITS = [
@@ -96,7 +100,7 @@ export const PROFESSIONAL_BENEFITS = [
   {
     title: 'Interview Preparation',
     detail: 'Mock interviews and resume support before you step into hiring loops.',
-    icon: GraduationCap,
+    icon: Mic,
   },
   {
     title: 'Hiring Network',
@@ -109,7 +113,7 @@ export const FLEXIBLE_OPTIONS = [
   { label: 'Weekend Batches', icon: CalendarDays },
   { label: 'Evening Batches', icon: Moon },
   { label: 'Online Live Classes', icon: MonitorPlay },
-  { label: 'Career Break Friendly', icon: Clock3 },
+  { label: 'Career Break Friendly', icon: HeartHandshake },
 ] as const;
 
 export const BOTTOM_CTA_FEATURES = [

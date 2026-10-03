@@ -3,10 +3,13 @@
 import Image from 'next/image';
 import {
   ArrowUpRight,
-  Award,
+  BookOpen,
   Building2,
-  ShieldCheck,
-  Users,
+  Eye,
+  Heart,
+  Landmark,
+  MapPin,
+  Target,
 } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
@@ -29,7 +32,8 @@ const trail: Crumb[] = [
   { name: 'About Us', path: '/about-us' },
 ];
 
-const STAT_ICONS = [Award, Building2, Users, ShieldCheck] as const;
+const STAT_ICONS = [Landmark, Building2, MapPin, BookOpen] as const;
+const PURPOSE_ICONS = [Eye, Target, Heart] as const;
 
 /** `compact` (no-bio team members): two per row on phones with a smaller avatar, full size from `sm`. */
 function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boolean }) {
@@ -106,7 +110,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             stats={legacyStats(counts).map((stat, index) => ({
               value: stat.value,
               label: stat.label,
-              icon: STAT_ICONS[index] ?? Award,
+              icon: STAT_ICONS[index] ?? Landmark,
             }))}
           />
         </Reveal>
@@ -127,7 +131,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <Reveal>
           <CardRail label="Our purpose and values" cols={3}>
             {PURPOSE.map((item, index) => (
-              <FeatureCard key={item.title} title={item.title} badge={String(index + 1).padStart(2, '0')}>
+              <FeatureCard key={item.title} icon={PURPOSE_ICONS[index]} title={item.title} badge={String(index + 1).padStart(2, '0')}>
                 {item.body}
               </FeatureCard>
             ))}

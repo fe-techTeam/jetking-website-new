@@ -16,12 +16,15 @@ import {
   FileText,
   GraduationCap,
   IndianRupee,
+  Laptop,
   MessageCircle,
   Phone,
   Shield,
   ShieldCheck,
   Sparkles,
-  Users,
+  Trophy,
+  UserCheck,
+  Wrench,
 } from 'lucide-react';
 import type { Course, Testimonial } from '@/lib/content/types';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
@@ -49,9 +52,9 @@ function trustStats(counts: NetworkCounts) {
 const JOURNEY_STEPS = [
   { title: 'Career Guidance', detail: '& Counselling', icon: MessageCircle },
   { title: 'Choose the', detail: 'Right Course', icon: BookOpen },
-  { title: 'Hands-on Training', detail: '& Projects', icon: Sparkles },
+  { title: 'Hands-on Training', detail: '& Projects', icon: Wrench },
   { title: 'Placement', detail: 'Support', icon: Briefcase },
-  { title: 'Successful', detail: 'Career', icon: GraduationCap },
+  { title: 'Successful', detail: 'Career', icon: Trophy },
 ] as const;
 
 const HELP_LINKS = [
@@ -63,8 +66,8 @@ const HELP_LINKS = [
 
 const PARENT_LOVES = [
   { label: 'Safe & Secure Learning Environment', icon: Shield },
-  { label: 'Dedicated Mentors', icon: Users },
-  { label: 'Hands-on Labs', icon: Sparkles },
+  { label: 'Dedicated Mentors', icon: UserCheck },
+  { label: 'Hands-on Labs', icon: Laptop },
   { label: 'Career Counselling', icon: MessageCircle },
   { label: `Trusted Legacy ${SINCE_FOUNDED}`, icon: Award },
 ] as const;

@@ -4,22 +4,25 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Award,
-  Building2,
+  BadgeCheck,
+  Briefcase,
   CheckCircle2,
+  ClipboardList,
   Download,
-  FileText,
+  GraduationCap,
   Handshake,
   Headphones,
+  HeartHandshake,
+  Landmark,
   LineChart,
   Mail,
   Megaphone,
+  Network,
   Rocket,
   Settings2,
-  Shield,
   ShieldCheck,
-  TrendingUp,
   Users,
-  UsersRound,
+  Workflow,
 } from 'lucide-react';
 import type { Faq, Testimonial } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
@@ -34,10 +37,10 @@ import { COURSES, JUMP_START, LAUNCH_STEPS, MARKET_STATS, WHY_STATS } from './da
 // data file, since lucide-react's icon components use React context
 // internals unavailable when scripts/export-site-corpus.mts imports that
 // data file under Node's `--conditions=react-server`.
-const WHY_STATS_ICONS = [Users, UsersRound, Building2, Award, ShieldCheck];
+const WHY_STATS_ICONS = [Workflow, Rocket, Network, Landmark, Award];
 const JUMP_START_ICONS = [Users, Settings2, Megaphone, Rocket];
-const LAUNCH_STEPS_ICONS = [FileText, Rocket, Users, Handshake];
-const COURSES_ICONS = [Shield, Award, TrendingUp];
+const LAUNCH_STEPS_ICONS = [ClipboardList, Rocket, GraduationCap, HeartHandshake];
+const COURSES_ICONS = [Briefcase, GraduationCap, BadgeCheck];
 
 const PARTNER_AVATARS = [
   '/franchise/partner-avatar-1.webp',
