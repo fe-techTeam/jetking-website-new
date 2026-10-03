@@ -6,5 +6,6 @@ export { StoryCard } from './StoryCard';
 export { ComparisonTable, type ComparisonRow } from './ComparisonTable';
 export { LogoStrip, type LogoItem } from './LogoStrip';
 export { Timeline, type Step } from './Timeline';
+export { StepPath, type PathStep } from './StepPath';
 export { Callout } from './Callout';
 export { Reveal } from './Reveal';

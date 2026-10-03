@@ -13,6 +13,7 @@ import {
   Section,
   SectionHeader,
   StatBadges,
+  StepPath,
   StoryCard,
   Timeline,
 } from '@/components/kit';
@@ -89,7 +90,17 @@ export default function DesignKitPage() {
       </Section>
 
       <Section tone="tint" labelledBy="k-steps">
-        <SectionHeader id="k-steps" eyebrow="Timeline" title="How it works" />
+        <SectionHeader id="k-steps" eyebrow="Step path" title="How it works" lede="Icon discs joined by arrows on desktop, a rail on phones." />
+        <StepPath
+          steps={[
+            { icon: Wrench, title: 'Learn', body: 'Hands-on training with real tools.' },
+            { icon: Cpu, title: 'Practice', body: 'Lab sessions and mock interviews.' },
+            { icon: Award, title: 'Get certified', body: 'Industry and Jetking certificates.' },
+            { icon: Briefcase, title: 'Get placed', body: 'Career support and introductions.' },
+          ]}
+        />
+        <div className="mt-12" />
+        <SectionHeader eyebrow="Timeline" title="Numbered timeline" />
         <Timeline
           steps={[
             { title: 'Choose a course', body: 'Pick a degree or a short course that fits your goal.' },

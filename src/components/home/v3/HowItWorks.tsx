@@ -1,5 +1,5 @@
 import { BookOpen, BriefcaseBusiness, Check, Cpu, Trophy } from 'lucide-react';
-import { Reveal, Section, SectionHeader, Timeline } from '@/components/kit';
+import { Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 
 /** Wording taken from the site's own content: `placements/data.ts` (process steps, student benefits), the live "reasons" (`explore/content.ts`) and the course certifications. */
 const STEPS = [
@@ -34,8 +34,9 @@ export function HowItWorks() {
         lede="From beginner to job-ready professional — we guide you at every stage."
       />
       <Reveal>
-        <Timeline
+        <StepPath
           steps={STEPS.map((s) => ({
+            icon: s.icon,
             title: s.title,
             body: (
               <ul className="mt-1 space-y-1.5">
