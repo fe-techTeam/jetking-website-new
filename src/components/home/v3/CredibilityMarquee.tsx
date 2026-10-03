@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { HIRING_PARTNERS } from '@/components/professional/data';
@@ -22,11 +23,7 @@ export function CredibilityMarquee() {
   const [paused, setPaused] = useState(false);
 
   return (
-    <section
-      className="border-t border-[var(--dc-hairline)] py-12 sm:py-14 lg:py-16"
-      aria-labelledby="home-credibility-heading"
-    >
-      <div className="shell">
+    <Section tone="plain" labelledBy="home-credibility-heading">
         <div className="max-w-2xl">
           <h2
             id="home-credibility-heading"
@@ -72,8 +69,7 @@ export function CredibilityMarquee() {
             {paused ? 'Play' : 'Pause'}
           </button>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }
 

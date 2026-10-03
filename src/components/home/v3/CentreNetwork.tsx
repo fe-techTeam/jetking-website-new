@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -51,8 +52,7 @@ export function CentreNetwork({
   const active = groups.find((g) => g.city.slug === selected) ?? groups[0];
 
   return (
-    <section className="border-y border-[var(--dc-hairline)] bg-[var(--dc-surface)] py-12 sm:py-14 lg:py-16" aria-labelledby="home-centres-heading">
-      <div className="shell">
+    <Section tone="tint" labelledBy="home-centres-heading">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Centre network</p>
@@ -282,7 +282,6 @@ export function CentreNetwork({
             </Link>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

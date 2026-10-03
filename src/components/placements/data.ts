@@ -211,3 +211,9 @@ export const RECRUITERS = [
 
 export const RECRUITERS_DISCLAIMER =
   'Placements are subject to recruitment norms. Jetking does not guarantee placements in the above organisations.';
+
+/** Headline placement figures shown on the home and course pages. */
+export const PLACEMENT_STATS = {
+  partners: '5000+',
+  learnersPlaced: { value: '3586', label: 'Learners placed in 2025' },
+} as const;

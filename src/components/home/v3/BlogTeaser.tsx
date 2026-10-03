@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -21,8 +22,7 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="border-y border-[var(--dc-hairline)] bg-[var(--dc-surface)] py-12 sm:py-14 lg:py-16" aria-labelledby="home-blog-heading">
-      <div className="shell">
+    <Section tone="tint" labelledBy="home-blog-heading">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">From the blog</p>
@@ -124,7 +124,6 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
             );
           })}
         </ul>
-      </div>
-    </section>
+      </Section>
   );
 }

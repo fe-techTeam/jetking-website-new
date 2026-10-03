@@ -24,7 +24,7 @@ import { siteConfig } from '@/lib/site';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { Disclosure } from '@/components/Disclosure';
 import { QuickEnquiryForm } from '@/components/QuickEnquiryForm';
-import { PROCESS_STEPS, RECRUITERS, RECRUITERS_DISCLAIMER } from '@/components/placements/data';
+import { PLACEMENT_STATS, PROCESS_STEPS, RECRUITERS, RECRUITERS_DISCLAIMER } from '@/components/placements/data';
 import { RecruiterMarquee } from '@/components/placements/RecruiterMarquee';
 import { BrandTile } from './brand';
 import { ZoomImage } from './ZoomImage';
@@ -44,8 +44,8 @@ import { CentrePicker } from './CentrePicker';
  */
 
 /** Figures the client supplied in the feedback deck (slides 2 and 10). */
-const PLACEMENT_PARTNERS = '5000+';
-const LEARNERS_PLACED = { value: '3586', label: 'Learners placed in 2025' };
+const PLACEMENT_PARTNERS = PLACEMENT_STATS.partners;
+const LEARNERS_PLACED = PLACEMENT_STATS.learnersPlaced;
 
 const CENTRE_ADVANTAGES: Array<{ title: string; body: string; icon: LucideIcon }> = [
   {

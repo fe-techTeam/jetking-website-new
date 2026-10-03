@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@/components/kit';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,11 +37,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
   const visible = courses.filter((c) => inTab(c, activeTab));
 
   return (
-    <section
-      className="border-y border-[var(--dc-hairline)] bg-[var(--dc-surface)] py-12 sm:py-14 lg:py-16"
-      aria-labelledby="home-programs-heading"
-    >
-      <div className="shell">
+    <Section tone="tint" labelledBy="home-programs-heading">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>
@@ -135,7 +132,6 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
             ))}
           </CardTrack>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

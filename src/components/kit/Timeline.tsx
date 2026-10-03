@@ -22,7 +22,7 @@ export function Timeline({ steps }: { steps: Step[] }) {
           ) : null}
           <div className="min-w-0">
             <h3 className="text-[17px] font-bold text-[var(--k-ink)]">{s.title}</h3>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--k-ink-2)]">{s.body}</p>
+            <div className="mt-1.5 text-[15px] leading-relaxed text-[var(--k-ink-2)]">{s.body}</div>
           </div>
         </li>
       ))}
