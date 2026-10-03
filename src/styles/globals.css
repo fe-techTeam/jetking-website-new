@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './dark-canvas.css';
 @import './course-page.css';
+@import './kit.css';
 @import './about.css';
 /* Scoped skin for the homepage lead. Every rule in it is namespaced
    under `.home-lead` and cannot affect the system defined below. */

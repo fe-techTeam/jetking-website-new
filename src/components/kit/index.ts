@@ -1,0 +1,10 @@
+export { Section, SectionHeader } from './Section';
+export { StatBadges, type Stat } from './StatBadges';
+export { FeatureCard } from './FeatureCard';
+export { CardRail } from './CardRail';
+export { StoryCard } from './StoryCard';
+export { ComparisonTable, type ComparisonRow } from './ComparisonTable';
+export { LogoStrip, type LogoItem } from './LogoStrip';
+export { Timeline, type Step } from './Timeline';
+export { Callout } from './Callout';
+export { Reveal } from './Reveal';
