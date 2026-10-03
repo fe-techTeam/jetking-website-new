@@ -50,7 +50,7 @@ export function StickyCourseCta({
       }`}
     >
       <div className="shell flex items-center gap-3 py-3">
-        <div className="min-w-0 flex-1">
+        <div className="hidden min-w-0 flex-1 sm:block">
           <p className="truncate text-[14px] font-extrabold text-[var(--dc-ink)]">{title}</p>
           <p className="text-[12px] font-semibold text-[var(--dc-ink-muted)]">{duration}</p>
         </div>
@@ -65,7 +65,7 @@ export function StickyCourseCta({
         <a
           href="#cp-enquiry"
           onClick={() => track('enquiry_started', { surface: 'sticky-course-cta' })}
-          className="dc-cta inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full px-4 text-[14px] font-bold xs:px-5"
+          className="dc-cta inline-flex h-11 flex-1 shrink-0 items-center justify-center gap-1.5 rounded-full px-4 text-[14px] font-bold xs:px-5 sm:flex-none"
         >
           Enquire now
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
