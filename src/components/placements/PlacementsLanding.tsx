@@ -118,7 +118,7 @@ export function PlacementsLanding() {
             />
 
             <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[68%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
-              <p className="dc-eyebrow label-mono text-[14px]">{PLACEMENTS_HERO.eyebrow}</p>
+              <p className="k-hero-eyebrow">{PLACEMENTS_HERO.eyebrow}</p>
 
               <h1 className="page-title-hero mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                 {PLACEMENTS_HERO.titleLead}{' '}
@@ -186,7 +186,7 @@ export function PlacementsLanding() {
 
       {/* ── Honest disclaimer — load-bearing, not decorative ─────────────── */}
       <section className="shell relative mt-8 pb-12 sm:mt-10 sm:pb-14 lg:pb-16">
-        <div className="dc-panel rounded-[16px] px-5 py-5 sm:rounded-[20px] sm:px-6 sm:py-6">
+        <div className="kit kit-card px-5 py-5 sm:px-6 sm:py-6">
           <p className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">
             {PLACEMENT_DISCLAIMER}
           </p>

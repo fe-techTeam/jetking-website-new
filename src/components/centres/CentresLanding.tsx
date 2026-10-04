@@ -31,7 +31,7 @@ function CentresBottomCta() {
         <div>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
             <div>
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
+              <p className="k-eyebrow">
                 Need help choosing?
               </p>
               <h2

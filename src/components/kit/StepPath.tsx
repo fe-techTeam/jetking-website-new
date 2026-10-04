@@ -42,7 +42,7 @@ export function StepPath({ steps }: { steps: PathStep[] }) {
 
             <div className="min-w-0 pt-1 lg:pt-0">
               <h3 className="text-[16px] font-extrabold tracking-[0.06em] text-[var(--k-ink)] uppercase lg:text-[17px]">{title}</h3>
-              <div className="mt-2 text-[15px] leading-relaxed text-[var(--k-ink-2)] lg:mx-auto lg:w-fit lg:text-left">{body}</div>
+              <div className="mt-2 text-[15px] leading-relaxed text-[var(--k-ink-2)] lg:mx-auto lg:w-fit lg:text-center">{body}</div>
             </div>
 
             {!last ? (

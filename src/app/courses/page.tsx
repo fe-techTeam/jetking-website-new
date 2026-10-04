@@ -9,6 +9,7 @@ import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import { AskAiLink } from '@/components/AskAiLink';
+import { Section } from '@/components/kit';
 import { CourseExplorer } from './CourseExplorer';
 
 const COURSE_DOMAINS = [
@@ -56,10 +57,10 @@ export default async function CoursesPage() {
         the explorer's sticky filter sidebar can pin, and the orbs move onto a
         self-clipping `.dc-orbs` child.
       */}
-      <div className="dark-canvas no-orbs dc-flow pt-6 pb-16 sm:pt-8 lg:pb-20">
+      <div className="dark-canvas no-orbs dc-flow pt-6 sm:pt-8">
         <span className="dc-orbs" aria-hidden="true" />
 
-        <div className="shell">
+        <div className="shell pb-14 sm:pb-16">
           <Breadcrumbs trail={trail} />
 
           {/* ── Cinematic banner (blog / centres hero language) ───────────── */}
@@ -80,7 +81,7 @@ export default async function CoursesPage() {
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
                 <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-                  <p className="dc-eyebrow label-mono text-[14px]">Courses</p>
+                  <p className="k-hero-eyebrow">Courses</p>
 
                   <h1 className="page-title-hero mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
                     The Most In-Demand
@@ -167,36 +168,29 @@ export default async function CoursesPage() {
               }}
             />
           </div>
-
-          {/* ── Closing CTA — the page's one consolidated enquiry prompt ───── */}
-          <section
-            className="mt-16 border-t border-[var(--dc-hairline)] pt-12 sm:mt-20 sm:pt-14"
-            aria-labelledby="courses-cta"
-          >
-            <div className="kit kit-card flex flex-col items-start gap-6 bg-[var(--k-red-wash)] p-7 sm:flex-row sm:items-center sm:justify-between sm:p-9">
-              <div className="max-w-lg">
-                <p className="dc-eyebrow label-mono">Still deciding</p>
-                <h2
-                  id="courses-cta"
-                  className="section-title mt-3 font-display text-[var(--dc-ink)]"
-                >
-                  Not sure which course fits?
-                </h2>
-                <p className="mt-2.5 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                  Talk to a counsellor about your goals, eligibility and the right track — no
-                  commitment needed.
-                </p>
-              </div>
-              <EnquiryLink
-                source="courses-index"
-                className="dc-cta inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-7 text-sm font-bold sm:h-14 sm:px-8 sm:text-base"
-              >
-                Talk to a counsellor
-                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              </EnquiryLink>
-            </div>
-          </section>
         </div>
+
+        {/* ── Closing CTA: the page's one consolidated enquiry prompt ───── */}
+        <Section tone="wash" labelledBy="courses-cta">
+          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+            <div className="max-w-2xl">
+              <p className="k-eyebrow">Still deciding</p>
+              <h2 id="courses-cta" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
+                Not sure which course fits?
+              </h2>
+              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+                Talk to a counsellor about your goals, eligibility and the right track — no commitment needed.
+              </p>
+            </div>
+            <EnquiryLink
+              source="courses-index"
+              className="dc-cta inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
+            >
+              Talk to a counsellor
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </EnquiryLink>
+          </div>
+        </Section>
       </div>
     </>
   );

@@ -9,13 +9,13 @@ import {
   GraduationCap,
   MapPin,
   MessageCircle,
-  Plus,
   Wallet,
   type LucideIcon,
 } from 'lucide-react';
 import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata, faqSchema } from '@/lib/seo';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
+import { Section, SectionHeader } from '@/components/kit';
 
 export const metadata: Metadata = buildMetadata(
   {
@@ -66,7 +66,7 @@ export default async function FaqPage() {
     <>
       <JsonLd data={[faqSchema(faqs), breadcrumbSchema(trail)]} />
 
-      <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
+      <div className="dark-canvas">
         {/* ── Banner ────────────────────────────────────────────────────── */}
         <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
           <Breadcrumbs trail={trail} />
@@ -84,7 +84,7 @@ export default async function FaqPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-                <p className="dc-eyebrow label-mono text-[14px]">FAQ</p>
+                <p className="k-hero-eyebrow">FAQ</p>
                 <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                   Questions people <span className="dc-accent-glow">ask us most</span>
                 </h1>
@@ -119,95 +119,71 @@ export default async function FaqPage() {
           </ul>
         </nav>
 
-        {/* ── Questions by topic ────────────────────────────────────────── */}
-        <div className="shell relative mt-10 space-y-6 sm:mt-12 sm:space-y-8">
-          {topics.map((topic) => {
+        {/* ── Questions by topic: one section per topic, tones alternating ─ */}
+        <div className="mt-10 sm:mt-12">
+          {topics.map((topic, i) => {
             const topicFaqs = faqs.filter((f) => f.topic === topic);
-            const Icon = TOPIC_ICONS[topic] ?? MessageCircle;
             const label = TOPIC_LABELS[topic] ?? topic;
             return (
-              <section
+              <Section
                 key={topic}
+                tone={i % 2 === 0 ? 'plain' : 'tint'}
                 id={`faq-${topic}`}
-                aria-labelledby={`faq-${topic}-heading`}
-                className="dc-panel scroll-mt-28 rounded-[24px] px-5 py-7 xs:rounded-[28px] sm:px-8 sm:py-9"
+                labelledBy={`faq-${topic}-heading`}
+                className="scroll-mt-28"
               >
-                <div className="flex items-center gap-4">
-                  <span
-                    aria-hidden="true"
-                    className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                  >
-                    <Icon className="h-6 w-6" strokeWidth={1.75} />
-                  </span>
-                  <div>
-                    <h2
-                      id={`faq-${topic}-heading`}
-                      className="section-title font-display text-[var(--dc-ink)]"
-                    >
-                      {label}
-                    </h2>
-                  </div>
-                </div>
-
-                <div className="mt-6 space-y-3">
+                <SectionHeader id={`faq-${topic}-heading`} title={label} />
+                <div className="kit kit-card divide-y divide-[var(--k-line)] px-5 sm:px-7">
                   {topicFaqs.map((faq) => (
-                    <details
-                      key={faq.id}
-                      className="group rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] transition-colors hover:border-[var(--dc-hairline-strong)] open:border-[var(--dc-accent-soft)]/50 open:bg-[var(--dc-accent-tint)]"
-                    >
-                      <summary className="flex cursor-pointer list-none items-center gap-4 rounded-[12px] px-4 py-4 text-left marker:hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:px-5 [&::-webkit-details-marker]:hidden">
-                        <span className="min-w-0 flex-1 text-[15px] leading-snug font-bold text-[var(--dc-ink)] sm:text-[16px]">
+                    <details key={faq.id} className="group py-4 sm:py-5">
+                      <summary className="cursor-pointer list-none text-[16px] font-bold text-[var(--k-ink)] marker:content-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--k-red)] [&::-webkit-details-marker]:hidden">
+                        <span className="flex items-start justify-between gap-4">
                           {faq.question}
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--dc-hairline-strong)] text-[var(--dc-accent-soft)] transition-transform duration-200 group-open:rotate-45 motion-reduce:transition-none"
-                        >
-                          <Plus className="h-4 w-4" strokeWidth={2.25} />
+                          <span
+                            aria-hidden="true"
+                            className="centres-faq-toggle mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] text-[var(--k-red)]"
+                          >
+                            <span className="centres-faq-toggle-icon" />
+                          </span>
                         </span>
                       </summary>
-                      <p className="px-4 pb-5 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:px-5 sm:text-[15px]">
-                        {faq.answer}
-                      </p>
+                      <p className="mt-3 max-w-[70ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">{faq.answer}</p>
                     </details>
                   ))}
                 </div>
-              </section>
+              </Section>
             );
           })}
         </div>
 
         {/* ── Still have a question ─────────────────────────────────────── */}
-        <section className="shell relative mt-10 sm:mt-12" aria-labelledby="faq-more">
-          <div className="kit kit-card flex flex-col gap-6 bg-[var(--k-red-wash)] px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10">
-            <div>
-              <p className="dc-eyebrow label-mono">Need more help?</p>
-              <h2
-                id="faq-more"
-                className="section-title mt-2 font-display text-[var(--dc-ink)]"
-              >
-                Still have a <span className="dc-accent-glow">question?</span>
+        <Section tone="wash" labelledBy="faq-more">
+          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+            <div className="max-w-2xl">
+              <p className="k-eyebrow">Need more help?</p>
+              <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
+                Still have a question?
               </h2>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
+              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
                 A counsellor can answer what depends on your background and nearest centre.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <EnquiryLink
                 source="faq"
-                className="dc-cta inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold"
+                className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
               >
                 Talk to a counsellor
               </EnquiryLink>
               <Link
                 href={'/chatbot' as Route}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
               >
                 Ask Jetking AI
               </Link>
             </div>
           </div>
-        </section>
+        </Section>
       </div>
     </>
   );

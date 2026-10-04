@@ -76,7 +76,7 @@ export function AboutTimeline() {
         className="about-tl-fade-in mt-6 grid gap-4 sm:grid-cols-2"
       >
         {active.items.map((item) => (
-          <div key={`${item.year}-${item.title}`} className="dc-panel rounded-[16px] p-5 sm:p-6">
+          <div key={`${item.year}-${item.title}`} className="kit kit-card p-5 sm:p-6">
             <span className="numeral inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold text-[var(--dc-accent-soft)]">
               {item.year}
             </span>

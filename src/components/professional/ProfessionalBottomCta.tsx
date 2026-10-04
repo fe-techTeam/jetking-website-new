@@ -14,7 +14,7 @@ export function ProfessionalBottomCta() {
           <div className="max-w-2xl">
             <h2
               id="pro-cta-heading"
-              className="subsection-title font-display text-[var(--dc-ink)]"
+              className="section-title font-display text-[var(--dc-ink)]"
             >
               Ready to take the next step in your career?
             </h2>

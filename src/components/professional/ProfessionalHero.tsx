@@ -22,7 +22,7 @@ export function ProfessionalHero() {
       role="group" aria-labelledby="pro-hero-heading"
     >
       <div className="flex flex-col justify-start">
-        <p className="text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
+        <p className="k-hero-eyebrow">
           For Working Professionals
         </p>
 

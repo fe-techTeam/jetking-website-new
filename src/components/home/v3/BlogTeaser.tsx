@@ -1,6 +1,6 @@
 'use client';
 
-import { Section } from '@/components/kit';
+import { Section, SectionHeader } from '@/components/kit';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -23,39 +23,35 @@ export function BlogTeaser({ posts }: { posts: Post[] }) {
 
   return (
     <Section tone="tint" labelledBy="home-blog-heading">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">From the blog</p>
-            <h2
-              id="home-blog-heading"
-              className="section-title mt-2 font-display text-[var(--dc-ink)]"
-            >
-              Career guidance and industry notes
-            </h2>
-          </div>
-          <div className="flex items-center justify-between gap-3 sm:justify-end">
-            <Link
-              href={'/blog' as Route}
-              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-            >
-              Visit the blog
-              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-            </Link>
-            <ScrollNavButtons
-              edge={edge}
-              onPrev={() => scrollByItem(-1)}
-              onNext={() => scrollByItem(1)}
-              label="articles"
-              className="shrink-0"
-            />
-          </div>
-        </div>
+        <SectionHeader
+          id="home-blog-heading"
+          eyebrow="From the blog"
+          title="Career guidance and industry notes"
+          action={
+            <div className="flex items-center justify-between gap-3 sm:justify-end">
+              <Link
+                href={'/blog' as Route}
+                className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+              >
+                Visit the blog
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+              </Link>
+              <ScrollNavButtons
+                edge={edge}
+                onPrev={() => scrollByItem(-1)}
+                onNext={() => scrollByItem(1)}
+                label="articles"
+                className="shrink-0"
+              />
+            </div>
+          }
+        />
 
         <ul
           ref={ref}
           tabIndex={0}
           aria-label="Latest articles"
-          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 -mx-[var(--gutter)] px-[var(--gutter)] scroll-px-[var(--gutter)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {posts.map((post) => {
             const cover = postCover(post);
             return (

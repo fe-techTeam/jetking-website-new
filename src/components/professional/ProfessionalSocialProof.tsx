@@ -1,6 +1,6 @@
 'use client';
 
-import { Section } from '@/components/kit';
+import { Section, SectionHeader } from '@/components/kit';
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
 import { ProfessionalPartnerMarquee } from './ProfessionalPartnerMarquee';
@@ -12,23 +12,16 @@ export function ProfessionalSocialProof() {
         <div>
           <div className="flex flex-col gap-12 lg:gap-14">
             <div>
-              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
-                Success stories
-              </p>
-              <h2
+              <SectionHeader
                 id="pro-stories-heading"
-                className="section-title mt-2 font-display text-[var(--dc-ink)]"
-              >
-                Real career transitions
-              </h2>
-              <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
-                Working professionals like you who upskilled without quitting their day job.
-              </p>
+                eyebrow="Success stories"
+                title="Real career transitions"
+                lede="Working professionals like you who upskilled without quitting their day job."
+              />
 
               <Carousel
                 items={SUCCESS_STORIES}
                 label="Success stories"
-                className="mt-6 sm:mt-8"
                 itemKey={(story) => story.id}
                 itemLabel={(story) => `${story.name}, ${story.from} to ${story.to}`}
                 classNames={{
@@ -40,22 +33,22 @@ export function ProfessionalSocialProof() {
                 }}
               >
                 {(story) => (
-                  <article className="pro-quote p-6 text-white sm:p-7">
-                    <p className="text-[12px] font-bold tracking-[0.06em] text-white/70 uppercase">
+                  <article className="kit kit-card p-6 sm:p-7">
+                    <p className="text-[12px] font-bold tracking-[0.06em] text-[var(--k-ink-3)] uppercase">
                       From {story.from} to {story.to}
                     </p>
                     <span
                       aria-hidden="true"
-                      className="mt-4 block font-display text-[56px] leading-none font-extrabold text-white/30"
+                      className="mt-4 block font-display text-[56px] leading-none font-extrabold text-[var(--k-red)] opacity-40"
                     >
                       &ldquo;
                     </span>
-                    <p className="-mt-5 text-[15.5px] leading-relaxed font-medium sm:text-[16.5px]">
+                    <p className="-mt-5 text-[15.5px] leading-relaxed font-medium text-[var(--k-ink-2)] sm:text-[16.5px]">
                       {story.quote}
                     </p>
                     <footer className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                       <div className="flex min-w-0 items-center gap-3">
-                        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
+                        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                           <Image
                             src={story.avatar}
                             alt=""
@@ -65,13 +58,13 @@ export function ProfessionalSocialProof() {
                           />
                         </span>
                         <cite className="not-italic">
-                          <span className="block text-[14.5px] font-bold">{story.name}</span>
-                          <span className="mt-0.5 block text-[14px] text-white/85">
+                          <span className="block text-[14.5px] font-bold text-[var(--k-ink)]">{story.name}</span>
+                          <span className="mt-0.5 block text-[14px] text-[var(--k-ink-3)]">
                             {story.from} → {story.to}
                           </span>
                         </cite>
                       </div>
-                      <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-[12px] font-extrabold text-jk-600">
+                      <span className="shrink-0 rounded-full bg-[var(--k-red-wash)] px-3 py-1.5 text-[12px] font-extrabold text-[var(--k-red)]">
                         {story.hike} Salary Hike
                       </span>
                     </footer>

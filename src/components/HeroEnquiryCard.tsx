@@ -13,11 +13,11 @@ const TONES = {
   // label-mono), so this card's heading reads as part of the same banner, not a one-off.
   centres: {
     card: 'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)]',
-    eyebrow: 'text-[14px] font-bold tracking-[0.18em] text-[var(--dc-accent-soft)] uppercase sm:text-[14.5px]',
+    eyebrow: 'k-hero-eyebrow',
   },
   dc: {
     card: 'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)]',
-    eyebrow: 'dc-eyebrow label-mono text-[14px]',
+    eyebrow: 'k-hero-eyebrow',
   },
 } as const;
 

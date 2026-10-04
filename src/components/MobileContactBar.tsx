@@ -9,9 +9,10 @@ import { siteConfig, whatsappHref } from '@/lib/site';
 
 /**
  * Routes with their own conversion path: the enquiry form itself, course pages
- * (StickyCourseCta), and the franchise/investor audiences, who aren't enquiring about courses.
+ * (StickyCourseCta), centre pages (StickyCentreBar: that centre's own number and enquiry), and the
+ * franchise/investor audiences, who aren't enquiring about courses.
  */
-const EXCLUDED = [/^\/enquiry/, /^\/courses\/[^/]+/, /^\/franchise/, /^\/investors/, /^\/account/];
+const EXCLUDED = [/^\/enquiry/, /^\/courses\/[^/]+/, /^\/centres\/[^/]+/, /^\/franchise/, /^\/investors/, /^\/account/];
 
 /**
  * Phone/tablet bottom bar: call the helpline or start an enquiry from anywhere. Slides in once

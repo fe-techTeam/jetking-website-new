@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Section, SectionHeader } from '@/components/kit';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -7,7 +8,7 @@ import type { BodyBlock, Post } from '@/lib/content/types';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
 import type { Crumb } from '@/components/ui';
 import { categoryHref, formatPostDate, PostCard, postCover } from './BlogCards';
-import { cleanBlogBody } from '@/lib/content/cleanBlogBody';
+import { cleanBlogBody, decodeEntities } from '@/lib/content/cleanBlogBody';
 
 const FALLBACK_BANNER = '/blog/hero.webp';
 
@@ -119,7 +120,7 @@ export function BlogArticle({
           />
         </div>
 
-        <header className="mt-7 max-w-[var(--content-reading)] sm:mt-8 lg:mt-10">
+        <header className="mt-7 sm:mt-8 lg:mt-10">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <Link
               href={categoryHref(post.category)}
@@ -145,9 +146,9 @@ export function BlogArticle({
       </section>
 
       <div className="shell pt-8 pb-12 sm:pt-10 sm:pb-14 lg:pb-16">
-        <article className="mx-auto w-full max-w-[var(--content-reading)]">
+        <article className="w-full min-w-0">
           <p className="text-[16px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[17.5px]">
-            {post.excerpt}
+            {decodeEntities(post.excerpt)}
           </p>
 
           <div className="blog-prose mt-8 border-t border-[var(--dc-hairline-strong)]/35 pt-8">
@@ -197,85 +198,59 @@ export function BlogArticle({
       </div>
 
       {related.length ? (
-        <section className="shell pt-8 pb-12 sm:pt-10 sm:pb-14 lg:pb-16" aria-labelledby="blog-related">
-          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--dc-hairline-strong)]/35 pb-5">
-            <div>
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                Keep reading
-              </p>
-              <h2
-                id="blog-related"
-                className="section-title mt-2 font-display text-[var(--dc-ink)]"
+        <Section tone="tint" labelledBy="blog-related">
+          <SectionHeader
+            id="blog-related"
+            eyebrow="Keep reading"
+            title={`More in ${post.category}`}
+            action={
+              <Link
+                href={'/blog' as Route}
+                className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
               >
-                More in {post.category}
-              </h2>
-            </div>
-            <Link
-              href={'/blog' as Route}
-              className="tap inline-flex items-center gap-2 text-[13.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
-            >
-              All articles
-              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-            </Link>
-          </div>
-
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+                All articles
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+              </Link>
+            }
+          />
+          <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
             {related.map((item) => (
               <li key={item.slug} className="h-full">
                 <PostCard post={item} />
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       ) : null}
 
-      <section
-        className="bg-[var(--dc-surface)] py-14 sm:py-16 lg:py-20"
-        aria-labelledby="blog-article-cta"
-      >
-        <div className="shell">
-          <div className="blog-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
-              <div>
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                  Still deciding
-                </p>
-                <h2
-                  id="blog-article-cta"
-                  className="section-title mt-3 font-display text-[var(--dc-ink)]"
-                >
-                  Talk it through with a counsellor
-                </h2>
-                <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
-                  A short conversation about your goals, background and nearest centre — no
-                  obligation, no scripted pitch.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-                <EnquiryLink
-                  source="blog-article"
-                  className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-[var(--dc-accent-soft)] xs:text-[15px]"
-                >
-                  <span>Enquire now</span>
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
-                  >
-                    <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                  </span>
-                </EnquiryLink>
-                <Link
-                  href={'/courses' as Route}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] xs:text-[15px]"
-                >
-                  Browse courses
-                </Link>
-              </div>
-            </div>
+      <Section tone="wash" labelledBy="blog-article-cta">
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+          <div className="max-w-2xl">
+            <p className="k-eyebrow">Still deciding</p>
+            <h2 id="blog-article-cta" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
+              Talk it through with a counsellor
+            </h2>
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+              A short conversation about your goals, background and nearest centre — no obligation, no scripted pitch.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <EnquiryLink
+              source="blog-article"
+              className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
+            >
+              Enquire now
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </EnquiryLink>
+            <Link
+              href={'/courses' as Route}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
+            >
+              Browse courses
+            </Link>
           </div>
         </div>
-      </section>
+      </Section>
     </div>
   );
 }

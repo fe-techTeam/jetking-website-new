@@ -80,19 +80,6 @@
   box-shadow: var(--dc-shadow-hover);
 }
 
-.blog-cta-band {
-  background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--dc-hairline-strong);
-}
-
-/* Light mode: the band is a spotlight card, not a fixed-dark one — it follows
-   the toggle like every other surface on the page. Must stay AFTER the
-   unconditional rule above; see the note on `.blog-hero-wash` below. */
-:where(html:not(.dark)) .blog-cta-band {
-  background: #f8f9fb;
-  border: 1px solid var(--dc-hairline-strong);
-}
-
 /* Hero banner — full-bleed cinematic plane + left text wash */
 .blog-hero-banner {
   border: 1px solid var(--dc-hairline-strong);

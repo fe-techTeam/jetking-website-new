@@ -8,7 +8,7 @@ export interface JumpItem {
 }
 
 /**
- * Phone/tablet "on this page" bar for the long course page: a horizontally scrolling strip of
+ * Phone/tablet "on this page" bar for long pages (course and centre pages): a horizontally scrolling strip of
  * section links that sticks under the site header, highlights the section in view, and keeps the
  * active tab on screen. Hidden from lg up, where the page is read in one wide view.
  */
@@ -52,7 +52,7 @@ export function JumpNav({ items }: { items: JumpItem[] }) {
   return (
     <nav
       aria-label="On this page"
-      className="sticky top-[72px] z-30 border-b border-[var(--cp-line)] bg-[var(--cp-bg)]/95 backdrop-blur-md xs:top-[80px] sm:top-[88px] lg:hidden 2xl:top-[96px]"
+      className="kit sticky top-[72px] z-30 border-b border-[var(--cp-line,var(--k-line))] bg-[var(--cp-bg,var(--k-bg))]/95 backdrop-blur-md xs:top-[80px] sm:top-[88px] lg:hidden 2xl:top-[96px]"
     >
       <ul
         ref={stripRef}
@@ -67,8 +67,8 @@ export function JumpNav({ items }: { items: JumpItem[] }) {
                 aria-current={on ? 'true' : undefined}
                 className={`inline-flex min-h-11 items-center border-b-2 px-3.5 text-[14px] font-bold whitespace-nowrap transition-colors ${
                   on
-                    ? 'border-[var(--cp-red)] text-[var(--cp-red)]'
-                    : 'border-transparent text-[var(--cp-ink-2)] hover:text-[var(--cp-ink)]'
+                    ? 'border-[var(--cp-red,var(--k-red))] text-[var(--cp-red,var(--k-red))]'
+                    : 'border-transparent text-[var(--cp-ink-2,var(--k-ink-2))] hover:text-[var(--cp-ink,var(--k-ink))]'
                 }`}
               >
                 {item.label}

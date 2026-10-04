@@ -1,6 +1,6 @@
 'use client';
 
-import { Section } from '@/components/kit';
+import { Section, SectionHeader } from '@/components/kit';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -53,29 +53,23 @@ export function CentreNetwork({
 
   return (
     <Section tone="tint" labelledBy="home-centres-heading">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Centre network</p>
-            <h2
-              id="home-centres-heading"
-              className="section-title mt-2 font-display text-[var(--dc-ink)]"
+        <SectionHeader
+          id="home-centres-heading"
+          eyebrow="Centre network"
+          title={`${counts.centres} centres across ${counts.cities} cities`}
+          lede="In-person classes and labs, not a remote-only course. Find a Jetking centre near you and start your journey today."
+          action={
+            <Link
+              href={'/centres' as Route}
+              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
-              {counts.centres} centres across {counts.cities} cities
-            </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-              In-person classes and labs, not a remote-only course. Find a Jetking centre near you and start your journey today.
-            </p>
-          </div>
-          <Link
-            href={'/centres' as Route}
-            className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-          >
-            Find your centre
-            <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          </Link>
-        </div>
+              Find your centre
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </Link>
+          }
+        />
 
-        <div className="mt-8 grid gap-6 sm:mt-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start lg:gap-10">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:gap-10">
           {/* Map */}
           <div
             className="relative mx-auto w-full max-w-[520px]"
@@ -184,7 +178,7 @@ export function CentreNetwork({
               />
             </div>
 
-            <div className="mt-2 grid gap-5 sm:mt-4 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] sm:gap-6">
+            <div className="mt-2 grid gap-5 sm:mt-4 sm:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[minmax(0,9.5rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)]">
               <ul
                 className="hidden sm:block sm:max-h-[340px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--dc-hairline)] sm:pr-4"
                 aria-label="Cities with a Jetking centre"

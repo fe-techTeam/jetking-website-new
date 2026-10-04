@@ -248,7 +248,7 @@ export function CentresIndex({
       aria-labelledby="centres-index-heading"
     >
       <div className="max-w-2xl">
-        <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
+        <p className="k-eyebrow">
           Browse by city
         </p>
         <h2
@@ -269,7 +269,7 @@ export function CentresIndex({
           {/* Pinned: title + search always visible while lists scroll */}
           <div className="centres-filter-sticky shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 p-5 xs:rounded-t-[24px] sm:p-6">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
+              <p className="k-eyebrow">
                 Filters
               </p>
               {hasActiveFilters ? (

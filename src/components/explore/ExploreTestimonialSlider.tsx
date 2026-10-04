@@ -45,7 +45,7 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
   }, [open]);
 
   return (
-    <div className="stu-quote relative flex h-full min-h-[220px] flex-col overflow-hidden p-0 sm:min-h-[240px]">
+    <div className="kit kit-card relative flex h-full min-h-[220px] flex-col overflow-hidden p-0 sm:min-h-[240px]">
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -128,18 +128,18 @@ export function ExploreTestimonialSlider() {
         slide.kind === 'video' ? (
           <VideoSlide video={slide.data} />
         ) : (
-          <blockquote className="stu-quote flex h-full min-h-[220px] flex-col p-6 text-white sm:min-h-[240px] sm:p-7">
+          <blockquote className="kit kit-card flex h-full min-h-[220px] flex-col p-6 sm:min-h-[240px] sm:p-7">
             <span
               aria-hidden="true"
-              className="font-display text-[56px] leading-none font-extrabold text-white/30"
+              className="font-display text-[56px] leading-none font-extrabold text-[var(--k-red)] opacity-40"
             >
               &ldquo;
             </span>
-            <p className="-mt-5 flex-1 text-[15.5px] leading-relaxed font-medium sm:text-[16.5px]">
+            <p className="-mt-5 flex-1 text-[15.5px] leading-relaxed font-medium text-[var(--k-ink-2)] sm:text-[16.5px]">
               {slide.data.quote}
             </p>
             <footer className="mt-6 flex items-center gap-3">
-              <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
+              <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                 <Image
                   src={AVATARS[i % AVATARS.length] ?? AVATARS[0]}
                   alt=""
@@ -149,8 +149,8 @@ export function ExploreTestimonialSlider() {
                 />
               </span>
               <cite className="not-italic">
-                <span className="block text-[14.5px] font-bold">{slide.data.name}</span>
-                <span className="mt-0.5 block text-[13px] text-white">{slide.data.role}</span>
+                <span className="block text-[14.5px] font-bold text-[var(--k-ink)]">{slide.data.name}</span>
+                <span className="mt-0.5 block text-[13px] text-[var(--k-ink-3)]">{slide.data.role}</span>
               </cite>
             </footer>
           </blockquote>

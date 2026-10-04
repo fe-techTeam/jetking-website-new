@@ -1,15 +1,14 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { ArrowRight, ChevronDown, Search, X } from 'lucide-react';
+import { ChevronDown, Search, X } from 'lucide-react';
 import type { Course, CourseLevel } from '@/lib/content/types';
 import { usePersona } from '@/persona/PersonaProvider';
 import { useFlip } from '@/components/motion/flip';
-import { TransitionLink } from '@/components/motion/TransitionLink';
+import { CourseCard } from '@/components/CourseCard';
 import { track } from '@/lib/analytics';
 import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
-import { COURSE_LEVELS, COURSE_LEVEL_LABEL } from '@/lib/course-categories';
+import { COURSE_LEVELS, COURSE_TECHNOLOGIES, categoriesOf } from '@/lib/course-categories';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════
@@ -51,13 +50,7 @@ type Technology =
 
 const TECHNOLOGIES: Array<{ id: Technology | 'all'; label: string }> = [
   { id: 'all', label: 'All technologies' },
-  { id: 'cloud', label: 'Cloud' },
-  { id: 'cyber-security', label: 'Cyber Security' },
-  { id: 'networking', label: 'Networking' },
-  { id: 'data', label: 'Data' },
-  { id: 'design-gaming', label: 'Design & Gaming' },
-  { id: 'marketing', label: 'Marketing' },
-  { id: 'hardware-os', label: 'Hardware & OS' },
+  ...COURSE_TECHNOLOGIES,
 ];
 
 /*
@@ -66,21 +59,8 @@ const TECHNOLOGIES: Array<{ id: Technology | 'all'; label: string }> = [
  * rather than an invented taxonomy. A course can match more than one
  * technology (e.g. the Cloud & Cyber Security degrees match both).
  */
-const TECHNOLOGY_KEYWORDS: Record<Technology, RegExp> = {
-  cloud: /cloud|\baws\b|azure/,
-  'cyber-security': /cyber|hacking|security/,
-  networking: /network|routing|switching|cisco/,
-  data: /\bdata\b/,
-  'design-gaming': /multimedia|animation|gaming|metaverse|design/,
-  marketing: /marketing/,
-  'hardware-os': /hardware|windows|server|red hat/,
-};
-
 function courseTechnologies(course: Course): Technology[] {
-  const haystack = `${course.slug} ${course.title}`.toLowerCase().replace(/-/g, ' ');
-  return (Object.keys(TECHNOLOGY_KEYWORDS) as Technology[]).filter((tech) =>
-    TECHNOLOGY_KEYWORDS[tech].test(haystack),
-  );
+  return categoriesOf(course).filter((id): id is Technology => id !== 'degree');
 }
 
 function matchesQuery(course: Course, needle: string): boolean {
@@ -442,7 +422,6 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
         >
           {ordered.map((course) => {
             const isVisible = visible.has(course.slug);
-            const levelLabel = COURSE_LEVEL_LABEL[course.level];
 
             return (
               <article
@@ -456,66 +435,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                 hidden={!isVisible}
                 className="relative h-full"
               >
-                <TransitionLink
-                  href={`/courses/${course.slug}`}
-                  onClick={() =>
-                    track('course_viewed', { course_slug: course.slug, surface: 'explorer-card' })
-                  }
-                  className="dc-card-shell dc-card-interactive group/card block h-full"
-                >
-                  <div className="dc-card flex h-full overflow-hidden sm:flex-col">
-                    {/* Phones: a thumbnail beside the text, so 18 cards don't stack into a 10,000px+ page. */}
-                    <div className="dc-card-media relative min-h-[112px] w-[104px] shrink-0 overflow-hidden min-[400px]:w-[120px] sm:aspect-[16/10] sm:min-h-0 sm:w-auto">
-                      {course.heroImage ? (
-                        <Image
-                          src={course.heroImage.url}
-                          alt=""
-                          fill
-                          sizes="(min-width: 1280px) 22vw, (min-width: 640px) 42vw, 120px"
-                          className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
-                        />
-                      ) : null}
-                      <div
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
-                      />
-                    </div>
-
-                    <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-7">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                      <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
-                        {levelLabel}
-                      </span>
-                      <span className="numeral text-[12.5px] font-semibold text-[var(--dc-ink-muted)]">
-                        {course.duration}
-                      </span>
-                    </div>
-
-                    <h2 className="mt-2 font-display text-[15.5px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:mt-3.5 sm:text-[18px]">
-                      {course.title}
-                    </h2>
-
-                    <p className="mt-2 line-clamp-2 flex-1 text-[14px] leading-relaxed max-sm:hidden text-[var(--dc-ink-muted)]">
-                      {course.eligibility}
-                    </p>
-
-                    <div className="mt-auto flex items-center justify-between gap-3 pt-2.5 sm:pt-6">
-                      <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
-                        View course
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className="dc-cta hidden h-10 w-10 shrink-0 place-items-center rounded-full sm:grid"
-                      >
-                        <ArrowRight
-                          className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/card:translate-x-0.5"
-                          strokeWidth={2.25}
-                        />
-                      </span>
-                    </div>
-                    </div>
-                  </div>
-                </TransitionLink>
+                <CourseCard course={course} surface="explorer-card" as="h2" />
               </article>
             );
           })}

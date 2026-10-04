@@ -384,7 +384,7 @@ export function ExploreLanding({
       <Section tone="plain" labelledBy="exp-about">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-12">
             <div>
-              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
+              <p className="k-eyebrow">
                 {ABOUT_HERO.eyebrow}
               </p>
               <h2
@@ -419,32 +419,30 @@ export function ExploreLanding({
         </Section>
 
       {/* ── Programmes (shared RecommendedCourses card design) ──────────── */}
-      <div className="bg-[var(--dc-surface)]">
-        <div className="shell pt-8 xs:pt-10">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[13px] font-bold text-[var(--dc-ink-muted)]">Browse by format:</span>
+      <RecommendedCourses
+        tone="plain"
+        courses={courses}
+        headingId="exp-courses"
+        title="Courses to explore"
+        description={`${counts.courses} courses across ${levelGroups.length} formats — tap a card to see full details.`}
+      >
+          <div className="mb-6 flex flex-wrap items-center gap-2 sm:mb-8">
+            <span className="text-[13px] font-bold text-[var(--k-ink-3)]">Browse by format:</span>
             {levelGroups.map((group) => {
               const meta = LEVEL_META[group.level];
               return (
                 <Link
                   key={group.level}
                   href={'/courses' as Route}
-                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--dc-ink-secondary)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--k-line-strong)] bg-[var(--k-card)] px-3 py-1.5 text-[12.5px] font-bold text-[var(--k-ink-2)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]"
                 >
                   {meta.label}
-                  <span className="text-[var(--dc-ink-muted)]">{group.courses.length}</span>
+                  <span className="text-[var(--k-ink-3)]">{group.courses.length}</span>
                 </Link>
               );
             })}
           </div>
-        </div>
-        <RecommendedCourses
-          courses={courses}
-          headingId="exp-courses"
-          title="Courses to explore"
-          description={`${counts.courses} courses across ${levelGroups.length} formats — tap a card to see full details.`}
-        />
-      </div>
+      </RecommendedCourses>
 
       {/* ── Why Jetking + testimonial slider ─────────────────────────────── */}
       <Section tone="tint" deco="glow" labelledBy="exp-why">
@@ -713,7 +711,7 @@ export function ExploreLanding({
               >
                 <MapPin className="h-5 w-5" strokeWidth={1.75} />
               </span>
-              <h2 id="exp-cta" className="subsection-title mt-4 text-[var(--dc-ink)]">
+              <h2 id="exp-cta" className="section-title mt-4 text-[var(--dc-ink)]">
                 {counts.centres} centres across {counts.cities} cities
               </h2>
               <p className="mt-1.5 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">

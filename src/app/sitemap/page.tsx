@@ -96,7 +96,7 @@ export default async function SitemapPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 sm:justify-center sm:px-10 sm:py-12 lg:max-w-[62%] lg:px-12 xl:px-14">
-                <p className="dc-eyebrow label-mono text-[14px]">Sitemap</p>
+                <p className="k-hero-eyebrow">Sitemap</p>
                 <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)]">
                   Every page, <span className="dc-accent-glow">in one place</span>
                 </h1>

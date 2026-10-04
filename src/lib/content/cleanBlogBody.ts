@@ -273,13 +273,66 @@ function expandBlock(block: BodyBlock): BodyBlock[] {
  * Sanitize + structure migrated BodyBlock[] for article rendering:
  * strip legacy footer chrome and turn dump paragraphs into headings / lists / paras.
  */
+const NAMED_ENTITIES: Record<string, string> = {
+  quot: '"',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  apos: "'",
+  nbsp: ' ',
+  rsquo: '\u2019',
+  lsquo: '\u2018',
+  rdquo: '\u201d',
+  ldquo: '\u201c',
+  ndash: '\u2013',
+  mdash: '\u2014',
+};
+
+/** Migrated text is sometimes double-encoded ("&amp;#34;"), which would print as literal "&#34;". */
+export function decodeEntities(text: string): string {
+  let out = text;
+  for (let pass = 0; pass < 2; pass += 1) {
+    const next = out
+      .replace(/&#(\d+);/g, (m, n: string) => {
+        const code = Number(n);
+        return code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : m;
+      })
+      .replace(/&#x([0-9a-f]+);/gi, (m, h: string) => {
+        const code = parseInt(h, 16);
+        return code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : m;
+      })
+      .replace(/&([a-z]+);/gi, (m, name: string) => NAMED_ENTITIES[name.toLowerCase()] ?? m);
+    if (next === out) break;
+    out = next;
+  }
+  return out;
+}
+
+function decodeBlock(block: BodyBlock): BodyBlock {
+  switch (block.type) {
+    case 'paragraph':
+    case 'heading':
+      return { ...block, text: decodeEntities(block.text) };
+    case 'quote':
+      return {
+        ...block,
+        text: decodeEntities(block.text),
+        ...(block.attribution ? { attribution: decodeEntities(block.attribution) } : {}),
+      };
+    case 'list':
+      return { ...block, items: block.items.map(decodeEntities) };
+    default:
+      return block;
+  }
+}
+
 export function cleanBlogBody(body: BodyBlock[]): BodyBlock[] {
   const cleaned: BodyBlock[] = [];
   for (const block of body) {
     if (isJunkBlock(block)) continue;
     for (const next of expandBlock(block)) {
       if (isJunkBlock(next)) continue;
-      cleaned.push(next);
+      cleaned.push(decodeBlock(next));
     }
   }
   return cleaned;

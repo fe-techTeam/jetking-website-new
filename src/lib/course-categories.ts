@@ -30,6 +30,21 @@ export type CourseCategoryId =
   | 'design-gaming'
   | 'marketing';
 
+export type CourseTechnologyId = Exclude<CourseCategoryId, 'degree'>;
+
+/** Technology names as shown in the /courses "Technology" filter; the header menu uses the same list. */
+export const COURSE_TECHNOLOGIES: ReadonlyArray<{ id: CourseTechnologyId; label: string }> = [
+  { id: 'cloud', label: 'Cloud' },
+  { id: 'cyber-security', label: 'Cyber Security' },
+  { id: 'networking', label: 'Networking' },
+  { id: 'data', label: 'Data' },
+  { id: 'design-gaming', label: 'Design & Gaming' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'hardware-os', label: 'Hardware & OS' },
+];
+
+const TECH_LABEL = Object.fromEntries(COURSE_TECHNOLOGIES.map((t) => [t.id, t.label])) as Record<CourseTechnologyId, string>;
+
 export interface CourseCategory {
   id: CourseCategoryId;
   label: string;
@@ -41,43 +56,43 @@ export interface CourseCategory {
 }
 
 export const COURSE_CATEGORIES: readonly CourseCategory[] = [
-  { id: 'degree', label: 'Degree courses', href: '/courses?level=degree', params: { level: 'degree' }, level: 'degree' },
-  { id: 'cloud', label: 'Cloud computing', href: '/courses?tech=cloud', params: { tech: 'cloud' }, match: /cloud|\baws\b|azure/ },
+  { id: 'degree', label: COURSE_LEVEL_LABEL.degree, href: '/courses?level=degree', params: { level: 'degree' }, level: 'degree' },
+  { id: 'cloud', label: TECH_LABEL.cloud, href: '/courses?tech=cloud', params: { tech: 'cloud' }, match: /cloud|\baws\b|azure/ },
   {
     id: 'cyber-security',
-    label: 'Cyber security',
+    label: TECH_LABEL['cyber-security'],
     href: '/courses?tech=cyber-security',
     params: { tech: 'cyber-security' },
     match: /cyber|hacking|security/,
   },
   {
     id: 'networking',
-    label: 'Networking',
+    label: TECH_LABEL.networking,
     href: '/courses?tech=networking',
     params: { tech: 'networking' },
     match: /network|routing|switching|cisco/,
   },
-  { id: 'data', label: 'Data & analytics', href: '/courses?tech=data', params: { tech: 'data' }, match: /\bdata\b/ },
-  {
-    id: 'hardware-os',
-    label: 'Hardware & OS',
-    href: '/courses?tech=hardware-os',
-    params: { tech: 'hardware-os' },
-    match: /hardware|windows|server|red hat/,
-  },
+  { id: 'data', label: TECH_LABEL.data, href: '/courses?tech=data', params: { tech: 'data' }, match: /\bdata\b/ },
   {
     id: 'design-gaming',
-    label: 'Design & gaming',
+    label: TECH_LABEL['design-gaming'],
     href: '/courses?tech=design-gaming',
     params: { tech: 'design-gaming' },
     match: /multimedia|animation|gaming|metaverse|design/,
   },
   {
     id: 'marketing',
-    label: 'Digital marketing',
+    label: TECH_LABEL.marketing,
     href: '/courses?tech=marketing',
     params: { tech: 'marketing' },
     match: /marketing/,
+  },
+  {
+    id: 'hardware-os',
+    label: TECH_LABEL['hardware-os'],
+    href: '/courses?tech=hardware-os',
+    params: { tech: 'hardware-os' },
+    match: /hardware|windows|server|red hat/,
   },
 ];
 

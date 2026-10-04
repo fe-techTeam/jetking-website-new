@@ -31,7 +31,7 @@ export function CentresHero({
 
         <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[60%] lg:px-12 lg:py-16 xl:px-14">
-            <p className="text-[14px] font-bold tracking-[0.18em] text-[var(--dc-accent-soft)] uppercase sm:text-[14.5px]">
+            <p className="k-hero-eyebrow">
               {centreCount} Centres · Nationwide
             </p>
 

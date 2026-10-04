@@ -63,7 +63,7 @@ export function HomeV2({
           ].join(' ')}
         >
           <div className="flex h-full flex-col justify-center">
-            <p className="text-[12px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
+            <p className="k-hero-eyebrow">
               India&rsquo;s No.1 Technology Training Institute
             </p>
 

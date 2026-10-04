@@ -30,7 +30,8 @@ import { BrandTile } from './brand';
 import { ZoomImage } from './ZoomImage';
 import { SnapSlider } from './SnapSlider';
 import { FeeDepthTracker } from './FeeDepthTracker';
-import { JumpNav, type JumpItem } from './JumpNav';
+import { JumpNav, type JumpItem } from '@/components/JumpNav';
+import { CourseCard } from '@/components/CourseCard';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { CentrePicker } from './CentrePicker';
 
@@ -804,23 +805,7 @@ export function CoursePageTemplate({
             <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((item) => (
                 <li key={item.slug}>
-                  <Link href={`/courses/${item.slug}`} className="cp-card group block h-full overflow-hidden transition-shadow hover:shadow-lg">
-                    {item.heroImage ? (
-                      <div className="relative aspect-[16/9]">
-                        <Image src={item.heroImage.url} alt="" fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" />
-                      </div>
-                    ) : null}
-                    <div className="p-5">
-                      <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--cp-red)] uppercase">
-                        {item.level} · {item.duration}
-                      </span>
-                      <h3 className="cp-h3 mt-2">{item.shortTitle}</h3>
-                      <span className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
-                        View course
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-                      </span>
-                    </div>
-                  </Link>
+                  <CourseCard course={item} surface="course-related" />
                 </li>
               ))}
             </ul>

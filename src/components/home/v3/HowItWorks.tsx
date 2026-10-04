@@ -39,7 +39,7 @@ export function HowItWorks() {
             icon: s.icon,
             title: s.title,
             body: (
-              <ul className="mt-1 space-y-1.5">
+              <ul className="mt-1 space-y-1.5 lg:text-left">
                 {s.points.map((p) => (
                   <li key={p} className="flex items-start gap-2 text-[14.5px] leading-snug">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--k-red)]" strokeWidth={2.5} aria-hidden="true" />

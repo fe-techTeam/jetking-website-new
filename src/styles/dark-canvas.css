@@ -301,16 +301,6 @@
   background: linear-gradient(145deg, #2a1618 0%, #14141c 55%, #1a1218 100%);
 }
 
-/* ── Quote ──────────────────────────────────────────────────────────────────
-   Testimonial card: fixed dark red gradient (never flips with the theme), same
-   vocabulary as `.stu-quote`/`.centres-quote`. Text inside must use fixed
-   white/white-opacity, never a flipping ink token. */
-.dc-quote {
-  border-radius: 22px;
-  background: linear-gradient(145deg, var(--color-jk-600) 0%, var(--color-jk-800) 100%);
-  box-shadow: 0 20px 44px rgb(0 0 0 / 0.3);
-}
-
 /* ── Panel ──────────────────────────────────────────────────────────────────
    A plain rounded dark surface for large or *expandable* cards where the
    chamfered `.dc-card` clip-path would crop overflowing content — accordions,

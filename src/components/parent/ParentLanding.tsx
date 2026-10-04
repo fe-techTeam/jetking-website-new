@@ -241,14 +241,15 @@ export function ParentLanding({
       </Section>
 
       {/* ── Courses (student RecommendedCourses pattern) ─────────────────── */}
-      <div id="courses" className="scroll-mt-24 bg-[var(--dc-surface)]">
-        <RecommendedCourses
-          courses={courses}
-          headingId="par-courses"
-          title="Top Career Options Your Child Can Build"
-          description="Proven courses parents compare — labs, certifications, and support."
-        />
-      </div>
+      <RecommendedCourses
+        id="courses"
+        className="scroll-mt-24"
+        tone="tint"
+        courses={courses}
+        headingId="par-courses"
+        title="Top Career Options Your Child Can Build"
+        description="Proven courses parents compare — labs, certifications, and support."
+      />
 
       {/* ── Let us help you ──────────────────────────────────────────────── */}
       <Section tone="plain" labelledBy="par-help">
@@ -366,7 +367,7 @@ export function ParentLanding({
       <Section tone="plain" labelledBy="par-loves">
           <h2
             id="par-loves"
-            className="subsection-title font-display text-[var(--dc-ink)]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
             Things Parents Love About {siteConfig.name}
           </h2>

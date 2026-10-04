@@ -85,7 +85,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
             />
 
             <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[68%] lg:px-12 lg:py-16 xl:px-14">
-              <p className="dc-eyebrow label-mono text-[14px]">{ABOUT_HERO.eyebrow}</p>
+              <p className="k-hero-eyebrow">{ABOUT_HERO.eyebrow}</p>
 
               <h1 className="page-title-hero mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
                 <span className="dc-accent-glow">{ABOUT_HERO.titleLead}</span>

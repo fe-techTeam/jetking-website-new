@@ -33,7 +33,7 @@ export function BlogHero({
         <div aria-hidden="true" className="blog-hero-wash pointer-events-none absolute inset-0" />
 
         <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[64%] lg:px-12 lg:py-16 xl:px-14">
-          <p className="text-[14px] font-bold tracking-[0.18em] text-[var(--dc-accent-soft)] uppercase sm:text-[14.5px]">
+          <p className="k-hero-eyebrow">
             Blogs &amp; Insights
           </p>
 

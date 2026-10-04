@@ -69,15 +69,6 @@
   z-index: 1;
 }
 
-.pro-card {
-  background: var(--dc-card);
-  border: 1px solid var(--dc-hairline-strong);
-  box-shadow: var(--dc-shadow);
-  transition:
-    box-shadow var(--duration-base) var(--ease-out-soft),
-    transform var(--duration-base) var(--ease-out-soft);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .pro-card-interactive:hover {
     box-shadow: var(--dc-shadow-hover);
@@ -159,42 +150,6 @@
   display: none;
 }
 
-.pro-course-card {
-  scroll-snap-align: start;
-  isolation: isolate;
-  transition:
-    box-shadow var(--duration-base) var(--ease-out-soft),
-    transform var(--duration-base) var(--ease-out-soft);
-}
-
-.pro-course-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.45rem 0.85rem 0.45rem 0.7rem;
-  background: linear-gradient(135deg, var(--color-jk-600) 0%, var(--color-jk-700) 100%);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  line-height: 1;
-  border-radius: 0 21px 0 14px;
-  box-shadow:
-    0 4px 16px rgb(196 30 36 / 0.5),
-    inset 0 1px 0 rgb(255 255 255 / 0.22);
-  pointer-events: none;
-}
-
-.pro-course-badge svg {
-  flex-shrink: 0;
-  opacity: 0.95;
-}
-
 
 @media (hover: hover) and (pointer: fine) {
   .pro-program-card:hover,
@@ -202,20 +157,6 @@
     transform: translateY(-2px);
     box-shadow: var(--dc-shadow-hover);
   }
-
-  .pro-course-track .pro-course-card:hover {
-    z-index: 2;
-  }
-}
-
-.pro-quote {
-  background: linear-gradient(145deg, var(--color-jk-600) 0%, var(--color-jk-800) 100%);
-  box-shadow: 0 20px 44px rgb(0 0 0 / 0.3);
-}
-
-.pro-bottom-cta {
-  background: linear-gradient(155deg, #0b1120 0%, #07070c 100%);
-  border-top: 1px solid var(--dc-hairline-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -266,10 +207,6 @@ html:not(.dark) .professional-page .pro-journey-panel {
 }
 
 html:not(.dark) .professional-page .pro-why {
-  background: #f8f9fb;
-}
-
-html:not(.dark) .professional-page .pro-bottom-cta {
   background: #f8f9fb;
 }
 

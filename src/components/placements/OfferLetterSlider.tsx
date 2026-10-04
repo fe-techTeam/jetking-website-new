@@ -117,7 +117,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
             aria-label={`${index + 1} of ${items.length}: ${item.title}`}
             className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
           >
-            <figure className="dc-panel flex h-full flex-col overflow-hidden rounded-[16px] p-3 sm:p-4">
+            <figure className="kit kit-card flex h-full flex-col overflow-hidden p-3 sm:p-4">
               <button
                 type="button"
                 onClick={() => setOpenIndex(index)}

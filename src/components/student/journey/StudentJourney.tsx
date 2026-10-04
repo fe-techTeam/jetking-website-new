@@ -210,7 +210,7 @@ export function StudentJourney({
           aria-label="Guided career journey"
         >
           <div className="mb-6 max-w-2xl">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
+            <p className="k-eyebrow">
               Personalised path
             </p>
             <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">

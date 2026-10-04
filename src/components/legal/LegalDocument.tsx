@@ -181,7 +181,7 @@ export function LegalDocument({
       <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
         <Breadcrumbs trail={trail} />
         <div className="mt-6 sm:mt-8">
-          <p className="dc-eyebrow label-mono text-[14px]">Legal</p>
+          <p className="k-hero-eyebrow">Legal</p>
           <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
             {doc.title}
           </h1>

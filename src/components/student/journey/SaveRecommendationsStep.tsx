@@ -80,7 +80,7 @@ export function SaveRecommendationsStep({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
+        <p className="k-eyebrow">
           Step 3 · Save your path
         </p>
         <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">

@@ -1,19 +1,18 @@
 'use client';
 
-import { Section } from '@/components/kit';
+import { Section, SectionHeader } from '@/components/kit';
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
 import {
   COURSE_CATEGORIES,
-  COURSE_LEVEL_LABEL as LEVEL_LABEL,
   categoriesOf,
   type CourseCategoryId,
 } from '@/lib/course-categories';
-import { CardTrack } from './CardTrack';
+import { CourseCard } from '@/components/CourseCard';
+import { CardTrack } from '@/components/CardTrack';
 
 type TabId = 'featured' | CourseCategoryId;
 
@@ -38,30 +37,24 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
 
   return (
     <Section tone="plain" labelledBy="home-programs-heading">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="dc-eyebrow text-[13px] font-bold tracking-[0.06em] uppercase">Courses</p>
-            <h2
-              id="home-programs-heading"
-              className="section-title mt-2 font-display text-[var(--dc-ink)]"
+        <SectionHeader
+          id="home-programs-heading"
+          eyebrow="Courses"
+          title="Explore our courses"
+          lede="Industry-aligned, certification-focused courses for real-world careers — from a first certification to a full degree."
+          action={
+            <Link
+              href={'/courses' as Route}
+              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
-              Explore our courses
-            </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-              Industry-aligned, certification-focused courses for real-world careers — from a first certification to a full degree.
-            </p>
-          </div>
-          <Link
-            href={'/courses' as Route}
-            className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-          >
-            View all courses
-            <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          </Link>
-        </div>
+              View all courses
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </Link>
+          }
+        />
 
         <div
-          className="mt-6 -mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none]"
+          className="-mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none]"
           role="group"
           aria-label="Filter courses by technology"
         >
@@ -88,46 +81,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
                 key={course.slug}
                 className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
               >
-                <Link
-                  href={`/courses/${course.slug}` as Route}
-                  className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[var(--dc-shadow-hover)]"
-                >
-                  <div className="dc-card-media relative aspect-[16/9] w-full overflow-hidden lg:aspect-[16/8]">
-                    {course.heroImage ? (
-                      <Image
-                        src={course.heroImage.url}
-                        alt={course.heroImage.alt}
-                        fill
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
-                      />
-                    ) : null}
-                  </div>
-                  <div className="flex flex-1 flex-col p-5 sm:p-6">
-                    <span className="dc-chip w-fit px-3 py-1 text-[12px] tracking-[0.04em] uppercase">
-                      {LEVEL_LABEL[course.level]} · {course.duration}
-                    </span>
-                    <h3 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[18px]">
-                      {course.shortTitle}
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
-                      {course.summary}
-                    </p>
-                    <p className="mt-2.5 line-clamp-2 flex-1 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
-                      <span className="font-bold text-[var(--dc-ink)]">Eligibility: </span>
-                      {course.eligibility}
-                    </p>
-                    <span className="mt-5 inline-flex items-center justify-between gap-3 border-t border-[var(--dc-hairline)] pt-4 text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
-                      View &amp; apply
-                      <span
-                        aria-hidden="true"
-                        className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-jk-600 text-white"
-                      >
-                        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      </span>
-                    </span>
-                  </div>
-                </Link>
+                <CourseCard course={course} surface="home-showcase" layout="stack" />
               </li>
             ))}
           </CardTrack>

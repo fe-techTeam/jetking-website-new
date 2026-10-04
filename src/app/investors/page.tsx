@@ -62,7 +62,7 @@ export default function InvestorsPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
-                <p className="dc-eyebrow label-mono text-[14px]">Investors</p>
+                <p className="k-hero-eyebrow">Investors</p>
                 <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)] sm:mt-4">
                   Investor <span className="dc-accent-glow">Information</span>
                 </h1>
@@ -263,7 +263,7 @@ function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestN
 
   return (
     <div>
-      <h3 className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
+      <h3 className="k-eyebrow">
         Listing information
       </h3>
       <dl className="mt-3 divide-y divide-[var(--dc-hairline)]">

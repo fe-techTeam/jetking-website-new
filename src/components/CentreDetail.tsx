@@ -5,8 +5,11 @@ import type { Route } from 'next';
 import {
   ArrowRight,
   Award,
+  BookOpen,
+  Briefcase,
   Building2,
   ChevronRight,
+  Cpu,
   GraduationCap,
   Headphones,
   Mail,
@@ -14,7 +17,7 @@ import {
   Navigation,
   Phone,
   ShieldCheck,
-  Sparkles,
+  Trophy,
   Users,
 } from 'lucide-react';
 import type { Centre, City, Course } from '@/lib/content/types';
@@ -22,14 +25,17 @@ import { centrePath } from '@/lib/centre-path';
 import { googleMapsUrl } from '@/lib/maps';
 import { siteConfig } from '@/lib/site';
 import { breadcrumbSchema, centreSchema, faqSchema } from '@/lib/seo';
-import { JsonLd, type Crumb } from '@/components/ui';
+import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
+import { JumpNav, type JumpItem } from '@/components/JumpNav';
+import { CardRail, Section, SectionHeader, StatBadges, StepPath, StoryCard } from '@/components/kit';
 import { CentreViewTracker } from '@/app/centres/[city]/[slug]/CentreViewTracker';
 import { CentreCatalogueProgrammes, CentreFeaturedProgrammes } from '@/components/centres/CentreFeaturedProgrammes';
-import { CentreTestimonialSlider } from '@/components/centres/CentreTestimonialSlider';
+import { StickyCentreBar } from '@/components/centres/StickyCentreBar';
 import { TrackedAnchor } from '@/components/TrackedAnchor';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 
 const STAT_ICONS = [Award, Building2, Users, ShieldCheck] as const;
+const JOURNEY_ICONS = [BookOpen, Cpu, Trophy, Briefcase, GraduationCap] as const;
 
 /** Centre programme titles and catalogue titles differ in case and "&"/"and"; compare loosely. */
 function normaliseTitle(title: string) {
@@ -38,8 +44,8 @@ function normaliseTitle(title: string) {
 
 /**
  * Centre detail — flat `/centres/{slug}` page.
- * Visual language aligned with `/student`: cinematic hero, why-band,
- * interactive programme cards, and polished content sections.
+ * Built on the component kit like the other pages: a photo hero, then sections that alternate
+ * tint and plain tones, a jump bar and call/enquire bar on phones, and a wash closing band.
  */
 export function CentreDetail({
   centre,
@@ -134,8 +140,29 @@ export function CentreDetail({
     else addressLines.push(addressTail);
   }
 
+  // Tones alternate down the page whatever sections a centre has; the closing band is always the wash.
+  let toneIndex = 0;
+  const nextTone = (): 'tint' | 'plain' => (toneIndex++ % 2 === 0 ? 'tint' : 'plain');
+
+  const hasCourses = featured.length > 0 || offered.length > 0;
+  const hasAdmissions = eligibility.length > 0 || journey.length > 0;
+  const jumpItems: JumpItem[] = [
+    ...(hasCourses ? [{ id: 'centre-courses', label: 'Courses' }] : []),
+    ...(hasAdmissions ? [{ id: 'centre-admissions', label: 'Admissions' }] : []),
+    ...(cleanFaculty.length ? [{ id: 'centre-faculty-section', label: 'Faculty' }] : []),
+    ...(placements.length ? [{ id: 'centre-placements-section', label: 'Placements' }] : []),
+    ...(testimonials.length ? [{ id: 'centre-stories-section', label: 'Stories' }] : []),
+    ...(faqs.length ? [{ id: 'centre-faq-section', label: 'FAQs' }] : []),
+    { id: 'centre-visit-section', label: 'Visit' },
+  ];
+
+  const primaryBtn =
+    'dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]';
+  const outlineBtn =
+    'inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]';
+
   return (
-    <div className="centres-page relative">
+    <div className="relative">
       <JsonLd
         data={[
           centreSchema(centre, city.name),
@@ -145,30 +172,11 @@ export function CentreDetail({
       />
       <CentreViewTracker slug={centre.slug} name={centre.name} city={city.slug} />
 
-      {/* Breadcrumb */}
       <div className="shell pt-5 sm:pt-6 lg:pt-8">
-        <nav aria-label="Breadcrumb" className="text-[13px] text-[var(--dc-ink-muted)]">
-          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            {trail.map((crumb, i) => (
-              <li key={crumb.path} className="flex items-center gap-2">
-                {i > 0 ? <span aria-hidden="true">/</span> : null}
-                {i === trail.length - 1 ? (
-                  <span className="text-[var(--dc-ink-secondary)]">{crumb.name}</span>
-                ) : (
-                  <Link
-                    href={crumb.path as Route}
-                    className="tap transition-colors hover:text-[var(--dc-accent-soft)]"
-                  >
-                    {crumb.name}
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ol>
-        </nav>
+        <Breadcrumbs trail={trail} />
       </div>
 
-      {/* Cinematic hero */}
+      {/* Photo hero */}
       <section className="shell relative pt-5 pb-8 sm:pt-6 sm:pb-10 lg:pb-12">
         <div className="centres-detail-hero relative min-h-[min(78vw,440px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
           <Image
@@ -193,9 +201,7 @@ export function CentreDetail({
             <h1 className="page-title centres-reveal centres-reveal-delay-1 mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
               {centre.name}
               {heroAccent ? (
-                <span className="mt-1 block text-[var(--dc-accent-soft)] sm:mt-1.5">
-                  {heroAccent}
-                </span>
+                <span className="mt-1 block text-[var(--dc-accent-soft)] sm:mt-1.5">{heroAccent}</span>
               ) : null}
             </h1>
 
@@ -209,18 +215,13 @@ export function CentreDetail({
               {introCopy}
             </p>
 
-            <div className="centres-reveal centres-reveal-delay-3 mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-              <Link
-                href={`/enquiry?centre=${centre.slug}` as Route}
-                className="group/cta inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
-              >
+            <div
+              id="centre-hero-cta"
+              className="centres-reveal centres-reveal-delay-3 mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
+            >
+              <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
                 Enquire at this centre
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
               </Link>
 
               {phoneHref ? (
@@ -228,7 +229,7 @@ export function CentreDetail({
                   href={phoneHref}
                   event="phone_clicked"
                   props={{ centre_slug: centre.slug, type: 'hero' }}
-                  className="group/call inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-5 py-3 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-5 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
                 >
                   <Phone className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                   Call {centre.phone}
@@ -241,13 +242,8 @@ export function CentreDetail({
                 <MapPin className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
                 {localityCityLabel}
               </span>
-              <span className="hidden h-3.5 w-px bg-white/20 sm:block" aria-hidden="true" />
               <span className="inline-flex items-center gap-1.5">
-                <GraduationCap
-                  className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
+                <GraduationCap className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
                 {featured.length || offered.length} courses
               </span>
             </div>
@@ -255,588 +251,383 @@ export function CentreDetail({
         </div>
       </section>
 
-      {/* Why / legacy stats */}
+      <JumpNav items={jumpItems} />
+
+      {/* Why Jetking, in numbers */}
       {showStats ? (
-        <section className="shell py-10 sm:py-12 lg:py-14" aria-label="Jetking at a glance">
-          <div className="centres-why overflow-hidden rounded-[24px] px-5 py-8 xs:rounded-[28px] sm:px-8 sm:py-10 lg:px-10">
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-              <div className="max-w-md">
-                <p className="text-[12px] font-bold tracking-[0.16em] text-[var(--dc-accent-soft)] uppercase">
-                  Why Jetking
-                </p>
-                <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-                  Learn where industry{' '}
-                  <span className="text-[var(--dc-accent-soft)]">actually trains</span>
-                </h2>
-              </div>
-              <dl className="grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-6 lg:flex-1">
-                {legacyStats(network).map((stat, index) => {
-                  const Icon = STAT_ICONS[index] ?? Award;
-                  return (
-                    <div key={stat.label} className="text-center sm:text-left">
-                      <Icon
-                        className="mx-auto h-5 w-5 text-[var(--dc-accent-soft)] sm:mx-0"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
-                      <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="numeral mt-2 block font-display text-[22px] leading-none font-extrabold text-[var(--dc-ink)] sm:text-[26px]">
-                          {stat.value}
-                        </span>
-                        <span className="mt-1.5 block text-[12px] leading-snug text-[var(--dc-ink-secondary)]">
-                          {stat.label}
-                        </span>
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            </div>
-          </div>
-        </section>
+        <Section tone={nextTone()} labelledBy="centre-why-heading">
+          <SectionHeader
+            id="centre-why-heading"
+            eyebrow="Why Jetking"
+            title={
+              <>
+                Learn where industry <span className="text-[var(--k-red)]">actually trains</span>
+              </>
+            }
+          />
+          <StatBadges
+            stats={legacyStats(network).map((stat, index) => ({
+              value: stat.value,
+              label: stat.label,
+              icon: STAT_ICONS[index] ?? Award,
+            }))}
+          />
+        </Section>
       ) : null}
 
-      <section className="shell py-10 sm:py-12 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,21rem)] lg:items-start lg:gap-10 xl:gap-12">
-          <div className="min-w-0 space-y-8">
-            {/* Featured programmes — student-style course cards */}
-            <CentreFeaturedProgrammes
-              programmes={featured}
-              courses={courses}
-              centreSlug={centre.slug}
-            />
-
-            {eligibility.length ? (
-              <section className="centres-card rounded-[20px] p-5 sm:rounded-[24px] sm:p-7" aria-labelledby="centre-elig">
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                  Admissions
-                </p>
-                <h2
-                  id="centre-elig"
-                  className="subsection-title mt-1.5 font-display text-[var(--dc-ink)]"
-                >
-                  Who can apply
-                </h2>
-                <div className="mt-6 space-y-6">
-                  {eligibility.map((block) => (
-                    <div key={block.title}>
-                      <h3 className="text-[13px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
-                        {block.title}
-                      </h3>
-                      <ul className="mt-3 space-y-2.5">
-                        {block.items.map((item) => (
-                          <li
-                            key={item.slice(0, 48)}
-                            className="flex gap-2.5 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]"
-                          >
-                            <span
-                              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--dc-accent-soft)]"
-                              aria-hidden="true"
-                            />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {journey.length ? (
-              <section className="centres-card rounded-[20px] p-5 sm:rounded-[24px] sm:p-7" aria-labelledby="centre-journey">
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                  Roadmap
-                </p>
-                <h2
-                  id="centre-journey"
-                  className="subsection-title mt-1.5 font-display text-[var(--dc-ink)]"
-                >
-                  Your transformation journey
-                </h2>
-                <p className="mt-2 text-[14px] text-[var(--dc-ink-muted)]">
-                  From beginner to job-ready, step by step.
-                </p>
-                <ol className="mt-6 space-y-5">
-                  {journey.map((step, i) => (
-                    <li key={step.title} className="flex gap-4">
-                      <span
-                        className="numeral grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] text-[13px] font-bold text-[var(--dc-accent-soft)]"
-                        aria-hidden="true"
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        <h3 className="text-[15px] font-bold text-[var(--dc-ink)]">{step.title}</h3>
-                        <ul className="mt-2 space-y-1.5">
-                          {step.items.map((item) => (
-                            <li
-                              key={item}
-                              className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]"
-                            >
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            ) : null}
-
-            {/* Catalogue programmes — same card format as student / featured */}
+      {/* Courses at this centre */}
+      {hasCourses ? (
+        <Section tone={nextTone()} id="centre-courses" labelledBy="centre-courses-heading" className="scroll-mt-36">
+          <SectionHeader
+            id="centre-courses-heading"
+            eyebrow="At this centre"
+            title="Courses at this centre"
+            lede="Classroom and lab training, with placement support. Pick a course to see its curriculum, fees and certifications."
+          />
+          <div className="space-y-10 sm:space-y-12">
+            <CentreFeaturedProgrammes programmes={featured} courses={courses} centreSlug={centre.slug} />
             {featured.length && !moreCourses.length ? null : (
               <CentreCatalogueProgrammes
                 courses={featured.length ? moreCourses : offered}
                 title={featured.length ? 'More courses at this centre' : 'Courses offered'}
               />
             )}
-
-            {cleanFaculty.length ? (
-              <section aria-labelledby="centre-faculty">
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                      Mentors
-                    </p>
-                    <h2
-                      id="centre-faculty"
-                      className="section-title mt-1.5 font-display text-[var(--dc-ink)]"
-                    >
-                      Our faculty
-                    </h2>
-                  </div>
-                  <span className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase">
-                    {cleanFaculty.length}
-                  </span>
-                </div>
-                <ul
-                  className={`grid gap-4 ${
-                    cleanFaculty.length === 1 ? 'w-full max-w-sm' : 'sm:grid-cols-2'
-                  }`}
-                >
-                  {cleanFaculty.map((member) => {
-                    const bioLines = member.bio ? facultyBioLines(member.bio) : [];
-                    return (
-                      <li key={member.name} className="min-w-0">
-                        <article className="relative h-full">
-                          <div className="centres-clip-shell centres-clip-interactive group/fac">
-                            <div className="centres-clip-card flex h-full flex-col overflow-hidden">
-                              <div className="flex items-center gap-4 px-4 pt-4 max-sm:pb-1 sm:flex-col sm:gap-0 sm:px-5 sm:pt-6">
-                                <div className="centres-clip-media relative h-20 w-20 shrink-0 overflow-hidden sm:h-32 sm:w-32">
-                                  {member.photoUrl ? (
-                                    <Image
-                                      src={member.photoUrl}
-                                      alt={member.name}
-                                      fill
-                                      sizes="128px"
-                                      className="object-cover object-top transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/fac:scale-[1.03]"
-                                    />
-                                  ) : (
-                                    <div className="grid h-full w-full place-items-center">
-                                      <Users
-                                        className="h-10 w-10 text-[var(--dc-accent-soft)] opacity-70"
-                                        strokeWidth={1.5}
-                                        aria-hidden="true"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="min-w-0 sm:mt-4 sm:text-center">
-                                  <h3 className="font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[18px]">
-                                    {member.name}
-                                  </h3>
-                                  <p className="mt-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase sm:mt-1.5">
-                                    {member.title}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="flex flex-1 flex-col px-4 pb-4 sm:px-5 sm:pb-5">
-                                {bioLines.length ? (
-                                  <ul className="mt-3 w-full space-y-2 border-t border-[var(--dc-hairline-strong)]/50 pt-3 text-left sm:mt-4">
-                                    {bioLines.map((line) => (
-                                      <li
-                                        key={line.slice(0, 40)}
-                                        className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]"
-                                      >
-                                        {line}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                ) : null}
-                              </div>
-                            </div>
-                          </div>
-                        </article>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ) : null}
-
-            {placements.length ? (
-              <section aria-labelledby="centre-placements">
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                      Outcomes
-                    </p>
-                    <h2
-                      id="centre-placements"
-                      className="section-title mt-1.5 font-display text-[var(--dc-ink)]"
-                    >
-                      Recent placements
-                    </h2>
-                  </div>
-                  <span className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase">
-                    {placements.length}
-                  </span>
-                </div>
-                <ul className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
-                  {placements.slice(0, 12).map((p) => (
-                    <li key={`${p.name}-${p.company}`} className="min-w-0">
-                      <article className="relative h-full">
-                        <div className="centres-clip-shell centres-clip-interactive group/place">
-                          <div className="centres-clip-card flex h-full flex-col overflow-hidden">
-                            <div className="flex justify-center pt-4 pb-1 sm:pt-6">
-                              <div className="centres-clip-media relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden sm:h-28 sm:w-28">
-                                {p.photoUrl ? (
-                                  <Image
-                                    src={p.photoUrl}
-                                    alt={p.name}
-                                    fill
-                                    sizes="112px"
-                                    className="object-cover object-top transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/place:scale-[1.03]"
-                                  />
-                                ) : (
-                                  <div className="grid h-full w-full place-items-center">
-                                    <span className="font-display text-[20px] font-extrabold text-[var(--dc-accent-soft)]">
-                                      {p.name
-                                        .split(/\s+/)
-                                        .slice(0, 2)
-                                        .map((w) => w[0])
-                                        .join('')
-                                        .toUpperCase()}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-1 flex-col items-center px-3 pt-2.5 pb-3.5 text-center sm:px-5 sm:pt-3 sm:pb-5">
-                              <h3 className="font-display text-[14.5px] leading-snug font-extrabold tracking-[-0.02em] break-words text-[var(--dc-ink)] sm:text-[17px]">
-                                {p.name}
-                              </h3>
-                              <p className="mt-1 line-clamp-2 text-[14px] leading-snug text-[var(--dc-ink-muted)] sm:mt-1.5">
-                                {p.company}
-                              </p>
-                              {p.package && /\d/.test(p.package) ? (
-                                <span className="numeral mt-auto pt-3 text-[12px] font-bold tracking-[0.04em] text-[var(--dc-accent-soft)]">
-                                  {p.package}
-                                </span>
-                              ) : null}
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-
-            {testimonials.length ? (
-              <section aria-labelledby="centre-stories">
-                <div className="mb-5">
-                  <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                    Voices
-                  </p>
-                  <h2
-                    id="centre-stories"
-                    className="section-title mt-1.5 font-display text-[var(--dc-ink)]"
-                  >
-                    Student stories
-                  </h2>
-                </div>
-                <CentreTestimonialSlider testimonials={testimonials} />
-              </section>
-            ) : null}
-
-            {faqs.length ? (
-              <section className="centres-card rounded-[20px] p-5 sm:rounded-[24px] sm:p-7" aria-labelledby="centre-faq">
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
-                  Help
-                </p>
-                <h2
-                  id="centre-faq"
-                  className="subsection-title mt-1.5 font-display text-[var(--dc-ink)]"
-                >
-                  Frequently asked questions
-                </h2>
-                <div className="mt-4 divide-y divide-[var(--dc-accent-soft)]/14">
-                  {faqs.map((faq) => (
-                    <details key={faq.question} className="group py-4">
-                      <summary className="cursor-pointer list-none text-[15px] font-bold text-[var(--dc-ink)] marker:content-none [&::-webkit-details-marker]:hidden">
-                        <span className="flex items-start justify-between gap-3">
-                          {faq.question}
-                          <span
-                            aria-hidden="true"
-                            className="centres-faq-toggle mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                          >
-                            <span className="centres-faq-toggle-icon" />
-                          </span>
-                        </span>
-                      </summary>
-                      <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                        {faq.answer}
-                      </p>
-                    </details>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {siblings.length ? (
-              <section className="centres-card rounded-[20px] p-5 sm:rounded-[24px] sm:p-7">
-                <h2 className="subsection-title font-display text-[var(--dc-ink)]">
-                  Other centres in {city.name}
-                </h2>
-                <ul className="mt-4 space-y-1">
-                  {siblings.map((sib) => (
-                    <li key={sib.slug}>
-                      <Link
-                        href={centrePath(sib.slug) as Route}
-                        className="group/sib flex items-center justify-between gap-3 rounded-[12px] px-3 py-2.5 transition-colors hover:bg-[var(--dc-accent-soft)]/6"
-                      >
-                        <span>
-                          <span className="block text-[14px] font-bold text-[var(--dc-ink)] group-hover/sib:text-[var(--dc-accent-soft)]">
-                            {sib.name}
-                          </span>
-                          <span className="text-[12.5px] text-[var(--dc-ink-muted)]">
-                            {sib.locality}
-                          </span>
-                        </span>
-                        <ChevronRight
-                          className="h-4 w-4 text-[var(--dc-accent-soft)]"
-                          strokeWidth={2.25}
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={cityDirectoryHref}
-                  className="tap mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-                >
-                  View all {city.name} centres
-                  <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
-                </Link>
-              </section>
-            ) : (
-              <div>
-                <Link
-                  href={cityDirectoryHref}
-                  className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
-                >
-                  View all {city.name} centres
-                  <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
-                </Link>
-              </div>
-            )}
           </div>
+        </Section>
+      ) : null}
 
-          {/* Sticky visit panel */}
-          <aside className="centres-card self-start overflow-hidden rounded-[24px] lg:sticky lg:top-28">
-            <div className="border-b border-[var(--dc-accent-soft)]/18 bg-linear-160 from-[var(--dc-accent)]/18 to-transparent to-70% px-5 py-5 sm:px-6 sm:py-6">
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
-                Visit this centre
-              </p>
-              <p className="mt-2 font-display text-[20px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)]">
-                {centre.locality}
-              </p>
+      {/* Admissions and the learning journey */}
+      {hasAdmissions ? (
+        <Section tone={nextTone()} id="centre-admissions" labelledBy="centre-admissions-heading" className="scroll-mt-36">
+          <SectionHeader
+            id="centre-admissions-heading"
+            eyebrow="Admissions"
+            title={eligibility.length ? 'Who can apply' : 'Your transformation journey'}
+            lede={eligibility.length ? undefined : 'From beginner to job-ready, step by step.'}
+          />
+          {eligibility.length ? (
+            <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
+              {eligibility.map((block) => (
+                <article key={block.title} className="kit kit-card p-5 sm:p-6">
+                  <h3 className="text-[13px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{block.title}</h3>
+                  <ul className="mt-4 space-y-3">
+                    {block.items.map((item) => (
+                      <li key={item.slice(0, 48)} className="flex gap-3 text-[15px] leading-relaxed text-[var(--k-ink-2)]">
+                        <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--k-red-fill)]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
             </div>
+          ) : null}
 
-            <div className="px-5 py-5 sm:px-6 sm:py-6">
-              <address className="flex gap-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] not-italic">
-                <MapPin
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                <span>
-                  {addressLines.map((line, index) => (
-                    <span key={line}>
-                      {index > 0 ? <br /> : null}
-                      {line}
+          {journey.length ? (
+            <div className={eligibility.length ? 'mt-14 sm:mt-16' : ''}>
+              {eligibility.length ? (
+                <h3 className="mb-8 text-center text-[22px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mb-10 sm:text-[26px]">
+                  Your transformation journey
+                </h3>
+              ) : null}
+              <StepPath
+                steps={journey.map((step, i) => ({
+                  icon: JOURNEY_ICONS[i % JOURNEY_ICONS.length]!,
+                  title: step.title,
+                  body: (
+                    <ul className="space-y-1.5 lg:text-left">
+                      {step.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ),
+                }))}
+              />
+            </div>
+          ) : null}
+        </Section>
+      ) : null}
+
+      {/* Faculty */}
+      {cleanFaculty.length ? (
+        <Section tone={nextTone()} id="centre-faculty-section" labelledBy="centre-faculty" className="scroll-mt-36">
+          <SectionHeader id="centre-faculty" eyebrow="Mentors" title="Our faculty" />
+          <CardRail label="Faculty" cols={3} colsMd={2}>
+            {cleanFaculty.map((member) => {
+              const bioLines = member.bio ? facultyBioLines(member.bio) : [];
+              return (
+                <article key={member.name} className="kit kit-card flex h-full flex-col gap-4 p-5 sm:p-6">
+                  <div className="flex items-center gap-4">
+                    <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)]">
+                      {member.photoUrl ? (
+                        <Image src={member.photoUrl} alt={member.name} fill sizes="80px" className="object-cover object-top" />
+                      ) : (
+                        <span className="grid h-full w-full place-items-center text-[var(--k-red)]">
+                          <Users className="h-8 w-8" strokeWidth={1.6} aria-hidden="true" />
+                        </span>
+                      )}
                     </span>
-                  ))}
+                    <div className="min-w-0">
+                      <h3 className="text-[18px] leading-snug font-extrabold tracking-[-0.01em] text-[var(--k-ink)]">{member.name}</h3>
+                      <p className="mt-1 text-[12.5px] font-bold tracking-[0.06em] text-[var(--k-red)] uppercase">{member.title}</p>
+                    </div>
+                  </div>
+                  {bioLines.length ? (
+                    <ul className="space-y-2 border-t border-[var(--k-line)] pt-4 text-[14.5px] leading-relaxed text-[var(--k-ink-2)]">
+                      {bioLines.map((line) => (
+                        <li key={line.slice(0, 40)}>{line}</li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </article>
+              );
+            })}
+          </CardRail>
+        </Section>
+      ) : null}
+
+      {/* Placements */}
+      {placements.length ? (
+        <Section tone={nextTone()} id="centre-placements-section" labelledBy="centre-placements" className="scroll-mt-36">
+          <SectionHeader id="centre-placements" eyebrow="Outcomes" title="Recent placements" />
+          <CardRail label="Recent placements" cols={4} colsMd={3}>
+            {placements.slice(0, 12).map((p) => (
+              <article key={`${p.name}-${p.company}`} className="kit kit-card flex h-full flex-col items-center gap-3 p-5 text-center sm:p-6">
+                <span className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--k-red-wash)]">
+                  {p.photoUrl ? (
+                    <Image src={p.photoUrl} alt={p.name} fill sizes="80px" className="object-cover object-top" />
+                  ) : (
+                    <span className="text-[20px] font-extrabold text-[var(--k-red)]">
+                      {p.name
+                        .split(/\s+/)
+                        .slice(0, 2)
+                        .map((w) => w[0])
+                        .join('')
+                        .toUpperCase()}
+                    </span>
+                  )}
                 </span>
-              </address>
+                <h3 className="text-[16.5px] leading-snug font-extrabold break-words text-[var(--k-ink)]">{p.name}</h3>
+                <p className="line-clamp-2 text-[14px] leading-snug text-[var(--k-ink-3)]">{p.company}</p>
+                {p.package && /\d/.test(p.package) ? (
+                  <span className="numeral mt-auto rounded-full bg-[var(--k-red-wash)] px-3 py-1 text-[12.5px] font-bold text-[var(--k-red)]">
+                    {p.package}
+                  </span>
+                ) : null}
+              </article>
+            ))}
+          </CardRail>
+        </Section>
+      ) : null}
 
-              <a
-                href={googleMapsUrl(centre)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="tap mt-3 ml-7 inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)]"
-              >
-                <Navigation className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
-                Open in Google Maps
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
+      {/* Student stories */}
+      {testimonials.length ? (
+        <Section tone={nextTone()} id="centre-stories-section" labelledBy="centre-stories" className="scroll-mt-36">
+          <SectionHeader id="centre-stories" eyebrow="Voices" title="Student stories" />
+          <CardRail label="Student stories" cols={3} colsMd={2}>
+            {testimonials.map((t) => (
+              <StoryCard key={`${t.name}-${t.quote.slice(0, 24)}`} name={t.name} outcome={t.role ?? ''} quote={t.quote} />
+            ))}
+          </CardRail>
+        </Section>
+      ) : null}
 
-              {centre.phone ? (
-                <div className="mt-5 flex gap-3 border-t border-[var(--dc-accent-soft)]/18 pt-5">
-                  <Phone
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-                      Phone
-                    </p>
-                    {phoneHref ? (
-                      <TrackedAnchor
-                        href={phoneHref}
-                        event="phone_clicked"
-                        props={{ centre_slug: centre.slug }}
-                        className="tap numeral mt-0.5 block text-[15px] font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
-                      >
-                        {centre.phone}
-                      </TrackedAnchor>
-                    ) : (
-                      <p className="numeral mt-0.5 text-[15px] font-semibold text-[var(--dc-ink)]">
-                        {centre.phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : null}
-
-              {centre.helpline ? (
-                <div className="mt-4 flex gap-3">
-                  <Headphones
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-                      Admissions helpline
-                    </p>
-                    {helplineHref ? (
-                      <TrackedAnchor
-                        href={helplineHref}
-                        event="phone_clicked"
-                        props={{ centre_slug: centre.slug, type: 'helpline' }}
-                        className="tap numeral mt-0.5 block text-[15px] font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
-                      >
-                        {centre.helpline}
-                      </TrackedAnchor>
-                    ) : (
-                      <p className="numeral mt-0.5 text-[15px] font-semibold text-[var(--dc-ink)]">
-                        {centre.helpline}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : null}
-
-              {centre.email ? (
-                <div className="mt-4 flex gap-3">
-                  <Mail
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-                      Email
-                    </p>
-                    <a
-                      href={`mailto:${centre.email}`}
-                      className="tap mt-0.5 block text-[15px] font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
+      {/* FAQ */}
+      {faqs.length ? (
+        <Section tone={nextTone()} id="centre-faq-section" labelledBy="centre-faq" className="scroll-mt-36">
+          <SectionHeader id="centre-faq" eyebrow="Help" title="Frequently asked questions" />
+          <div className="kit kit-card divide-y divide-[var(--k-line)] px-5 sm:px-7">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group py-4 sm:py-5">
+                <summary className="cursor-pointer list-none text-[16px] font-bold text-[var(--k-ink)] marker:content-none [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-start justify-between gap-4">
+                    {faq.question}
+                    <span
+                      aria-hidden="true"
+                      className="centres-faq-toggle mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] text-[var(--k-red)]"
                     >
-                      {centre.email}
-                    </a>
+                      <span className="centres-faq-toggle-icon" />
+                    </span>
+                  </span>
+                </summary>
+                <p className="mt-3 max-w-[70ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </Section>
+      ) : null}
+
+      {/* Visit this centre, and the other centres in the city */}
+      <Section tone={nextTone()} id="centre-visit-section" labelledBy="centre-visit" className="scroll-mt-36">
+        <SectionHeader id="centre-visit" eyebrow="Visit" title={`Visit ${centre.locality}`} />
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-6">
+          <div className="kit kit-card p-5 sm:p-7">
+            <address className="flex gap-3 text-[15px] leading-relaxed text-[var(--k-ink-2)] not-italic">
+              <MapPin className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+              <span>
+                {addressLines.map((line, index) => (
+                  <span key={line}>
+                    {index > 0 ? <br /> : null}
+                    {line}
+                  </span>
+                ))}
+              </span>
+            </address>
+
+            <a
+              href={googleMapsUrl(centre)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tap mt-4 ml-8 inline-flex items-center gap-1.5 rounded-full border border-[var(--k-line-strong)] px-4 py-2 text-[14px] font-bold text-[var(--k-red)] transition-colors hover:border-[var(--k-red)]"
+            >
+              <Navigation className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+              Open in Google Maps
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
+
+            <dl className="mt-6 space-y-5 border-t border-[var(--k-line)] pt-6">
+              {centre.phone ? (
+                <div className="flex gap-3">
+                  <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Phone</dt>
+                    <dd>
+                      {phoneHref ? (
+                        <TrackedAnchor
+                          href={phoneHref}
+                          event="phone_clicked"
+                          props={{ centre_slug: centre.slug }}
+                          className="tap numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)] hover:text-[var(--k-red)]"
+                        >
+                          {centre.phone}
+                        </TrackedAnchor>
+                      ) : (
+                        <span className="numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)]">{centre.phone}</span>
+                      )}
+                    </dd>
                   </div>
                 </div>
               ) : null}
+              {centre.helpline ? (
+                <div className="flex gap-3">
+                  <Headphones className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Admissions helpline</dt>
+                    <dd>
+                      {helplineHref ? (
+                        <TrackedAnchor
+                          href={helplineHref}
+                          event="phone_clicked"
+                          props={{ centre_slug: centre.slug, type: 'helpline' }}
+                          className="tap numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)] hover:text-[var(--k-red)]"
+                        >
+                          {centre.helpline}
+                        </TrackedAnchor>
+                      ) : (
+                        <span className="numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)]">{centre.helpline}</span>
+                      )}
+                    </dd>
+                  </div>
+                </div>
+              ) : null}
+              {centre.email ? (
+                <div className="flex gap-3">
+                  <Mail className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Email</dt>
+                    <dd>
+                      <a
+                        href={`mailto:${centre.email}`}
+                        className="tap mt-0.5 block text-[16px] font-semibold break-all text-[var(--k-ink)] hover:text-[var(--k-red)]"
+                      >
+                        {centre.email}
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+              ) : null}
+            </dl>
 
-              <Link
-                href={`/enquiry?centre=${centre.slug}` as Route}
-                className="group/enq mt-7 inline-flex min-h-12 w-full items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700"
-              >
-                <span>Enquire about this centre</span>
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/enq:translate-x-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
+                Enquire about this centre
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
               </Link>
-
-              <Link
-                href={'/centres' as Route}
-                className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-5 py-2.5 text-[14px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/70 hover:bg-[var(--dc-accent-tint)]"
-              >
+              <Link href={'/centres' as Route} className={outlineBtn}>
                 Back to all centres
               </Link>
             </div>
-          </aside>
-        </div>
-      </section>
+          </div>
 
-      {/* Bottom CTA band */}
-      <section className="shell py-14 sm:py-16 lg:py-20">
-        <div className="centres-cta-band relative overflow-hidden rounded-[24px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12 lg:px-12">
-          <span
-            aria-hidden="true"
-            className="centres-float-chip absolute top-6 right-6 hidden items-center gap-2 rounded-2xl px-3.5 py-2 text-[12px] font-bold text-[var(--dc-accent-soft)] sm:inline-flex"
-          >
-            <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
-            Placement support
-          </span>
-          <h2 className="section-title max-w-[20ch] font-display text-[var(--dc-ink)]">
-            Ready to visit{' '}
-            <span className="text-[var(--dc-accent-soft)]">{centre.locality}</span>?
-          </h2>
-          <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-            Talk to a counsellor about batches, fees and the right course for your goals at this
-            centre.
-          </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="kit kit-card p-5 sm:p-7">
+            <h3 className="text-[20px] font-extrabold text-[var(--k-ink)]">
+              {siblings.length ? `Other centres in ${city.name}` : `Centres in ${city.name}`}
+            </h3>
+            {siblings.length ? (
+              <ul className="mt-4 divide-y divide-[var(--k-line)]">
+                {siblings.map((sib) => (
+                  <li key={sib.slug}>
+                    <Link
+                      href={centrePath(sib.slug) as Route}
+                      className="group/sib flex items-center justify-between gap-3 py-3.5"
+                    >
+                      <span>
+                        <span className="block text-[15.5px] font-bold text-[var(--k-ink)] group-hover/sib:text-[var(--k-red)]">
+                          {sib.name}
+                        </span>
+                        <span className="text-[13.5px] text-[var(--k-ink-3)]">{sib.locality}</span>
+                      </span>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-[var(--k-red)]" strokeWidth={2.25} aria-hidden="true" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-3 text-[15px] text-[var(--k-ink-2)]">This is the only Jetking centre in {city.name}.</p>
+            )}
             <Link
-              href={`/enquiry?centre=${centre.slug}` as Route}
-              className="group/cta inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+              href={cityDirectoryHref}
+              className="tap mt-4 inline-flex items-center gap-1.5 text-[15px] font-bold text-[var(--k-red)]"
             >
+              View all {city.name} centres
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </Section>
+
+      {/* Closing band */}
+      <Section tone="wash" labelledBy="centre-cta-heading">
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+          <div className="max-w-2xl">
+            <h2 id="centre-cta-heading" className="section-title text-[var(--k-ink)]">
+              Ready to visit <span className="text-[var(--k-red)]">{centre.locality}</span>?
+            </h2>
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+              Talk to a counsellor about batches, fees and the right course for your goals at this centre.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
               Book a counselling call
-              <span
-                aria-hidden="true"
-                className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
-              >
-                <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-              </span>
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
             {phoneHref ? (
               <TrackedAnchor
                 href={phoneHref}
                 event="phone_clicked"
                 props={{ centre_slug: centre.slug, type: 'footer' }}
-                className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] px-5 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/60 hover:bg-[var(--dc-accent-tint)]"
+                className={outlineBtn}
               >
-                <Phone className="h-4 w-4 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
+                <Phone className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
                 {centre.phone}
               </TrackedAnchor>
             ) : null}
           </div>
         </div>
-      </section>
+      </Section>
+
+      <StickyCentreBar anchorId="centre-hero-cta" centreSlug={centre.slug} phoneHref={phoneHref} />
     </div>
   );
 }

@@ -139,7 +139,7 @@ export function BlogIndex({
     >
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
-          <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--dc-ink-muted)] uppercase">
+          <p className="k-eyebrow">
             Index
           </p>
           <h2
