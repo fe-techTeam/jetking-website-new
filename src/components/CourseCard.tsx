@@ -75,7 +75,7 @@ export function CourseCard({
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
           />
           {badge ? (
-            <span className="dc-cta absolute top-2 left-2 rounded-full px-2.5 py-1 text-[11.5px] font-bold sm:top-3 sm:left-3">
+            <span className="dc-cta absolute top-2 left-2 rounded-full px-2.5 py-1 text-[12px] font-bold sm:top-3 sm:left-3">
               {badge}
             </span>
           ) : null}

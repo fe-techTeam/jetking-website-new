@@ -135,8 +135,8 @@ export default async function FaqPage() {
                 <SectionHeader id={`faq-${topic}-heading`} title={label} />
                 <div className="kit kit-card divide-y divide-[var(--k-line)] px-5 sm:px-7">
                   {topicFaqs.map((faq) => (
-                    <details key={faq.id} className="group py-4 sm:py-5">
-                      <summary className="cursor-pointer list-none text-[16px] font-bold text-[var(--k-ink)] marker:content-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--k-red)] [&::-webkit-details-marker]:hidden">
+                    <details key={faq.id} className="group">
+                      <summary className="cursor-pointer list-none py-4 text-[16px] font-bold text-[var(--k-ink)] marker:content-none sm:py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--k-red)] [&::-webkit-details-marker]:hidden">
                         <span className="flex items-start justify-between gap-4">
                           {faq.question}
                           <span
@@ -147,7 +147,7 @@ export default async function FaqPage() {
                           </span>
                         </span>
                       </summary>
-                      <p className="mt-3 max-w-[70ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">{faq.answer}</p>
+                      <p className="-mt-1 max-w-[70ch] pb-4 text-[15px] leading-relaxed text-[var(--k-ink-2)] sm:pb-5">{faq.answer}</p>
                     </details>
                   ))}
                 </div>
