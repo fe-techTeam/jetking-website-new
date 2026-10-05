@@ -143,9 +143,9 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-mono text-[var(--accent-ink)]">team</p>
-          <h1 className="mt-4 text-3xl sm:text-4xl">Team &amp; access</h1>
-          <p className="lede mt-4 max-w-prose">
+          <p className="adm-eyebrow">team</p>
+          <h1 className="adm-title mt-3">Team &amp; access</h1>
+          <p className="adm-lede mt-3">
             Who can sign in, and what they can touch. Centre staff only see their own centre&apos;s
             leads.
           </p>
@@ -153,7 +153,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         <button
           type="button"
           onClick={() => setShowInvite((v) => !v)}
-          className="inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)]"
+          className="adm-btn-primary font-bold inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm"
         >
           {showInvite ? 'Cancel' : '+ Invite'}
         </button>
@@ -163,7 +163,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         <form
           ref={formRef}
           onSubmit={handleInvite}
-          className="mt-8 grid gap-4 rounded-[var(--radius-card)] border border-border bg-background p-5 sm:grid-cols-2"
+          className="mt-8 grid gap-4 adm-card p-5 sm:grid-cols-2"
         >
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Name</span>
@@ -217,7 +217,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-6 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:opacity-45"
+              className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
             >
               {pending ? 'Inviting…' : 'Create account'}
             </button>
@@ -279,8 +279,8 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         ) : null}
       </div>
 
-      <div className="mt-3 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background">
-        <table className="w-full min-w-[62rem] border-collapse text-sm">
+      <div className="mt-3 overflow-x-auto adm-card">
+        <table className="adm-table w-full min-w-[62rem] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
               {['Name', 'Role', 'Centre', 'Status', 'Last active', ''].map((h) => (
@@ -294,8 +294,18 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
             {filteredUsers.map((user) => (
               <tr key={user.id} className="border-b border-border last:border-none">
                 <td className="px-4 py-3">
-                  <span className="block font-semibold text-foreground">{user.name}</span>
-                  <span className="block text-xs text-foreground-muted">{user.email}</span>
+                  <div className="flex items-center gap-3">
+                    <span
+                      aria-hidden="true"
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-sm font-bold text-[var(--accent-ink)] ring-1 ring-[var(--accent-border)]/50"
+                    >
+                      {user.name.slice(0, 1).toUpperCase()}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-semibold text-foreground">{user.name}</span>
+                      <span className="block text-xs text-foreground-muted">{user.email}</span>
+                    </span>
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <select
@@ -341,13 +351,14 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                     type="button"
                     disabled={pending}
                     onClick={() => (user.status === 'active' ? setPendingDisable(user) : handleToggleStatus(user))}
-                    className={`cursor-pointer rounded-full px-2.5 py-1 text-xs font-semibold transition-colors disabled:opacity-45 ${
+                    className={`tap inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full px-3 text-xs font-bold capitalize transition-colors disabled:opacity-45 ${
                       user.status === 'active'
-                        ? 'bg-[var(--color-growth-50)] text-[var(--color-growth-600)] hover:bg-[var(--color-error-50)] hover:text-[var(--color-error-600)]'
-                        : 'bg-[var(--color-error-50)] text-[var(--color-error-600)] hover:bg-[var(--color-growth-50)] hover:text-[var(--color-growth-600)]'
+                        ? 'bg-[var(--color-growth-50)] text-[#067647] hover:bg-[var(--color-error-50)] hover:text-[#b42318]'
+                        : 'bg-[var(--color-error-50)] text-[#b42318] hover:bg-[var(--color-growth-50)] hover:text-[#067647]'
                     }`}
                     title={user.status === 'active' ? 'Click to disable' : 'Click to re-activate'}
                   >
+                    <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
                     {user.status}
                   </button>
                 </td>
@@ -355,18 +366,18 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                   {formatDate(user.lastActiveAt)}
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-3">
+                  <div className="flex items-center justify-end gap-1">
                     <button
                       type="button"
                       onClick={() => setResetPasswordFor(user)}
-                      className="cursor-pointer text-xs font-semibold text-foreground-secondary hover:text-[var(--accent)]"
+                      className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
                     >
                       Reset password
                     </button>
                     <button
                       type="button"
                       onClick={() => setPendingRemove(user)}
-                      className="cursor-pointer text-xs font-semibold text-foreground-muted hover:text-[var(--color-error-600)]"
+                      className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318] focus-visible:outline-2 focus-visible:outline-[var(--color-error-600)]"
                     >
                       Remove
                     </button>
@@ -513,7 +524,7 @@ function ResetPasswordDialog({
               type="button"
               disabled={pending || password.length < 8}
               onClick={submit}
-              className="h-10 cursor-pointer rounded-[var(--admin-radius)] bg-[var(--accent)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:opacity-45"
+              className="adm-btn-primary font-bold min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-4 text-sm disabled:opacity-45"
             >
               {pending ? 'Saving…' : 'Set password'}
             </button>

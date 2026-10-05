@@ -30,8 +30,8 @@ export default async function AdminAuditPage() {
   if (!isDatabaseConfigured()) {
     return (
       <div className="max-w-2xl">
-        <p className="label-mono text-[var(--accent-ink)]">audit</p>
-        <h1 className="mt-4 text-3xl sm:text-4xl">Audit log</h1>
+        <p className="adm-eyebrow">audit</p>
+        <h1 className="adm-title mt-3">Audit log</h1>
         <div
           role="alert"
           className="mt-8 rounded-[var(--radius-card)] border border-[var(--color-error-200)] bg-[var(--color-error-50)] px-5 py-4 text-sm font-medium text-[var(--color-error-600)]"
@@ -49,15 +49,15 @@ export default async function AdminAuditPage() {
 
   return (
     <div>
-      <p className="label-mono text-[var(--accent-ink)]">audit</p>
-      <h1 className="mt-4 text-3xl sm:text-4xl">Audit log</h1>
-      <p className="lede mt-4 max-w-prose">
+      <p className="adm-eyebrow">audit</p>
+      <h1 className="adm-title mt-3">Audit log</h1>
+      <p className="adm-lede mt-3">
         Every content save or delete, lead status change, and team change made in this panel —
         newest first, up to the last {entries.length === 200 ? '200 entries' : `${entries.length} entries`}.
       </p>
 
-      <div className="mt-8 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background">
-        <table className="w-full min-w-[52rem] border-collapse text-sm">
+      <div className="mt-8 overflow-x-auto adm-card">
+        <table className="adm-table w-full min-w-[52rem] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
               {['When', 'Actor', 'Action', 'Summary'].map((h) => (

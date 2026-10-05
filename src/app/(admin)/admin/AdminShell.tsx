@@ -15,10 +15,14 @@ import { AdminTopbar } from './AdminTopbar';
 export function AdminShell({
   sidebar,
   navItems,
+  user,
+  liveContent,
   children,
 }: {
   sidebar: ReactNode;
   navItems: Array<{ href: Route; label: string; icon: string }>;
+  user: { name: string; role: string };
+  liveContent: boolean;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -41,7 +45,7 @@ export function AdminShell({
       <div
         onClick={() => setOpen(false)}
         aria-hidden="true"
-        className={`fixed inset-0 z-30 bg-black/40 transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-30 bg-[#090c15]/60 backdrop-blur-[2px] transition-opacity lg:hidden ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
@@ -54,7 +58,7 @@ export function AdminShell({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopbar items={navItems} onMenuClick={() => setOpen(true)} />
+        <AdminTopbar items={navItems} user={user} liveContent={liveContent} onMenuClick={() => setOpen(true)} />
         {children}
       </div>
     </div>

@@ -1,0 +1,381 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   JETKING ADMIN — "Obsidian & Crimson"
+   One scoped theme for the CMS (`.surface-default.adm`, set in admin/layout.tsx).
+   The public site's tokens are untouched; this only re-points the semantic
+   tokens the admin already reads (bg-background, border-border, text-foreground,
+   --accent*, --radius-card, --admin-radius) so every existing admin screen
+   picks up the new surface language, then adds the few pieces tokens can't
+   express: the dark sidebar, hero banner, page header, and elevated cards.
+
+   Direction: a cool paper canvas, white cards with a hairline and a soft two-
+   layer shadow, deep-ink chrome, ONE crimson accent used sparingly (active
+   state, primary action, key numbers) — premium by restraint, not decoration.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.surface-default.adm {
+  /* Canvas + surfaces */
+  --color-surface: #f3f4f8;
+  --color-background: #ffffff;
+  --color-card: #ffffff;
+  --color-elevated: #ffffff;
+
+  /* Ink */
+  --color-foreground: #0e1424;
+  --color-foreground-secondary: #46506a;
+  --color-foreground-muted: #66708a;
+  --color-foreground-disabled: #a3abbd;
+
+  /* Lines */
+  --color-border: #e6e9f0;
+  --color-border-medium: #d3d8e3;
+  --color-border-strong: #a3abbd;
+  --color-border-subtle: #f0f2f7;
+
+  /* Accent: crimson with a real tint (the public site keeps its neutral one) */
+  --accent: #c7141c;
+  --accent-hover: #a50d13;
+  --accent-active: #8a0b10;
+  --accent-ink: #a50d13;
+  --accent-soft: rgb(199 20 28 / 0.08);
+  --accent-border: rgb(199 20 28 / 0.28);
+  --focus-ring: #c7141c;
+
+  /* Shape */
+  --admin-radius: 10px;
+  /* The website's own card radii (--dc-cut) and pill buttons, so the admin reads as the same product. */
+  --radius-card: 20px;
+  --radius-dialog: 24px;
+
+  /* Elevation — hairline-first; a card should feel placed, not floating */
+  --adm-shadow-card: 0 1px 2px rgb(14 20 36 / 0.04), 0 8px 24px -16px rgb(14 20 36 / 0.12);
+  --adm-shadow-lift: 0 2px 4px rgb(14 20 36 / 0.05), 0 18px 36px -16px rgb(14 20 36 / 0.22);
+  --adm-shadow-brand: 0 1px 0 rgb(255 255 255 / 0.18) inset, 0 8px 18px -6px rgb(199 20 28 / 0.55);
+
+  /* Chrome (always dark, independent of the page) */
+  --adm-ink-900: #090c15;
+  --adm-ink-800: #0e1322;
+  --adm-ink-700: #151b2e;
+  --adm-line: rgb(255 255 255 / 0.08);
+
+  background: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.surface-default.adm .adm-eyebrow::before {
+  content: '';
+  width: 1.125rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.surface-default.adm .adm-title {
+  font-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem);
+  line-height: 1.12;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-foreground);
+}
+.surface-default.adm .adm-lede {
+  max-width: 60ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-foreground-secondary);
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--adm-shadow-card);
+}
+.surface-default.adm .adm-card-link {
+  transition:
+    transform 0.2s var(--ease-out-soft),
+    box-shadow 0.2s var(--ease-out-soft),
+    border-color 0.2s var(--ease-out-soft);
+}
+.surface-default.adm .adm-card-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-border);
+  box-shadow: var(--adm-shadow-lift);
+}
+.surface-default.adm .adm-card-link:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-btn-primary,
+.surface-default.adm .adm-btn-ghost {
+  border-radius: 999px;
+}
+.surface-default.adm .adm-btn-primary {
+  background: linear-gradient(180deg, #ea1c24 0%, var(--accent) 100%);
+  color: #fff;
+  box-shadow: var(--adm-shadow-brand);
+  transition:
+    filter 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.surface-default.adm .adm-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.surface-default.adm .adm-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+.surface-default.adm .adm-btn-primary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.surface-default.adm .adm-btn-ghost {
+  background: var(--color-background);
+  border: 1px solid var(--color-border-medium);
+  color: var(--color-foreground);
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+.surface-default.adm .adm-btn-ghost:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-sidebar {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgb(199 20 28 / 0.2), transparent 55%),
+    linear-gradient(180deg, var(--adm-ink-800) 0%, var(--adm-ink-900) 100%);
+  border-right: 1px solid var(--adm-line);
+  color: rgb(255 255 255 / 0.72);
+}
+.surface-default.adm .adm-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.5rem;
+}
+/* The wordmark is dark-on-transparent; sit it on a white tile so it stays crisp and on-brand. */
+.surface-default.adm .adm-sidebar-mark {
+  display: grid;
+  place-items: center;
+  height: 2.5rem;
+  padding-inline: 0.75rem;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.4) inset,
+    0 6px 16px -6px rgb(0 0 0 / 0.5);
+}
+.surface-default.adm .adm-sidebar-group {
+  padding: 1.25rem 0.75rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.62);
+}
+.surface-default.adm .adm-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding-inline: 0.625rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.78);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.surface-default.adm .adm-nav-link:hover {
+  background: rgb(255 255 255 / 0.07);
+  color: #fff;
+}
+.surface-default.adm .adm-nav-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+.surface-default.adm .adm-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 9px;
+  color: rgb(255 255 255 / 0.66);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.surface-default.adm .adm-nav-link:hover .adm-nav-icon {
+  color: #fff;
+}
+.surface-default.adm .adm-nav-link[aria-current='page'] {
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.05));
+  color: #fff;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06) inset;
+}
+.surface-default.adm .adm-nav-link[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #f97066;
+  box-shadow: 0 0 14px rgb(249 112 102 / 0.7);
+}
+.surface-default.adm .adm-nav-link[aria-current='page'] .adm-nav-icon {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px rgb(199 20 28 / 0.9);
+}
+.surface-default.adm .adm-sidebar-user {
+  border: 1px solid var(--adm-line);
+  background: rgb(255 255 255 / 0.04);
+  border-radius: 14px;
+}
+
+/* ── Topbar ──────────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-topbar {
+  background: rgb(255 255 255 / 0.82);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Hero banner (dashboard) ─────────────────────────────────────────────── */
+.surface-default.adm .adm-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 22px;
+  color: #fff;
+  background:
+    radial-gradient(70% 120% at 100% 0%, rgb(199 20 28 / 0.55), transparent 60%),
+    radial-gradient(50% 90% at 0% 100%, rgb(255 255 255 / 0.06), transparent 60%),
+    linear-gradient(135deg, var(--adm-ink-700) 0%, var(--adm-ink-900) 100%);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.08) inset,
+    0 22px 44px -22px rgb(9 12 21 / 0.7);
+}
+.surface-default.adm .adm-hero::after {
+  /* fine grid, fades out toward the left so text stays clean */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 25%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 25%, #000 100%);
+}
+.surface-default.adm .adm-hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.surface-default.adm .adm-hero-chip:hover {
+  background: rgb(255 255 255 / 0.18);
+  border-color: rgb(255 255 255 / 0.28);
+}
+.surface-default.adm .adm-hero-chip:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ── Status dot ──────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+.surface-default.adm .adm-table thead th {
+  background: var(--color-surface);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-foreground-muted);
+}
+.surface-default.adm .adm-table tbody tr {
+  transition: background-color 0.12s;
+}
+.surface-default.adm .adm-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+}
+
+/* ── Inputs: calmer hairline, crimson focus ring ─────────────────────────── */
+.surface-default.adm .admin-input {
+  border-color: var(--color-border-medium);
+  background: var(--color-background);
+}
+.surface-default.adm .admin-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(199 20 28 / 0.16);
+}
+
+/* Touch-sized fields everywhere in the CMS; labels read as crisp small caps, not wide-tracked mono. */
+.surface-default.adm .admin-input {
+  min-height: 2.75rem;
+}
+.surface-default.adm .label-mono {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-foreground-muted);
+}
+
+/* ── Scrollbars inside the shell ─────────────────────────────────────────── */
+.surface-default.adm #admin-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-medium) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface-default.adm .adm-card-link,
+  .surface-default.adm .adm-btn-primary {
+    transition: none;
+  }
+  .surface-default.adm .adm-card-link:hover,
+  .surface-default.adm .adm-btn-primary:hover:not(:disabled) {
+    transform: none;
+  }
+}

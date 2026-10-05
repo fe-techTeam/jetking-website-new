@@ -19,8 +19,8 @@ export default async function AdminLeadsPage({
   if (!isDatabaseConfigured()) {
     return (
       <div className="max-w-2xl">
-        <p className="label-mono text-[var(--accent-ink)]">leads</p>
-        <h1 className="mt-4 text-3xl sm:text-4xl">Leads</h1>
+        <p className="adm-eyebrow">leads</p>
+        <h1 className="adm-title mt-3">Leads</h1>
         <div
           role="alert"
           className="mt-8 rounded-[var(--radius-card)] border border-[var(--color-error-200)] bg-[var(--color-error-50)] px-5 py-4 text-sm font-medium text-[var(--color-error-600)]"

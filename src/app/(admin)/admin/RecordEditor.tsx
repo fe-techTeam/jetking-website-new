@@ -6,6 +6,23 @@ import type { CmsCollection } from '@/lib/cms/types';
 import { ADMIN_FORM_CONFIG } from '@/lib/cms/admin-form-config';
 import { ValueEditor, humanize } from './ValueEditor';
 import { AdminConfirmDialog } from './AdminConfirmDialog';
+import { AdminPageHeader } from './AdminPageHeader';
+import { WebsiteUsage } from './WebsiteUsage';
+import type { AppearsOn } from './registry';
+
+function StatusBadge({ status }: { status: string }) {
+  const published = status === 'published';
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-bold ${
+        published ? 'bg-[var(--color-growth-50)] text-[#067647]' : 'bg-[var(--color-signal-50)] text-[#b54708]'
+      }`}
+    >
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
+      {published ? 'Published' : status === 'draft' ? 'Draft' : status}
+    </span>
+  );
+}
 
 type Rec = Record<string, unknown>;
 type PendingSwitch = { kind: 'record'; item: Rec } | { kind: 'new' };
@@ -15,11 +32,20 @@ export function RecordEditor({
   idKey,
   initial,
   title,
+  description = 'Edit as a form and save — no JSON required.',
+  live = true,
+  appearsOn = [],
+  note,
 }: {
   collection: CmsCollection;
   idKey: string;
   initial: unknown[];
   title: string;
+  description?: string;
+  /** False when the website does not render this collection — the strip below the heading says so. */
+  live?: boolean;
+  appearsOn?: AppearsOn[];
+  note?: string;
 }) {
   // Looked up here rather than passed as a prop: a Server Component page can't
   // hand a Client Component a config object whose `blank` field is a function —
@@ -143,17 +169,21 @@ export function RecordEditor({
 
   return (
     <div>
-      <p className="label-mono text-[var(--accent-ink)]">{collection}</p>
-      <h1 className="mt-4 text-3xl sm:text-4xl">{title}</h1>
-      <p className="lede mt-4">Edit as a form and save — no JSON required.</p>
+      <AdminPageHeader
+        eyebrow={collection.replace(/_/g, ' ')}
+        title={title}
+        description={description}
+      />
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
+      <WebsiteUsage live={live} appearsOn={appearsOn} note={note} />
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:items-start">
         {/* ── Record list ─────────────────────────────────────────────── */}
         <div className="min-w-0">
-          <div className="rounded-[var(--radius-card)] border border-border bg-background">
-            <div className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-3">
-              <h2 className="label-mono">Records</h2>
-              <span className="label-mono numeral">
+          <div className="adm-card overflow-hidden">
+            <div className="flex items-center justify-between gap-4 border-b border-border bg-surface/70 px-4 py-3.5">
+              <h2 className="text-sm font-bold tracking-tight text-foreground">Records</h2>
+              <span className="numeral rounded-full bg-background px-2.5 py-0.5 text-xs font-bold text-foreground-secondary ring-1 ring-border">
                 {query ? `${visibleItems.length} / ${items.length}` : items.length}
               </span>
             </div>
@@ -170,7 +200,7 @@ export function RecordEditor({
               </div>
             ) : null}
 
-            <ul className="max-h-[36rem] overflow-auto">
+            <ul className="max-h-[34rem] overflow-auto">
               {visibleItems.length === 0 ? (
                 <li className="px-4 py-6 text-center text-sm text-foreground-muted">
                   {query ? 'No records match your search.' : 'No records yet — add one below.'}
@@ -184,22 +214,29 @@ export function RecordEditor({
                 return (
                   <li
                     key={id}
-                    className={`flex items-center gap-2 border-b border-border px-3 last:border-none ${
-                      isActive ? 'bg-[var(--accent-soft)]' : ''
+                    className={`relative flex items-center gap-2 border-b border-border px-3 transition-colors last:border-none ${
+                      isActive ? 'bg-[var(--accent-soft)]' : 'hover:bg-surface/70'
                     }`}
                   >
+                    {isActive ? (
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r-full bg-[var(--accent)]"
+                      />
+                    ) : null}
                     <button
                       type="button"
-                      className="min-w-0 flex-1 cursor-pointer py-3 text-left"
+                      aria-current={isActive ? 'true' : undefined}
+                      className="min-w-0 flex-1 cursor-pointer py-3 text-left focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
                       onClick={() => loadRecord(item)}
                     >
-                      <span className={`block text-sm break-words ${isActive ? 'font-semibold text-[var(--accent)]' : 'text-foreground'}`}>
+                      <span
+                        className={`block text-sm leading-snug break-words ${isActive ? 'font-bold text-[var(--accent-ink)]' : 'font-medium text-foreground'}`}
+                      >
                         {id}
                       </span>
-                      <span
-                        className={status === 'published' ? 'label-mono text-growth-600' : 'label-mono'}
-                      >
-                        {status}
+                      <span className="mt-1 block">
+                        <StatusBadge status={status} />
                       </span>
                     </button>
 
@@ -207,7 +244,7 @@ export function RecordEditor({
                       type="button"
                       disabled={pending}
                       aria-label={`Delete ${id}`}
-                      className="shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 py-1 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:text-[var(--color-error-600)] disabled:opacity-45"
+                      className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45"
                       onClick={() => setPendingDeleteId(id)}
                     >
                       Delete
@@ -221,7 +258,7 @@ export function RecordEditor({
           <button
             type="button"
             onClick={startNew}
-            className="mt-3 w-full cursor-pointer rounded-[var(--admin-radius)] border border-dashed border-border-medium px-4 py-2.5 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            className="mt-3 min-h-11 w-full cursor-pointer rounded-[12px] border border-dashed border-border-medium bg-background px-4 text-sm font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-ink)] focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
           >
             + New record
           </button>
@@ -229,14 +266,18 @@ export function RecordEditor({
 
         {/* ── Form ────────────────────────────────────────────────────── */}
         <div className="min-w-0">
-          <div className="rounded-[var(--radius-card)] border border-border bg-background p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
-              <label className="flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-foreground">
+          <div className="adm-card p-5 sm:p-7">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={published}
+                onClick={() => setDraft((prev) => ({ ...prev, status: published ? 'draft' : 'published' }))}
+                className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[12px] pr-2 text-sm font-bold text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+              >
                 <span
-                  role="switch"
-                  aria-checked={published}
-                  onClick={() => setDraft((prev) => ({ ...prev, status: published ? 'draft' : 'published' }))}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
+                  aria-hidden="true"
+                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
                     published ? 'bg-growth-600' : 'bg-border-medium'
                   }`}
                 >
@@ -247,7 +288,7 @@ export function RecordEditor({
                   />
                 </span>
                 {published ? 'Published' : 'Draft'}
-              </label>
+              </button>
 
               <div className="flex items-center gap-3">
                 {error ? (
@@ -264,7 +305,7 @@ export function RecordEditor({
                   type="button"
                   disabled={pending}
                   onClick={save}
-                  className="inline-flex h-10 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:opacity-45"
+                  className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
                 >
                   {pending ? 'Saving…' : 'Save'}
                 </button>
@@ -275,7 +316,7 @@ export function RecordEditor({
               {sections.map((section, i) => (
                 <div key={section.title ?? 'flat'} className={i > 0 ? 'border-t border-border pt-6' : ''}>
                   {section.title ? (
-                    <h3 className="mb-4 text-sm font-semibold text-foreground">{section.title}</h3>
+                    <h3 className="mb-4 text-sm font-bold tracking-tight text-foreground">{section.title}</h3>
                   ) : null}
                   <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                     {section.fields.map((key) => {
@@ -303,15 +344,18 @@ export function RecordEditor({
 
           {/* Sticks to the bottom of the viewport on a long form, so Save is
              never more than one glance away without scrolling back to the top. */}
-          <div className="sticky bottom-4 z-10 mt-4 flex items-center justify-between gap-3 rounded-[var(--radius-card)] border border-border bg-background/95 px-4 py-3 shadow-[var(--shadow-lg)] backdrop-blur-sm">
-            <span className="text-xs font-medium text-foreground-muted">
+          <div className="adm-card sticky bottom-4 z-10 mt-4 flex items-center justify-between gap-3 !bg-background/90 px-4 py-3 shadow-[var(--adm-shadow-lift)] backdrop-blur-md">
+            <span
+              className={`inline-flex items-center gap-2 text-sm font-semibold ${isDirty ? 'text-[#b54708]' : 'text-foreground-muted'}`}
+            >
+              <span aria-hidden="true" className="adm-dot" />
               {isDirty ? 'Unsaved changes' : 'All changes saved'}
             </span>
             <button
               type="button"
               disabled={pending}
               onClick={save}
-              className="inline-flex h-9 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:opacity-45"
+              className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45"
             >
               {pending ? 'Saving…' : 'Save'}
             </button>

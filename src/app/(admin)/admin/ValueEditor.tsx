@@ -4,7 +4,13 @@ import type { AdminFormConfig } from '@/lib/cms/admin-form-config';
 import { BlocksEditor, type Block } from './BlocksEditor';
 import { TagListEditor } from './TagListEditor';
 
+/** Field names whose data key predates the website's wording. The site says "courses" everywhere. */
+const LABEL_OVERRIDES: Record<string, string> = {
+  featuredProgrammes: 'Featured courses',
+};
+
 export function humanize(key: string): string {
+  if (LABEL_OVERRIDES[key]) return LABEL_OVERRIDES[key];
   const spaced = key.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ');
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
@@ -41,7 +47,7 @@ function ObjectListEditor({
             <button
               type="button"
               onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-              className="cursor-pointer text-xs font-semibold text-foreground-muted hover:text-[var(--color-error-600)]"
+              className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
             >
               Remove
             </button>
@@ -61,7 +67,7 @@ function ObjectListEditor({
       <button
         type="button"
         onClick={() => onChange([...value, itemTemplate])}
-        className="cursor-pointer self-start rounded-[var(--admin-radius)] border border-dashed border-border-medium px-3.5 py-1.5 text-xs font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        className="min-h-11 cursor-pointer self-start rounded-[var(--admin-radius)] border border-dashed border-border-medium bg-background px-4 text-sm font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-ink)]"
       >
         + Add {humanize(fieldKey).replace(/s$/, '')}
       </button>
@@ -176,12 +182,12 @@ export function ValueEditor({
 
   if (typeof value === 'boolean') {
     return (
-      <label className="flex h-[calc(2*0.5rem+1.25rem)] cursor-pointer items-center gap-2 text-sm text-foreground-secondary">
+      <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm font-medium text-foreground-secondary">
         <input
           type="checkbox"
           checked={value}
           onChange={(e) => onChange(e.target.checked)}
-          className="h-4 w-4 cursor-pointer rounded border-border-medium accent-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/25"
+          className="h-5 w-5 cursor-pointer rounded border-border-medium accent-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/25"
         />
         {value ? 'Yes' : 'No'}
       </label>

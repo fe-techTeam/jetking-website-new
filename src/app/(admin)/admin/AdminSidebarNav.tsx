@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
@@ -17,6 +17,11 @@ import {
   SlidersHorizontal,
   KeyRound,
   History,
+  Globe,
+  MapPin,
+  BadgeCheck,
+  Trophy,
+  ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -36,49 +41,90 @@ const ICONS: Record<string, LucideIcon> = {
   SlidersHorizontal,
   KeyRound,
   History,
+  Globe,
+  MapPin,
+  BadgeCheck,
+  Trophy,
 };
 
 export function AdminSidebarNav({
   items,
 }: {
-  items: Array<{ href: Route; label: string; icon: string; group?: string }>;
+  items: Array<{ href: Route; label: string; icon: string; group?: string; tag?: string }>;
 }) {
   const pathname = usePathname();
+  const scrollRef = useRef<HTMLElement>(null);
+  const [more, setMore] = useState({ above: false, below: false });
+
+  // The list scrolls inside the sidebar on short screens (the phone drawer, small laptops). With
+  // the scrollbar hidden there was no sign that more links sat below the fold, so a fade + chevron
+  // appears on whichever edge still has content. Measured from observers/scroll events — never
+  // synchronously in the effect — so it also follows the viewport resizing or the role-filtered
+  // list changing length.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const measure = () =>
+      setMore({
+        above: el.scrollTop > 4,
+        below: el.scrollHeight - el.scrollTop - el.clientHeight > 4,
+      });
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    el.addEventListener('scroll', measure, { passive: true });
+    return () => {
+      observer.disconnect();
+      el.removeEventListener('scroll', measure);
+    };
+  }, [items.length]);
 
   return (
-    <nav className="mt-5 flex flex-col gap-0.5">
-      {items.map((item, index) => {
-        const showGroupHeading = Boolean(item.group) && item.group !== items[index - 1]?.group;
-        const Icon = ICONS[item.icon] ?? LayoutGrid;
-        const active = item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href);
+    <div className="relative mt-4 flex min-h-0 flex-1 flex-col">
+      <nav
+        ref={scrollRef}
+        aria-label="Admin sections"
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((item, index) => {
+          const showGroupHeading = Boolean(item.group) && item.group !== items[index - 1]?.group;
+          const Icon = ICONS[item.icon] ?? LayoutGrid;
+          const active = item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href);
 
-        return (
-          <Fragment key={item.href}>
-            {showGroupHeading ? (
-              <p className="mt-3 px-3 pb-1.5 text-[12px] font-semibold tracking-wider text-foreground-muted/70 uppercase first:mt-0">
-                {item.group}
-              </p>
-            ) : null}
-            <Link
-              href={item.href}
-              aria-current={active ? 'page' : undefined}
-              className={`group flex h-11 items-center gap-3 rounded-[var(--admin-radius)] px-3 text-sm font-medium transition-colors ${
-                active
-                  ? 'bg-[var(--accent-soft)] text-[var(--accent)]'
-                  : 'text-foreground-secondary hover:bg-surface hover:text-foreground'
-              }`}
-            >
-              <Icon
-                aria-hidden="true"
-                className={`h-4 w-4 shrink-0 transition-colors ${
-                  active ? 'text-[var(--accent)]' : 'text-foreground-muted group-hover:text-foreground'
-                }`}
-              />
-              {item.label}
-            </Link>
-          </Fragment>
-        );
-      })}
-    </nav>
+          return (
+            <Fragment key={item.href}>
+              {showGroupHeading ? <p className="adm-sidebar-group first:pt-2">{item.group}</p> : null}
+              <Link href={item.href} aria-current={active ? 'page' : undefined} className="adm-nav-link">
+                <span className="adm-nav-icon">
+                  <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2} />
+                </span>
+                <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                {/* Collections the website doesn't render say so here, not only on their own page. */}
+                {item.tag ? (
+                  <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/70">
+                    {item.tag}
+                  </span>
+                ) : null}
+              </Link>
+            </Fragment>
+          );
+        })}
+      </nav>
+
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-[#0d1220] to-transparent transition-opacity duration-200 ${
+          more.above ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 flex h-14 items-end justify-center bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/80 to-transparent pb-1 transition-opacity duration-200 ${
+          more.below ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <ChevronDown className="h-4 w-4 animate-bounce text-white/70 motion-reduce:animate-none" strokeWidth={2.5} />
+      </div>
+    </div>
   );
 }

@@ -39,9 +39,9 @@ export function AdminConfirmDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-xl focus:outline-none">
-          <Dialog.Title className="text-lg font-semibold text-foreground">{title}</Dialog.Title>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-[#090c15]/60 backdrop-blur-[2px]" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-[22px] border border-border bg-card p-6 shadow-[0_28px_70px_-20px_rgb(9_12_21/0.45)] focus:outline-none sm:p-7">
+          <Dialog.Title className="text-lg font-extrabold tracking-[-0.02em] text-foreground">{title}</Dialog.Title>
           <Dialog.Description className="mt-2 text-sm leading-relaxed text-foreground-secondary">
             {description}
           </Dialog.Description>
@@ -49,7 +49,7 @@ export function AdminConfirmDialog({
             <Dialog.Close asChild>
               <button
                 type="button"
-                className="h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-border-strong hover:text-foreground"
+                className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border-medium px-5 text-sm font-semibold text-foreground-secondary transition-colors hover:border-border-strong hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0e1424]"
               >
                 {cancelLabel}
               </button>
@@ -58,10 +58,10 @@ export function AdminConfirmDialog({
               type="button"
               disabled={pending}
               onClick={onConfirm}
-              className={`h-10 cursor-pointer rounded-[var(--admin-radius)] px-4 text-sm font-semibold text-white transition-colors disabled:opacity-45 ${
+              className={`min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold text-white shadow-[0_8px_18px_-8px_rgb(199_20_28/0.6)] transition-[filter,transform] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c7141c] disabled:opacity-45 ${
                 tone === 'default'
-                  ? 'bg-[var(--accent)] hover:bg-[var(--accent-hover)]'
-                  : 'bg-[var(--color-error-600)] hover:bg-[var(--color-error-600)]/90'
+                  ? 'bg-gradient-to-b from-[#ea1c24] to-[#c7141c]'
+                  : 'bg-gradient-to-b from-[#ea1c24] to-[#c7141c]'
               }`}
             >
               {pending ? (pendingLabel ?? (tone === 'default' ? 'Saving…' : 'Deleting…')) : confirmLabel}

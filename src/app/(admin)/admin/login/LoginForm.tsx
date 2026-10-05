@@ -52,7 +52,7 @@ export function LoginForm({
   }
 
   return (
-    <form action={formAction} onSubmit={handleSubmit} noValidate className="mt-7 space-y-4">
+    <form action={formAction} onSubmit={handleSubmit} noValidate className="mt-8 space-y-5">
       {state.error ? (
         <div
           role="alert"
@@ -86,7 +86,7 @@ export function LoginForm({
               onKeyDown={handleKeyDown}
               aria-invalid={showEmailError || undefined}
               aria-describedby={showEmailError ? 'email-error' : undefined}
-              className={`h-11 w-full rounded-[var(--admin-radius)] border bg-background pr-4 pl-10 text-base text-foreground transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${
+              className={`h-12 w-full rounded-[12px] border bg-background pr-4 pl-10 text-base text-foreground transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${
                 showEmailError
                   ? 'border-[var(--color-error-600)] focus:border-[var(--color-error-600)] focus:ring-2 focus:ring-[var(--color-error-600)]/20'
                   : 'border-border hover:border-border-medium focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/25'
@@ -123,7 +123,7 @@ export function LoginForm({
             onKeyDown={handleKeyDown}
             aria-invalid={showPasswordError || undefined}
             aria-describedby={showPasswordError ? 'password-error' : undefined}
-            className={`h-11 w-full rounded-[var(--admin-radius)] border bg-background pr-11 pl-10 text-base text-foreground transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${
+            className={`h-12 w-full rounded-[12px] border bg-background pr-11 pl-10 text-base text-foreground transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${
               showPasswordError
                 ? 'border-[var(--color-error-600)] focus:border-[var(--color-error-600)] focus:ring-2 focus:ring-[var(--color-error-600)]/20'
                 : 'border-border hover:border-border-medium focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/25'
@@ -153,7 +153,7 @@ export function LoginForm({
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-6 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+        className="adm-btn-primary inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-[12px] px-6 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? 'Signing in…' : 'Sign in'}
       </button>

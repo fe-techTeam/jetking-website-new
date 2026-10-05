@@ -1,19 +1,15 @@
 import Link from 'next/link';
 import type { Route } from 'next';
-import { ArrowRight, type LucideIcon } from 'lucide-react';
+import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 
 /**
- * Dashboard widgets in the TailAdmin pattern (icon-badge stat cards, a bar
- * chart, a donut) — hand-rolled SVG rather than a charting dependency, since
- * these are two static, non-interactive charts. Every number here is real,
- * computed from the actual CMS store / leads table: there's no time-series
- * data anywhere in this app, so unlike the reference's "+20% last month"
- * pills, a stat card either shows a real derived figure (e.g. "3 drafts") or
- * no badge at all — never a fabricated trend.
+ * Dashboard widgets — icon-tile stat cards, a bar chart and a donut, hand-rolled
+ * SVG/CSS rather than a charting dependency (two static, non-interactive charts).
+ * Every number is real, computed from the CMS store / leads table. There is no
+ * time-series data in this app, so a card shows a real derived figure (e.g. "3
+ * drafts") or nothing — never a fabricated trend.
  *
- * `href` on a stat card or bar row is what makes these "actionable" rather
- * than purely informative — a card is a shortcut to the record list it's
- * summarizing, not a dead end you have to re-navigate from the sidebar.
+ * `href` on a stat card or bar row makes it a shortcut to the list it summarises.
  */
 
 function StatCardBody({
@@ -23,6 +19,7 @@ function StatCardBody({
   badge,
   badgeClass,
   linkable,
+  meter,
 }: {
   Icon: LucideIcon;
   label: string;
@@ -30,29 +27,44 @@ function StatCardBody({
   badge?: string;
   badgeClass: string;
   linkable: boolean;
+  meter?: { percent: number; caption: string };
 }) {
   return (
     <>
-      <div className="flex items-start justify-between">
-        <div className="grid h-11 w-11 place-items-center rounded-[var(--admin-radius)] bg-[var(--accent-soft)]">
-          <Icon aria-hidden="true" className="h-5 w-5 text-[var(--accent)]" />
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="grid h-11 w-11 place-items-center rounded-[13px] bg-[var(--accent-soft)] ring-1 ring-[var(--accent-border)]/60">
+          <Icon aria-hidden="true" className="h-5 w-5 text-[var(--accent)]" strokeWidth={2} />
         </div>
-        {linkable ? (
-          <ArrowRight
+        {badge ? (
+          <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${badgeClass}`}>{badge}</span>
+        ) : linkable ? (
+          <ArrowUpRight
             aria-hidden="true"
-            className="h-4 w-4 text-foreground-muted opacity-0 transition-opacity group-hover:opacity-100"
+            className="h-[18px] w-[18px] text-foreground-muted/60 transition-colors group-hover:text-[var(--accent)]"
           />
         ) : null}
       </div>
-      <div className="mt-4 flex items-end justify-between gap-2">
-        <div>
-          <p className="numeral font-display text-3xl font-bold text-foreground">{value}</p>
-          <p className="mt-1 text-sm font-medium text-foreground-secondary">{label}</p>
+
+      <p className="numeral mt-4 text-[1.875rem] sm:mt-5 sm:text-[2.125rem] leading-none font-extrabold tracking-[-0.035em] text-foreground">
+        {value}
+      </p>
+      <p className="mt-2 text-sm font-semibold text-foreground-secondary">{label}</p>
+
+      {meter ? (
+        <div className="mt-4">
+          <div
+            role="img"
+            aria-label={`${meter.caption}: ${meter.percent}%`}
+            className="h-1.5 overflow-hidden rounded-full bg-surface"
+          >
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[#f97066] to-[var(--accent)]"
+              style={{ width: `${meter.percent}%` }}
+            />
+          </div>
+          <p className="mt-1.5 text-xs text-foreground-muted">{meter.caption}</p>
         </div>
-        {badge ? (
-          <span className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${badgeClass}`}>{badge}</span>
-        ) : null}
-      </div>
+      ) : null}
     </>
   );
 }
@@ -64,6 +76,7 @@ export function StatCard({
   badge,
   badgeTone = 'neutral',
   href,
+  meter,
 }: {
   icon: LucideIcon;
   label: string;
@@ -73,28 +86,43 @@ export function StatCard({
   /** Where clicking the card should go — omit for a purely aggregate figure
    *  (e.g. total content across every collection) with no single destination. */
   href?: Route;
+  /** A real proportion to draw under the figure (e.g. share of content that is published). */
+  meter?: { percent: number; caption: string };
 }) {
   const badgeClass =
     badgeTone === 'good'
-      ? 'bg-[var(--color-growth-50)] text-[var(--color-growth-600)]'
+      ? 'bg-[var(--color-growth-50)] text-[#067647]'
       : badgeTone === 'warn'
-        ? 'bg-[var(--color-signal-50)] text-[var(--color-signal-600)]'
+        ? 'bg-[var(--color-signal-50)] text-[#b54708]'
         : 'bg-surface text-foreground-secondary';
 
   if (href) {
     return (
-      <Link
-        href={href}
-        className="group rounded-[var(--radius-card)] border border-border bg-background p-5 transition-colors hover:border-[var(--accent)]/40 hover:shadow-[var(--shadow-xs)]"
-      >
-        <StatCardBody Icon={icon} label={label} value={value} badge={badge} badgeClass={badgeClass} linkable />
+      <Link href={href} className="adm-card adm-card-link group block p-4 sm:p-5">
+        <StatCardBody
+          Icon={icon}
+          label={label}
+          value={value}
+          badge={badge}
+          badgeClass={badgeClass}
+          linkable
+          meter={meter}
+        />
       </Link>
     );
   }
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-border bg-background p-5">
-      <StatCardBody Icon={icon} label={label} value={value} badge={badge} badgeClass={badgeClass} linkable={false} />
+    <div className="adm-card p-4 sm:p-5">
+      <StatCardBody
+        Icon={icon}
+        label={label}
+        value={value}
+        badge={badge}
+        badgeClass={badgeClass}
+        linkable={false}
+        meter={meter}
+      />
     </div>
   );
 }
@@ -111,23 +139,23 @@ export function BarChartCard({
   const max = Math.max(...bars.map((b) => b.value), 1);
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-border bg-background p-5">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
-      <p className="mt-1 text-xs text-foreground-muted">{description}</p>
-      <div className="mt-5 flex flex-col gap-1">
+    <section aria-label={title} className="adm-card p-5 sm:p-6">
+      <h2 className="text-base font-bold tracking-tight text-foreground">{title}</h2>
+      <p className="mt-1 text-sm text-foreground-muted">{description}</p>
+      <div className="mt-5 flex flex-col gap-0.5">
         {bars.map((bar) => {
           const row = (
             <>
-              <span className="w-40 shrink-0 text-xs leading-tight text-foreground-secondary group-hover:text-foreground">
+              <span className="w-32 shrink-0 text-sm leading-tight font-medium text-foreground-secondary group-hover:text-foreground sm:w-40">
                 {bar.label}
               </span>
-              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface">
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface">
                 <div
-                  className="h-full rounded-full bg-[var(--accent)]"
-                  style={{ width: `${Math.max((bar.value / max) * 100, bar.value > 0 ? 4 : 0)}%` }}
+                  className="h-full rounded-full bg-gradient-to-r from-[#f97066] to-[var(--accent)]"
+                  style={{ width: `${Math.max((bar.value / max) * 100, bar.value > 0 ? 3 : 0)}%` }}
                 />
               </div>
-              <span className="numeral w-6 shrink-0 text-right text-xs font-semibold text-foreground">
+              <span className="numeral w-9 shrink-0 text-right text-sm font-bold text-foreground">
                 {bar.value}
               </span>
             </>
@@ -136,18 +164,18 @@ export function BarChartCard({
             <Link
               key={bar.label}
               href={bar.href}
-              className="group -mx-2 flex items-center gap-3 rounded-[var(--admin-radius)] px-2 py-1.5 transition-colors hover:bg-surface"
+              className="group -mx-2 flex min-h-11 items-center gap-3 rounded-[10px] px-2 transition-colors hover:bg-surface focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
             >
               {row}
             </Link>
           ) : (
-            <div key={bar.label} className="flex items-center gap-3 px-2 py-1.5">
+            <div key={bar.label} className="flex min-h-11 items-center gap-3 px-2">
               {row}
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -162,17 +190,17 @@ export function DonutChartCard({
 }) {
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   const radius = 60;
-  const strokeWidth = 18;
+  const strokeWidth = 16;
   const circumference = 2 * Math.PI * radius;
   let offset = 0;
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-border bg-background p-5">
-      <h2 className="text-base font-semibold text-foreground">{title}</h2>
-      <p className="mt-1 text-xs text-foreground-muted">{description}</p>
+    <section aria-label={title} className="adm-card p-5 sm:p-6">
+      <h2 className="text-base font-bold tracking-tight text-foreground">{title}</h2>
+      <p className="mt-1 text-sm text-foreground-muted">{description}</p>
 
-      <div className="mt-4 flex items-center gap-6">
-        <div className="relative h-36 w-36 shrink-0">
+      <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row">
+        <div className="relative h-40 w-40 shrink-0">
           <svg aria-hidden="true" viewBox="0 0 160 160" className="h-full w-full -rotate-90">
             <circle cx="80" cy="80" r={radius} fill="none" stroke="var(--color-surface)" strokeWidth={strokeWidth} />
             {total > 0
@@ -200,28 +228,34 @@ export function DonutChartCard({
           </svg>
           <div className="absolute inset-0 grid place-items-center">
             <div className="text-center">
-              <p className="numeral font-display text-2xl font-bold text-foreground">{total}</p>
-              <p className="text-[12px] text-foreground-muted">total</p>
+              <p className="numeral text-[1.75rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
+                {total}
+              </p>
+              <p className="mt-1 text-xs font-medium text-foreground-muted">records</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col gap-2.5">
+        <ul className="flex w-full flex-1 flex-col gap-2">
           {segments.map((seg) => (
-            <div key={seg.label} className="flex items-center gap-2 text-sm">
+            <li
+              key={seg.label}
+              className="flex items-center gap-3 rounded-[12px] border border-border bg-surface/60 px-3.5 py-3 text-sm"
+            >
               <span
                 aria-hidden="true"
                 className="h-2.5 w-2.5 shrink-0 rounded-full"
                 style={{ backgroundColor: seg.color }}
               />
-              <span className="text-foreground-secondary">{seg.label}</span>
-              <span className="numeral ml-auto font-semibold text-foreground">
+              <span className="font-medium text-foreground-secondary">{seg.label}</span>
+              <span className="numeral ml-auto text-xs text-foreground-muted">{seg.value}</span>
+              <span className="numeral w-11 text-right font-bold text-foreground">
                 {total > 0 ? Math.round((seg.value / total) * 100) : 0}%
               </span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
+import '@/styles/admin.css';
 import { adminLogout, getCurrentUser } from './actions';
 import { ROLE_LABEL, type Role } from '@/lib/auth/users';
 import { AdminSidebarNav } from './AdminSidebarNav';
 import { AdminShell } from './AdminShell';
+import { COLLECTIONS, GROUP } from './registry';
 
 export const metadata = {
   title: 'Jetking Admin',
@@ -27,32 +29,27 @@ export const metadata = {
  * fighting an ancestor's overflow.
  */
 
-// Grouped and ordered to match the sidebar's visual sections (Main / Content
-// / Experience / CRM / Administration) — `AdminSidebarNav` renders a quiet
-// group heading whenever `group` changes between consecutive (role-filtered)
-// items, so the array's order here *is* the sidebar's visual order.
-const NAV: Array<{ href: Route; label: string; icon: string; group: string; roles?: Role[] }> = [
+// Grouped to follow the website: Main, then the content that appears on the site, personalisation,
+// the Jetking Guide's own knowledge base, CRM and administration. `AdminSidebarNav` renders a group
+// heading whenever `group` changes between consecutive (role-filtered) items, so this array's order
+// IS the sidebar's visual order. The content entries come from `registry.ts` so the sidebar can't
+// drift from the collection pages or the Website map.
+type NavItem = { href: Route; label: string; icon: string; group: string; roles?: Role[]; tag?: string };
+
+const NAV: NavItem[] = [
   { href: '/admin' as Route, label: 'Dashboard', icon: 'LayoutGrid', group: 'Main' },
-  { href: '/admin/courses' as Route, label: 'Courses', icon: 'GraduationCap', group: 'Content', roles: ['admin', 'editor'] },
-  { href: '/admin/centres' as Route, label: 'Centres', icon: 'Building2', group: 'Content', roles: ['admin', 'editor'] },
-  { href: '/admin/posts' as Route, label: 'Posts', icon: 'Newspaper', group: 'Content', roles: ['admin', 'editor'] },
-  { href: '/admin/faqs' as Route, label: 'FAQs', icon: 'HelpCircle', group: 'Content', roles: ['admin', 'editor'] },
-  { href: '/admin/policies' as Route, label: 'Policies', icon: 'ShieldCheck', group: 'Content', roles: ['admin', 'editor'] },
-  { href: '/admin/faculty' as Route, label: 'Faculty', icon: 'UserCog', group: 'Content', roles: ['admin', 'editor'] },
-  {
-    href: '/admin/variants' as Route,
-    label: 'Homepage variants',
-    icon: 'LayoutTemplate',
-    group: 'Experience',
-    roles: ['admin', 'editor'],
-  },
-  {
-    href: '/admin/rules' as Route,
-    label: 'Persona rules',
-    icon: 'SlidersHorizontal',
-    group: 'Experience',
-    roles: ['admin', 'editor'],
-  },
+  { href: '/admin/website' as Route, label: 'Website map', icon: 'Globe', group: 'Main', roles: ['admin', 'editor'] },
+  ...COLLECTIONS.map(
+    (c): NavItem => ({
+      href: `/admin/${c.route}` as Route,
+      label: c.label,
+      icon: c.icon,
+      group: c.group,
+      roles: ['admin', 'editor'],
+      // Collections the website does not render say so in the sidebar, not only on their own page.
+      tag: c.live ? undefined : c.group === GROUP.guide ? 'Guide only' : 'Not live',
+    }),
+  ),
   { href: '/admin/leads' as Route, label: 'Leads', icon: 'Users', group: 'CRM' },
   { href: '/admin/team' as Route, label: 'Team & access', icon: 'KeyRound', group: 'Administration', roles: ['admin'] },
   { href: '/admin/audit' as Route, label: 'Audit log', icon: 'History', group: 'Administration', roles: ['admin'] },
@@ -63,43 +60,45 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const nav = user ? NAV.filter((item) => !item.roles || item.roles.includes(user.role)) : [];
 
   const sidebar = user ? (
-    <aside className="flex h-full w-[272px] shrink-0 flex-col border-r border-border bg-background p-4">
-      <Link href={'/admin' as Route} className="flex flex-col gap-2 px-2 py-1.5">
-        {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
-        <img
-          src="/brand/jetking-wordmark.png"
-          alt="Jetking"
-          draggable={false}
-          className="h-6 w-auto shrink-0 select-none object-contain"
-        />
-        <span className="label-mono shrink-0 text-foreground-muted">Admin Console</span>
+    <aside className="adm-sidebar flex h-full w-[272px] shrink-0 flex-col p-4">
+      <Link href={'/admin' as Route} className="adm-sidebar-brand rounded-[14px] focus-visible:outline-2 focus-visible:outline-white">
+        <span className="adm-sidebar-mark">
+          {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
+          <img
+            src="/brand/jetking-wordmark.png"
+            alt="Jetking"
+            draggable={false}
+            className="h-5 w-auto shrink-0 select-none object-contain"
+          />
+        </span>
+        <span className="min-w-0 leading-tight">
+          <span className="block text-[15px] font-bold tracking-tight text-white">Admin Console</span>
+          <span className="block text-xs font-medium text-white/60">Content &amp; operations</span>
+        </span>
       </Link>
 
       <AdminSidebarNav items={nav} />
 
       {/* Identity and sign-out are deliberately two visually distinct blocks
-         (a divider between them), not one continuous stack — the account
-         summary isn't the same kind of thing as the sign-out action. */}
-      <div className="mt-auto border-t border-border pt-4">
-        <div className="flex items-center gap-2.5 px-2 py-1">
+         — the account summary isn't the same kind of thing as the sign-out action. */}
+      <div className="mt-auto pt-4">
+        <div className="adm-sidebar-user flex items-center gap-3 p-3">
           <span
             aria-hidden="true"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-xs font-semibold text-[var(--accent)]"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#f97066] to-[#a50d13] text-sm font-bold text-white shadow-[0_6px_14px_-6px_rgb(199_20_28/0.9)]"
           >
             {user.name.slice(0, 1).toUpperCase()}
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-foreground">{user.name}</span>
-            <span className="block text-xs text-foreground-muted">{ROLE_LABEL[user.role]}</span>
+            <span className="block truncate text-sm font-semibold text-white">{user.name}</span>
+            <span className="block truncate text-xs text-white/60">{ROLE_LABEL[user.role]}</span>
           </span>
         </div>
 
-        <div className="my-3 border-t border-border" />
-
-        <form action={adminLogout}>
+        <form action={adminLogout} className="mt-3">
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-border-strong hover:text-foreground"
+            className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[12px] border border-white/15 px-4 text-sm font-semibold text-white/85 transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
           >
             Sign out
           </button>
@@ -109,7 +108,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   ) : null;
 
   return (
-    <div className="surface-default h-screen overflow-hidden bg-surface text-foreground">
+    <div className="surface-default adm h-screen overflow-hidden bg-surface text-foreground">
       {user && sidebar ? (
         <>
           {/* The root layout (src/app/layout.tsx) already renders its own
@@ -126,8 +125,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           >
             Skip sidebar navigation
           </a>
-          <AdminShell sidebar={sidebar} navItems={nav}>
-            <div id="admin-content" className="min-h-0 flex-1 overflow-y-auto p-6 lg:p-8">
+          <AdminShell
+            sidebar={sidebar}
+            navItems={nav}
+            user={{ name: user.name, role: ROLE_LABEL[user.role] }}
+            liveContent={process.env.CONTENT_SOURCE === 'admin'}
+          >
+            <div id="admin-content" className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
               {process.env.CONTENT_SOURCE !== 'admin' ? (
                 <div
                   role="alert"

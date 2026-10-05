@@ -24,6 +24,14 @@ const STATUS_CLASS: Record<LeadStatus, string> = {
   lost: 'text-foreground-muted',
 };
 
+/** The little dot beside each status label — colour carries meaning here, so it is never the accent. */
+const STATUS_DOT: Record<LeadStatus, string> = {
+  new: '#f79009',
+  contacted: '#667085',
+  enrolled: '#12b76a',
+  lost: '#c4c9d4',
+};
+
 function emptyByStatus(): Record<LeadStatus, number> {
   return { new: 0, contacted: 0, enrolled: 0, lost: 0 };
 }
@@ -163,30 +171,40 @@ export function LeadsBoard({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="label-mono text-[var(--accent-ink)]">leads</p>
-          <h1 className="mt-4 text-3xl sm:text-4xl">Leads</h1>
-          <p className="lede mt-4 max-w-prose">
+          <p className="adm-eyebrow">leads</p>
+          <h1 className="adm-title mt-3">Leads</h1>
+          <p className="adm-lede mt-3">
             Everything the chatbot, enquiry form, and centre staff bring in — one pipeline.
           </p>
         </div>
         <button
           type="button"
-          className="inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)]"
+          className="adm-btn-primary font-bold inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm"
           onClick={() => setShowNew((v) => !v)}
         >
           {showNew ? 'Cancel' : '+ New lead'}
         </button>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-[var(--radius-card)] border border-border bg-background p-4">
-          <p className="label-mono">Total</p>
-          <p className="numeral mt-1 text-2xl font-semibold text-foreground">{stats.total}</p>
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="adm-card p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-sm font-semibold text-foreground-secondary">
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+            Total
+          </p>
+          <p className="numeral mt-3 text-[1.875rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
+            {stats.total}
+          </p>
         </div>
         {STATUSES.map((s) => (
-          <div key={s} className="rounded-[var(--radius-card)] border border-border bg-background p-4">
-            <p className="label-mono">{STATUS_LABEL[s]}</p>
-            <p className={`numeral mt-1 text-2xl font-semibold ${STATUS_CLASS[s]}`}>{stats.byStatus[s]}</p>
+          <div key={s} className="adm-card p-4 sm:p-5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-foreground-secondary">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: STATUS_DOT[s] }} />
+              {STATUS_LABEL[s]}
+            </p>
+            <p className="numeral mt-3 text-[1.875rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
+              {stats.byStatus[s]}
+            </p>
           </div>
         ))}
       </div>
@@ -195,7 +213,7 @@ export function LeadsBoard({
         <form
           ref={formRef}
           onSubmit={handleCreate}
-          className="mt-8 grid gap-4 rounded-[var(--radius-card)] border border-border bg-background p-5 sm:grid-cols-2"
+          className="mt-8 grid gap-4 adm-card p-5 sm:grid-cols-2"
         >
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Name</span>
@@ -243,7 +261,7 @@ export function LeadsBoard({
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-6 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)] disabled:opacity-45"
+              className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
             >
               {pending ? 'Saving…' : 'Save lead'}
             </button>
@@ -262,29 +280,22 @@ export function LeadsBoard({
         </p>
       ) : null}
 
-      <div className="mt-10 flex items-center gap-1 border-b border-border pb-3">
-        <button
-          type="button"
-          onClick={() => setView('board')}
-          className={`rounded-[var(--admin-radius)] px-4 py-1.5 text-sm font-semibold transition-colors ${
-            view === 'board'
-              ? 'bg-[var(--accent-soft)] text-[var(--accent)]'
-              : 'text-foreground-secondary hover:text-foreground'
-          }`}
-        >
-          Board
-        </button>
-        <button
-          type="button"
-          onClick={() => setView('list')}
-          className={`rounded-[var(--admin-radius)] px-4 py-1.5 text-sm font-semibold transition-colors ${
-            view === 'list'
-              ? 'bg-[var(--accent-soft)] text-[var(--accent)]'
-              : 'text-foreground-secondary hover:text-foreground'
-          }`}
-        >
-          List
-        </button>
+      <div role="group" aria-label="Leads view" className="mt-10 inline-flex rounded-[13px] bg-border-subtle p-1 ring-1 ring-border">
+        {(['board', 'list'] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => setView(v)}
+            aria-pressed={view === v}
+            className={`min-h-11 min-w-24 cursor-pointer rounded-[10px] px-4 text-sm font-bold capitalize transition-all focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] ${
+              view === v
+                ? 'bg-background text-foreground shadow-[0_1px_3px_rgb(14_20_36/0.12)]'
+                : 'text-foreground-secondary hover:text-foreground'
+            }`}
+          >
+            {v}
+          </button>
+        ))}
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
@@ -351,10 +362,11 @@ export function LeadsBoard({
       {view === 'board' ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {STATUSES.map((status) => (
-            <div key={status} className="rounded-[var(--radius-card)] border border-border bg-background">
-              <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-                <span className={`label-mono ${STATUS_CLASS[status]}`}>{STATUS_LABEL[status]}</span>
-                <span className="label-mono numeral ml-auto">
+            <div key={status} className="adm-card">
+              <div className="flex items-center gap-2 border-b border-border px-4 py-3.5">
+                <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: STATUS_DOT[status] }} />
+                <span className="text-sm font-bold tracking-tight text-foreground">{STATUS_LABEL[status]}</span>
+                <span className="numeral ml-auto rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold text-foreground-secondary ring-1 ring-border">
                   {filteredLeads.filter((l) => l.status === status).length}
                 </span>
               </div>
@@ -364,11 +376,11 @@ export function LeadsBoard({
                   .map((lead) => (
                     <div
                       key={lead.id}
-                      className="rounded-[var(--admin-radius)] border border-border bg-background p-3 transition-colors hover:border-border-medium hover:shadow-[var(--shadow-xs)]"
+                      className="rounded-[12px] border border-border bg-background p-3 shadow-[0_1px_2px_rgb(14_20_36/0.04)] transition-[border-color,box-shadow] hover:border-border-medium hover:shadow-[0_6px_16px_-8px_rgb(14_20_36/0.22)]"
                     >
                       <button
                         type="button"
-                        className="block w-full cursor-pointer text-left"
+                        className="block min-h-11 w-full cursor-pointer text-left"
                         onClick={() => selectLead(lead.id)}
                       >
                         <span className="block text-sm font-semibold text-foreground">
@@ -383,7 +395,7 @@ export function LeadsBoard({
                         value={lead.status}
                         disabled={pending}
                         onChange={(e) => changeStatus(lead.id, e.target.value as LeadStatus)}
-                        className="admin-input mt-2 h-8 py-0 text-xs"
+                        className="admin-input mt-2 py-0 text-xs"
                       >
                         {STATUSES.map((s) => (
                           <option key={s} value={s}>
@@ -401,8 +413,8 @@ export function LeadsBoard({
           ))}
         </div>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background">
-          <table className="w-full min-w-[52rem] border-collapse text-sm">
+        <div className="mt-6 overflow-x-auto adm-card">
+          <table className="adm-table w-full min-w-[52rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-left">
                 {['Name', 'Course', 'City', 'Source', 'Status', 'Updated'].map((h) => (
@@ -444,7 +456,7 @@ export function LeadsBoard({
       )}
 
       {selected ? (
-        <div className="mt-10 rounded-[var(--radius-card)] border border-border-medium bg-background p-6">
+        <div className="mt-10 adm-card p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="label-mono">{selected.source} · {selected.persona ?? 'no persona'}</p>
