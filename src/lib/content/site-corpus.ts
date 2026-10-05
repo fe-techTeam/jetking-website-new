@@ -323,7 +323,9 @@ function legalItems(doc: LegalDoc): CorpusItem[] {
       out.push(
         item(
           `legal-${doc.slug}-${index + 1}${part > 1 ? `-${part}` : ''}`,
-          'info',
+          // Typed as `policy` so the index gives the published legal text policy-level source authority
+          // (1.0) — above blog prose (0.6) — when a visitor asks how their data or a refund is handled.
+          'policy',
           section.heading === doc.title ? doc.title : `${doc.title} — ${section.heading}`,
           path,
           buffer,

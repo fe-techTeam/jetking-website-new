@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-10-05T07:51:02.009Z",
+  "builtAt": "2026-10-05T08:00:08.263Z",
   "contentSource": "admin",
   "count": 1527,
   "items": [
@@ -11461,7 +11461,7 @@
     },
     {
       "id": "legal-privacy-policy-1",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy",
       "path": "/privacy-policy",
       "text": "This document is an electronic record in terms of applicable IT (“Information Technology”) laws and the amended provisions thereto pertaining to electronic records in various allied statutes as amended pursuant to the Information Technology laws. This electronic record is system generated and does not require any authentication. This policy applies to any information collected through our systems and/or when you use our services. This policy does not apply to, nor does Jetking take any responsibility for, any information collected by a third party.",
@@ -11469,7 +11469,7 @@
     },
     {
       "id": "legal-privacy-policy-2",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Introduction",
       "path": "/privacy-policy",
       "text": "Your privacy is valuable to us. We do not sell or forward or rent your personal information that you share with Jetking Infotrain Limited, to any third party for any purposes like marketing, etc. without your explicit consent. This statement of privacy is applicable to our services available under the domain name www.jetking.com and any other connected sub-domain names and applies generally to subsidiaries of Jetking Infotrain Limited. Your use of the Jetking Infotrain Limited website signifies your acceptance of the Jetking Privacy Statement. Jetking strives to comply with applicable laws that are designed to protect your privacy.Any presentation of the terms of this Privacy Policy shall be in accordance with the “terms of use” on the website.",
@@ -11477,7 +11477,7 @@
     },
     {
       "id": "legal-privacy-policy-3",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Log Files",
       "path": "/privacy-policy",
       "text": "The Jetking website uses log files to keep track of visitors’ activities when they visit the site. If you use a web-hosting service, this is a part of their analytics.These log files collect information such as IP addresses, browser types, Internet Service Provider (ISP), date and time stamps, referring/exit pages, and possibly the number of clicks. These data are not associated with any personal information in any way.This information is used for analyzing trends, administering the site, tracking users’ movements on the site, and gathering demographic data.",
@@ -11485,7 +11485,7 @@
     },
     {
       "id": "legal-privacy-policy-4",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Jetking’s Principles to Protect Privacy",
       "path": "/privacy-policy",
       "text": "In order to protect your privacy, Jetking has adopted the following principles:",
@@ -11493,7 +11493,7 @@
     },
     {
       "id": "legal-privacy-policy-5",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — (a) Security",
       "path": "/privacy-policy",
       "text": "Wherever your Personal Information or Credentials may be held within Jetking Infotrain Ltd., the company intends to take necessary steps to protect it from unauthorized access or declaration. Jetking is committed to protecting the security of your personal information. We use a variety of security technologies and procedures to help protect your personal information from unauthorized access, use, or disclosure. For example, we store the personal information you provide on computer systems with limited access, which are located in controlled facilities.",
@@ -11501,7 +11501,7 @@
     },
     {
       "id": "legal-privacy-policy-6",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — (b) Choice",
       "path": "/privacy-policy",
       "text": "You may choose whether or not to provide Personal Information to Jetking. The notice Jetking intends to provide at the point where it collects Personal Information on the Site or its official blog, should help you to make this choice. If you choose not to share your Personal Data that we request, you can still visit most of Jetking’s Web sites, but you may be unable to access certain options, offers, and services that involve our contact with you. If you chose to have a relationship with Jetking, such as a contractual or other business relationship, Jetking will naturally continue to contact you in connection with that business relationship.",
@@ -11509,7 +11509,7 @@
     },
     {
       "id": "legal-privacy-policy-7",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — (c) Notice",
       "path": "/privacy-policy",
       "text": "Where Jetking collects Personal Information on the Site or Blog, Jetking intends to post a purpose statement that explains why Personal Information will be collected and whether Jetking plans to share such Personal Information outside of Jetking or with those working on Jetking’s behalf. Unless the transfer of Personal Information is legally required, Jetking does not intend to transfer Personal Information without your permission to third parties who are not bound to act on Jetking’s behalf.",
@@ -11517,7 +11517,7 @@
     },
     {
       "id": "legal-privacy-policy-8",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — (d) Access/Accuracy",
       "path": "/privacy-policy",
       "text": "To the extent that you do provide Jetking with Personal Information, Jetking wishes to maintain accurate Personal Information. Where Jetking collects Personal Information from you on the Site, its aim is to provide a means of contacting Jetking should you need to update or correct that Information. If for any reason those means are unavailable or inaccessible, you may send updates and corrections about your Personal Information to info@jetking.com and Jetking will make reasonable efforts to incorporate the changes.",
@@ -11525,7 +11525,7 @@
     },
     {
       "id": "legal-privacy-policy-9",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Your Consent",
       "path": "/privacy-policy",
       "text": "By using this Web site, you consent to the terms of Jetking’s Privacy Policy and to Jetking’s processing of Personal Information for the purposes given above. There are times, however, when Jetking may need information from you, such as your name and address. When information is needed, Jetking will try (but is not obligated) to let you know at the time of collection, how it will use the personal information. Usually, the personal information Jetking collects is used only by it to respond to your inquiry, process an order, or allow you to access specific account information. Occasionally, Jetking may make the e-mail addresses, of those who provide information, available to other reputable organizations whose products or services it thinks you may find interesting. In these cases, you will be offered an opportunity to limit access to your information. In case Jetking does not receive any response from you to limit the access of your information, it shall be deemed that you consent to such distribution of your Personal Information as mentioned above.",
@@ -11533,7 +11533,7 @@
     },
     {
       "id": "legal-privacy-policy-10",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Jetking’s disclosure of your information",
       "path": "/privacy-policy",
       "text": "For the purpose of alumni interaction or academic interaction amongst the enrolled students For the purpose of intra-business interaction among various subsidiaries of Jetking.",
@@ -11541,7 +11541,7 @@
     },
     {
       "id": "legal-privacy-policy-11",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Affiliated/Connected sites",
       "path": "/privacy-policy",
       "text": "We offer some of our valuable services in connection with other websites. Personal information that you provide to those sites may be sent to Jetking in order to deliver the service. We process such information in accordance with this Policy. If the affiliated websites have different privacy policy practices then the user is required to read their privacy policies before using them.",
@@ -11549,7 +11549,7 @@
     },
     {
       "id": "legal-privacy-policy-12",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Information We Collect",
       "path": "/privacy-policy",
       "text": "We will only collect information that you voluntarily share with us. You are in control of what information or data you share with us. Your information will only be collected if you choose to share it through Jetking’s Systems. The following information will be collected about you or relating to your use of the Jetking’s systems: 1. Any personal or PII that you may submit or may be required to submit for registration and continued use of the Jetking’s Systems or receive the services by Jetking. 2. Your name, title, gender, date of birth, email ID, Contact number, State/Country/Pin code, postal address, and details of respective social handles, such as Linkedin, Twitter, Facebook., Instagram, Snapchat, etc., along with IP addresses and other information collected. 3. Any other information you wish to share with us without limitation, including any information that will allow us to make your account or profile more current. If required, you can complete all forms, provide comments to surveys, or create any content on our servers.",
@@ -11557,7 +11557,7 @@
     },
     {
       "id": "legal-privacy-policy-13",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — General Data Protection Regulation (GDPR)",
       "path": "/privacy-policy",
       "text": "We follow GDPR guidelines. General Data Protection Regulation (GDPR) is designed to give EU citizens greater security over personal information. It’s a plan to establish a comprehensive privacy and security law that will safeguard Personal Data. Irrespective of the location they are located in, the GDPR applies to all relevant processors or controllers who handle personal information which is owned by EU citizens. For more details, please refer to GDPR: (https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)",
@@ -11565,7 +11565,7 @@
     },
     {
       "id": "legal-privacy-policy-14",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Cookies",
       "path": "/privacy-policy",
       "text": "The cookies installed by the Jetking shall be exclusively for the purpose of retrieving information from you which pertains to be useful for the purpose of running the Course of Jetking institution or Hardware & Networking Institutes of Jetking. Cookies shall, have limited scope, either for the purpose of students’ enrollment for imparting computer hardware & networking education or for the prospective business parties who will be availing the services of various Jetking Learning Centres.",
@@ -11573,7 +11573,7 @@
     },
     {
       "id": "legal-privacy-policy-15",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Children’s Information",
       "path": "/privacy-policy",
       "text": "Another area of our concern is to ensure that children are protected when they use the internet. We urge parents and guardians or participate in or monitor and direct their children’s online activities. Jetking does not intend to collect any Personally Identifiable Information from children who are under 13 years of age. If you believe that your child/children may have provided the kind of information we collect on our website, We strongly urge you to notify the same to us immediately and we will make the best we can to erase the information or data from our databases.",
@@ -11581,7 +11581,7 @@
     },
     {
       "id": "legal-privacy-policy-16",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Changes in privacy policy",
       "path": "/privacy-policy",
       "text": "Please note that this Privacy Policy (“Privacy Policy”) may change from time to time without notice. We will not reduce or limit your rights under this Policy without your explicit consent, and we expect most such changes will be a little. Nonetheless, we will post any Privacy Policy changes on this page and, if the changes are significant, we will provide a more important notice. Each and every version of this Privacy Policy will be recognized at the top of the page by its effective date. If you have any questions, or queries about this Policy, please feel free to contact us any time through this website.",
@@ -11589,7 +11589,7 @@
     },
     {
       "id": "legal-privacy-policy-17",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — How do we track?",
       "path": "/privacy-policy",
       "text": "Google Analytics – The third-party solutions described in this section allow Jetking to track and analyze the traffic on both services and websites. Google Analytics (Google Inc.) is an online analysis service that utilizes the data collected to monitor, study, and optimize the use by users of Websites and Services to prepare reports. Data collected includes cookies and usage information.",
@@ -11597,7 +11597,7 @@
     },
     {
       "id": "legal-privacy-policy-18",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — How do we use your information?",
       "path": "/privacy-policy",
       "text": "Jetking will process the information you provide as Personal Data only in accordance with the terms of this policy. If you do not want Jetking to keep using Your Personal Data in this manner you may request deletion of your account through your account settings. We will only collect the information you provide us with Personal Data if we have an appropriate legal basis to do it, and this includes but isn’t limited to the following: Answer your questions. Assess the technical aspects of service and website issues. Announcements, newsletters and other educational materials, and other information on events. Send you administrative messages like notices relating to the Services or changes to the policy. Know, how websites and Services are used to improve and enhance their performance. Reduce, prevent, detect and examine suspicious or illegal activities. Respecting all legal obligations and resolving conflicts between customers, and enforcing our agreements. Inquiring, defending, and preventing dangerous, fraudulent, illegal, or unauthorized activity.",
@@ -11605,7 +11605,7 @@
     },
     {
       "id": "legal-privacy-policy-19",
-      "type": "info",
+      "type": "policy",
       "title": "Privacy Policy — Questions or suggestions",
       "path": "/privacy-policy",
       "text": "If you have any questions about Jetking’s Privacy Policy, collection, use, or disclosure of your personal information, please e-mail us at info@jetking.com. Jetking reserves its right to change, modify or update this privacy statement at any time without notice.",
@@ -11613,7 +11613,7 @@
     },
     {
       "id": "legal-terms-conditions-1",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions",
       "path": "/terms-conditions",
       "text": "By giving your information on the website, you authorize Jetking Infotrain Ltd and its Partners to call you and send course information via email and phone up to a period of 6 months.",
@@ -11621,7 +11621,7 @@
     },
     {
       "id": "legal-terms-conditions-2",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Disclaimer",
       "path": "/terms-conditions",
       "text": "Your use of Jetking’s services and web sites (referred to collectively as the “Services” in this document and excluding any services provided to you by Jetking under a separate written agreement) is subject to the terms of a legal agreement between you and Jetking. “Jetking” means Jetking Infotrain Limited a company incorporated under Companies Act, 1956., whose registered office is at 434, Bussa Udyog Bhavan, T. J. Road, Near Sewri Bus Terminus, Sewri (W), Mumbai-400015 & Corporate Office at 5th Floor, Amore Bldg., Junction of 2nd & 4th Road, Khar (W), Mumbai-400052. This document explains how the agreement is made up and sets out some of the terms of that agreement. The following terms and conditions will be deemed to have been accepted by the User on mere usage of the website https://www.jetking.com",
@@ -11629,7 +11629,7 @@
     },
     {
       "id": "legal-terms-conditions-3",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "Jetking makes no warranty that the information contained in the Site has been obtained from sources believed to be reliable. Jetking disclaims all warranties as to the accuracy, completeness or adequacy of such information. The User agrees to indemnify, defend and hold Jetking harmless from and against all losses, expenses, damages, and costs, including reasonable attorneys’ fees, arising out of or relating to any misuse by the User of the content and services provided on the Site. In no event will Jetking be liable for damages of any kind, including without limitation, direct, incidental or consequential damages (including, but not limited to, damages for lost profits, business interruption and loss of programs or information) arising out of the use of or inability to use Jetking’s Web site, or any information provided on the Web site, or in the Products any claim attributable to errors, omissions or other inaccuracies in the Product or interpretations thereof. Some jurisdictions do not allow the limitation or exclusion of liability.",
@@ -11637,7 +11637,7 @@
     },
     {
       "id": "legal-terms-conditions-3-2",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "Accordingly, some of the above limitations may not apply to the User. Jetking may change or discontinue any aspect of its Web site at any time, including its content or features. Jetking reserves the right to change the terms and conditions applicable to the use of the Site. Such changes shall be effective immediately upon notice, which shall be placed on the Site. Jetking shall have no responsibility for any damage to a User’s computer system or loss of data that results from the download of any content, materials, information from the Site. The Site, and all content, materials, information, software, products and services provided on the Site, are provided on an “as is” and “as available” basis. Jetking expressly disclaims all warranties of any kind, whether express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose and non-infringement.",
@@ -11645,7 +11645,7 @@
     },
     {
       "id": "legal-terms-conditions-3-3",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "Jetking does not accept any responsibility towards the contents and/or information practices of third party sites that have links through Jetking’s Site. The said links to internal or external Web site locations are only for the purpose of facilitating your visit or clarify your query. Jetking does not make any warranties, express or implied, including without limitation, those of merchantability and fitness for a particular purpose, with respect to any information, data, statements or products made available on the Site. All content present on this site is the exclusive property of Jetking. The software, text, images, graphics, video and audio used on this site belong to Jetking. No material from this site may be copied, modified, reproduced, republished, uploaded, transmitted, adopted, posted or distributed in any form whatsoever without prior written permission from Jetking. All rights not expressly granted herein are reserved.",
@@ -11653,7 +11653,7 @@
     },
     {
       "id": "legal-terms-conditions-3-4",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "Unauthorized use of the materials appearing on this site may violate copyright, trademark and other applicable laws, and could result in criminal and/or civil actions. Jetking is a registered trademark of Jetking Infotrain Limited. This trademark may not be used in any manner without prior written consent/license/authorization from Jetking Infotrain Limited. Jetking may terminate a User’s access at any time for any reason. The provisions regarding a disclaimer of warranty, accuracy of information and indemnification shall survive such termination. Jetking may monitor access to the Site. By using the Site, you agree to follow and be bound by the following terms and conditions concerning your use of the Site. Jetking may revise the Terms of Use at any time without notice to you. Areas of the Site may have different terms of use posted. If there is a conflict between the Terms of Use and terms of use posted for a specific area of the Site, the latter shall have precedence with respect to your use of that area of the Site. The term User shall refer to the user who is browsing the Site.",
@@ -11661,7 +11661,7 @@
     },
     {
       "id": "legal-terms-conditions-3-5",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "The term Jetking shall refer to Jetking Infotrain Limited and/or its affiliates/subsidiary companies. The term Site refers to www.jetking.com and other websites as mentioned above, owned and monitored by Jetking. the Site will meet your requirements; the Site will be available on an uninterrupted, timely, secure, or error-free basis; the results that may be obtained from the use of the Site or any services offered through the Site will be accurate or reliable. The User’s right to privacy is of paramount importance to Jetking. Any information provided by the User will not be shared with any third party. Jetking reserves the right to use the information to provide the User a more personalized online experience.",
@@ -11669,7 +11669,7 @@
     },
     {
       "id": "legal-terms-conditions-3-6",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — You are requested to read them carefully before you use the services of this site",
       "path": "/terms-conditions",
       "text": "The Site provides links to Web sites and access to content, products and services from third parties, including users, advertisers, affiliates and sponsors of the Site. You agree that Jetking is not responsible for the availability of, and content provided on, third party Web sites. The User is requested to peruse the policies posted by other Web sites regarding privacy and other topics before use. Jetking is not responsible for third party content accessible through the Site, including opinions, advice, statements and advertisements and User shall bear all risks associated with the use of such content. Jetking is not responsible for any loss or damage of any sort that a User may incur from dealing with any third party.",
@@ -11677,7 +11677,7 @@
     },
     {
       "id": "legal-terms-conditions-4",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Feedback",
       "path": "/terms-conditions",
       "text": "Unless expressly provided otherwise by Jetking, all comments, feedback, information or materials submitted to Jetking through or in association with the Site shall be considered non-confidential and Jetking’s property. By submitting such comments, feedback, information or materials to Jetking, the visitor of the Site agree to a no-charge assignment to Jetking of all worldwide rights, title and interest in copyrights and other intellectual property rights to the comments, feedback, information or materials. Jetking shall be free to use, copy, publish or distribute such comments, feedback, information or materials on an unrestricted basis without accounting to the visitor of the Site.",
@@ -11685,7 +11685,7 @@
     },
     {
       "id": "legal-terms-conditions-5",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Permission to use information/materials on this website",
       "path": "/terms-conditions",
       "text": "Permission is hereby granted to electronically copy and to print in hard copy, limited portions of the materials published by Jetking in this web site for the sole purpose of using material/information contained therein for personal informational and non-commercial use only. Except in connection with personal informational and non-commercial use, none of the Contents may be copied, reproduced, distributed, republished, downloaded, displayed, posted electronically or mechanically, transmitted, adopted, recorded, in any manner mirrored, photocopied, or reproduced without the prior written permission of Jetking or the applicable copyright owner. Any other use of materials/ information on this Web site, including any commercial use, reproduction for purposes other than that noted above, modification, distribution, or republication without the prior written permission of Jetking is strictly prohibited and may violate copyright or trademark laws. All contents on this site are protected by copyright.",
@@ -11693,7 +11693,7 @@
     },
     {
       "id": "legal-terms-conditions-5-2",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Permission to use information/materials on this website",
       "path": "/terms-conditions",
       "text": "Except as specifically permitted herein, no portion of the information on this web site may be reproduced in any form, or by any means, without prior written permission from Jetking. Visitors or users are not permitted to modify, distribute, publish, transmit or create derivative works of any material found on this site for any public or commercial purposes",
@@ -11701,7 +11701,7 @@
     },
     {
       "id": "legal-terms-conditions-6",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Governing law and jurisdiction",
       "path": "/terms-conditions",
       "text": "Any dispute arising out of the use of this website or in connection therewith shall be governed by Laws of India and Mumbai Courts shall have exclusive jurisdiction to resolve any such dispute.",
@@ -11709,7 +11709,7 @@
     },
     {
       "id": "legal-terms-conditions-7",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — General Disclaimer",
       "path": "/terms-conditions",
       "text": "The documents and graphics on this website could include technical inaccuracies or typographical errors. Changes are periodically added to the information herein. Jetking may make improvements and/or changes herein at any time. Jetking makes no representations about the accuracy of the information contained in the documents and graphics on this web site for any purpose. All documents and graphics are provided “as is”. Jetking hereby disclaims all warranties and conditions with regard to this information, including all implied warranties and conditions of merchantability, fitness for any particular purpose, title and non-infringement. In no event, Jetking and/or its licensor/ supplier shall not be liable to any party for any direct, indirect, special or other consequential damages for any use of the sites, the information, or on any other hyperlinked web site, including, without limitation, any lost profits, business interruption, loss of programs or other data on your information handling system or otherwise, even if Jetking is expressly advised of the possibility of such damages.",
@@ -11717,7 +11717,7 @@
     },
     {
       "id": "legal-terms-conditions-8",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Amendments in terms",
       "path": "/terms-conditions",
       "text": "Please note that these Terms of use may change from time to time. We will not reduce your rights under this Policy without your explicit consent, and we expect most such changes will be minor. Regardless, we will post any Policy changes on this page and, if the changes are significant, we will provide a more prominent notice. Each version of this policy will be identified at the top of the page by its effective date. All contents are Copyright © 2014 Jetking. All rights reserved without prior written approval from Jetking Infotrain Limited, no portion of these terms of use may be copied/ reproduced or adopted in any form, or by any means.",
@@ -11725,7 +11725,7 @@
     },
     {
       "id": "legal-terms-conditions-9",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Grievance Redressal",
       "path": "/terms-conditions",
       "text": "We have a separate Support Portal to resolve all grievances. Kindly visit the below mentioned link to get the required Support. Support Portal: https://support.jetking.com/",
@@ -11733,7 +11733,7 @@
     },
     {
       "id": "legal-terms-conditions-10",
-      "type": "info",
+      "type": "policy",
       "title": "Terms and Conditions — Cancellation & Refund Policy",
       "path": "/terms-conditions",
       "text": "All enrolments are final: once students enrol to any of our courses, there is no cancellation or refund option.",
@@ -11741,7 +11741,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Get Set and Go: Your Passport to the Future",
       "path": "/enrollment-terms-and-conditions",
       "text": "Dear Students, On behalf of the facilitators, staff and management of Jetking, it is my pleasure to welcome you to the Jetking family. I would also like to take this opportunity to congratulate you for taking charge of your life and joining a skill-based course that will make you future ready. May all your dreams come true, and may you take your days at Jetking as the stepping stone to a long and fruitful career ahead. At Jetking, we are committed to providing you skills that can make you future ready. We are inline with rapid changes and technologies that are shaping the world today and have designed our courses to help you lead the way to the future. Your education at Jetking gives you much more than just a certificate. It gives you the confidence and ability to accept challenges and contribute to the IT industry across the world. Our facilitators and team are continually working towards improving your knowledge and skills, helping you build your confidence and ensuring that you are ready for the corporate sector.",
@@ -11749,7 +11749,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-2-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Get Set and Go: Your Passport to the Future",
       "path": "/enrollment-terms-and-conditions",
       "text": "Use this opportunity to focus, practice and take charge of your life. Your confidence and self-belief can take you far ahead. This book is like a passport to the future. Please read the pages of this passport and follow it carefully. The information provided herewith acquaints you with the policies, procedures, and flow of course and extra -curricular activities both academically and outside the classroom. Wishing you all the best for a great life ahead. Sincerely Suresh G. Bharwani Chairman",
@@ -11757,7 +11757,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "Jetking Infotrain Limited, as is known today, was founded as Navbharat Radio by the visionary and patriot Shri Gordhandas Bharwani in Mumbai as a trading agency dealing in electronic items such as transistors and radios. Through sheer hard work and consummate skills he made Navbharat Radio Agency as country’s leading manufacturer of transistors and radios. In 1980, Suresh G. Bharwani, the present Chairman joined his father and cut his teeth into this fiercely competitive business. However, he always believed in leaving his footprints for others to follow rather than following the herd. This approach led him in developing “Do-It- Yourself” electronic kits with lucidly written and graphically designed manual that enabled customers to assemble a whole range of electronic items. Soon these kits became a rage and the success experienced, laid the foundation for the Hardware training that was eventually started in 1990 at Sewri, Mumbai by him.",
@@ -11765,7 +11765,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "During 1990, India witnessed an unprecedented boom in the IT industry, thanks to the advent of cost effective and affordable PCs. As the demand for software to run on these PCs rose, so did the demand for software professionals. Soon the software institutes started mushrooming in every nook and corner. Jetking, under the stewardship of Suresh G. Bharwani, added another dimension to this. Instead of joining the rat race, it ventured into Hardware training. People prophesized doom and called it a one-night dream. But soon they were proved wrong and Jetking went from strength to strength and today it stands tall and serves as the light post to lakhs of student who turn to Jetking to realize their unfulfilled dreams.",
@@ -11773,7 +11773,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3-3",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "What made it so successful? The first and foremost was the Chairman’s commitment to create opportunities for others and his foresight that caught the demand for the trained professionals in computer hardware early on. Second, was the training methodology that derives its origin from three great philosophies, the first being Yoga, the second being the Oriental Philosophy of “What I hear I forget, What I see I remember and What I do I understand” and the third being the Participant Centric Training Laws of world class famous training guru Robert W. Pike. Bob Pike’s three great philosophies gave rise to Smartlab Plus, a unique training methodology that develops students into successful professionals and fine human beings. It ensures that they are focused and have fun while learning.",
@@ -11781,7 +11781,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3-4",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "Jetking, initially offered basic courses in hardware, now offers advanced networking and many other advanced technologies like Cloud, Ethical hacking & Internet of Things (IoT). In order to ensure that Jetking students are globally accepted, it started vendor collaboration with the leaders. It joined hands with Novell in 1997 as NEAP (Novell Education Academic Partner) and with Microsoft in 2003 as MCP (Microsoft Certified Partner). It had also joined hands with VUE to offer testing facility for certification & had become corporate member of CompTIA in 2003. In 2008, Jetking Collaborated with Heathkit Educational Systems Inc., USA to bring Computer Fault Simulation Kits into India. Using these kits, students were provided exposure to real life problems. In 2008 Jetking also tied up with WatchGuard to provide firewall training to its student",
@@ -11789,7 +11789,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3-5",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "In 2009, Jetking launched JetEdge an innovative computer based English and PD training program. In 2011, Tablet PC course, Mobile Application Development Printer and Laptop Repair courses were launched. In 2012, Jetking introduced “Digitization” a revolutionary delivery model. In 2015, introduced Learning Management System (LMS), an online platform for the students to access content from anywhere. Introduced the 21st century learning methodology \"Smartlabplus\" in 2016 and introduced hybrid learning methodology and Blockchain technology enabled courses in 2020-2021 Jetking believes in providing the best to its students, our facilitator is the central axis to any training delivery. In order to enable the facilitator to remain up-to-date with current technologies, regular training programs are conducted by the industry leaders. It also emphasises the uniformity of delivery across its centers and that is why it is audited for ISO 9001:2015.",
@@ -11797,7 +11797,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-3-6",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — History of Jetking",
       "path": "/enrollment-terms-and-conditions",
       "text": "Jetking has survived the doom of IT crash and is one of the very few companies that did not report any adverse business performance. It is because of its strong fundamentals. Rather than flying high, it has quietly made enormous improvements in its service quality and made every operation customer (Student) oriented. So if the past is any testimony then Jetking is heading in only one direction and that is up and above.",
@@ -11805,7 +11805,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-4",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Corporate Strategic Statement: Mission, Vision and Values",
       "path": "/enrollment-terms-and-conditions",
       "text": "Vision : To Provide Economic Independence To 10 Million People In India And Overseas. Mission : To Become A World-class Engine For Employment Generation Through An Efficient Partnership Network. Values : Quality. Trust. Self-motivation. Innovation. Hands-On. Learning & Teaching. Equanimity. Credo : When I hear, I forget When I hear and see, I remember When I question and discuss, I begin to understand When I go on 'to do', I acquire knowledge and skill When I teach another, I master When I learn to be equanimous, I am able to grow to my full potential",
@@ -11813,7 +11813,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-5",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — The Jetking Promise",
       "path": "/enrollment-terms-and-conditions",
       "text": "The Goals of Jetking are: 1. To enable and encourage students to rely on their unique and rich cultural background as a foundation for their learning, growth, and transformation. 2. To guide students to adapt their knowledge and skills to the context and needs of real people, real problems and real situations in which they live and work. 3. To provide facilities and world-class technologies that incorporate knowledge of human learning process, motivation, retention, satisfaction, knowledge construction and expertise. 4. To coach and prepare students for job placement and career success. 5. To create an environment where students and facilitators can learn from mutual experiences and excel as an individual and as team members in fulfillment of Jetking’s mission. 6. To enhance employability of students not only in technologies but also in personality development & communication skills.",
@@ -11821,7 +11821,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-6",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — SmartLabplus 5.0 - 21st Century Learning Methodology",
       "path": "/enrollment-terms-and-conditions",
       "text": "SmartLab+ 5.0 is a revolutionary training delivery methodology, designed for Gen Z. Highlights of this methodology are: 1. The curriculum is designed based on tasks that a Desktop Support Engineer will have to do after joining a job. 2. Pre-sees will be available on LMS and Mobile. The students will be going through these pre-sees before coming to the class. 3. Before the session starts, students will perform 5 minutes of Yoga to settle down and improve concentration. 4. In the class the students will go through group work and discuss what they have studied at home. 5. The student will go through a technical scenario based on what he has learnt. The technical scenarios are basically industry applications. These scenarios will have customer support techniques. 6. Technical scenarios will be followed by simulations or videos demonstrating how the task needs to be performed. The simulations have “Show-Me” “Try Me” and “Test-Me” options too. 7. One day students will have theory/activity session and the next day will be practical.",
@@ -11829,7 +11829,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-6-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — SmartLabplus 5.0 - 21st Century Learning Methodology",
       "path": "/enrollment-terms-and-conditions",
       "text": "For better understanding and retention various active learning strategies are used in class like - Flipped Class Room, Group Work, Think- Pair-Share (TPS), Brainstorming, Role Plays, Scenarios, Case Studies, Mind Map and gamification.",
@@ -11837,7 +11837,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-8",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Jetking Official Receipt",
       "path": "/enrollment-terms-and-conditions",
       "text": "Note: If you do not receive your receipt in the above format your installment /fee for that month will be waived off. Call us on +91 7666830000 to register the same or mail us on info@jetking.com",
@@ -11845,7 +11845,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-10",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1. Jetking’s Academic Program Goals",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Support the goals and purpose of the institution. b. Teach technical skills, theoretical concepts and practical experience to prepare students for their careers. c. Develop in students a sense of responsibility to the standards and ideals of the profession. d. Train the importance of ethical behavior in students’ personal and professional lives. e. Guide students, how to be become personally and professionally successful. f. Preparing Students for Employability.",
@@ -11853,7 +11853,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-11",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 2. Curriculum",
       "path": "/enrollment-terms-and-conditions",
       "text": "Jetking’s curriculum has been designed keeping in mind the demand of the IT industry. Since the industry is changing fast, our curriculum is frequently updated to suit to the requirements of the IT industry. The curriculum is subject to change without notice from time to time.",
@@ -11861,7 +11861,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-12",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3. Attendance",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Classes can be conducted in any of the following modes – physical, hybrid (part online & part-offline) and asynchronous (recorded session and online masterclass as schedule). b. Students to attend the sessions on the video-conference link provided by Jetking when the class conduction is done in hybrid mode or online masterclass sessions are conducted c. Students to be punctual and login for the session well in time, so that they do not miss out on lectures",
@@ -11869,7 +11869,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-13",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.1 Absenteeism",
       "path": "/enrollment-terms-and-conditions",
       "text": "Absenteeism is defined as not attending any session without proper permission from the facilitator. In case of sickness, the student has to submit an application duly signed by a parent / guardian & supported by a medical certificate issued by a registered doctor/medical practitioner. The following rules apply and must be followed: a. Three (3) days absenteeism, either continuous or staggered per semester is allowed. b. Minimum 80% attendance (in both technical and PD classes) is required to be eligible for placement. All matters related to student absenteeism are to be communicated to the class facilitator on Smartrain (Please note that absences are counted from the firstday of the start of the module. In case student joins the course in between the module, then for that module, 80% attendance will be considered from the day of joining). Students will be given marks on the basis of their class c. Students with Attendance below 80% in their final exam, will be given zero in “attendance” component in the exam evaluation.",
@@ -11877,7 +11877,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-15",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.3 Refund Policy/Admission Cancellation/Course Downgrade",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. NO REFUNDS (in any form – partial/full/conditional) of JK-course fees/registration or booking amount, wef 1st March 2022. b. There is no provision of course downgrading.",
@@ -11885,7 +11885,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-16",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.4 Drop-out Re-enrolment policy",
       "path": "/enrollment-terms-and-conditions",
       "text": "Triggering Mechanism: If a student fails to pay their EMI within the stipulated time frame i.e. 30 days the auto dropout policy will be applicable. This could be detected through an automated monitoring of payment records through the CRM/ERP system. For example, if a student's EMI due dateisthe1stof April 2024 and if he/she has not paid the monthly EMIs by 30th of April 2024, the system will automatically mark the student as a dropout after 1st May 2024. Actions: Once triggered, the auto dropout policy might initiate a series of actions. For instance: Students will be debarred from accessing JK center's facilities and resources. Students are not permitted to attend any Theory or Practical sessions in Drona/Arjuna classroom. To reactivate/resume from Auto dropout: A student Dropout for 5 instances/times, will be declared as complete dropout and his/her course will be discontinued from the date of Dropout. The Learning centre will not be liable to provide any service to the student, including and not limited to, exams, certification and placement support. Exception to the Policy:",
@@ -11893,7 +11893,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-17",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.5 Leave / Break",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Each student can be given maximum 2 days Leave in a month without any backup session. b. In case of sick Leave: Medical certificate as a proof needs to be submitted. Medical certificate should be of a Doctor with MBBS or any equivalent/higher degree would be accepted. c. A break may be granted once a year for up to 15 days, and for students engaged in formal education, it may be granted twice a year for up to 30 days each. However, the student must provide their hall ticket or admit card for the university or college examination. d. Student will apply for leave/break through LMS. e. Students have to pay instalments during his/her break Period. Before Break his/her instalments should be clear. f. The Break Application must be signed by the parents first. g. Applications for leave or breaks must first be approved by the CS and then by the CM.",
@@ -11901,7 +11901,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-20",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.8 Center Closure Transfer",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. In the event of a center closure for any reason, the student needs to collect Centre Transfer Form from the closing centre for getting them transferred to other Jetking Centre. b. In case of centre closure, Jetking-HO will inform the student to join the nearest centre or the centre as per feasibility. Jetking Head Office retains the exclusive rights of centre allocation under this condition. If the student does not go adhere to the decision of centre- transfer by Jetking-HO. In this case, Jetking-HO is not liable to give any further service to the student.",
@@ -11909,7 +11909,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-21",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.9 On Hold",
       "path": "/enrollment-terms-and-conditions",
       "text": "Student can be marked as on hold only twice during his course.",
@@ -11917,7 +11917,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-22",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 3.10 SOL (Statute of Limit)",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Statute of Limit for any career course is 1.5 times the duration of the course, except for Formal courses, where the guidelines of the external authority will be taken into consideration. In the event the course is retired, the student has to take fresh admission in the course which is being offered at the centre, without any contest and the current fees will be applicable. b. Post statute of limit student will not be eligible to demand any services with respect to lectures, examination, certification, placement, re-enrolment or transfer and refund. c. If Course has changed/upgraded within SOL or student joining after long break then Student has to pay as per current course fee structure.",
@@ -11925,7 +11925,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-23",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 4. Unavoidable Batch Delays",
       "path": "/enrollment-terms-and-conditions",
       "text": "In case the facilitator fails to conduct a session, then make-up session will be arranged on a specific day and time with the agreement of students. These are compulsory sessions and the students must attend them without fail. In case any student does not attend the makeup session, then he has to cover the session on his own.",
@@ -11933,7 +11933,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-24",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 5. Classroom Discipline",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. The students must not disobey the facilitator and in case there is a grievance, he/she must bring it to the notice of the management through a letter. b. Talking loudly or joking is to be avoided at all cost. c. Students, while learning Internet, must avoid visiting unwanted websites. The institute reserves the right to punish the offending student very severely in case he is found to have violated the rules for internet usage.(Call to Parents, Rusticate from Class or Admission cancelled)",
@@ -11941,7 +11941,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-26",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Precautionary measures",
       "path": "/enrollment-terms-and-conditions",
       "text": "1. There are 2 formats of Exam conduction - Semester-wise/Module-wise. Semester wise for Pan India centers and Module wise for Own centers. 2. Centers ensure exam conduction for eligible students within 15 days from their module/semester completion whichever be the format in practice. 3. Centers need to ensure 100% exam appearance from ERL 4. Conduct regular mocks, performance tracking, identify weak-areas and inculcate timely action for improvement. 5. Monthly Mock conduction needs to be complete for 100% students. If a student is absent on the day of the scheduled mock. It will be the responsibility of the centre to get the mock conducted for the student within the month, without exception. The conduction in this case will be unannounced and immediate. 6. Students without monthly mock clearance will not be allowed to for exams (whichever be the case, module/semester). 7. Centers need to plan & send the Exam schedule in advance",
@@ -11949,7 +11949,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-27",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Requirements for Exam Conduction",
       "path": "/enrollment-terms-and-conditions",
       "text": "1. PC/Laptop with Webcam 2. Headphones 3. Internet connection of 100 Mbps speed E.g., in a lab of having 16 computers then there should be 16 webcams and 16 headphones.",
@@ -11957,7 +11957,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-28",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Exam Conduction",
       "path": "/enrollment-terms-and-conditions",
       "text": "1. Students will receive Google meet link / Zoom link from HO exam dept. before 2 days of examination 2. Students must be physically present at the center for appearing online exam 3. At the time of online exam, students will go through the given link and start the audio and video of Google meet / Zoom link and share his/her Desktop/Laptop screen 4. HO team will monitor the exam. If any instance of cheating or taking help from others, exam will be stopped from JK-HO. The candidate will be declared as “FAIL” 5. Technical and PD viva will also be conducted using the same link (Google meet/Zoom).",
@@ -11965,7 +11965,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-29",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Exam Policy",
       "path": "/enrollment-terms-and-conditions",
       "text": "1. The student will be eligible for exams if he/she has completed all the subjects related to that module/semester and successfully completed all deliverables towards partial fulfillment of the undergoing course leading to the award of the completion certificate. List of deliverables: Assignment (Subject-wise) Submission Report Daily Presentation Report Project (Module/Semester-wise) Report Attendance Report Fee Clearance Report",
@@ -11973,7 +11973,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-29-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Exam Policy",
       "path": "/enrollment-terms-and-conditions",
       "text": "2. No pending fees against his/her name, which also means that the student has paid on-time and regularly as per schedule of payment. 3. In the BCA exam conduction, without the complete documentation and the fees clearance of both the University and of Jetking charter, the student will not be provided with either the exam clearance or the University authorization for appearing in the examination 4. It is the ownership of the student to start the exam on time and complete the exam on time. No time extension of the Exam link can be provided, in any case. If there is a problem in the link/connectivity error/system hang-up, then the same needs to be reported by the centre to the HO-Exams Team, so that they can take the necessary action for re-scheduling the exam 5. If any student is absent or failed in the modular exam and needs to re-appear, then repeater exam fees will be applicable, as per policy and defined process in the student passport 6. A student needs to be passed in the Module/Semester Viva, to be eligible for attending classes for the next Module/Semester. 7.",
@@ -11981,7 +11981,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-29-3",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Exam Policy",
       "path": "/enrollment-terms-and-conditions",
       "text": "Student placement is governed as per the Placement policy of Jetking. 8. Three types of questions will come in the Modular exam i.e., Concept based, Scenario based, and Practical based. The grade distribution is as per the table below: Percentage | Grade. 90% and above | Honours. 80% – 89% | Distinction. 65% – 79% | A. 50% – 64% | B. 49% and below | Fail Note: A. Students not appearing for the exam once scheduled will be considered as absent and appearing in the next exam as a repeater student after paying the repeater fees. B. It is the ownership of the centre Team to complete all the student deliverables before qualifying the student for exam appearance. The student’s module/semester should be complete in all respect, before processing the student’s name in the ERL. C. The online exam and practical assessments will be conducted under the supervision of both internal and external examiners",
@@ -11989,7 +11989,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-30",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1 Module/Semester Exam Schema",
       "path": "/enrollment-terms-and-conditions",
       "text": "This exam is devised to aim students to assess their technical knowledge and skills in the respective subject. Marks and weightage distribution is as per the table below: Examination | Marks | Duration (in minutes) | Weightage. 1.1.1 Theory Exam (Online) | 100 | 60 | 20%. 1.1.2 English & PD (Online) | 100 | 60 | 15%. 1.1.3 Viva (External) | 50 | Based on no. of students | 20%. 1.1.4 Practical Exam | 100 | 120 | 25%. 1.1.5 Project (Module/Semester-wise) | 25 | 240 | 10%. 1.1.6 Assignment (Subject-wise) | 25 | Home-study | 10%. Total | 400 |  | 100%",
@@ -11997,7 +11997,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-31",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.1 Theory Exam (Online) - Total Marks - 100, Duration – 60 Mins",
       "path": "/enrollment-terms-and-conditions",
       "text": "Duration of the exam will be 60 mins. Single examination will be conducted by HO for all subjects The exam will consist of MCQ, SCQ. Total number of questions will be 100 It will be an online exam using proctoring software { mettl, wcp etc}* The learners will be getting a schedule of all the exams at the course start so they are already prepared.",
@@ -12005,7 +12005,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-32",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.2 English & PD (Online) - Total Marks - 100, Duration – 60 Mins",
       "path": "/enrollment-terms-and-conditions",
       "text": "Duration of the exam will be 60 mins. End of the subject, a single exam will be conducted by HO which includes Basic English, basic grammars, PD etc. MCQ based questions. Total number of questions will be 100",
@@ -12013,7 +12013,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-33",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.3 Technical Viva (External) - Total Marks - 50",
       "path": "/enrollment-terms-and-conditions",
       "text": "Duration of the viva will be based on the number of students. Approx. 10 minutes per candidate. Viva will be conducted by SMEs/LDMs from HO. *",
@@ -12021,7 +12021,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-34",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.4 Practical Exam - Total Marks - 100, Duration – 120 Mins",
       "path": "/enrollment-terms-and-conditions",
       "text": "Students need to perform the practicals from different subjects. Min. 1 practical from each subject need to be performed. Faculty needs to ensure the availability of hardware and software to the students. Also faculty needs to evaluate the same and share the marks with HO exam dept. There will be total 5 practicals and each practical will carry 20 marks each.",
@@ -12029,7 +12029,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-35",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.5 Project (Module/Semester-wise) (25 marks)",
       "path": "/enrollment-terms-and-conditions",
       "text": "Faculty needs to assign different projects to a group of students (min. 1 project in 3 months’ time). Students need to work in a group and submit the project on time. Faculty needs to evaluate and conduct viva on the same. External examiner will finally check the project report (hard copy).",
@@ -12037,7 +12037,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-36",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.6 Assignment (Subject-wise) (25 marks)",
       "path": "/enrollment-terms-and-conditions",
       "text": "Subject-wise assignment questions will be given through LMS Candidates will write the assignments in a notebook and submit it on LMS-Learnyst (scan copy, image etc.) Candidates will record his/her answers of any assignment of the week and upload on to Learnyst platform Internal trainer will help students for uploading weekly assignments on LMS (Learnyst) Faculty will check and verify assignments External examiner will finally check the assignments (hard copy). Students need to write **25 assignments** from different subjects (5) and submit for evaluation. And the trainer can give **1 mark** to each assignment. **Please note the number of assignments will vary based on the subject.** Component | Total marks | Weightage | Example: marks scored | Percentage. Theory Exam (Online) | 100 | 20% | 75 | 15.00. English & PD (Online) | 100 | 15% | 70 | 10.50. Viva (External) | 50 | 20% | 30 | 12. Practical Exam | 100 | 25% | 70 | 17.5. Project (Module-wise) | 25 | 10% | 20 | 8. Assignment (Subject-wise) | 25 | 10% | 15 | 6. Total | 400 | 100% | 280 | 69.00",
@@ -12045,7 +12045,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-36-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 1.1.6 Assignment (Subject-wise) (25 marks)",
       "path": "/enrollment-terms-and-conditions",
       "text": "Minimum Passing is 50% in each component.",
@@ -12053,7 +12053,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-37",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Result declaration",
       "path": "/enrollment-terms-and-conditions",
       "text": "The result will be declared within 3-4 working days after completion of the exam (Activity based exam & Subject exam) by Exam dept. Exam department will declare the result in soft copy format",
@@ -12061,7 +12061,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-38",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Certification award",
       "path": "/enrollment-terms-and-conditions",
       "text": "Candidates will receive soft copy of Mark sheet and Certificate from HO after completion of all Modular exams as per opted course within 15 working days",
@@ -12069,7 +12069,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-39",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — JK-DCC with AI Modular Pattern",
       "path": "/enrollment-terms-and-conditions",
       "text": "Module 1 | Module 2 | Module 3. Subject 1 – Install & Troubleshoot PC Hardware | Subject 4 – Behavioral Skills | Subject 8 – MCSA Paper 1. Subject 2 – Configure & Troubleshoot OS (Windows + Linux) | Subject 5 – Networking Essentials | Subject 9 – Red Hat SA1. Subject 3 – Service Desk Tool | Subject 6 – MS-365 & Outlook | Subject 10 – Cloud Computing (Azure + AWS). Subject – English & PD | Subject 7 – CCNA (Routing and Switching) | Subject 11 – Introduction to Firewall.  | Subject – English & PD | Subject 12 – Aspirational Technologies.  |  | Subject – English & PD",
@@ -12077,7 +12077,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-40",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Semester Pattern",
       "path": "/enrollment-terms-and-conditions",
       "text": "Semester 1 | Semester 2. Subject 1 – Install & Troubleshoot PC Hardware | Subject 8 – MCSA Paper 1. Subject 2 – Configure & Troubleshoot OS (Windows + Linux) | Subject 9 – Red Hat SA1. Subject 3 – Service Desk Tool | Subject 10 – Cloud Computing (Azure + AWS). Subject 4 – Behavioral Skills | Subject 11 – Introduction to Firewall. Subject 5 – Networking Essentials | Subject 12 – Aspirational Technologies. Subject 6 – MS-365 & Outlook | . Subject 7 – CCNA (Routing and Switching) |",
@@ -12085,7 +12085,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-41",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — JK-MCC with AI Modular Pattern",
       "path": "/enrollment-terms-and-conditions",
       "text": "Module 1 | Module 2 | Module 3. Subject 1 – Install & Troubleshoot PC Hardware | Subject 6 – MCSA Paper 1 | Subject 11 – Data Center & Server Hardware. Subject 2 – Client OS | Subject 7 – Red Hat SA1 | Subject 12 – Machine Learning. Subject 3 – Service Desk Tool | Subject 8 – Python | Subject 13 – Artificial Intelligence. Subject 4 – Networking Essentials | Subject 9 – MCSA 2019 Paper 2 (Azure) | Subject 14 – Prompt Engineering. Subject 5 – CCNA (Routing and Switching) | Subject 10 – AWS – SAA-C03 | Subject – English & PD. Subject – English & PD | Subject – English & PD |",
@@ -12093,7 +12093,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-42",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Semester Pattern",
       "path": "/enrollment-terms-and-conditions",
       "text": "Semester 1 | Semester 2. Subject 1 – Install & Troubleshoot PC Hardware | Subject 7 – Red Hat SA1. Subject 2 – Client OS (Windows + Linux) | Subject 8 – Python. Subject 3 – Service Desk Tool | Subject 9 – MCSA 2019 Paper 2 (Azure). Subject 4 – Networking Essentials | Subject 10 – AWS – SAA-C03. Subject 5 – CCNA (Routing and Switching) | Subject 11 – Aspirational Technologies. Subject 6 – MCSA Paper 1 | Subject – English & PD **Note>> There is going to be ONLY SEMESTER EXAM pan India.**",
@@ -12101,7 +12101,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-43",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 7. Certification",
       "path": "/enrollment-terms-and-conditions",
       "text": "Please note that the NSDC logo will not appear on the COP.",
@@ -12109,7 +12109,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-44",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 8. Cancellation of admission",
       "path": "/enrollment-terms-and-conditions",
       "text": "The institute may cancel the admission on account of the following: a. Non-payment of tuition fee as per the tuition fee payment details. b. Non-adherence to Student Code of Conduct. c. Practicing of unfair means during the examination as detailed in “Cheating”. d. In case of cancellation of admission, there is no further ownership of either Jetking Head Office or the learning centre to provide service to the student. The moment the admission is cancelled, the student forfeits the claim to any fees/monies paid to Jet-HO or the learning centre. e. In case of student pursuing formal course, cancellation of Admission will be as per the procedure and guidelines laid down by the competent authority.",
@@ -12117,7 +12117,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-45",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 9. Lab Facility",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Every student gets individual PC for performing practical in the classroom mode of training. b. In the hybrid and asynchronous mode of training conduction, the student should mandatorily have his/her own PC/Laptop with a stable internet connectivity for the training. c. The student’s personal PC/Laptop can be either new or refurbished. It is important that the standard configuration match is as per the Jetking-HO guidelines",
@@ -12125,7 +12125,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-47",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 11. Placement",
       "path": "/enrollment-terms-and-conditions",
       "text": "The institute offers placement free of cost to those students who complete the entire curriculum successfully. The following rules apply to the placement services offered by Jetking:",
@@ -12133,7 +12133,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-49",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 13. Placement Assistance",
       "path": "/enrollment-terms-and-conditions",
       "text": "We can provide placement assistance to the students scoring 50 to 74%. They will be getting a JETKING Passing Certificate. NOTE:",
@@ -12141,7 +12141,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-51",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 15. Dress Code",
       "path": "/enrollment-terms-and-conditions",
       "text": "Since potential employers keep visiting the campus of the institute and to get accustomed to the corporate culture, it is very important that the students are properly attired and are well- groomed. Students have to observe formal dress code from Monday to Friday which includes: a. For Boys Light colored shirt Dark colored trouser Matching tie, belt and shoes b. For Girls Salwar-Kurta or Western Formats that are non gaudy and non revealing. Note: Students will be allowed to wear rainy shoes (not sandals/ slippers) during monsoon. Students will be allowed to wear decent casuals onSaturdays. Students will not be allowed to wear shorts, jeans with hole/s or patch work etc. on any day.",
@@ -12149,7 +12149,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-54",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 17. Student Belongings",
       "path": "/enrollment-terms-and-conditions",
       "text": "The institute will not be responsible for the loss of any personal possessions of a student. In addition, the student must not bring the following to the institute: a. Tools of violence b. Pirated software c. CD/DVD, Pen drive or any device/media used to store data and or software. d. Any books, periodicals, reading items and CD/DVD thatare pornographic or violent in nature e. Games software f. Any other material such as HDD, Motherboard etc.",
@@ -12157,7 +12157,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-55",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 18. Abandoned Property",
       "path": "/enrollment-terms-and-conditions",
       "text": "Any personal property, if found which is left in the institute premise will be held for 30 days, if the property is not claimed with in 30 days of possession than it can be destroyed discarded, used or donated as per the internal policies of the institute.",
@@ -12165,7 +12165,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-56",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 19. Smoking, Consumption of Alcohol, Chewing Paan etc",
       "path": "/enrollment-terms-and-conditions",
       "text": "The institute is strictly smoke free, alcohol free premise. No student is allowed to smoke or drink or even attend the class while under the influence of alcohol if found, he would be immediately expelled from the institute. Chewing of pan, tobacco, pan masala, chewing gum is also prohibited in the center premises.",
@@ -12173,7 +12173,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-57",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 20. Complaints/Suggestions",
       "path": "/enrollment-terms-and-conditions",
       "text": "Following process can be followed in case of any complaint procedures apply: a. The student should submit his/her complaint in writing within 7 days of the occurrence of the issue under concern to the Center Manager. Students can raise the ticket to Head Office at support.jetking.com or call national toll free number +91 7666830000 from any service provider. b. The Center Manager should respond with resolution of the complaint in writing within seven (7) days of receipt of the complaint. The Center Manager may decide to arrange a formal meeting with concern student but the decision of the Center Manager will be final and binding. However complaints on following grounds will not be accepted: i. Request to change of facilitators in the class. ii. Request to change of lab instructors. iii. Facilitators have rights to warn students in case of discipline. iv. Change of institute’s rules and regulations. v. Transfer or change of batches.",
@@ -12181,7 +12181,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-58",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 21. Student Code of Conduct",
       "path": "/enrollment-terms-and-conditions",
       "text": "a. Offence related to Property i. An offence related to property is committed when a student: Knowingly damages the property owned by the institute by defacing the walls, tables, chairs, desks or other such articles. ii. Commits a cyber related crime like hacking websites, sending or receiving e-mails. iii. Sending viruses or using media that may have virus etc. iv. Stealing computer and/or related parts, electronic gadgets, software etc. If the student does not adhere to the student code of conduct he is punishable as per the institute’s internal policies. b. Offence related to the Operations of the Institute. An offence related to operations occurs when a student: i. Engages in obscene or indecent or unruly behaviour in institute’s premise or at any event conducted by the institute outside the premise. ii. Forges any document, course books and question papers. iii. Intentionally acts to impair/interfere with or obstruct the orderly conduct, processes and functions of the institute. iv. Students learning Ethical Hacking course has to sign an undertaking in a prescribe format.",
@@ -12189,7 +12189,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-59",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — 22. Alumni",
       "path": "/enrollment-terms-and-conditions",
       "text": "A student who successfully completes the course becomes an alumni of the institute. As alumni he can serve as an important link between the institute and the outside world. He would be entitled as an alumni to the following: a. As Jetking alumni, he/she would be entitled to get discount of 10% on all upgrades. This discount would be excluding of any current discount on the course b. He would be invited to the annual alumni meet c. He would be able to sponsor any of his relative or friend and claim loyalty incentive in return which will be defined by the centre from time to time. Syllabus* is only mapped to Global Certifcations Student shall receive a Jetking certification on completion of course. Global Certification & exam voucher is not included in the course.",
@@ -12197,7 +12197,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-60",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Undertaking",
       "path": "/enrollment-terms-and-conditions",
       "text": "Undertaking by the Student [Please read the Passport, tear at the perforation after signing and hand it over to the counsellor / facilitator within 03 days from course start). I hereby declare that I have read and understood the content of the Passport and agree to abide by all the rules and procedures as Laid out over here and understand that I am responsible to obey them. I also understand that I am liable to face disciplinary action for voluntary or involuntary disobedient actions of mine inside the premises of Jetking.",
@@ -12205,7 +12205,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-60-2",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Undertaking",
       "path": "/enrollment-terms-and-conditions",
       "text": "Date: ................................................................ Place: ................................................................ Name: ................................................................ Enrolment No: ................................................................ Batch No.: ................................................................ Student’s Signature: ................................................................ Parent’s/Guardian’s Signature: ................................................................ Centre Manager Signature: ................................................................ Please Read &sign the Refund policy written overleaf Note: Please read the refund policy and SOL (Statute of Limit) mentioned under Academic Policies and Guidelines",
@@ -12213,7 +12213,7 @@
     },
     {
       "id": "legal-enrollment-terms-and-conditions-61",
-      "type": "info",
+      "type": "policy",
       "title": "Enrollment Terms and Conditions — Disclaimer",
       "path": "/enrollment-terms-and-conditions",
       "text": "The statements and policies set forth in this passport are for the information purposes only and should not be construed as the basis of contract between the student and Jetking Infotrain Ltd. (JIL). While every effort has been made by Jetking Infotrain Ltd. (JIL) to provide accurate and current information, Jetking Infotrain Ltd. (JIL) reserves the right to change, without notice, any provision in this passport without actual notice to individual student. However, every effort will be made to keep students acquainted of any such changes. Students enrolled at the Jetking Infotrain Ltd. (JIL) centers agree to comply with its rules and regulations without any preconditions and undertake to make changes in attitude, behaviour etc. wherever necessary. For questions regarding Jetking Infotrain Ltd. (JIL) passport, please Contact your Jetking Center All logos are registered trademark of their respective organization. Follow us on: Facebook.com/JetkingOfficial Twitter.com/JetkingLtd Youtube.com/JetkingSocial linkedIn.com/company/jetking Instagram.com/jetkingoffical/",
