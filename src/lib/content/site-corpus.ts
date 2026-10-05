@@ -177,7 +177,8 @@ async function professionalItems(): Promise<CorpusItem[]> {
   const benefits = indexed(c, 'benefits', ['title', 'detail']);
   const flex = indexed(c, 'flex', ['label']);
   const stories = indexed(c, 'stories', ['name', 'from', 'to', 'hike', 'quote']);
-  const P = '/professional';
+  // The audience pages are not listed; their content now lives on the main pages, so answers link there.
+  const P = '/courses';
 
   return [
     item(
@@ -204,7 +205,7 @@ async function parentItems(counts: { centres: number; cities: number }): Promise
   const loves = indexed(c, 'loves', ['label']).map((l) => fill(l.label ?? '', { since: SINCE_FOUNDED }));
   const journey = indexed(c, 'journey', ['title', 'detail']);
   const trust = indexed(c, 'trust', ['value', 'label']);
-  const P = '/parent';
+  const P = '/about-us';
   // Trust figures: the first is the live centre count, the rest are the page's own words.
   // Page order is: centres, "<Support> Placement Assistance", "<Industry> Aligned Curriculum", "Trusted Brand Legacy" —
   // the stat's headline word only belongs in the sentence for the curriculum one ("industry aligned curriculum").
@@ -226,7 +227,7 @@ async function parentItems(counts: { centres: number; cities: number }): Promise
 async function studentItems(): Promise<CorpusItem[]> {
   const c = await pageCopy(studentCopy);
   const benefits = indexed(c, 'benefits', ['title', 'detail']);
-  return [item('student-benefits', 'student', 'What students get at Jetking', '/student', benefits.map((b) => `${b.title}: ${b.detail}`).join(' '))];
+  return [item('student-benefits', 'student', 'What students get at Jetking', '/courses', benefits.map((b) => `${b.title}: ${b.detail}`).join(' '))];
 }
 
 // Certification tracks are brand names rather than page prose, so they stay a code list.
@@ -237,7 +238,7 @@ async function exploreItems(): Promise<CorpusItem[]> {
   const reasons = indexed(c, 'reasons', ['title', 'detail']);
   const universities = indexed(c, 'universities', ['name']);
   const affiliations = indexed(c, 'affiliation', ['name']);
-  const P = '/explore';
+  const P = '/about-us';
 
   return [
     item('explore-reasons', 'explore', "Why choose Jetking — every student's reasons", P, reasons.map((r) => `${r.title}: ${r.detail}`).join(' ')),
