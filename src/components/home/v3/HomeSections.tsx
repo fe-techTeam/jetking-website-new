@@ -57,7 +57,7 @@ export function HomeSections({
       <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
       <Recognitions copy={copy} />
       <BlogTeaser posts={data.posts} copy={copy} />
-      <HomeFaq faqs={data.faqs} copy={copy} />
+      <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} />
       <FinalCta centres={enquiryCentres} copy={copy} />
       <FranchiseBand copy={copy} />
     </div>

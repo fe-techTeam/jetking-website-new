@@ -8,6 +8,8 @@ import { siteConfig } from '@/lib/site';
 import { aboutCopy } from '@/lib/content/copy/pages/about';
 import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
+import { exploreCopy } from '@/lib/content/copy/pages/explore';
+import { parentCopy } from '@/lib/content/copy/pages/parent';
 
 export async function generateMetadata(): Promise<Metadata> {
   const [centres, copy] = await Promise.all([content.listCentres(), loadCopy(aboutCopy)]);
@@ -27,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const copy = await loadCopy(aboutCopy);
+  const [copy, explore, parent] = await Promise.all([loadCopy(aboutCopy), loadCopy(exploreCopy), loadCopy(parentCopy)]);
   const trail: Crumb[] = [
     { name: copy['breadcrumb.home'], path: '/' },
     { name: copy['breadcrumb.about'], path: '/about-us' },
@@ -44,6 +46,8 @@ export default async function AboutPage() {
       <AboutLanding
         copy={copy}
         about={about}
+        explore={explore}
+        parent={parent}
         counts={{ courses: courses.length, centres: centres.length, cities: cities.length }}
       />
     </>

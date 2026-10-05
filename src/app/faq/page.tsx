@@ -55,7 +55,8 @@ export default async function FaqPage() {
     centres: copy['topics.centres'],
     franchise: copy['topics.franchise'],
   };
-  const faqs = await content.listFaqs();
+  // Franchise questions are answered on the Franchise page; this page is for students and families.
+  const faqs = (await content.listFaqs()).filter((f) => f.topic !== 'franchise');
   const topics = [...new Set(faqs.map((f) => f.topic))];
 
   return (

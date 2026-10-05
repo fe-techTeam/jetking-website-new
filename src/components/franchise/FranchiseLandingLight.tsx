@@ -234,8 +234,49 @@ export function FranchiseLandingLight({
           </div>
         </Section>
 
+      {/* ── Market opportunity + image ─────────────────────────────────── */}
+      <Section tone="tint" id="opportunity">
+          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
+            <div className="kit kit-card relative overflow-hidden lg:col-span-5">
+              <Image
+                src={copy['market.image']}
+                alt={copy['market.image.alt']}
+                width={1200}
+                height={900}
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
+              />
+            </div>
+
+            <div className="lg:col-span-7">
+              <h2 className="section-title font-display text-[var(--dc-ink)]">
+                {copy['market.title']}
+              </h2>
+              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+                {copy['market.lede']}
+              </p>
+
+              <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
+                {[0, 1, 2, 3].map((i) => (
+                  <li key={i} className="kit kit-card p-3.5 sm:p-5">
+                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
+                      {k(`market.${i}.value`)}
+                    </p>
+                    <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
+                      {k(`market.${i}.label`)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Section>
+
       {/* ── Partner benefits (student Benefits pattern) ────────────────── */}
-      <Section tone="tint" labelledBy="fra-benefits">
+      <Section tone="plain" labelledBy="fra-benefits">
           <div className="grid gap-6 xs:gap-7 sm:gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10">
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
               <h2
@@ -313,7 +354,7 @@ export function FranchiseLandingLight({
         </Section>
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
-      <Section tone="plain" deco="grid" id="journey">
+      <Section tone="tint" deco="grid" id="journey">
           <div className="max-w-xl">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
               {copy['launch.title']}
@@ -334,47 +375,6 @@ export function FranchiseLandingLight({
                 }))}
               />
             </Reveal>
-          </div>
-        </Section>
-
-      {/* ── Market opportunity + image ─────────────────────────────────── */}
-      <Section tone="tint" id="opportunity">
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
-            <div className="kit kit-card relative overflow-hidden lg:col-span-5">
-              <Image
-                src={copy['market.image']}
-                alt={copy['market.image.alt']}
-                width={1200}
-                height={900}
-                className="aspect-[4/3] w-full object-cover"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
-              />
-            </div>
-
-            <div className="lg:col-span-7">
-              <h2 className="section-title font-display text-[var(--dc-ink)]">
-                {copy['market.title']}
-              </h2>
-              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-                {copy['market.lede']}
-              </p>
-
-              <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
-                {[0, 1, 2, 3].map((i) => (
-                  <li key={i} className="kit kit-card p-3.5 sm:p-5">
-                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
-                      {k(`market.${i}.value`)}
-                    </p>
-                    <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
-                      {k(`market.${i}.label`)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </Section>
 

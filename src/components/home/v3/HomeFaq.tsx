@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import type { Faq } from '@/lib/content/types';
+import { FOUNDED_YEAR } from '@/lib/brand-facts';
+import { fill } from '@/lib/content/copy/define';
 import { Section, SectionHeader } from '@/components/kit';
 import { JsonLd } from '@/components/ui';
 import { faqSchema } from '@/lib/seo';
@@ -11,8 +13,26 @@ import type { HomeCopy } from '@/lib/content/copy/pages/home';
  * A short FAQ near the foot of the home page: the questions a visitor still has after the courses and the
  * proof (eligibility, fees and EMI, placement, centres). The same questions go out as FAQ structured data.
  */
-export function HomeFaq({ faqs, copy }: { faqs: Faq[]; copy: HomeCopy }) {
-  if (!faqs.length) return null;
+export function HomeFaq({
+  faqs: stored,
+  counts,
+  copy,
+}: {
+  faqs: Faq[];
+  counts: { centres: number; cities: number };
+  copy: HomeCopy;
+}) {
+  // Families ask this one before anything else, and it used to be answered on the Parent page.
+  const faqs: Faq[] = [
+    ...stored,
+    {
+      id: 'faq-parent-trust',
+      question: copy['faq.parent.question'],
+      answer: fill(copy['faq.parent.answer'], { year: FOUNDED_YEAR, centres: counts.centres, cities: counts.cities }),
+      topic: 'admissions',
+      personaRelevance: {},
+    },
+  ];
 
   return (
     <Section tone="plain" labelledBy="home-faq-heading">

@@ -30,8 +30,6 @@ export default async function SitemapPage() {
         { label: copy['groups.0.links.1.label'], href: copy['groups.0.links.1.href'] },
         { label: copy['groups.0.links.2.label'], href: copy['groups.0.links.2.href'] },
         { label: copy['groups.0.links.3.label'], href: copy['groups.0.links.3.href'] },
-        { label: copy['groups.0.links.4.label'], href: copy['groups.0.links.4.href'] },
-        { label: copy['groups.0.links.5.label'], href: copy['groups.0.links.5.href'] },
       ],
     },
     {

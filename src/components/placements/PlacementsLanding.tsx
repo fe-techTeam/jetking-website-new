@@ -204,6 +204,40 @@ export function PlacementsLanding({
         </div>
       </section>
 
+      {/* ── Recruiters ────────────────────────────────────────────────────── */}
+      <Section tone="plain" labelledBy="placements-recruiters">
+        <SectionHeader
+          id="placements-recruiters"
+          align="center"
+          eyebrow={copy['recruiters.eyebrow']}
+          title={
+            <>
+              {copy['recruiters.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['recruiters.titleAccent']}</span>
+            </>
+          }
+        />
+        <RecruiterMarquee items={RECRUITERS} copy={copy} />
+        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[14px] leading-relaxed text-[var(--k-ink-3)]">
+          {RECRUITERS_DISCLAIMER}
+        </p>
+      </Section>
+
+      {/* ── Testimonials ──────────────────────────────────────────────────── */}
+      <Section tone="wash" labelledBy="placements-testimonials">
+        <SectionHeader
+          id="placements-testimonials"
+          eyebrow={copy['testimonials.eyebrow']}
+          title={
+            <>
+              {copy['testimonials.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['testimonials.titleAccent']}</span>
+            </>
+          }
+        />
+        <PlacementsTestimonialSlider testimonials={TESTIMONIALS} copy={copy} />
+      </Section>
+
       {/* ── Process ───────────────────────────────────────────────────────── */}
       <Section tone="tint" deco="grid" labelledBy="placements-process">
         <SectionHeader
@@ -228,27 +262,8 @@ export function PlacementsLanding({
         </Reveal>
       </Section>
 
-      {/* ── Recruiters ────────────────────────────────────────────────────── */}
-      <Section tone="plain" labelledBy="placements-recruiters">
-        <SectionHeader
-          id="placements-recruiters"
-          align="center"
-          eyebrow={copy['recruiters.eyebrow']}
-          title={
-            <>
-              {copy['recruiters.titleLead']}{' '}
-              <span className="text-[var(--k-red)]">{copy['recruiters.titleAccent']}</span>
-            </>
-          }
-        />
-        <RecruiterMarquee items={RECRUITERS} copy={copy} />
-        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[14px] leading-relaxed text-[var(--k-ink-3)]">
-          {RECRUITERS_DISCLAIMER}
-        </p>
-      </Section>
-
       {/* ── Student benefits ─────────────────────────────────────────────── */}
-      <Section tone="tint" labelledBy="placements-benefits">
+      <Section tone="plain" labelledBy="placements-benefits">
         <SectionHeader
           id="placements-benefits"
           eyebrow={copy['benefits.eyebrow']}
@@ -271,7 +286,7 @@ export function PlacementsLanding({
       </Section>
 
       {/* ── Sample offer letters ──────────────────────────────────────────── */}
-      <Section tone="plain" labelledBy="placements-offers">
+      <Section tone="tint" labelledBy="placements-offers">
         <SectionHeader
           id="placements-offers"
           eyebrow={copy['offers.eyebrow']}
@@ -286,23 +301,8 @@ export function PlacementsLanding({
         <OfferLetterSlider items={OFFER_LETTER_SAMPLES} label={copy['offers.carouselLabel']} copy={copy} />
       </Section>
 
-      {/* ── Testimonials ──────────────────────────────────────────────────── */}
-      <Section tone="wash" labelledBy="placements-testimonials">
-        <SectionHeader
-          id="placements-testimonials"
-          eyebrow={copy['testimonials.eyebrow']}
-          title={
-            <>
-              {copy['testimonials.titleLead']}{' '}
-              <span className="text-[var(--k-red)]">{copy['testimonials.titleAccent']}</span>
-            </>
-          }
-        />
-        <PlacementsTestimonialSlider testimonials={TESTIMONIALS} copy={copy} />
-      </Section>
-
       {/* ── Close CTA ─────────────────────────────────────────────────────── */}
-      <Section tone="tint" deco="glow" labelledBy="placements-cta">
+      <Section tone="plain" deco="glow" labelledBy="placements-cta">
         <div className="kit-card flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-10">
           <div className="max-w-2xl">
             <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>

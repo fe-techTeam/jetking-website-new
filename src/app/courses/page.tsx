@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { content } from '@/lib/content';
 import { coursesCopy } from '@/lib/content/copy/pages/courses';
+import { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { FlexibleLearning } from '@/components/courses/FlexibleLearning';
 import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { fill } from '@/lib/content/copy/define';
 import { breadcrumbSchema } from '@/lib/seo';
@@ -19,7 +21,7 @@ export async function generateMetadata() {
 }
 
 export default async function CoursesPage() {
-  const copy = await loadCopy(coursesCopy);
+  const [copy, professional] = await Promise.all([loadCopy(coursesCopy), loadCopy(professionalCopy)]);
   const [courses, centres, cities] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
@@ -163,6 +165,9 @@ export default async function CoursesPage() {
             />
           </div>
         </div>
+
+        {/* ── Flexible batches, carried over from the Professional page ───── */}
+        <FlexibleLearning copy={professional} />
 
         {/* ── Closing CTA: the page's one consolidated enquiry prompt ───── */}
         <Section tone="wash" labelledBy="courses-cta">

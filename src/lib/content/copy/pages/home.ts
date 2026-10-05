@@ -29,22 +29,6 @@ export const homeCopy = definePageCopy({
     'hero.cta.href': '/courses',
     'hero.enquire.label': 'Enquire Now',
 
-    // ── Journey chooser ───────────────────────────────────────────────────
-    'chooser.title': 'What brings you here today?',
-    'chooser.sub': 'Choose one option. We’ll personalize your experience.',
-    'journeys.0.title': 'I\'m a Student',
-    'journeys.0.detail': 'Explore courses and start my career',
-    'journeys.0.href': '/student',
-    'journeys.0.image': '/home/journey-student-v2.jpg',
-    'journeys.1.title': 'I\'m a Working Professional',
-    'journeys.1.detail': 'Upgrade my skills and advance my career',
-    'journeys.1.href': '/professional',
-    'journeys.1.image': '/home/journey-professional-v3.jpg',
-    'journeys.2.title': 'I\'m Just Browsing',
-    'journeys.2.detail': 'Browse around and learn more',
-    'journeys.2.href': '/explore',
-    'journeys.2.image': '/home/journey-explore-v2.jpg',
-
     // ── Logo marquee ──────────────────────────────────────────────────────
     'marquee.heading': 'Trusted by top companies. Our learners work at',
     'marquee.certs.label': 'Certification tracks',
@@ -185,6 +169,9 @@ export const homeCopy = definePageCopy({
     // ── FAQ ───────────────────────────────────────────────────────────────
     'faq.eyebrow': 'Questions',
     'faq.title': 'Questions students ask us',
+    'faq.parent.question': 'Is Jetking a safe and trusted choice for my child?',
+    'faq.parent.answer':
+      'Jetking has trained IT talent since {year}, and its {centres} centres across {cities} cities can be visited in person before you decide. Learners get hands-on labs, dedicated mentors and career counselling, and parents can book a free counselling session to compare courses, fees and centres. Placement support is offered, but placements are not guaranteed.',
     'faq.cta.label': 'All FAQs',
     'faq.cta.href': '/faq',
 

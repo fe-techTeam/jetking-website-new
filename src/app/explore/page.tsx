@@ -17,6 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
     {
       title: fill(copy['seo.title'], { brand: siteConfig.name }),
       description: fill(copy['seo.description'], { brand: siteConfig.name }),
+      // Audience pages are not listed or indexed; the main pages carry their content.
+      noindex: true,
     },
     '/explore',
   );

@@ -15,6 +15,8 @@ export async function generateMetadata() {
     {
       title: fill(copy['seo.title'], { siteName: siteConfig.name }),
       description: fill(copy['seo.description'], { siteName: siteConfig.name }),
+      // Audience pages are not listed or indexed; the main pages carry their content.
+      noindex: true,
     },
     '/professional',
   );

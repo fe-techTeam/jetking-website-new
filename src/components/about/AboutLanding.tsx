@@ -16,6 +16,9 @@ import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StatBadges } fro
 import type { AboutPageContent, Leader } from '@/lib/content/types';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 import type { aboutCopy } from '@/lib/content/copy/pages/about';
+import type { exploreCopy } from '@/lib/content/copy/pages/explore';
+import type { parentCopy } from '@/lib/content/copy/pages/parent';
+import { AboutExtras } from './AboutExtras';
 import { AboutTimeline } from './AboutTimeline';
 import { LeaderAvatar } from './LeaderAvatar';
 import { LeaderDetailModal } from './LeaderDetailModal';
@@ -68,10 +71,14 @@ export function AboutLanding({
   counts,
   about,
   copy,
+  explore,
+  parent,
 }: {
   counts: NetworkCounts;
   about: AboutPageContent;
   copy: typeof aboutCopy.defaults;
+  explore: typeof exploreCopy.defaults;
+  parent: typeof parentCopy.defaults;
 }) {
   const trail: Crumb[] = [
     { name: copy['breadcrumb.home'], path: '/' },
@@ -155,6 +162,9 @@ export function AboutLanding({
           </CardRail>
         </Reveal>
       </Section>
+
+      {/* ── Reasons and what families value, carried over from the Explore and Parent pages ── */}
+      <AboutExtras part="why" explore={explore} parent={parent} />
 
       {/* ── Leadership ───────────────────────────────────────────────────── */}
       <Section tone="plain" labelledBy="about-leaders">
@@ -273,11 +283,14 @@ export function AboutLanding({
         </Reveal>
       </Section>
 
+      {/* ── Affiliations, carried over from the Explore page ── */}
+      <AboutExtras part="affiliations" explore={explore} parent={parent} />
+
       {/* ── Toward the Future ───────────────────────────────────────────────
          New venture announcement — deliberately its own section, closing the
          page, so it reads as a forward-looking postscript to the legacy
          story above rather than being folded into it. */}
-      <Section tone="plain" labelledBy="about-future">
+      <Section tone="tint" labelledBy="about-future">
         <a
           href={copy['future.href']}
           target="_blank"
