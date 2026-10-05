@@ -116,6 +116,14 @@ const centreSchema = withStatus({
       }),
     )
     .optional(),
+  highlights: z
+    .object({
+      programs: z.string().optional(),
+      placement: z.string().optional(),
+      facility: z.string().optional(),
+      timing: z.string().optional(),
+    })
+    .optional(),
   eligibility: z.array(z.object({ title: z.string(), items: z.array(z.string()) })).optional(),
   journey: z.array(z.object({ title: z.string(), items: z.array(z.string()) })).optional(),
   faculty: z
@@ -124,7 +132,22 @@ const centreSchema = withStatus({
         name: z.string(),
         title: z.string(),
         bio: z.string().optional(),
+        qualification: z.string().optional(),
+        experience: z.string().optional(),
+        specialisation: z.string().optional(),
         photoUrl: z.string().optional(),
+      }),
+    )
+    .optional(),
+  updates: z
+    .array(
+      z.object({
+        title: z.string(),
+        summary: z.string(),
+        date: z.string(),
+        category: z.string().optional(),
+        image: z.string().optional(),
+        link: z.string().optional(),
       }),
     )
     .optional(),

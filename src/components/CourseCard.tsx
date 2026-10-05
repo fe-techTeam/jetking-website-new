@@ -26,6 +26,7 @@ export function CourseCard({
   title,
   description,
   cta = 'View course',
+  compact = false,
 }: {
   course: Pick<Course, 'slug' | 'title' | 'level' | 'duration' | 'eligibility' | 'heroImage'>;
   /** Where the card sits, recorded with the click (`explorer-card`, `home-showcase`, …). */
@@ -43,6 +44,8 @@ export function CourseCard({
   /** Replaces the eligibility line. */
   description?: string;
   cta?: string;
+  /** A shorter card from tablet up: a flatter photo, tighter padding and a one-line description. For long lists of cards. */
+  compact?: boolean;
 }) {
   const text = description ?? course.eligibility;
   const stack = layout === 'stack';
@@ -58,7 +61,7 @@ export function CourseCard({
           className={`dc-card-media relative shrink-0 overflow-hidden ${
             stack
               ? 'aspect-[16/10] w-full'
-              : 'min-h-[112px] w-[104px] min-[400px]:w-[120px] sm:aspect-[16/10] sm:min-h-0 sm:w-auto'
+              : `min-h-[112px] w-[104px] min-[400px]:w-[120px] sm:min-h-0 sm:w-auto ${compact ? 'sm:aspect-[16/6]' : 'sm:aspect-[16/10]'}`
           }`}
         >
           {course.heroImage ? (
@@ -81,7 +84,7 @@ export function CourseCard({
           ) : null}
         </div>
 
-        <div className={`flex min-w-0 flex-1 flex-col ${stack ? 'p-5 sm:p-7' : 'p-4 sm:p-7'}`}>
+        <div className={`flex min-w-0 flex-1 flex-col ${stack ? 'p-5 sm:p-7' : compact ? 'p-4 sm:p-5' : 'p-4 sm:p-7'}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
             <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               {tag ?? COURSE_LEVEL_LABEL[course.level]}
@@ -93,11 +96,11 @@ export function CourseCard({
             {title ?? course.title}
           </Heading>
 
-          <p className={`mt-2 line-clamp-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] ${stack ? '' : 'max-sm:hidden'}`}>
+          <p className={`mt-2 ${compact ? 'sm:line-clamp-1' : ''} line-clamp-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] ${stack ? '' : 'max-sm:hidden'}`}>
             {text}
           </p>
 
-          <div className={`mt-auto flex items-center justify-between gap-3 ${stack ? 'pt-5' : 'pt-2.5 sm:pt-6'}`}>
+          <div className={`mt-auto flex items-center justify-between gap-3 ${stack ? 'pt-5' : compact ? 'pt-2.5 sm:pt-4' : 'pt-2.5 sm:pt-6'}`}>
             <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">{cta}</span>
             <span
               aria-hidden="true"

@@ -46,7 +46,7 @@
    Every page group (dark-canvas, student, professional, centres, blog) reads these `--dc-*` tokens.
    They used to be re-declared per page under `--stu-`, `--pro-`, `--centres-` and `--blog-` prefixes with
    identical values; one definition here keeps the pages from drifting apart. */
-:is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
+:is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
   /* Use global theme colors */
   /* ── Canvas & surfaces ─────────────────────────────────────────────── */
   --dc-canvas: var(--theme-canvas);
@@ -93,7 +93,7 @@
 }
 
 @media (min-width: 640px) {
-  :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
+  :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
     --dc-cut: 24px;
     --dc-cut-inner: 22px;
   }
@@ -122,7 +122,7 @@
 }
 
 /* Light mode overrides — when .dark class is NOT on html element */
-:where(html:not(.dark)) :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page) {
+:where(html:not(.dark)) :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
   /* Override to use light mode global variables */
   --dc-canvas: var(--theme-canvas);
   --dc-surface: var(--theme-surface);

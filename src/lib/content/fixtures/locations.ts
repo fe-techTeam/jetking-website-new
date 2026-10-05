@@ -3689,6 +3689,12 @@ export const centres: Centre[] = [
   {
     "slug": "laxminagar",
     "name": "Jetking Laxminagar",
+    "highlights": {
+      "programs": "Degree & Short Term Courses",
+      "placement": "295 in 2025",
+      "facility": "Advanced labs, class mentoring",
+      "timing": "7 days, 9am - 7pm"
+    },
     "citySlug": "delhi",
     "addressLine": "6th Floor, Pragati Deep Building, Plot No. 8, Laxmi Nagar District Centre, Near Nirman Vihar Metro Station, Adjoining V3S Mall, Laxmi Nagar, Delhi",
     "locality": "Laxmi Nagar",
@@ -3722,8 +3728,11 @@ export const centres: Centre[] = [
     ],
     "faculty": [
       {
-        "name": "Balram singh",
+        "name": "Balram Singh",
         "title": "Senior Technical Trainer",
+        "qualification": "BCA and Certified CCNA, MCP trainer",
+        "experience": "12 years of experience in teaching, industry stint and project delivery",
+        "specialisation": "RHCSA and Server Hardware",
         "bio": "B.A and certified mcp with teaching experience in windows ,ccna,mcse more than 15 yrs. Cloud and o365 last 7yrs.and also capable to handling classes and doubt clearing and engaging students throughout his classes.",
         "photoUrl": "/media/30c5e42ac1b911f5b2a607d143f35976.webp"
       },

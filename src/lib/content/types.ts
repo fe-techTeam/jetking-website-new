@@ -145,6 +145,18 @@ interface CentreEligibilityBlock {
   items: string[];
 }
 
+/** The four "About the centre" facts shown as a strip on the centre page. Each is optional; an empty one is hidden. */
+interface CentreHighlights {
+  /** What is taught, e.g. "Degree & Short Term Courses". Falls back to the course levels on offer. */
+  programs?: string;
+  /** Placement headline, e.g. "295 in 2025". */
+  placement?: string;
+  /** What the centre offers, e.g. "Advanced labs, class mentoring". */
+  facility?: string;
+  /** Opening days and hours, e.g. "7 days, 9am - 7pm". */
+  timing?: string;
+}
+
 interface CentreJourneyStep {
   title: string;
   items: string[];
@@ -164,9 +176,31 @@ export interface CentreTestimonial {
 interface CentreFaculty {
   name: string;
   title: string;
+  /** Free-text bio; shown only when none of the structured fields below is set. */
   bio?: string;
+  /** e.g. "BCA, certified CCNA". */
+  qualification?: string;
+  /** e.g. "12 years of teaching, industry and project delivery". */
+  experience?: string;
+  /** e.g. "RHCSA and server hardware". */
+  specialisation?: string;
   /** Portrait URL from the live centre page when available. */
   photoUrl?: string;
+}
+
+/** A recent happening at the centre (placement drive, master session, workshop...), shown in "What's new". */
+interface CentreUpdate {
+  title: string;
+  /** One or two sentences. */
+  summary: string;
+  /** ISO date, e.g. 2026-09-12. */
+  date: string;
+  /** Short label, e.g. "Placement drive". */
+  category?: string;
+  /** Cover image path. */
+  image?: string;
+  /** Where the card goes (a blog post or event page); the card is not a link when empty. */
+  link?: string;
 }
 
 interface CentrePlacement {
@@ -205,8 +239,12 @@ export interface Centre {
   featuredProgrammes?: CentreFeaturedProgramme[];
   /** Eligibility blocks (e.g. BCA / MCA). */
   eligibility?: CentreEligibilityBlock[];
+  /** The "About the centre" strip: programmes, placements, facilities and timings. */
+  highlights?: CentreHighlights;
   /** Multi-year transformation journey when published. */
   journey?: CentreJourneyStep[];
+  /** Recent activities and upcoming events at the centre; the page shows the newest four. */
+  updates?: CentreUpdate[];
   /** Centre faculty when published on the live page. */
   faculty?: CentreFaculty[];
   /** Recent placement highlights from the live page. */
