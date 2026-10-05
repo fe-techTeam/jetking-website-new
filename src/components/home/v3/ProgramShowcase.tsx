@@ -15,20 +15,24 @@ import { CourseCard } from '@/components/CourseCard';
 import { CardTrack } from '@/components/CardTrack';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
-type TabId = 'featured' | CourseCategoryId;
+type TabId = 'featured' | 'degrees' | 'careers' | CourseCategoryId;
 
 type Tab = { id: TabId; label: string };
 
 function inTab(course: Course, tab: Tab): boolean {
   if (tab.id === 'featured') return Boolean(course.featured);
+  if (tab.id === 'degrees') return course.level === 'degree';
+  if (tab.id === 'careers') return course.level !== 'degree';
   return categoriesOf(course).includes(tab.id);
 }
 
-/** Featured programmes first, then the catalogue by technology — tabs only for technologies that have courses. */
+/** Featured first, then Degree Programs and Career Courses, then the catalogue by technology — tabs only where there are courses. */
 export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: HomeCopy }) {
   const [tab, setTab] = useState<TabId>('featured');
   const TABS: Tab[] = [
     { id: 'featured', label: copy['programs.tab.featured'] },
+    { id: 'degrees', label: copy['programs.tab.degree'] },
+    { id: 'careers', label: copy['programs.tab.career'] },
     ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree').map((c) => ({ id: c.id, label: c.label })),
   ];
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
@@ -77,7 +81,7 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
         </div>
 
         <div className="mt-4">
-          <CardTrack key={tab} label={`${tab} courses`}>
+          <CardTrack key={tab} label={`${activeTab.label} courses`}>
             {visible.map((course) => (
               <li
                 key={course.slug}

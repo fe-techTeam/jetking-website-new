@@ -19,13 +19,12 @@ export const homeCopy = definePageCopy({
       'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
 
     // ── Hero ──────────────────────────────────────────────────────────────
+    'hero.image': '/home/journey-explore-v2.jpg',
     'hero.eyebrow': 'India’s No.1 Technology Training Institute',
     'hero.title.line1': 'The Power of Three',
     'hero.title.line2': 'with',
     'hero.sub.line1': 'Industry-relevant training. Real-world projects.',
     'hero.sub.line2': 'Placement support that delivers.',
-    'hero.proof.centres': '{centres} centres',
-    'hero.proof.cities': '{cities} cities',
     'hero.cta.label': 'Explore Courses',
     'hero.cta.href': '/courses',
     'hero.enquire.label': 'Enquire Now',
@@ -46,15 +45,6 @@ export const homeCopy = definePageCopy({
     'journeys.2.href': '/explore',
     'journeys.2.image': '/home/journey-explore-v2.jpg',
 
-    // ── Action bar ────────────────────────────────────────────────────────
-    'actions.ariaLabel': 'Next steps',
-    'actions.0.label': 'Industry-Relevant Training',
-    'actions.0.href': '#home-programs-heading',
-    'actions.1.label': 'Real-World Projects',
-    'actions.1.href': '#home-how-heading',
-    'actions.2.label': 'Placement Support That Delivers',
-    'actions.2.href': '#home-proof-heading',
-
     // ── Logo marquee ──────────────────────────────────────────────────────
     'marquee.heading': 'Trusted by top companies. Our learners work at',
     'marquee.certs.label': 'Certification tracks',
@@ -73,18 +63,20 @@ export const homeCopy = definePageCopy({
     'programs.cta.href': '/courses',
     'programs.filter.aria': 'Filter courses by technology',
     'programs.tab.featured': 'Featured',
+    'programs.tab.degree': 'Degree Programs',
+    'programs.tab.career': 'Career Courses',
 
     // ── How it works ──────────────────────────────────────────────────────
     'how.title': 'Build your career, step by step',
     'how.lede': 'From beginner to job-ready professional — we guide you at every stage.',
     'how.steps.0.title': 'Learn',
-    'how.steps.0.points.0': 'Learn practically with real-world tools',
-    'how.steps.0.points.1': 'Trained & certified faculty',
-    'how.steps.0.points.2': 'Scenario based learning',
+    'how.steps.0.points.0': 'Start from the fundamentals, whatever your background',
+    'how.steps.0.points.1': 'Real-world tools from day one',
+    'how.steps.0.points.2': 'Classroom or hybrid, at a centre near you',
     'how.steps.1.title': 'Practice',
-    'how.steps.1.points.0': 'One computer per student in the lab',
-    'how.steps.1.points.1': 'Mock interviews',
-    'how.steps.1.points.2': 'AI bot interviews and presentation practice',
+    'how.steps.1.points.0': 'Mock interviews',
+    'how.steps.1.points.1': 'AI bot interviews and presentation practice',
+    'how.steps.1.points.2': 'Communication and personality development sessions',
     'how.steps.2.title': 'Get certified',
     'how.steps.2.points.0': 'Industry certifications such as CCNA, AWS and CEH',
     'how.steps.2.points.1': 'Jetking certificates for every course',
@@ -176,12 +168,25 @@ export const homeCopy = definePageCopy({
     'blog.list.aria': 'Latest articles',
 
     // ── Franchise band ────────────────────────────────────────────────────
+    // ── Counsellor band (mid-page) ────────────────────────────────────────
+    'counsellor.srHeading': 'Talk to a career counsellor',
+    'counsellor.title': 'Not sure which course is right for you?',
+    'counsellor.body': 'Speak to a Jetking career counsellor about courses, fees and your nearest centre. It is free, with no obligation.',
+    'counsellor.cta.label': 'Enquiry Now',
+    'counsellor.cta.href': '/enquiry',
+
     'franchise.srHeading': 'Franchise opportunities',
     'franchise.title': 'Run a Jetking centre in your city',
     'franchise.body':
       'Partner with India’s most trusted brand — 78 years of brand equity, a countrywide network and end-to-end support.',
     'franchise.cta.label': 'Explore franchise',
     'franchise.cta.href': '/franchise',
+
+    // ── FAQ ───────────────────────────────────────────────────────────────
+    'faq.eyebrow': 'Questions',
+    'faq.title': 'Questions students ask us',
+    'faq.cta.label': 'All FAQs',
+    'faq.cta.href': '/faq',
 
     // ── Closing call to action ────────────────────────────────────────────
     'cta.title': 'Ready to start? Talk to a counsellor today.',

@@ -43,7 +43,7 @@ export default async function HomePage() {
       <div className="relative overflow-hidden [transform:translateZ(0)]">
         <HomeV2
           enquiryCentres={enquiryCentres}
-          counts={{ centres: centres.length, cities: cities.length }}
+          counts={data.counts}
           copy={copy}
         />
       </div>

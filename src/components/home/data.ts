@@ -6,6 +6,7 @@ import type {
   AboutPageContent,
   City,
   Course,
+  Faq,
   HomepageVariant,
   PlacementsPageContent,
   Post,
@@ -37,6 +38,8 @@ export interface HomeData {
   courses: Course[];
   /** Sorted by name — `CentreNetwork` shows a curated slice. */
   cities: City[];
+  /** A handful of the most common questions across topics — `HomeFaq`. */
+  faqs: Faq[];
   /** Most recent posts, already limited — `BlogTeaser`. */
   posts: Post[];
   /** Slim centre records for the map — `CentreNetwork`. */
@@ -68,8 +71,18 @@ function droppedImage(basename: string): string | undefined {
 
 const heroPortrait = droppedImage('hero');
 
+/** One question per topic a visitor asks before enrolling, then more of the same until there are six. Franchise questions have their own page. */
+const FAQ_TOPICS: Faq['topic'][] = ['admissions', 'fees', 'placement', 'courses', 'centres'];
+
+function pickHomeFaqs(all: Faq[]): Faq[] {
+  const eligible = all.filter((f) => f.topic !== 'franchise');
+  const firstPerTopic = FAQ_TOPICS.map((topic) => eligible.find((f) => f.topic === topic)).filter((f): f is Faq => Boolean(f));
+  const rest = eligible.filter((f) => !firstPerTopic.includes(f));
+  return [...firstPerTopic, ...rest].slice(0, 6);
+}
+
 export async function loadHomeData(): Promise<HomeData> {
-  const [courses, cities, centres, trust, variants, posts, about, placements] = await Promise.all([
+  const [courses, cities, centres, trust, variants, posts, about, placements, allFaqs] = await Promise.all([
     content.listCourses(),
     content.listCities(),
     content.listCentres(),
@@ -78,6 +91,7 @@ export async function loadHomeData(): Promise<HomeData> {
     content.listPosts({ limit: 3 }),
     content.getAboutPage(),
     content.getPlacementsPage(),
+    content.listFaqs(),
   ]);
 
   const defaultVariant = variants.find((v) => v.id === 'default') ?? variants[0];
@@ -92,6 +106,7 @@ export async function loadHomeData(): Promise<HomeData> {
     courses,
     cities,
     posts,
+    faqs: pickHomeFaqs(allFaqs),
     centres: centres.map((c) => ({ slug: c.slug, name: c.name, citySlug: c.citySlug, locality: c.locality })),
   };
 }
