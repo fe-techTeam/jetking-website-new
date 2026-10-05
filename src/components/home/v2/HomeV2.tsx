@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import { AskAiLink } from '@/components/AskAiLink';
 import { ActionBar } from './ActionBar';
@@ -18,13 +20,19 @@ import type { EnquiryCentre } from '@/components/EnquiryModal';
 export function HomeV2({
   enquiryCentres,
   counts,
+  copy,
 }: {
   /** Centres offered in the hero's quick-enquiry modal (state → centre). */
   enquiryCentres: EnquiryCentre[];
   /** Live network size for the proof line — computed, never a hand-typed claim. */
   counts: { centres: number; cities: number };
+  copy: HomeCopy;
 }) {
-  const proof = [SINCE_FOUNDED, `${counts.centres} centres`, `${counts.cities} cities`];
+  const proof = [
+    SINCE_FOUNDED,
+    fill(copy['hero.proof.centres'], { centres: counts.centres }),
+    fill(copy['hero.proof.cities'], { cities: counts.cities }),
+  ];
   return (
     <section
       className={[
@@ -64,21 +72,21 @@ export function HomeV2({
         >
           <div className="flex h-full flex-col justify-center">
             <p className="k-hero-eyebrow">
-              India&rsquo;s No.1 Technology Training Institute
+              {copy['hero.eyebrow']}
             </p>
 
             <h1
               className="page-title-hero mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
             >
-              The Power of Three
+              {copy['hero.title.line1']}
               <br />
-              with{' '}
+              {copy['hero.title.line2']}{' '}
               <span className="text-[var(--v2-accent)]">{siteConfig.name}</span>
             </h1>
 
             <p className="mt-4 max-w-[42ch] text-[15px] leading-[1.6] text-[var(--v2-ink-secondary)] xs:mt-4 xs:text-[15.5px] sm:text-[16px] lg:text-[17px] 3xl:text-[18px]">
-              Industry-relevant training. Real-world projects.
-              <br className="hidden sm:inline" /> Placement support that delivers.
+              {copy['hero.sub.line1']}
+              <br className="hidden sm:inline" /> {copy['hero.sub.line2']}
             </p>
 
             <ul className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] font-bold text-[var(--v2-ink)] sm:text-[14px]">
@@ -94,17 +102,17 @@ export function HomeV2({
 
             <div className="mt-6 flex flex-row flex-wrap items-center gap-2.5 xs:mt-7 xs:gap-3 sm:mt-8 sm:gap-x-4 sm:gap-y-5 2xl:gap-x-6 lg:mt-8 2xl:mt-[34px]">
               <Link
-                href={'/courses' as Route}
+                href={copy['hero.cta.href'] as Route}
                 className="v2-cta-glow group/explore inline-flex min-h-11 items-center gap-2 rounded-full py-2.5 pr-3.5 pl-4 text-[13px] font-bold text-white transition-[background-color,box-shadow] duration-200 sm:min-h-12 sm:gap-6 sm:py-4 sm:pr-5.5 sm:pl-7 sm:text-[16px]"
               >
-                Explore Courses
+                {copy['hero.cta.label']}
                 <ArrowRight
                   className="h-4 w-4 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/explore:translate-x-0.5 sm:h-5 sm:w-5"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
               </Link>
-              <HeroEnquireCta centres={enquiryCentres} />
+              <HeroEnquireCta centres={enquiryCentres} label={copy['hero.enquire.label']} />
             </div>
 
             <AskAiLink className="mt-4 text-[var(--v2-eyebrow)] sm:mt-5" />
@@ -114,21 +122,21 @@ export function HomeV2({
           {/* Chooser occupies the former banner slot */}
           <div className="v2-hero-stage relative flex h-full flex-col items-center justify-center text-center">
             <h2 className="subsection-title font-display text-[var(--v2-ink)]">
-              What brings you here today?
+              {copy['chooser.title']}
             </h2>
             <p className="mt-2.5 text-[14px] text-[var(--v2-ink-muted)] xs:mt-3 xs:text-[15px] sm:text-[15.5px]">
-              Choose one option. We&rsquo;ll personalize your experience.
+              {copy['chooser.sub']}
             </p>
 
             <div className="mt-5 w-full xs:mt-6 lg:mt-6 xl:mt-7">
-              <JourneyHexes />
+              <JourneyHexes copy={copy} />
             </div>
           </div>
         </div>
 
         {/* ── Action bar ───────────────────────────────────────────────── */}
         <div className="mt-8 shrink-0 xs:mt-10 lg:mt-12 3xl:mt-14">
-          <ActionBar />
+          <ActionBar copy={copy} />
         </div>
       </div>
     </section>

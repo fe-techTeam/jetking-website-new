@@ -45,9 +45,10 @@ const NAV: NavItem[] = [
       label: c.label,
       icon: c.icon,
       group: c.group,
-      roles: ['admin', 'editor'],
-      // Collections the website does not render say so in the sidebar, not only on their own page.
-      tag: c.live ? undefined : c.group === GROUP.guide ? 'Guide only' : 'Not live',
+      roles: c.roles ?? ['admin', 'editor'],
+      // Collections the website does not render say so in the sidebar, not only on their own page. The
+      // Jetking Guide group's heading already says it, so only the others need a tag.
+      tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
     }),
   ),
   { href: '/admin/leads' as Route, label: 'Leads', icon: 'Users', group: 'CRM' },

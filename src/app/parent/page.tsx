@@ -1,5 +1,7 @@
-import type { Metadata } from 'next';
 import { content } from '@/lib/content';
+import { loadCopy } from '@/lib/content/copy/load';
+import { fill } from '@/lib/content/copy/define';
+import { parentCopy } from '@/lib/content/copy/pages/parent';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import { JsonLd, type Crumb } from '@/components/ui';
@@ -7,17 +9,19 @@ import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
 import { ParentLanding } from '@/components/parent/ParentLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Parent Path — Placements, Fees & Trust | ${siteConfig.name}`,
-    description:
-      'For parents evaluating Jetking: placement support explained honestly, fee clarity, centre visits, and counsellor conversations before you decide.',
-  },
-  '/parent',
-);
+export async function generateMetadata() {
+  const copy = await loadCopy(parentCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
+      description: copy['seo.description'],
+    },
+    '/parent',
+  );
+}
 
 export default async function ParentPage() {
-  const [courses, home] = await Promise.all([content.listCourses(), loadHomeData()]);
+  const [courses, home, copy] = await Promise.all([content.listCourses(), loadHomeData(), loadCopy(parentCopy)]);
 
   const preferred = [
     'bca-cloud-cyber-security',
@@ -46,8 +50,8 @@ export default async function ParentPage() {
   const testimonials = parentVariant?.testimonials ?? [];
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Parent', path: '/parent' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.current'], path: '/parent' },
   ];
 
   return (
@@ -58,6 +62,7 @@ export default async function ParentPage() {
         courses={parentCourses}
         counts={home.counts}
         testimonials={testimonials}
+        copy={copy}
       />
     </>
   );

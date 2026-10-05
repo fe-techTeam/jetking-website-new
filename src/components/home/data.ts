@@ -2,7 +2,15 @@ import 'server-only';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { content } from '@/lib/content';
-import type { City, Course, HomepageVariant, Post, TrustSignal } from '@/lib/content/types';
+import type {
+  AboutPageContent,
+  City,
+  Course,
+  HomepageVariant,
+  PlacementsPageContent,
+  Post,
+  TrustSignal,
+} from '@/lib/content/types';
 
 /**
  * One content read, shared by the hero (`HomeV2`) and the section stack below it
@@ -15,6 +23,10 @@ import type { City, Course, HomepageVariant, Post, TrustSignal } from '@/lib/con
  * not the whole of it and not arbitrary iteration.
  */
 export interface HomeData {
+  /** About page copy — reused by Explore. */
+  about: AboutPageContent;
+  /** Placements page copy (stories, disclaimer, figures) — `PlacementProof`, Explore. */
+  placements: PlacementsPageContent;
   counts: { courses: number; centres: number; cities: number };
   /** Verified signals only — unverified claims never leave the content source. */
   trust: TrustSignal[];
@@ -57,18 +69,22 @@ function droppedImage(basename: string): string | undefined {
 const heroPortrait = droppedImage('hero');
 
 export async function loadHomeData(): Promise<HomeData> {
-  const [courses, cities, centres, trust, variants, posts] = await Promise.all([
+  const [courses, cities, centres, trust, variants, posts, about, placements] = await Promise.all([
     content.listCourses(),
     content.listCities(),
     content.listCentres(),
     content.listTrustSignals(),
     content.listHomepageVariants(),
     content.listPosts({ limit: 3 }),
+    content.getAboutPage(),
+    content.getPlacementsPage(),
   ]);
 
   const defaultVariant = variants.find((v) => v.id === 'default') ?? variants[0];
 
   return {
+    about,
+    placements,
     counts: { courses: courses.length, centres: centres.length, cities: cities.length },
     trust,
     variants,

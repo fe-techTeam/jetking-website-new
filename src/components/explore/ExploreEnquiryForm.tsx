@@ -9,13 +9,20 @@ import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryL
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
 import { track } from '@/lib/analytics';
+import type { exploreCopy } from '@/lib/content/copy/pages/explore';
 
 type Status = 'idle' | 'submitting' | 'done' | 'error';
 
 const fieldClass =
   'h-11 border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] hover:border-[var(--dc-accent-soft)]/50 focus:border-[var(--dc-accent-soft)] focus:ring-[var(--dc-accent)]/20';
 
-export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
+export function ExploreEnquiryForm({
+  centres,
+  copy,
+}: {
+  centres: LocatedCentre[];
+  copy: typeof exploreCopy.defaults;
+}) {
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
@@ -54,7 +61,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? 'Something went wrong. Please try again.');
+        throw new Error(body.error ?? copy['form.error']);
       }
 
       setStatus('done');
@@ -68,7 +75,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
       });
     } catch (err) {
       setStatus('error');
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : copy['form.error']);
     }
   }
 
@@ -82,9 +89,9 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
   if (status === 'done') {
     return (
       <div className="rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] p-8 text-center [&_p]:text-[var(--dc-ink-secondary)]">
-        <p className="font-display text-xl font-extrabold text-[var(--dc-ink)]">Thank you!</p>
+        <p className="font-display text-xl font-extrabold text-[var(--dc-ink)]">{copy['form.thanks.title']}</p>
         <p className="mt-3 text-[15px]">
-          We&rsquo;ll reach out only if you want us to — no spam, no pressure.
+          {copy['form.thanks.body']}
         </p>
       </div>
     );
@@ -94,7 +101,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
     <form onSubmit={handleSubmit} onFocus={handleFocus} className="space-y-5">
 <BotTrap />
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Name" required htmlFor="exp-name">
+        <Field label={copy['form.name.label']} required htmlFor="exp-name">
           <Input
             id="exp-name"
             name="name"
@@ -102,12 +109,12 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             required
             minLength={2}
             autoComplete="name"
-            placeholder="Your full name"
+            placeholder={copy['form.name.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="Mobile Number" required htmlFor="exp-phone">
+        <Field label={copy['form.phone.label']} required htmlFor="exp-phone">
           <Input
             id="exp-phone"
             name="phone"
@@ -116,23 +123,23 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             minLength={10}
             autoComplete="tel"
             inputMode="tel"
-            placeholder="+91 98765 43210"
+            placeholder={copy['form.phone.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="Email Address" htmlFor="exp-email">
+        <Field label={copy['form.email.label']} htmlFor="exp-email">
           <Input
             id="exp-email"
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder={copy['form.email.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="State" required htmlFor="exp-state">
+        <Field label={copy['form.state.label']} required htmlFor="exp-state">
           <Select
             id="exp-state"
             value={loc.state}
@@ -140,7 +147,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             onChange={(e) => loc.onState(e.target.value)}
             className={fieldClass}
           >
-            <option value="">Select state</option>
+            <option value="">{copy['form.state.placeholder']}</option>
             {loc.states.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -149,7 +156,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
           </Select>
         </Field>
 
-        <Field label="City" required htmlFor="exp-city">
+        <Field label={copy['form.city.label']} required htmlFor="exp-city">
           <Select
             id="exp-city"
             value={loc.city}
@@ -158,7 +165,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             onChange={(e) => loc.onCity(e.target.value)}
             className={fieldClass}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
+            <option value="">{loc.cities.length > 0 ? copy['form.city.placeholder'] : copy['form.city.stateFirst']}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -167,7 +174,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
           </Select>
         </Field>
 
-        <Field label="Centre" required htmlFor="exp-centre">
+        <Field label={copy['form.centre.label']} required htmlFor="exp-centre">
           <Select
             id="exp-centre"
             value={loc.centre}
@@ -176,7 +183,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             onChange={(e) => loc.onCentre(e.target.value)}
             className={fieldClass}
           >
-            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
+            <option value="">{loc.centres.length > 0 ? copy['form.centre.placeholder'] : copy['form.centre.cityFirst']}</option>
             {loc.centres.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -185,7 +192,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
           </Select>
         </Field>
 
-        <Field label="Highest qualification" required htmlFor="exp-qualification">
+        <Field label={copy['form.qualification.label']} required htmlFor="exp-qualification">
           <Select
             id="exp-qualification"
             name="qualification"
@@ -193,7 +200,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
             required
             className={fieldClass}
           >
-            <option value="">Qualification</option>
+            <option value="">{copy['form.qualification.placeholder']}</option>
             {QUALIFICATIONS.map((q) => (
               <option key={q.value} value={q.value}>
                 {q.label}
@@ -214,7 +221,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
         disabled={status === 'submitting'}
         className="group/submit inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-accent)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
       >
-        {status === 'submitting' ? 'Submitting…' : 'Send a quick note'}
+        {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
         <span aria-hidden="true">→</span>
       </button>
 
@@ -224,7 +231,7 @@ export function ExploreEnquiryForm({ centres }: { centres: LocatedCentre[] }) {
           strokeWidth={2}
           aria-hidden="true"
         />
-        Optional — only fill this in if you&rsquo;d like us to reach out.
+        {copy['form.optional']}
       </p>
     </form>
   );

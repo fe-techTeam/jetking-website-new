@@ -13,22 +13,24 @@ import {
 } from '@/lib/course-categories';
 import { CourseCard } from '@/components/CourseCard';
 import { CardTrack } from '@/components/CardTrack';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 type TabId = 'featured' | CourseCategoryId;
 
-const TABS: Array<{ id: TabId; label: string }> = [
-  { id: 'featured', label: 'Featured' },
-  ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree').map((c) => ({ id: c.id, label: c.label })),
-];
+type Tab = { id: TabId; label: string };
 
-function inTab(course: Course, tab: (typeof TABS)[number]): boolean {
+function inTab(course: Course, tab: Tab): boolean {
   if (tab.id === 'featured') return Boolean(course.featured);
   return categoriesOf(course).includes(tab.id);
 }
 
 /** Featured programmes first, then the catalogue by technology — tabs only for technologies that have courses. */
-export function ProgramShowcase({ courses }: { courses: Course[] }) {
+export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: HomeCopy }) {
   const [tab, setTab] = useState<TabId>('featured');
+  const TABS: Tab[] = [
+    { id: 'featured', label: copy['programs.tab.featured'] },
+    ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree').map((c) => ({ id: c.id, label: c.label })),
+  ];
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
   if (tabs.length === 0) return null;
 
@@ -39,15 +41,15 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
     <Section tone="plain" labelledBy="home-programs-heading">
         <SectionHeader
           id="home-programs-heading"
-          eyebrow="Courses"
-          title="Explore our courses"
-          lede="Industry-aligned, certification-focused courses for real-world careers — from a first certification to a full degree."
+          eyebrow={copy['programs.eyebrow']}
+          title={copy['programs.title']}
+          lede={copy['programs.lede']}
           action={
             <Link
-              href={'/courses' as Route}
+              href={copy['programs.cta.href'] as Route}
               className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
-              View all courses
+              {copy['programs.cta.label']}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
           }
@@ -56,7 +58,7 @@ export function ProgramShowcase({ courses }: { courses: Course[] }) {
         <div
           className="-mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none]"
           role="group"
-          aria-label="Filter courses by technology"
+          aria-label={copy['programs.filter.aria']}
         >
           {tabs.map((t) => (
             <button

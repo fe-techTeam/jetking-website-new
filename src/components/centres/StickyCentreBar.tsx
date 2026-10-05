@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
+import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
 /**
  * Phone/tablet bottom bar for the long centre page: Call this centre and Enquire. Appears once the
@@ -15,7 +16,9 @@ export function StickyCentreBar({
   anchorId,
   centreSlug,
   phoneHref,
+  copy,
 }: {
+  copy: typeof centresCopy.defaults;
   anchorId: string;
   centreSlug: string;
   phoneHref: string | null;
@@ -50,19 +53,19 @@ export function StickyCentreBar({
         {phoneHref ? (
           <a
             href={phoneHref}
-            aria-label="Call this centre"
+            aria-label={copy['centreBar.callLabel']}
             onClick={() => track('phone_clicked', { centre_slug: centreSlug, type: 'sticky-bar' })}
             className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] px-4 text-[14px] font-bold text-[var(--dc-ink)] transition-colors hover:bg-[var(--dc-surface)] max-xs:w-11 max-xs:px-0"
           >
             <Phone className="h-[18px] w-[18px]" strokeWidth={2.25} aria-hidden="true" />
-            <span className="max-xs:sr-only">Call</span>
+            <span className="max-xs:sr-only">{copy['centreBar.call']}</span>
           </a>
         ) : null}
         <Link
           href={`/enquiry?centre=${centreSlug}` as Route}
           className="dc-cta inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-[14px] font-bold"
         >
-          Enquire now
+          {copy['centreBar.enquire']}
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
         </Link>
       </div>

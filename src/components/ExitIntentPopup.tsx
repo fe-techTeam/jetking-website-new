@@ -9,6 +9,7 @@ import { Field, Input } from '@/components/ui';
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
 import { track } from '@/lib/analytics';
+import { useSiteCopy } from '@/components/providers/site-copy';
 
 const SESSION_KEY = 'jk_exit_intent_shown';
 /** Pages where a "before you go" enquiry popup is redundant or the wrong context —
@@ -25,6 +26,7 @@ type Status = 'idle' | 'submitting' | 'done' | 'error';
 
 export function ExitIntentPopup() {
   const pathname = usePathname();
+  const copy = useSiteCopy();
   const { classification, visitor, record } = usePersona();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
@@ -96,7 +98,7 @@ export function ExitIntentPopup() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? 'Something went wrong. Please try again.');
+        throw new Error(body.error ?? copy['enquiry.error.generic']);
       }
 
       setStatus('done');
@@ -110,7 +112,7 @@ export function ExitIntentPopup() {
       });
     } catch (err) {
       setStatus('error');
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : copy['enquiry.error.generic']);
     }
   }
 
@@ -130,7 +132,7 @@ export function ExitIntentPopup() {
         <button
           type="button"
           onClick={close}
-          aria-label="Close"
+          aria-label={copy['exitIntent.closeLabel']}
           className="absolute top-2.5 right-2.5 grid h-11 w-11 cursor-pointer place-items-center rounded-full sm:top-3 sm:right-3 text-foreground-muted transition-colors hover:bg-surface hover:text-foreground"
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -138,9 +140,9 @@ export function ExitIntentPopup() {
 
         {status === 'done' ? (
           <div className="py-4 text-center">
-            <p className="font-display text-xl font-extrabold text-foreground">Thank you!</p>
+            <p className="font-display text-xl font-extrabold text-foreground">{copy['exitIntent.success.title']}</p>
             <p className="mt-3 text-[15px] text-foreground-secondary">
-              We&rsquo;ll reach out only if you want us to — no spam, no pressure.
+              {copy['exitIntent.success.body']}
             </p>
           </div>
         ) : (
@@ -149,16 +151,15 @@ export function ExitIntentPopup() {
               id="exit-intent-title"
               className="font-display text-[22px] font-extrabold text-foreground sm:text-[24px]"
             >
-              Before you go —
+              {copy['exitIntent.title']}
             </p>
             <p className="mt-2 text-[15px] leading-relaxed text-foreground-secondary">
-              Leave your number and a Jetking counsellor will help you pick the right course. No
-              spam, no pressure.
+              {copy['exitIntent.body']}
             </p>
 
             <form onSubmit={handleSubmit} className="mt-5 space-y-4">
 <BotTrap />
-              <Field label="Name" required htmlFor="exit-name">
+              <Field label={copy['exitIntent.name.label']} required htmlFor="exit-name">
                 <Input
                   id="exit-name"
                   name="name"
@@ -166,11 +167,11 @@ export function ExitIntentPopup() {
                   required
                   minLength={2}
                   autoComplete="name"
-                  placeholder="Your full name"
+                  placeholder={copy['exitIntent.name.placeholder']}
                 />
               </Field>
 
-              <Field label="Mobile Number" required htmlFor="exit-phone">
+              <Field label={copy['exitIntent.mobile.label']} required htmlFor="exit-phone">
                 <Input
                   id="exit-phone"
                   name="phone"
@@ -179,12 +180,12 @@ export function ExitIntentPopup() {
                   minLength={10}
                   autoComplete="tel"
                   inputMode="tel"
-                  placeholder="+91 98765 43210"
+                  placeholder={copy['exitIntent.mobile.placeholder']}
                 />
               </Field>
 
-              <Field label="Email Address" htmlFor="exit-email">
-                <Input id="exit-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
+              <Field label={copy['exitIntent.email.label']} htmlFor="exit-email">
+                <Input id="exit-email" name="email" type="email" autoComplete="email" placeholder={copy['exitIntent.email.placeholder']} />
               </Field>
 
               {error ? (
@@ -198,7 +199,7 @@ export function ExitIntentPopup() {
                 disabled={status === 'submitting'}
                 className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-jk-600 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
               >
-                {status === 'submitting' ? 'Submitting…' : 'Talk to a counsellor'}
+                {status === 'submitting' ? copy['exitIntent.submitting'] : copy['exitIntent.submit']}
               </button>
             </form>
           </>

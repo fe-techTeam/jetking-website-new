@@ -9,6 +9,7 @@ import { linkVisitorIdentity } from '@/persona/visitor';
 import { track } from '@/lib/analytics';
 import { QUALIFICATIONS } from '@/lib/enquiry-fields';
 import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryLocation';
+import { useSiteCopy } from '@/components/providers/site-copy';
 
 export type EnquiryCentre = LocatedCentre;
 
@@ -45,6 +46,7 @@ export function QuickEnquiryForm({
   compact?: boolean;
 }) {
   const id = useId();
+  const copy = useSiteCopy();
   const successRef = useRef<HTMLDivElement>(null);
   const { classification, visitor, record } = usePersona();
   const { user } = useAccount();
@@ -96,7 +98,7 @@ export function QuickEnquiryForm({
       const data: { ok?: boolean; error?: string } = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) {
         updateStatus('error');
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setError(data.error ?? copy['enquiry.error.generic']);
         return;
       }
 
@@ -111,16 +113,16 @@ export function QuickEnquiryForm({
       linkVisitorIdentity({ visitorId: visitor.id, phone });
     } catch {
       updateStatus('error');
-      setError('We could not send that. Please check your connection and try again.');
+      setError(copy['enquiry.error.network']);
     }
   }
 
   if (status === 'done') {
     return (
       <div ref={successRef} tabIndex={-1} role="status" className="py-4 text-center focus:outline-none">
-        <p className="font-display text-xl font-extrabold text-foreground">Thank you!</p>
+        <p className="font-display text-xl font-extrabold text-foreground">{copy['enquiry.success.title']}</p>
         <p className="mt-3 text-[15px] leading-relaxed text-foreground-secondary">
-          A counsellor from your chosen centre will get in touch, usually within one working day.
+          {copy['enquiry.success.body']}
         </p>
         {successAction}
       </div>
@@ -133,7 +135,7 @@ export function QuickEnquiryForm({
     <form onSubmit={handleSubmit} className={compact ? 'space-y-4 lg:space-y-2' : 'space-y-4'}>
 <BotTrap />
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
-        <Field label="Your name" htmlFor={`${id}-name`} required compact={compact}>
+        <Field label={copy['enquiry.form.name.label']} htmlFor={`${id}-name`} required compact={compact}>
           <Input
             id={`${id}-name`}
             name="name"
@@ -146,7 +148,7 @@ export function QuickEnquiryForm({
           />
         </Field>
 
-        <Field label="Mobile number" htmlFor={`${id}-phone`} required compact={compact}>
+        <Field label={copy['enquiry.form.mobile.label']} htmlFor={`${id}-phone`} required compact={compact}>
           <Input
             id={`${id}-phone`}
             name="phone"
@@ -156,14 +158,14 @@ export function QuickEnquiryForm({
             inputMode="tel"
             autoComplete="tel"
             pattern="[\d\s+\(\)\-]{10,20}"
-            placeholder="+91 98765 43210"
+            placeholder={copy['enquiry.form.mobile.placeholder']}
             compact={compact}
           />
         </Field>
       </div>
 
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
-        <Field label="State" htmlFor={`${id}-state`} required compact={compact}>
+        <Field label={copy['enquiry.form.state.label']} htmlFor={`${id}-state`} required compact={compact}>
           <Select
             id={`${id}-state`}
             value={loc.state}
@@ -171,7 +173,7 @@ export function QuickEnquiryForm({
             onChange={(e) => loc.onState(e.target.value)}
             compact={compact}
           >
-            <option value="">Select state</option>
+            <option value="">{copy['enquiry.form.state.placeholder']}</option>
             {loc.states.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -180,7 +182,7 @@ export function QuickEnquiryForm({
           </Select>
         </Field>
 
-        <Field label="City" htmlFor={`${id}-city`} required compact={compact}>
+        <Field label={copy['enquiry.form.city.label']} htmlFor={`${id}-city`} required compact={compact}>
           <Select
             id={`${id}-city`}
             value={loc.city}
@@ -189,7 +191,7 @@ export function QuickEnquiryForm({
             disabled={loc.cities.length === 0}
             compact={compact}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
+            <option value="">{loc.cities.length > 0 ? copy['enquiry.form.city.placeholder'] : copy['enquiry.form.city.disabledPlaceholder']}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -200,7 +202,7 @@ export function QuickEnquiryForm({
       </div>
 
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
-        <Field label="Centre" htmlFor={`${id}-centre`} required compact={compact}>
+        <Field label={copy['enquiry.form.centre.label']} htmlFor={`${id}-centre`} required compact={compact}>
           <Select
             id={`${id}-centre`}
             value={loc.centre}
@@ -209,7 +211,7 @@ export function QuickEnquiryForm({
             disabled={loc.centres.length === 0}
             compact={compact}
           >
-            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
+            <option value="">{loc.centres.length > 0 ? copy['enquiry.form.centre.placeholder'] : copy['enquiry.form.centre.disabledPlaceholder']}</option>
             {loc.centres.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -218,7 +220,7 @@ export function QuickEnquiryForm({
           </Select>
         </Field>
 
-        <Field label="Highest qualification" htmlFor={`${id}-qualification`} required compact={compact}>
+        <Field label={copy['enquiry.form.qualification.label']} htmlFor={`${id}-qualification`} required compact={compact}>
           <Select
             id={`${id}-qualification`}
             name="qualification"
@@ -226,7 +228,7 @@ export function QuickEnquiryForm({
             required
             compact={compact}
           >
-            <option value="">Qualification</option>
+            <option value="">{copy['enquiry.form.qualification.placeholder']}</option>
             {QUALIFICATIONS.map((q) => (
               <option key={q.value} value={q.value}>
                 {q.label}
@@ -248,11 +250,11 @@ export function QuickEnquiryForm({
         disabled={status === 'submitting'}
         className={compact ? 'w-full max-lg:min-h-12 max-lg:text-base' : 'w-full'}
       >
-        {status === 'submitting' ? 'Submitting…' : 'Submit'}
+        {status === 'submitting' ? copy['enquiry.form.submitting'] : copy['enquiry.form.submit']}
       </Button>
 
       <p className="text-center text-sm text-foreground-muted">
-        We use your details only to respond to this enquiry.
+        {copy['enquiry.form.privacyNote']}
       </p>
     </form>
   );

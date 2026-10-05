@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
 import { HIRING_PARTNERS } from './data';
 
 /**
@@ -13,7 +14,7 @@ import { HIRING_PARTNERS } from './data';
  * CSS turns the strip into a static wrapped grid and the button is hidden. The second copy of
  * the list only exists for the seamless loop, so it is `aria-hidden`.
  */
-export function ProfessionalPartnerMarquee() {
+export function ProfessionalPartnerMarquee({ copy }: { copy: typeof professionalCopy.defaults }) {
   const [paused, setPaused] = useState(false);
 
   return (
@@ -30,7 +31,7 @@ export function ProfessionalPartnerMarquee() {
           type="button"
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
-          aria-label={paused ? 'Resume scrolling partner logos' : 'Pause scrolling partner logos'}
+          aria-label={paused ? copy['partners.play.aria'] : copy['partners.pause.aria']}
           className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           {paused ? (
@@ -38,7 +39,7 @@ export function ProfessionalPartnerMarquee() {
           ) : (
             <Pause className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
           )}
-          {paused ? 'Play' : 'Pause'}
+          {paused ? copy['partners.play'] : copy['partners.pause']}
         </button>
       </div>
     </div>

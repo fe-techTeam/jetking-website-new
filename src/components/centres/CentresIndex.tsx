@@ -9,6 +9,8 @@ import { centrePath } from '@/lib/centre-path';
 import { usePersona } from '@/persona/PersonaProvider';
 import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
 import { subscribeCentresSearch } from './CentresHeroSearch';
+import { fill } from '@/lib/content/copy/define';
+import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
 type CitySummary = { slug: string; name: string; state: string };
 type CentreSummary = {
@@ -67,10 +69,12 @@ export function CentresIndex({
   cities,
   centres,
   initialQuery = '',
+  copy,
 }: {
   cities: CitySummary[];
   centres: CentreSummary[];
   initialQuery?: string;
+  copy: typeof centresCopy.defaults;
 }) {
   const inputId = useId();
   const { classification, hydrated } = usePersona();
@@ -240,6 +244,7 @@ export function CentresIndex({
   }
 
   const hasActiveFilters = Boolean(activeState || activeCity || needle);
+  const unitFor = (n: number) => (n === 1 ? copy['units.centreOne'] : copy['units.centreMany']);
 
   return (
     <section
@@ -249,13 +254,13 @@ export function CentresIndex({
     >
       <div className="max-w-2xl">
         <p className="k-eyebrow">
-          Browse by city
+          {copy['directoryIndex.eyebrow']}
         </p>
         <h2
           id="centres-index-heading"
           className="section-title mt-2 font-display text-[var(--dc-ink)]"
         >
-          Centres across India
+          {copy['directoryIndex.title']}
         </h2>
       </div>
 
@@ -264,13 +269,13 @@ export function CentresIndex({
         <div
           role="group"
           className="centres-card hidden flex-col self-start rounded-[20px] xs:rounded-[24px] lg:flex lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
-          aria-label="Filter centres"
+          aria-label={copy['directoryIndex.filterAria']}
         >
           {/* Pinned: title + search always visible while lists scroll */}
           <div className="centres-filter-sticky shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 p-5 xs:rounded-t-[24px] sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <p className="k-eyebrow">
-                Filters
+                {copy['directoryIndex.filtersTitle']}
               </p>
               {hasActiveFilters ? (
                 <button
@@ -278,13 +283,13 @@ export function CentresIndex({
                   onClick={clearFilters}
                   className="-my-2 inline-block cursor-pointer py-2 text-[12px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
                 >
-                  Clear all
+                  {copy['directoryIndex.clearAll']}
                 </button>
               ) : null}
             </div>
 
             <label htmlFor={inputId} className="relative mt-5 block">
-              <span className="sr-only">Search centres</span>
+              <span className="sr-only">{copy['directoryIndex.searchLabel']}</span>
               <Search
                 className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
                 strokeWidth={2.25}
@@ -295,7 +300,7 @@ export function CentresIndex({
                 type="search"
                 value={query}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search cities, states..."
+                placeholder={copy['directoryIndex.searchPlaceholder']}
                 autoComplete="off"
                 className="centres-sidebar-search-input w-full rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-2.5 pr-10 pl-10 text-[13.5px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
               />
@@ -303,7 +308,7 @@ export function CentresIndex({
                 <button
                   type="button"
                   onClick={() => onSearchChange('')}
-                  aria-label="Clear search"
+                  aria-label={copy['directoryIndex.clearSearch']}
                   className="absolute top-1/2 right-2.5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-ink)]"
                 >
                   <X
@@ -319,9 +324,11 @@ export function CentresIndex({
           {/* Scrollable: state + city lists */}
           <div className="centres-filter-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
             <FilterGroup
-              label="State"
+              label={copy['directoryIndex.stateLabel']}
               icon={MapIcon}
               value={activeState}
+              allLabel={copy['directoryIndex.allShort']}
+              selectedLabel={copy['directoryIndex.selected']}
               open={openFacet === 'state'}
               onToggle={() =>
                 setOpenFacet((v) => (v === 'state' ? null : 'state'))
@@ -334,7 +341,7 @@ export function CentresIndex({
                     setActiveState(null);
                     setActiveCity(null);
                   }}
-                  label="All states"
+                  label={copy['directoryIndex.allStates']}
                   count={matchCountAll}
                 />
               </li>
@@ -354,10 +361,12 @@ export function CentresIndex({
             </FilterGroup>
 
             <FilterGroup
-              label="City"
+              label={copy['directoryIndex.cityLabel']}
               icon={Building2}
               value={activeCity ? (cities.find((c) => c.slug === activeCity)?.name ?? null) : null}
               className="mt-4"
+              allLabel={copy['directoryIndex.allShort']}
+              selectedLabel={copy['directoryIndex.selected']}
               open={openFacet === 'city'}
               onToggle={() =>
                 setOpenFacet((v) => (v === 'city' ? null : 'city'))
@@ -367,7 +376,7 @@ export function CentresIndex({
                 <FilterButton
                   active={!activeCity}
                   onClick={() => setActiveCity(null)}
-                  label="All cities"
+                  label={copy['directoryIndex.allCities']}
                   count={
                     activeState
                       ? (matchCountByState.get(activeState) ?? 0)
@@ -399,7 +408,7 @@ export function CentresIndex({
           <div className="mb-5 lg:hidden">
             <div className="flex gap-2.5">
               <label htmlFor={`${inputId}-m`} className="relative block min-w-0 flex-1">
-                <span className="sr-only">Search centres</span>
+                <span className="sr-only">{copy['directoryIndex.searchLabel']}</span>
                 <Search
                   className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
                   strokeWidth={2.25}
@@ -410,7 +419,7 @@ export function CentresIndex({
                   type="search"
                   value={query}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  placeholder="Search cities, states..."
+                  placeholder={copy['directoryIndex.searchPlaceholder']}
                   autoComplete="off"
                   enterKeyHint="search"
                   className="centres-sidebar-search-input h-11 w-full rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] pr-11 pl-10 text-[14px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] transition-[border-color,box-shadow] duration-200 outline-none focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
@@ -419,7 +428,7 @@ export function CentresIndex({
                   <button
                     type="button"
                     onClick={() => onSearchChange('')}
-                    aria-label="Clear search"
+                    aria-label={copy['directoryIndex.clearSearch']}
                     className="absolute top-1/2 right-0 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] hover:text-[var(--dc-ink)]"
                   >
                     <X className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
@@ -428,22 +437,22 @@ export function CentresIndex({
               </label>
 
               <FilterSheet
-                title="Filter centres"
+                title={copy['directoryIndex.sheetTitle']}
                 activeCount={(activeState ? 1 : 0) + (activeCity ? 1 : 0)}
-                resultLabel={`Show ${visibleCentreCount} ${visibleCentreCount === 1 ? 'centre' : 'centres'}`}
+                resultLabel={fill(copy['directoryIndex.showResults'], { count: visibleCentreCount, unit: unitFor(visibleCentreCount) })}
                 canClear={hasActiveFilters}
                 onClear={clearFilters}
                 open={sheetOpen}
                 onOpenChange={setSheetOpen}
               >
-                <SheetFacet label="State">
+                <SheetFacet label={copy['directoryIndex.stateLabel']}>
                   <SheetChip
                     active={!activeState}
                     onClick={() => {
                       setActiveState(null);
                       setActiveCity(null);
                     }}
-                    label="All states"
+                    label={copy['directoryIndex.allStates']}
                     count={matchCountAll}
                   />
                   {states.map(([state]) => (
@@ -459,11 +468,11 @@ export function CentresIndex({
                     />
                   ))}
                 </SheetFacet>
-                <SheetFacet label={activeState ? `City in ${activeState}` : 'City'}>
+                <SheetFacet label={activeState ? fill(copy['directoryIndex.cityInState'], { state: activeState }) : copy['directoryIndex.cityLabel']}>
                   <SheetChip
                     active={!activeCity}
                     onClick={() => setActiveCity(null)}
-                    label="All cities"
+                    label={copy['directoryIndex.allCities']}
                     count={activeState ? (matchCountByState.get(activeState) ?? 0) : matchCountAll}
                   />
                   {sidebarCities.map((city) => (
@@ -512,19 +521,19 @@ export function CentresIndex({
               className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
             >
               {visibleCentreCount}{' '}
-              {visibleCentreCount === 1 ? 'centre' : 'centres'}
-              {hasActiveFilters ? ' matching' : null}
+              {unitFor(visibleCentreCount)}
+              {hasActiveFilters ? ` ${copy['directoryIndex.matching']}` : null}
             </p>
             {activeCity ? (
               <p className="text-[14px] text-[var(--dc-ink-secondary)]">
-                Showing{' '}
+                {copy['directoryIndex.showing']}{' '}
                 <span className="font-bold text-[var(--dc-ink)]">
                   {cities.find((c) => c.slug === activeCity)?.name}
                 </span>
               </p>
             ) : activeState ? (
               <p className="text-[14px] text-[var(--dc-ink-secondary)]">
-                Showing{' '}
+                {copy['directoryIndex.showing']}{' '}
                 <span className="font-bold text-[var(--dc-ink)]">
                   {activeState}
                 </span>
@@ -573,7 +582,7 @@ export function CentresIndex({
                         {state}
                       </span>
                       <span className="mt-0.5 block text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-                        {count} {count === 1 ? 'centre' : 'centres'}
+                        {count} {unitFor(count)}
                       </span>
                     </span>
                     <ChevronDown
@@ -614,6 +623,7 @@ export function CentresIndex({
                                 centre={centre}
                                 city={stateCities[0]!}
                                 needle={needle}
+                                copy={copy}
                               />
                             ))}
                         </ul>
@@ -661,9 +671,7 @@ export function CentresIndex({
                                   </span>
                                   <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
                                     {matchCountByCity.get(city.slug) ?? 0}{' '}
-                                    {matchCountByCity.get(city.slug) === 1
-                                      ? 'centre'
-                                      : 'centres'}
+                                    {unitFor(matchCountByCity.get(city.slug) ?? 0)}
                                   </span>
                                 </span>
                                 <ChevronDown
@@ -690,6 +698,7 @@ export function CentresIndex({
                                       centre={centre}
                                       city={city}
                                       needle={needle}
+                                      copy={copy}
                                     />
                                   ))}
                                 </ul>
@@ -708,17 +717,17 @@ export function CentresIndex({
           {visibleCentreCount === 0 ? (
             <div className="centres-card mt-5 rounded-[20px] px-6 py-12 text-center sm:px-8">
               <p className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
-                No centres match your filters
+                {copy['directoryIndex.emptyTitle']}
               </p>
               <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)]">
-                Try a different city, state, or search term.
+                {copy['directoryIndex.emptyBody']}
               </p>
               <button
                 type="button"
                 onClick={clearFilters}
                 className="-my-2 mt-5 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
               >
-                Clear all filters
+                {copy['directoryIndex.clearFilters']}
               </button>
             </div>
           ) : null}
@@ -732,10 +741,12 @@ function CentreCard({
   centre,
   city,
   needle,
+  copy,
 }: {
   centre: CentreSummary;
   city: CitySummary;
   needle: string;
+  copy: typeof centresCopy.defaults;
 }) {
   const centreVisible =
     !needle || matchesCentre(centre, needle) || matchesCity(city, needle);
@@ -775,13 +786,13 @@ function CentreCard({
             href={centrePath(centre.slug) as Route}
             className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-3.5 py-2 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/60 hover:bg-[var(--dc-accent-tint)] sm:px-4 sm:text-[13px]"
           >
-            View details
+            {copy['directoryIndex.viewDetails']}
           </Link>
           <Link
             href={`/enquiry?centre=${centre.slug}` as Route}
             className="inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--dc-accent)] px-3.5 py-2 text-[12.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:px-4 sm:text-[13px]"
           >
-            Enquire
+            {copy['directoryIndex.enquire']}
           </Link>
         </div>
       </div>
@@ -802,7 +813,7 @@ function CentreCard({
             aria-hidden="true"
           />
           <span className="text-[12px] font-bold tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-            Phone
+            {copy['directoryIndex.phone']}
           </span>
           {telHref ? (
             <a
@@ -838,9 +849,14 @@ function FilterGroup({
   className,
   open,
   onToggle,
+  allLabel,
+  selectedLabel,
   children,
 }: {
   label: string;
+  /** Wording for the closed-state "All" chip and the screen-reader "selected" suffix. */
+  allLabel: string;
+  selectedLabel: string;
   icon: typeof MapPin;
   /** The applied selection's name, or `null` when the group is on "All". */
   value: string | null;
@@ -879,10 +895,10 @@ function FilterGroup({
         {value ? (
           <span className="ml-auto min-w-0 max-w-[9rem] truncate rounded-full border border-[var(--dc-accent-soft)]/50 bg-[var(--dc-card)] px-2.5 py-0.5 text-[12px] font-bold text-[var(--dc-accent-soft)]">
             {value}
-            <span className="sr-only"> selected</span>
+            <span className="sr-only"> {selectedLabel}</span>
           </span>
         ) : (
-          <span className="ml-auto text-[12px] font-semibold text-[var(--dc-ink-muted)]">All</span>
+          <span className="ml-auto text-[12px] font-semibold text-[var(--dc-ink-muted)]">{allLabel}</span>
         )}
         <ChevronDown
           className="centres-accordion-chevron h-4 w-4"

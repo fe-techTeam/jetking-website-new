@@ -1,37 +1,23 @@
 import { BookOpen, BriefcaseBusiness, Check, Cpu, Trophy } from 'lucide-react';
 import { Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
-/** Wording taken from the site's own content: `placements/data.ts` (process steps, student benefits), the live "reasons" (`explore/content.ts`) and the course certifications. */
-const STEPS = [
-  {
-    icon: BookOpen,
-    title: 'Learn',
-    points: ['Learn practically with real-world tools', 'Trained & certified faculty', 'Scenario based learning'],
-  },
-  {
-    icon: Cpu,
-    title: 'Practice',
-    points: ['One computer per student in the lab', 'Mock interviews', 'AI bot interviews and presentation practice'],
-  },
-  {
-    icon: Trophy,
-    title: 'Get certified',
-    points: ['Industry certifications such as CCNA, AWS and CEH', 'Jetking certificates for every course', 'Partnership with NSDC'],
-  },
-  {
-    icon: BriefcaseBusiness,
-    title: 'Get placement support',
-    points: ['Biodata preparation', 'Student interviews with hiring partners', 'Appointment letter'],
-  },
-];
+/** Wording taken from the site's own content: `placements/data.ts` (process steps, student benefits), the live "reasons" (`explore/content.ts`) and the course certifications. The text lives in the page copy (`how.steps.N.*`); only the icons are fixed here. */
+const STEP_ICONS = [BookOpen, Cpu, Trophy, BriefcaseBusiness];
 
-export function HowItWorks() {
+export function HowItWorks({ copy }: { copy: HomeCopy }) {
+  const STEPS = STEP_ICONS.map((icon, i) => ({
+    icon,
+    title: copy[`how.steps.${i}.title` as keyof HomeCopy],
+    points: [0, 1, 2].map((p) => copy[`how.steps.${i}.points.${p}` as keyof HomeCopy]),
+  }));
+
   return (
     <Section tone="tint" deco="grid" labelledBy="home-how-heading">
       <SectionHeader
         id="home-how-heading"
-        title="Build your career, step by step"
-        lede="From beginner to job-ready professional — we guide you at every stage."
+        title={copy['how.title']}
+        lede={copy['how.lede']}
       />
       <Reveal>
         <StepPath

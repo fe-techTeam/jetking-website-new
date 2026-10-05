@@ -1,4 +1,5 @@
 import type { CmsCollection } from '@/lib/cms/types';
+import type { Role } from '@/lib/auth/roles';
 
 /**
  * One place that says what the admin manages and where it shows up on the public website.
@@ -29,6 +30,12 @@ export interface AdminCollection {
   appearsOn: AppearsOn[];
   /** Shown above the editor when `live` is false (or something else the editor must know). */
   note?: string;
+  /** `list` (default): add/delete records. `fixed`: a set of existing documents. `singleton`: one document. */
+  mode?: 'list' | 'fixed' | 'singleton';
+  /** Who may open and save it. Defaults to admin + editor. */
+  roles?: Role[];
+  /** False for collections that have their own editor and aren't a record count worth charting. */
+  dashboard?: boolean;
 }
 
 export const GROUP = {
@@ -38,6 +45,18 @@ export const GROUP = {
 } as const;
 
 export const COLLECTIONS: AdminCollection[] = [
+  {
+    key: 'page_copy',
+    route: 'page-text',
+    idKey: 'id',
+    label: 'Page text',
+    icon: 'Type',
+    group: GROUP.website,
+    description: 'Headings, descriptions, button labels, links and search titles on every page.',
+    live: true,
+    dashboard: false,
+    appearsOn: [],
+  },
   {
     key: 'courses',
     route: 'courses',
@@ -92,6 +111,55 @@ export const COLLECTIONS: AdminCollection[] = [
     description: 'Articles on the blog and the latest-articles strip on the home page.',
     live: true,
     appearsOn: [{ label: 'Blog', href: '/blog' }, { label: 'Article pages' }, { label: 'Home', href: '/' }],
+  },
+  {
+    key: 'about_page',
+    route: 'about',
+    idKey: 'id',
+    label: 'About page',
+    icon: 'Info',
+    group: GROUP.website,
+    description: 'The About page: heading, vision and mission, leadership, company timeline, awards and partners.',
+    live: true,
+    mode: 'singleton',
+    appearsOn: [{ label: 'About', href: '/about-us' }, { label: 'Explore', href: '/explore' }],
+    note: 'Set the switch to Draft to show the built-in copy instead of this document.',
+  },
+  {
+    key: 'placements_page',
+    route: 'placements-page',
+    idKey: 'id',
+    label: 'Placements page',
+    icon: 'Award',
+    group: GROUP.website,
+    description: 'Placement stories, process, recruiters, offer letters and the headline figures used across the site.',
+    live: true,
+    mode: 'singleton',
+    appearsOn: [
+      { label: 'Placements', href: '/placements' },
+      { label: 'Home', href: '/' },
+      { label: 'Course pages' },
+      { label: 'Explore', href: '/explore' },
+    ],
+    note: 'Set the switch to Draft to show the built-in copy instead of this document. Keep the disclaimer: no figure here may imply a placement guarantee.',
+  },
+  {
+    key: 'legal_documents',
+    route: 'legal',
+    idKey: 'slug',
+    label: 'Legal pages',
+    icon: 'Scale',
+    group: GROUP.website,
+    description: 'The wording of the Privacy Policy, Terms and Conditions, and Enrollment Terms.',
+    live: true,
+    mode: 'fixed',
+    roles: ['admin'],
+    appearsOn: [
+      { label: 'Privacy Policy', href: '/privacy-policy' },
+      { label: 'Terms & Conditions', href: '/terms-conditions' },
+      { label: 'Enrollment Terms', href: '/enrollment-terms-and-conditions' },
+    ],
+    note: 'Admins only. These are legal documents: changes go live as soon as they are saved. Set a document to Draft to show the built-in copy instead.',
   },
   {
     key: 'faqs',
@@ -155,7 +223,7 @@ export const COLLECTIONS: AdminCollection[] = [
     description: 'Policy summaries the Jetking Guide chatbot answers from.',
     live: false,
     appearsOn: [],
-    note: 'These records feed the Jetking Guide chatbot only. The public Privacy, Terms and Enrollment pages are managed in code (src/lib/legal), so editing here will not change them.',
+    note: 'These records feed the Jetking Guide chatbot only. The public Privacy, Terms and Enrollment pages are edited under Legal pages.',
   },
   {
     key: 'faculty',
@@ -167,19 +235,19 @@ export const COLLECTIONS: AdminCollection[] = [
     description: 'Faculty profiles the Jetking Guide chatbot can cite.',
     live: false,
     appearsOn: [],
-    note: 'These records feed the Jetking Guide chatbot only; no website page lists them. The About page’s leadership section is managed in code.',
+    note: 'These records feed the Jetking Guide chatbot only; no website page lists them. The About page’s leadership is edited under About page.',
   },
   {
     key: 'placements',
     route: 'placements',
     idKey: 'id',
-    label: 'Placements',
+    label: 'Placement notes',
     icon: 'Trophy',
     group: GROUP.guide,
     description: 'Placement summaries and stats the Jetking Guide chatbot answers from.',
     live: false,
     appearsOn: [],
-    note: 'These records feed the Jetking Guide chatbot only. The public Placements page (recruiters, stats, testimonials) is managed in code (src/components/placements), so editing here will not change it.',
+    note: 'These records feed the Jetking Guide chatbot only. The public Placements page (recruiters, stats, testimonials) is edited under Placements page.',
   },
 ];
 
@@ -208,11 +276,11 @@ export const SITE_PAGES: SitePage[] = [
     name: 'Home',
     path: '/',
     href: '/',
-    cms: ['courses', 'centres', 'cities', 'posts'],
+    cms: ['courses', 'centres', 'cities', 'posts', 'placements_page'],
     code: 'Hero, section copy, certification & employer logos, recognitions',
   },
   { name: 'Course catalogue', path: '/courses', href: '/courses', cms: ['courses', 'centres', 'cities'] },
-  { name: 'Course page', path: '/courses/[slug]', cms: ['courses', 'faqs', 'centres'] },
+  { name: 'Course page', path: '/courses/[slug]', cms: ['courses', 'faqs', 'centres', 'placements_page'] },
   { name: 'Centre directory', path: '/centres', href: '/centres', cms: ['centres', 'cities'] },
   { name: 'City page', path: '/centres/[city]', cms: ['cities', 'centres', 'courses'] },
   { name: 'Centre page', path: '/centres/[city]/[centre]', cms: ['centres'] },
@@ -229,21 +297,19 @@ export const SITE_PAGES: SitePage[] = [
     code: 'Page copy',
   },
   { name: 'Franchise', path: '/franchise', href: '/franchise', cms: ['homepage_variants', 'faqs'], code: 'Page copy' },
-  { name: 'Explore', path: '/explore', href: '/explore', cms: ['courses', 'centres', 'cities', 'posts'], code: 'Page copy' },
+  { name: 'Explore', path: '/explore', href: '/explore', cms: ['courses', 'centres', 'cities', 'posts', 'about_page', 'placements_page'], code: 'Page copy' },
   { name: 'Enquiry', path: '/enquiry', href: '/enquiry', cms: ['courses', 'centres', 'cities'], code: 'Form copy (submissions land in Leads)' },
   {
     name: 'About',
     path: '/about-us',
     href: '/about-us',
-    cms: ['courses', 'centres', 'cities'],
-    code: 'Leadership, timeline, achievements, partnerships (src/components/about)',
+    cms: ['about_page', 'courses', 'centres', 'cities'],
   },
   {
     name: 'Placements',
     path: '/placements',
     href: '/placements',
-    cms: [],
-    code: 'Entire page: stats, recruiters, testimonials, offer letters (src/components/placements)',
+    cms: ['placements_page'],
   },
   {
     name: 'Investors',
@@ -256,7 +322,6 @@ export const SITE_PAGES: SitePage[] = [
     name: 'Privacy, Terms & Enrollment',
     path: '/privacy-policy',
     href: '/privacy-policy',
-    cms: [],
-    code: 'Entire pages: legal text (src/lib/legal)',
+    cms: ['legal_documents'],
   },
 ];

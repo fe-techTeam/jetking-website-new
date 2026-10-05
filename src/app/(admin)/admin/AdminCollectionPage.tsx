@@ -9,8 +9,8 @@ import { collectionByKey } from './registry';
  * a one-liner and can't disagree with the sidebar or the Website map.
  */
 export async function AdminCollectionPage({ collection }: { collection: CmsCollection }) {
-  await requireRole(['admin', 'editor']);
   const meta = collectionByKey(collection);
+  await requireRole(meta.roles ?? ['admin', 'editor']);
   const items = await getAdminCollection(collection);
 
   return (
@@ -23,6 +23,7 @@ export async function AdminCollectionPage({ collection }: { collection: CmsColle
       live={meta.live}
       appearsOn={meta.appearsOn}
       note={meta.note}
+      mode={meta.mode}
     />
   );
 }

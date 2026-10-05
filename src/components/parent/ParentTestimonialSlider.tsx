@@ -2,13 +2,7 @@
 
 import type { Testimonial } from '@/lib/content/types';
 import { TestimonialSlider } from '@/components/TestimonialSlider';
-
-const AVATARS = [
-  '/student/avatar-1.webp',
-  '/student/avatar-2.webp',
-  '/student/avatar-3.webp',
-  '/student/testimonial.webp',
-] as const;
+import type { ParentCopy } from '@/lib/content/copy/pages/parent';
 
 const FALLBACK: Testimonial[] = [
   {
@@ -34,13 +28,26 @@ const FALLBACK: Testimonial[] = [
   },
 ];
 
-export function ParentTestimonialSlider({ testimonials }: { testimonials?: Testimonial[] }) {
+export function ParentTestimonialSlider({
+  testimonials,
+  copy,
+}: {
+  testimonials?: Testimonial[];
+  copy: ParentCopy;
+}) {
+  const avatars = [
+    copy['stories.slider.0'],
+    copy['stories.slider.1'],
+    copy['stories.slider.2'],
+    copy['stories.slider.3'],
+  ];
+
   return (
     <TestimonialSlider
       testimonials={testimonials}
       fallback={FALLBACK}
-      avatars={AVATARS}
-      label="Parent stories"
+      avatars={avatars}
+      label={copy['stories.label']}
     />
   );
 }

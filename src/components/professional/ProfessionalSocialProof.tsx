@@ -4,9 +4,21 @@ import { Section, SectionHeader } from '@/components/kit';
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
 import { ProfessionalPartnerMarquee } from './ProfessionalPartnerMarquee';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { fill } from '@/lib/content/copy/define';
 import { SUCCESS_STORIES } from './data';
 
-export function ProfessionalSocialProof() {
+export function ProfessionalSocialProof({ copy }: { copy: typeof professionalCopy.defaults }) {
+  const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
+  // Story text comes from the page copy (`stories.N.*`); the id and portrait stay with the code.
+  const stories = SUCCESS_STORIES.map((story, i) => ({
+    ...story,
+    from: k(`stories.${i}.from`),
+    to: k(`stories.${i}.to`),
+    quote: k(`stories.${i}.quote`),
+    name: k(`stories.${i}.name`),
+    hike: k(`stories.${i}.hike`),
+  }));
   return (
     <Section tone="tint" labelledBy="pro-stories-heading">
         <div>
@@ -14,16 +26,16 @@ export function ProfessionalSocialProof() {
             <div>
               <SectionHeader
                 id="pro-stories-heading"
-                eyebrow="Success stories"
-                title="Real career transitions"
-                lede="Working professionals like you who upskilled without quitting their day job."
+                eyebrow={copy['stories.eyebrow']}
+                title={copy['stories.title']}
+                lede={copy['stories.lede']}
               />
 
               <Carousel
-                items={SUCCESS_STORIES}
-                label="Success stories"
+                items={stories}
+                label={copy['stories.carousel.label']}
                 itemKey={(story) => story.id}
-                itemLabel={(story) => `${story.name}, ${story.from} to ${story.to}`}
+                itemLabel={(story) => fill(copy['stories.slideLabel'], { name: story.name, from: story.from, to: story.to })}
                 classNames={{
                   viewport: 'rounded-[24px]',
                   dotActive: 'bg-[var(--dc-accent-soft)]',
@@ -35,7 +47,7 @@ export function ProfessionalSocialProof() {
                 {(story) => (
                   <article className="kit kit-card p-6 sm:p-7">
                     <p className="text-[12px] font-bold tracking-[0.06em] text-[var(--k-ink-3)] uppercase">
-                      From {story.from} to {story.to}
+                      {fill(copy['stories.kicker'], { from: story.from, to: story.to })}
                     </p>
                     <span
                       aria-hidden="true"
@@ -60,12 +72,12 @@ export function ProfessionalSocialProof() {
                         <cite className="not-italic">
                           <span className="block text-[14.5px] font-bold text-[var(--k-ink)]">{story.name}</span>
                           <span className="mt-0.5 block text-[14px] text-[var(--k-ink-3)]">
-                            {story.from} → {story.to}
+                            {fill(copy['stories.route'], { from: story.from, to: story.to })}
                           </span>
                         </cite>
                       </div>
                       <span className="shrink-0 rounded-full bg-[var(--k-red-wash)] px-3 py-1.5 text-[12px] font-extrabold text-[var(--k-red)]">
-                        {story.hike} Salary Hike
+                        {fill(copy['stories.hike.label'], { hike: story.hike })}
                       </span>
                     </footer>
                   </article>
@@ -75,14 +87,13 @@ export function ProfessionalSocialProof() {
 
             <div className="border-t border-[var(--dc-hairline-strong)] pt-10 lg:pt-12">
               <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]">
-                Our Hiring Partners
+                {copy['partners.title']}
               </h3>
               <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
-                Recruiters featured on jetking.com. Placements are subject to recruitment norms —
-                Jetking does not guarantee placement in any organisation.
+                {copy['partners.note']}
               </p>
               <div className="mt-7 sm:mt-8">
-                <ProfessionalPartnerMarquee />
+                <ProfessionalPartnerMarquee copy={copy} />
               </div>
             </div>
           </div>

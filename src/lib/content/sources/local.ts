@@ -19,6 +19,8 @@ import { posts } from '../fixtures/posts';
 import { faqs } from '../fixtures/faqs';
 import { trustSignals } from '../fixtures/trust';
 import { faculty, homepageVariants, personaRules, placements, policies } from '../fixtures/kb';
+import { legalDefaults } from '../fixtures/legal';
+import { aboutFallback, placementsFallback } from '../page-content';
 
 /**
  * Repo-fixture content source — works offline without Admin CMS / Supabase.
@@ -112,5 +114,25 @@ export const localSource: ContentSource = {
 
   async listPersonaRules(): Promise<PersonaRule[]> {
     return [...personaRules].filter((r) => r.enabled).sort((a, b) => b.priority - a.priority);
+  },
+
+  async getAboutPage() {
+    return aboutFallback();
+  },
+
+  async getPlacementsPage() {
+    return placementsFallback();
+  },
+
+  async getPageCopyOverrides() {
+    return {};
+  },
+
+  async listLegalDocuments() {
+    return [...legalDefaults];
+  },
+
+  async getLegalDocument(slug: string) {
+    return legalDefaults.find((d) => d.slug === slug) ?? null;
   },
 };

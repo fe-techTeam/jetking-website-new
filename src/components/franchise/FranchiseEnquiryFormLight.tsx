@@ -7,13 +7,16 @@ import { Field, Input } from '@/components/ui';
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
 import { track } from '@/lib/analytics';
+import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 
 type Status = 'idle' | 'submitting' | 'done' | 'error';
+
+const BAND_KEYS = ['investment.band.0', 'investment.band.1', 'investment.band.2'] as const;
 
 const fieldClass =
   'h-11 border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] hover:border-[var(--dc-accent-soft)]/50 focus:border-[var(--dc-accent-soft)] focus:ring-[var(--dc-accent)]/20';
 
-export function FranchiseEnquiryFormLight() {
+export function FranchiseEnquiryFormLight({ copy }: { copy: typeof franchiseCopy.defaults }) {
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
@@ -51,7 +54,7 @@ export function FranchiseEnquiryFormLight() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? 'Something went wrong. Please try again.');
+        throw new Error(body.error ?? copy['form.error']);
       }
 
       setStatus('done');
@@ -65,7 +68,7 @@ export function FranchiseEnquiryFormLight() {
       });
     } catch (err) {
       setStatus('error');
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : copy['form.error']);
     }
   }
 
@@ -79,9 +82,9 @@ export function FranchiseEnquiryFormLight() {
   if (status === 'done') {
     return (
       <div className="rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] p-8 text-center [&_p]:text-[var(--dc-ink-secondary)]">
-        <p className="font-display text-xl font-extrabold text-[var(--dc-ink)]">Thank you!</p>
+        <p className="font-display text-xl font-extrabold text-[var(--dc-ink)]">{copy['form.success.title']}</p>
         <p className="mt-3 text-[15px]">
-          Our franchise team will get in touch with you within 24 hours.
+          {copy['form.success.body']}
         </p>
       </div>
     );
@@ -91,7 +94,7 @@ export function FranchiseEnquiryFormLight() {
     <form onSubmit={handleSubmit} onFocus={handleFocus} className="space-y-5">
 <BotTrap />
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Name" required htmlFor="fra-name">
+        <Field label={copy['form.name.label']} required htmlFor="fra-name">
           <Input
             id="fra-name"
             name="name"
@@ -99,12 +102,12 @@ export function FranchiseEnquiryFormLight() {
             required
             minLength={2}
             autoComplete="name"
-            placeholder="Your full name"
+            placeholder={copy['form.name.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="Mobile Number" required htmlFor="fra-phone">
+        <Field label={copy['form.phone.label']} required htmlFor="fra-phone">
           <Input
             id="fra-phone"
             name="phone"
@@ -113,34 +116,34 @@ export function FranchiseEnquiryFormLight() {
             minLength={10}
             autoComplete="tel"
             inputMode="tel"
-            placeholder="+91 98765 43210"
+            placeholder={copy['form.phone.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="Email Address" htmlFor="fra-email">
+        <Field label={copy['form.email.label']} htmlFor="fra-email">
           <Input
             id="fra-email"
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="you@example.com"
+            placeholder={copy['form.email.placeholder']}
             className={fieldClass}
           />
         </Field>
 
-        <Field label="Preferred Location" htmlFor="fra-city">
+        <Field label={copy['form.city.label']} htmlFor="fra-city">
           <Input
             id="fra-city"
             name="city"
             type="text"
-            placeholder="City or territory"
+            placeholder={copy['form.city.placeholder']}
             className={fieldClass}
           />
         </Field>
 
         <div className="sm:col-span-2">
-          <Field label="Investment Capacity" required htmlFor="fra-investment">
+          <Field label={copy['form.investment.label']} required htmlFor="fra-investment">
             <div className="relative">
               <select
                 id="fra-investment"
@@ -150,11 +153,13 @@ export function FranchiseEnquiryFormLight() {
                 className={`w-full appearance-none rounded-[var(--radius-input)] border px-3 pr-11 text-sm ${fieldClass}`}
               >
                 <option value="" disabled>
-                  Select
+                  {copy['form.investment.placeholder']}
                 </option>
-                <option value="UPTO 50 L">UPTO 50 L</option>
-                <option value="UPTO 1 CR">UPTO 1 CR</option>
-                <option value="UPTO 3 CR">UPTO 3 CR</option>
+                {BAND_KEYS.map((key) => (
+                  <option key={key} value={copy[key]}>
+                    {copy[key]}
+                  </option>
+                ))}
               </select>
               <ChevronDown
                 aria-hidden="true"
@@ -177,7 +182,7 @@ export function FranchiseEnquiryFormLight() {
         disabled={status === 'submitting'}
         className="group/submit inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-accent)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
       >
-        {status === 'submitting' ? 'Submitting…' : 'Get Franchise Details'}
+        {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
         <span aria-hidden="true">→</span>
       </button>
 
@@ -187,7 +192,7 @@ export function FranchiseEnquiryFormLight() {
           strokeWidth={2}
           aria-hidden="true"
         />
-        Our team will get in touch with you within 24 hours!
+        {copy['form.note']}
       </p>
     </form>
   );

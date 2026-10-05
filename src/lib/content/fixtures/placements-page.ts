@@ -1,9 +1,20 @@
 /**
  * Placements content — mirrored from jetking.com/placements (fetched 2026-08-18).
+ * These are the in-repo DEFAULTS: they seed the CMS (`placements_page`) and are what the pages fall back
+ * to when the CMS record is missing or unpublished. The live copy is edited in the admin.
  * Names, companies and quotes are Jetking's own published placement records;
  * nothing here is invented. No figure implies a guarantee — see the summary
  * disclaimer, which is load-bearing, not decorative.
  */
+
+import type {
+  PlacedCandidate,
+  PlacementProcessStep as ProcessStep,
+  PlacementsPageRecord,
+  PlacementTestimonial as Testimonial,
+  StudentBenefit,
+  VideoTestimonial,
+} from '../types';
 
 export const PLACEMENTS_HERO = {
   eyebrow: 'Placements',
@@ -16,7 +27,6 @@ export const PLACEMENTS_HERO = {
 export const PLACEMENT_DISCLAIMER =
   'Placement support is real work Jetking does on a learner’s behalf: resume preparation, interview practice and introductions to hiring partners where available. It is not a guarantee — outcomes depend on the course, the centre, the local employer market and the individual learner.';
 
-export type ProcessStep = { step: string; title: string; description: string };
 
 export const PROCESS_STEPS: ProcessStep[] = [
   {
@@ -46,7 +56,6 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
-export type StudentBenefit = { title: string; description: string };
 
 export const STUDENT_BENEFITS: StudentBenefit[] = [
   { title: 'Learn practically', description: 'Hands-on training with real-world tools.' },
@@ -61,7 +70,6 @@ export const STUDENT_BENEFITS: StudentBenefit[] = [
   { title: 'Presentation', description: 'Learn to present your skills effectively.' },
 ];
 
-export type PlacedCandidate = { name: string; company: string };
 
 /** A sample of Jetking's own published placement records — not an exhaustive list. */
 export const PLACED_CANDIDATES: PlacedCandidate[] = [
@@ -79,11 +87,6 @@ export const PLACED_CANDIDATES: PlacedCandidate[] = [
   { name: 'Mohd Qasim', company: 'Wipro' },
 ];
 
-export type Testimonial = {
-  name: string;
-  role: string;
-  quote: string;
-};
 
 export const TESTIMONIALS: Testimonial[] = [
   {
@@ -123,13 +126,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-export type VideoTestimonial = {
-  name: string;
-  title: string;
-  provider: 'youtube' | 'vimeo';
-  videoId: string;
-  thumbnail: string;
-};
 
 /**
  * Video placement testimonials — real videos embedded live on jetking.com,
@@ -217,3 +213,20 @@ export const PLACEMENT_STATS = {
   partners: '5000+',
   learnersPlaced: { value: '3586', label: 'Learners placed in 2025' },
 } as const;
+
+/** The whole page as one CMS document (mutable copies of the constants above). */
+export const placementsDefaults: PlacementsPageRecord = {
+  id: 'placements',
+  hero: { ...PLACEMENTS_HERO },
+  disclaimer: PLACEMENT_DISCLAIMER,
+  processSteps: PROCESS_STEPS.map((x) => ({ ...x })),
+  studentBenefits: STUDENT_BENEFITS.map((x) => ({ ...x })),
+  placedCandidates: PLACED_CANDIDATES.map((x) => ({ ...x })),
+  testimonials: TESTIMONIALS.map((x) => ({ ...x })),
+  videoTestimonials: VIDEO_TESTIMONIALS.map((x) => ({ ...x })),
+  contact: { phone: PLACEMENTS_CONTACT.phone, email: PLACEMENTS_CONTACT.email },
+  offerLetters: OFFER_LETTER_SAMPLES.map(({ src, title, sector }) => ({ src, title, sector })),
+  recruiters: RECRUITERS.map((x) => ({ ...x })),
+  recruitersDisclaimer: RECRUITERS_DISCLAIMER,
+  stats: { partners: PLACEMENT_STATS.partners, learnersPlaced: { ...PLACEMENT_STATS.learnersPlaced } },
+};

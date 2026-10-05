@@ -7,7 +7,10 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bot, Moon, Sun, UserRound, X } from 'lucide-react';
-import { mainNav, siteConfig } from '@/lib/site';
+import { mainNav } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
+import { useSiteCopy } from '@/components/providers/site-copy';
+import { copyLinks } from '@/components/providers/site-copy-links';
 import { useTheme } from '@/components/providers/theme-provider';
 import { useAccount } from '@/components/account/AccountProvider';
 import { cx } from './ui';
@@ -31,11 +34,18 @@ export type { MenuCourse };
  */
 export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
   const pathname = usePathname();
+  const copy = useSiteCopy();
   const { resolvedTheme, toggleTheme } = useTheme();
   const account = useAccount();
   const [scrolled, setScrolled] = useState(false);
   const mounted = useHydrated();
   const drawerRef = useRef<HTMLElement>(null);
+
+  // Labels and links come from the site copy; `mainNav` is the shape (and which item is the Courses menu).
+  const nav = copyLinks(copy, 'header.nav', mainNav.length).map((item, i) => ({
+    ...item,
+    isCourses: mainNav[i]?.href === '/courses',
+  }));
 
   const [menu, setMenu] = useState({ open: false, path: pathname });
   const open = menu.open && menu.path === pathname;
@@ -47,6 +57,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
 
   /* Both the top bar and its drawer follow the resolved global theme. */
   const onDarkLead = resolvedTheme === 'dark';
+  const themeLabel = resolvedTheme === 'dark' ? copy['header.theme.toLight'] : copy['header.theme.toDark'];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -87,7 +98,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
             ref={drawerRef}
             role="dialog"
             aria-modal={open || undefined}
-            aria-label="Site menu"
+            aria-label={copy['header.drawer.ariaLabel']}
             inert={!open}
             className={cx(
               'fixed inset-y-0 right-0 z-[80] flex w-[min(100%,22rem)] flex-col transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:w-[24rem]',
@@ -99,12 +110,12 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
           >
             <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-border px-5 xs:h-[80px] sm:h-[88px] sm:px-6 2xl:h-[96px]">
               <span className="font-display text-[18px] font-extrabold tracking-[-0.02em] text-foreground sm:text-[20px]">
-                Menu
+                {copy['header.drawer.title']}
               </span>
               <button
                 type="button"
                 onClick={close}
-                aria-label="Close menu"
+                aria-label={copy['header.menu.closeLabel']}
                 className={cx(
                   'grid h-11 w-11 cursor-pointer place-items-center rounded-full transition-colors duration-200 sm:h-12 sm:w-12',
                   onDarkLead
@@ -116,8 +127,8 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
               </button>
             </div>
 
-            <nav aria-label="Main" className="flex flex-1 flex-col overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
-              {mainNav.map((item) => {
+            <nav aria-label={copy['header.drawer.navAriaLabel']} className="flex flex-1 flex-col overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
+              {nav.map((item) => {
                 const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
                 return (
                   <Link
@@ -147,7 +158,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                       onClick={close}
                       className="min-w-0 truncate text-[16px] font-bold tracking-[-0.01em] text-foreground hover:text-[var(--accent-ink)] sm:text-[17px]"
                     >
-                      My account · {account.user.name}
+                      {fill(copy['header.account.myAccount'], { name: account.user.name })}
                     </Link>
                     <button
                       type="button"
@@ -157,7 +168,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                       }}
                       className="shrink-0 cursor-pointer text-sm font-bold text-foreground-secondary hover:text-[var(--accent-ink)]"
                     >
-                      Log out
+                      {copy['header.account.logout']}
                     </button>
                   </div>
                 ) : (
@@ -169,7 +180,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                     }}
                     className="mt-2 flex cursor-pointer items-center gap-2 border-b border-border py-4 text-left text-[16px] font-bold tracking-[-0.01em] text-foreground transition-colors hover:text-[var(--accent-ink)] sm:text-[17px]"
                   >
-                    Log in / Sign up
+                    {copy['header.account.loginOrSignup']}
                   </button>
                 )
               ) : null}
@@ -178,7 +189,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                 onClick={close}
                 className="mt-6 inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-jk-600 px-7 py-3.5 text-[15px] font-bold text-white shadow-brand transition-colors hover:bg-jk-700"
               >
-                Enquire Now
+                {copy['header.cta.label']}
                 <span aria-hidden="true" className="text-lg leading-none">
                   →
                 </span>
@@ -208,19 +219,19 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
       )}
     >
       <div className="shell flex h-[72px] items-center justify-between gap-4 xs:h-[80px] sm:h-[88px] min-[1400px]:grid min-[1400px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[1600px]:flex 2xl:h-[96px]">
-        <Link href="/" className="group flex min-h-11 items-center" aria-label={`${siteConfig.name} home`}>
+        <Link href="/" className="group flex min-h-11 items-center" aria-label={copy['header.logo.ariaLabel']}>
           {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
           <img
             src="/brand/jetking-wordmark.png"
-            alt={siteConfig.name}
+            alt={copy['header.logo.alt']}
             draggable={false}
             className="block h-[28px] max-w-full select-none object-contain object-left xs:h-[32px] sm:h-[38px] 2xl:h-[42px]"
           />
         </Link>
 
-        <nav aria-label="Primary" className="hidden flex-1 items-center justify-center gap-0.5 lg:flex min-[1400px]:flex-none min-[1400px]:gap-1 min-[1600px]:flex-1">
-          {mainNav.map((item, index) => {
-            if (item.href === '/courses') return <CoursesMenu key={item.href} onDarkLead={onDarkLead} courses={menuCourses} />;
+        <nav aria-label={copy['header.nav.ariaLabel']} className="hidden flex-1 items-center justify-center gap-0.5 lg:flex min-[1400px]:flex-none min-[1400px]:gap-1 min-[1600px]:flex-1">
+          {nav.map((item, index) => {
+            if (item.isCourses) return <CoursesMenu key={item.href} label={item.label} href={item.href} onDarkLead={onDarkLead} courses={menuCourses} />;
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
@@ -250,9 +261,9 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+            aria-label={themeLabel}
             aria-pressed={resolvedTheme === 'dark'}
-            title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+            title={themeLabel}
             className={cx(
               'group grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-[background-color,transform,border-color,color,box-shadow] duration-200 hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-jk-500 active:scale-[0.96] motion-reduce:transform-none xs:h-12 xs:w-12 sm:h-[52px] sm:w-[52px]',
               onDarkLead
@@ -270,7 +281,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
             account.user ? (
               <Link
                 href={'/account' as Route}
-                aria-label={`Your account (${account.user.name})`}
+                aria-label={fill(copy['header.account.ariaLabel'], { name: account.user.name })}
                 title={account.user.name}
                 className={cx(
                   'hidden h-12 w-12 shrink-0 place-items-center rounded-full border text-base font-extrabold transition-[background-color,border-color,box-shadow] sm:grid sm:h-[52px] sm:w-[52px]',
@@ -293,8 +304,8 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                 )}
               >
                 <UserRound className="h-5 w-5 text-jk-500" aria-hidden="true" />
-                <span className="hidden min-[1700px]:inline">Log in</span>
-                <span className="sr-only min-[1700px]:hidden">Log in</span>
+                <span className="hidden min-[1700px]:inline">{copy['header.account.login']}</span>
+                <span className="sr-only min-[1700px]:hidden">{copy['header.account.login']}</span>
               </button>
             )
           ) : null}
@@ -306,26 +317,26 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                 ? 'border-white/20 bg-white/10 text-white hover:bg-white/16'
                 : 'border-border-medium bg-background text-foreground hover:border-border-strong hover:bg-surface',
             )}
-            aria-label="Open Jetking AI assistant"
+            aria-label={copy['header.ai.ariaLabel']}
           >
             <Bot
               className="h-5 w-5 text-jk-500"
               aria-hidden="true"
             />
-            <span className="hidden sm:inline lg:hidden min-[1700px]:inline">Jetking AI</span>
+            <span className="hidden sm:inline lg:hidden min-[1700px]:inline">{copy['header.ai.label']}</span>
           </Link>
           <EnquiryLink
             source="site-header"
             className="hidden h-[52px] items-center justify-center rounded-full bg-jk-600 px-5 text-sm font-bold whitespace-nowrap text-white transition-colors hover:bg-jk-700 lg:inline-flex"
           >
-            Enquire Now
+            {copy['header.cta.label']}
           </EnquiryLink>
           <button
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-controls="site-menu"
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-label={open ? copy['header.menu.closeLabel'] : copy['header.menu.openLabel']}
             className={cx(
               'group relative grid h-12 w-12 cursor-pointer place-items-center rounded-full transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:scale-[1.04] active:scale-[0.94] motion-reduce:transition-colors motion-reduce:hover:scale-100 motion-reduce:active:scale-100 xs:h-[52px] xs:w-[52px] sm:h-[62px] sm:w-[62px]',
               onDarkLead

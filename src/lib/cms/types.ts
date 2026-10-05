@@ -11,4 +11,8 @@ export type CmsCollection =
   | 'placements'
   | 'trust_signals'
   | 'homepage_variants'
-  | 'persona_rules';
+  | 'persona_rules'
+  | 'about_page'
+  | 'placements_page'
+  | 'legal_documents'
+  | 'page_copy';

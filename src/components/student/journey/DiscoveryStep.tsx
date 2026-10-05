@@ -10,13 +10,16 @@ import {
   type StudentInterest,
 } from '@/persona/studentJourney';
 import { track } from '@/lib/analytics';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 export function DiscoveryStep({
   initial,
   onComplete,
+  copy,
 }: {
   initial?: StudentDiscovery;
   onComplete: (discovery: StudentDiscovery) => void;
+  copy: StudentCopy;
 }) {
   const [education, setEducation] = useState<StudentEducation | null>(initial?.education ?? null);
   const [interest, setInterest] = useState<StudentInterest | null>(initial?.interest ?? null);
@@ -37,20 +40,19 @@ export function DiscoveryStep({
     <div className="space-y-8">
       <div>
         <p className="k-eyebrow">
-          Step 1 · Discover
+          {copy['discover.eyebrow']}
         </p>
         <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-          Let&rsquo;s find your tech career path
+          {copy['discover.title']}
         </h2>
         <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          Two quick questions — no login needed. We&rsquo;ll recommend courses that fit
-          your background and goals.
+          {copy['discover.body']}
         </p>
       </div>
 
       <fieldset>
         <legend className="text-[15px] font-bold text-[var(--dc-ink)]">
-          Where are you in your education?
+          {copy['discover.education.legend']}
         </legend>
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
           {EDUCATION_OPTIONS.map((opt) => (
@@ -86,7 +88,7 @@ export function DiscoveryStep({
 
       <fieldset>
         <legend className="text-[15px] font-bold text-[var(--dc-ink)]">
-          Which career path interests you?
+          {copy['discover.interest.legend']}
         </legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {INTEREST_OPTIONS.map((opt) => (
@@ -114,7 +116,7 @@ export function DiscoveryStep({
         onClick={submit}
         className="group/next inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:cursor-not-allowed disabled:opacity-45"
       >
-        See my recommendations
+        {copy['discover.submit']}
         <span
           aria-hidden="true"
           className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-enabled/next:group-hover/next:translate-x-0.5"

@@ -1,30 +1,10 @@
-import privacy from './privacy-policy.json';
-import terms from './terms-conditions.json';
-import enrollment from './enrollment-terms.json';
-
 /**
- * Legal documents, copied from jetking.com. The JSON keeps each page's wording as published;
- * only layout was cleaned up (real headings and lists, tables typed out instead of screenshots).
- * Each file records the page it came from in `sourceUrl`.
+ * The legal pages' wording is CMS content now (`legal_documents`, read through
+ * `content.getLegalDocument(slug)`); the JSON in this folder is only the default copy that seeds the CMS
+ * and is served if a record is missing or unpublished (see `content/fixtures/legal.ts`). What stays in
+ * code here is the cross-link list and the document shape.
  */
-export type LegalBlock =
-  | { t: 'h2' | 'h3'; text: string }
-  | { t: 'p'; text: string }
-  /** Marker `m` is the source's own numbering ("a.", "3."); bullets have none. */
-  | { t: 'ul' | 'ol'; items: { m: string | null; text: string }[] }
-  | { t: 'table'; caption?: string; head: string[]; rows: string[][] }
-  | { t: 'img'; src: string; alt: string; w: number; h: number };
-
-export interface LegalDoc {
-  slug: string;
-  title: string;
-  sourceUrl: string;
-  blocks: LegalBlock[];
-}
-
-export const privacyPolicy = privacy as LegalDoc;
-export const termsConditions = terms as LegalDoc;
-export const enrollmentTerms = enrollment as LegalDoc;
+export type { LegalBlock, LegalDoc } from '@/lib/content/types';
 
 /** Footer / cross-link entries, in the order they read best. */
 export const LEGAL_LINKS = [

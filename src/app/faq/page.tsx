@@ -13,27 +13,15 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { content } from '@/lib/content';
-import { breadcrumbSchema, buildMetadata, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { faqCopy } from '@/lib/content/copy/pages/faq';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { Section, SectionHeader } from '@/components/kit';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Frequently Asked Questions | Jetking',
-    description:
-      'Answers about Jetking admissions, eligibility, fees policy, course durations, centres and placement support.',
-  },
-  '/faq',
-);
-
-const TOPIC_LABELS: Record<string, string> = {
-  admissions: 'Admissions',
-  courses: 'Courses',
-  fees: 'Fees',
-  placement: 'Placement',
-  centres: 'Centres',
-  franchise: 'Franchise',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(faqCopy, '/faq');
+}
 
 const TOPIC_ICONS: Record<string, LucideIcon> = {
   admissions: GraduationCap,
@@ -43,11 +31,6 @@ const TOPIC_ICONS: Record<string, LucideIcon> = {
   centres: MapPin,
   franchise: Building2,
 };
-
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'FAQ', path: '/faq' },
-];
 
 /**
  * FAQ — built on the same dark-canvas language as /placements, /investors and /about-us:
@@ -59,6 +42,19 @@ const trail: Crumb[] = [
  * absent — while collapsed.
  */
 export default async function FaqPage() {
+  const copy = await loadCopy(faqCopy);
+  const trail: Crumb[] = [
+    { name: 'Home', path: '/' },
+    { name: copy['breadcrumb.label'], path: '/faq' },
+  ];
+  const TOPIC_LABELS: Record<string, string> = {
+    admissions: copy['topics.admissions'],
+    courses: copy['topics.courses'],
+    fees: copy['topics.fees'],
+    placement: copy['topics.placement'],
+    centres: copy['topics.centres'],
+    franchise: copy['topics.franchise'],
+  };
   const faqs = await content.listFaqs();
   const topics = [...new Set(faqs.map((f) => f.topic))];
 
@@ -74,7 +70,7 @@ export default async function FaqPage() {
           <div className="relative mt-5 sm:mt-6">
             <div className="dc-banner relative min-h-[260px] overflow-hidden rounded-[24px] xs:min-h-[280px] xs:rounded-[28px] sm:min-h-[320px] sm:rounded-[28px] lg:min-h-[360px]">
               <Image
-                src="/home/journey-explore-v2.jpg"
+                src={copy['hero.image']}
                 alt=""
                 fill
                 priority
@@ -84,13 +80,12 @@ export default async function FaqPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-                <p className="k-hero-eyebrow">FAQ</p>
+                <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
                 <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
-                  Questions people <span className="dc-accent-glow">ask us most</span>
+                  {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
                 </h1>
                 <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
-                  These answers are also what the Jetking Guide draws on — it answers from this
-                  content, not from general knowledge.
+                  {copy['hero.body']}
                 </p>
               </div>
             </div>
@@ -98,7 +93,7 @@ export default async function FaqPage() {
         </section>
 
         {/* ── Topic jump links ──────────────────────────────────────────── */}
-        <nav aria-label="FAQ topics" className="shell relative mt-8 sm:mt-10">
+        <nav aria-label={copy['topics.navLabel']} className="shell relative mt-8 sm:mt-10">
           <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
             {topics.map((topic) => {
               const Icon = TOPIC_ICONS[topic] ?? MessageCircle;
@@ -160,12 +155,12 @@ export default async function FaqPage() {
         <Section tone="wash" labelledBy="faq-more">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
             <div className="max-w-2xl">
-              <p className="k-eyebrow">Need more help?</p>
+              <p className="k-eyebrow">{copy['more.eyebrow']}</p>
               <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
-                Still have a question?
+                {copy['more.title']}
               </h2>
               <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
-                A counsellor can answer what depends on your background and nearest centre.
+                {copy['more.body']}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -173,13 +168,13 @@ export default async function FaqPage() {
                 source="faq"
                 className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
               >
-                Talk to a counsellor
+                {copy['more.cta.label']}
               </EnquiryLink>
               <Link
-                href={'/chatbot' as Route}
+                href={copy['more.chat.href'] as Route}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
               >
-                Ask Jetking AI
+                {copy['more.chat.label']}
               </Link>
             </div>
           </div>

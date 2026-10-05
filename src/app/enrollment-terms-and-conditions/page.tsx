@@ -1,32 +1,42 @@
 import type { Metadata } from 'next';
 import { LegalDocument } from '@/components/legal/LegalDocument';
 import { JsonLd, type Crumb } from '@/components/ui';
-import { enrollmentTerms } from '@/lib/legal';
+import { notFound } from 'next/navigation';
+import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { legalCopy } from '@/lib/content/copy/pages/legal';
+import { loadCopy } from '@/lib/content/copy/load';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Enrollment Terms and Conditions | Jetking',
-    description:
-      'The Jetking student passport: academic policies, attendance, exams, fees, refunds, placement rules and the student code of conduct that apply once you enrol.',
-  },
-  '/enrollment-terms-and-conditions',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(legalCopy);
+  return buildMetadata(
+    {
+      title: copy['enrollment.seo.title'],
+      description: copy['enrollment.seo.description'],
+    },
+    '/enrollment-terms-and-conditions',
+  );
+}
 
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Enrollment Terms and Conditions', path: '/enrollment-terms-and-conditions' },
-];
+export default async function EnrollmentTermsPage() {
+  const copy = await loadCopy(legalCopy);
+  const trail: Crumb[] = [
+    { name: copy['labels.breadcrumbHome'], path: '/' },
+    { name: copy['enrollment.breadcrumb'], path: '/enrollment-terms-and-conditions' },
+  ];
+  // Legal wording is CMS content (`legal_documents`); the in-repo copy is the fallback.
+  const doc = await content.getLegalDocument('enrollment-terms-and-conditions');
+  if (!doc) notFound();
 
-export default function EnrollmentTermsPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <LegalDocument
-        doc={enrollmentTerms}
+        doc={doc}
         trail={trail}
         path="/enrollment-terms-and-conditions"
-        intro="The student passport: the policies, procedures and rules that apply once you enrol at a Jetking centre."
+        intro={copy['enrollment.intro']}
+        copy={copy}
       />
     </>
   );

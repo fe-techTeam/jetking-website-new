@@ -8,6 +8,8 @@ import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
 import type { StudentDiscovery } from '@/persona/studentJourney';
 import { interestIntent } from '@/persona/studentJourney';
+import { fill } from '@/lib/content/copy/define';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 export function SaveRecommendationsStep({
   discovery,
@@ -15,12 +17,14 @@ export function SaveRecommendationsStep({
   selectedCourseSlug,
   onSaved,
   onSkip,
+  copy,
 }: {
   discovery: StudentDiscovery;
   recommendedSlugs: string[];
   selectedCourseSlug?: string;
   onSaved: (phone: string, name?: string) => void;
   onSkip: () => void;
+  copy: StudentCopy;
 }) {
   const { visitor, setIntent, record } = usePersona();
   const [status, setStatus] = useState<'idle' | 'submitting' | 'error'>('idle');
@@ -58,7 +62,7 @@ export function SaveRecommendationsStep({
       const data: { ok?: boolean; error?: string } = await response.json();
       if (!response.ok || !data.ok) {
         setStatus('error');
-        setError(data.error ?? 'Could not save. Please try again.');
+        setError(data.error ?? copy['save.error']);
         return;
       }
 
@@ -73,7 +77,7 @@ export function SaveRecommendationsStep({
       onSaved(phone, name || undefined);
     } catch {
       setStatus('error');
-      setError('Connection issue — please try again.');
+      setError(copy['save.errorNetwork']);
     }
   }
 
@@ -81,23 +85,22 @@ export function SaveRecommendationsStep({
     <div className="space-y-8">
       <div>
         <p className="k-eyebrow">
-          Step 3 · Save your path
+          {copy['save.eyebrow']}
         </p>
         <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-          Save your {intent} recommendations
+          {fill(copy['save.title'], { intent })}
         </h2>
         <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          We&rsquo;ll text or WhatsApp your matched courses and career roadmap. No
-          spam — just your saved path.
+          {copy['save.body']}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="stu-card max-w-lg space-y-5 rounded-[24px] p-6 sm:p-7">
         <Field
-          label="Mobile number"
+          label={copy['save.phone.label']}
           htmlFor="journey-phone"
           required
-          hint="We'll send your recommendations here."
+          hint={copy['save.phone.hint']}
         >
           <Input
             id="journey-phone"
@@ -111,7 +114,7 @@ export function SaveRecommendationsStep({
           />
         </Field>
 
-        <Field label="First name" htmlFor="journey-name" hint="Optional — personalises your roadmap.">
+        <Field label={copy['save.name.label']} htmlFor="journey-name" hint={copy['save.name.hint']}>
           <Input
             id="journey-name"
             name="name"
@@ -134,7 +137,7 @@ export function SaveRecommendationsStep({
           className="group/save inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-accent)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
         >
           <Bookmark className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-          {status === 'submitting' ? 'Saving…' : 'Save my recommendations'}
+          {status === 'submitting' ? copy['save.submitting'] : copy['save.submit']}
         </button>
       </form>
 
@@ -146,7 +149,7 @@ export function SaveRecommendationsStep({
         }}
         className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] underline-offset-2 hover:text-[var(--dc-ink-secondary)] hover:underline"
       >
-        Skip for now — show my roadmap
+        {copy['save.skip']}
       </button>
     </div>
   );

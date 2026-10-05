@@ -9,6 +9,8 @@ import { CourseCard } from '@/components/CourseCard';
 import { track } from '@/lib/analytics';
 import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
 import { COURSE_LEVELS, COURSE_TECHNOLOGIES, categoriesOf } from '@/lib/course-categories';
+import { fill } from '@/lib/content/copy/define';
+import type { coursesCopy } from '@/lib/content/copy/pages/courses';
 
 /**
  * ══════════════════════════════════════════════════════════════════════════════
@@ -95,7 +97,7 @@ function readViewFromUrl(): ViewState {
   };
 }
 
-export function CourseExplorer({ courses }: { courses: Course[] }) {
+export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typeof coursesCopy.defaults }) {
   const { classification, hydrated } = usePersona();
   const inputId = useId();
   const [view, setView] = useState<ViewState>(DEFAULT_VIEW);
@@ -241,33 +243,37 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
   }
 
   const activeFacetCount = (level !== 'all' ? 1 : 0) + (technology !== 'all' ? 1 : 0);
-  const activeLevelLabel = LEVELS.find((x) => x.id === level)?.label;
-  const activeTechnologyLabel = TECHNOLOGIES.find((x) => x.id === technology)?.label;
+  // The "all" options carry editable wording; the rest of each list comes from the shared course categories.
+  const levelOptions = LEVELS.map((o) => (o.id === 'all' ? { ...o, label: copy['explorer.allLevels'] } : o));
+  const technologyOptions = TECHNOLOGIES.map((o) => (o.id === 'all' ? { ...o, label: copy['explorer.allTechnologies'] } : o));
+  const activeLevelLabel = levelOptions.find((x) => x.id === level)?.label;
+  const activeTechnologyLabel = technologyOptions.find((x) => x.id === technology)?.label;
+  const unitFor = (n: number) => (n === 1 ? copy['explorer.courseOne'] : copy['explorer.courseMany']);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] xl:gap-12">
       {/* ── Left: filter sidebar ─────────────────────────────────────────── */}
       <aside
         className="dc-panel hidden flex-col self-start rounded-[20px] lg:flex xs:rounded-[24px] lg:sticky lg:top-[6.5rem] lg:z-[2] lg:max-h-[calc(100vh-7.5rem)] xl:top-28"
-        aria-label="Filter courses"
+        aria-label={copy['explorer.filterAria']}
       >
         {/* Pinned: title + search always visible while the lists scroll */}
         <div className="shrink-0 rounded-t-[20px] border-b border-[var(--dc-accent-soft)]/18 bg-[var(--dc-card)] p-5 xs:rounded-t-[24px] sm:p-6">
           <div className="flex items-center justify-between gap-3">
-            <p className="label-mono">Filters</p>
+            <p className="label-mono">{copy['explorer.filtersTitle']}</p>
             {hasActiveFilters ? (
               <button
                 type="button"
                 onClick={clearFilters}
                 className="-my-2 inline-block cursor-pointer py-2 text-[12px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
               >
-                Clear all
+                {copy['explorer.clearAll']}
               </button>
             ) : null}
           </div>
 
           <label htmlFor={inputId} className="relative mt-5 block">
-            <span className="sr-only">Search courses</span>
+            <span className="sr-only">{copy['explorer.searchLabel']}</span>
             <Search
               className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
               strokeWidth={2.25}
@@ -278,7 +284,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
               type="search"
               value={query}
               onChange={(e) => setView((v) => ({ ...v, query: e.target.value }))}
-              placeholder="Search courses..."
+              placeholder={copy['explorer.searchPlaceholder']}
               autoComplete="off"
               className="dc-input w-full rounded-full py-2.5 pr-10 pl-10 text-[13.5px]"
             />
@@ -286,7 +292,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
               <button
                 type="button"
                 onClick={() => setView((v) => ({ ...v, query: '' }))}
-                aria-label="Clear search"
+                aria-label={copy['explorer.clearSearch']}
                 className="absolute top-1/2 right-2.5 grid h-7 w-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-ink)]"
               >
                 <X className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
@@ -297,8 +303,8 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
 
         {/* Scrollable: level + technology lists */}
         <div className="dc-filter-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
-          <FilterGroup label="Level" open={levelOpen} onToggle={() => setLevelOpen((v) => !v)}>
-            {LEVELS.map((option) => (
+          <FilterGroup label={copy['explorer.levelLabel']} open={levelOpen} onToggle={() => setLevelOpen((v) => !v)}>
+            {levelOptions.map((option) => (
               <FilterRow
                 key={option.id}
                 active={level === option.id}
@@ -310,12 +316,12 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
           </FilterGroup>
 
           <FilterGroup
-            label="Technology"
+            label={copy['explorer.technologyLabel']}
             className="mt-6"
             open={technologyOpen}
             onToggle={() => setTechnologyOpen((v) => !v)}
           >
-            {TECHNOLOGIES.map((option) => (
+            {technologyOptions.map((option) => (
               <FilterRow
                 key={option.id}
                 active={technology === option.id}
@@ -334,7 +340,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
         <div className="mb-5 lg:hidden">
           <div className="flex gap-2.5">
             <label htmlFor={`${inputId}-m`} className="relative block min-w-0 flex-1">
-              <span className="sr-only">Search courses</span>
+              <span className="sr-only">{copy['explorer.searchLabel']}</span>
               <Search
                 className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
                 strokeWidth={2.25}
@@ -345,7 +351,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                 type="search"
                 value={query}
                 onChange={(e) => setView((v) => ({ ...v, query: e.target.value }))}
-                placeholder="Search courses..."
+                placeholder={copy['explorer.searchPlaceholder']}
                 autoComplete="off"
                 enterKeyHint="search"
                 className="dc-input h-11 w-full rounded-full pr-11 pl-10 text-[14px]"
@@ -354,7 +360,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                 <button
                   type="button"
                   onClick={() => setView((v) => ({ ...v, query: '' }))}
-                  aria-label="Clear search"
+                  aria-label={copy['explorer.clearSearch']}
                   className="absolute top-1/2 right-0 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-[var(--dc-ink-muted)] hover:text-[var(--dc-ink)]"
                 >
                   <X className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
@@ -363,16 +369,16 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
             </label>
 
             <FilterSheet
-              title="Filter courses"
+              title={copy['explorer.sheetTitle']}
               activeCount={activeFacetCount}
-              resultLabel={`Show ${visible.size} ${visible.size === 1 ? 'course' : 'courses'}`}
+              resultLabel={fill(copy['explorer.showResults'], { count: visible.size, unit: unitFor(visible.size) })}
               canClear={hasActiveFilters}
               onClear={clearFilters}
               open={sheetOpen}
               onOpenChange={setSheetOpen}
             >
-              <SheetFacet label="Level">
-                {LEVELS.map((option) => (
+              <SheetFacet label={copy['explorer.levelLabel']}>
+                {levelOptions.map((option) => (
                   <SheetChip
                     key={option.id}
                     active={level === option.id}
@@ -382,8 +388,8 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                   />
                 ))}
               </SheetFacet>
-              <SheetFacet label="Technology">
-                {TECHNOLOGIES.map((option) => (
+              <SheetFacet label={copy['explorer.technologyLabel']}>
+                {technologyOptions.map((option) => (
                   <SheetChip
                     key={option.id}
                     active={technology === option.id}
@@ -412,8 +418,8 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
           aria-live="polite"
           className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
         >
-          {visible.size} {visible.size === 1 ? 'course' : 'courses'}
-          {hasActiveFilters ? ' matching' : null}
+          {visible.size} {unitFor(visible.size)}
+          {hasActiveFilters ? ` ${copy['explorer.matching']}` : null}
         </p>
 
         <div
@@ -435,7 +441,7 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
                 hidden={!isVisible}
                 className="relative h-full"
               >
-                <CourseCard course={course} surface="explorer-card" as="h2" />
+                <CourseCard course={course} surface="explorer-card" as="h2" cta={copy['explorer.viewCourse']} />
               </article>
             );
           })}
@@ -444,17 +450,17 @@ export function CourseExplorer({ courses }: { courses: Course[] }) {
         {visible.size === 0 ? (
           <div className="dc-panel mt-6 rounded-[20px] px-6 py-12 text-center sm:px-8">
             <p className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
-              No course matches those filters
+              {copy['explorer.emptyTitle']}
             </p>
             <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)]">
-              Try a different level, technology, or search term.
+              {copy['explorer.emptyBody']}
             </p>
             <button
               type="button"
               onClick={clearFilters}
               className="-my-2 mt-5 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
             >
-              Clear all filters
+              {copy['explorer.clearFilters']}
             </button>
           </div>
         ) : null}

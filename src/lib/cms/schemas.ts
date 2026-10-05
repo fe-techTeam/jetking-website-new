@@ -278,6 +278,114 @@ const personaRuleSchema = withStatus({
   enabled: z.boolean(),
 });
 
+const leaderSchema = z.object({
+  /** Empty hides the card until a name is supplied. */
+  name: z.string(),
+  role: z.string().optional(),
+  photoUrl: z.string().optional(),
+  bio: z.array(z.string()).optional(),
+});
+
+const aboutPageSchema = withStatus({
+  id: z.literal('about'),
+  hero: z.object({
+    eyebrow: z.string().min(1),
+    titleLead: z.string().min(1),
+    titleAccent: z.string().min(1),
+    lede: z.string().min(1),
+  }),
+  purpose: z.array(z.object({ title: z.string().min(1), body: z.string().min(1) })),
+  values: z.array(z.string()),
+  directors: z.array(leaderSchema),
+  managementTeam: z.array(leaderSchema),
+  timeline: z.array(
+    z.object({
+      year: z.string().min(1),
+      title: z.string().min(1),
+      body: z.string().optional(),
+      link: z.object({ href: z.string(), label: z.string() }).optional(),
+    }),
+  ),
+  achievements: z.array(
+    z.object({ title: z.string().min(1), body: z.string().min(1), imageSrc: z.string().min(1) }),
+  ),
+  partnerships: z.array(
+    z.object({ name: z.string().min(1), body: z.string().min(1), logo: z.string().min(1) }),
+  ),
+});
+
+const placementsPageSchema = withStatus({
+  id: z.literal('placements'),
+  hero: z.object({
+    eyebrow: z.string().min(1),
+    titleLead: z.string().min(1),
+    titleAccent: z.string().min(1),
+    lede: z.string().min(1),
+  }),
+  disclaimer: z.string().min(1),
+  processSteps: z.array(
+    z.object({ step: z.string().min(1), title: z.string().min(1), description: z.string().min(1) }),
+  ),
+  studentBenefits: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })),
+  placedCandidates: z.array(z.object({ name: z.string().min(1), company: z.string().min(1) })),
+  testimonials: z.array(
+    z.object({ name: z.string().min(1), role: z.string().min(1), quote: z.string().min(1) }),
+  ),
+  videoTestimonials: z.array(
+    z.object({
+      name: z.string().min(1),
+      title: z.string().min(1),
+      provider: z.enum(['youtube', 'vimeo']),
+      videoId: z.string().min(1),
+      thumbnail: z.string().min(1),
+    }),
+  ),
+  contact: z.object({ phone: z.string().min(1), email: z.string().min(1) }),
+  offerLetters: z.array(
+    z.object({ src: z.string().min(1), title: z.string().min(1), sector: z.string().min(1) }),
+  ),
+  recruiters: z.array(z.object({ name: z.string().min(1), src: z.string().min(1) })),
+  recruitersDisclaimer: z.string().min(1),
+  stats: z.object({
+    partners: z.string().min(1),
+    learnersPlaced: z.object({ value: z.string().min(1), label: z.string().min(1) }),
+  }),
+});
+
+const legalBlockSchema = z.discriminatedUnion('t', [
+  z.object({ t: z.enum(['h2', 'h3']), text: z.string().min(1) }),
+  z.object({ t: z.literal('p'), text: z.string().min(1) }),
+  z.object({
+    t: z.enum(['ul', 'ol']),
+    items: z.array(z.object({ m: z.string().nullable(), text: z.string().min(1) })),
+  }),
+  z.object({
+    t: z.literal('table'),
+    caption: z.string().optional(),
+    head: z.array(z.string()),
+    rows: z.array(z.array(z.string())),
+  }),
+  z.object({
+    t: z.literal('img'),
+    src: z.string().min(1),
+    alt: z.string(),
+    w: z.number(),
+    h: z.number(),
+  }),
+]);
+
+const legalDocumentSchema = withStatus({
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  sourceUrl: z.string(),
+  blocks: z.array(legalBlockSchema),
+});
+
+const pageCopySchema = withStatus({
+  id: z.string().min(1),
+  entries: z.record(z.string(), z.string()),
+});
+
 const CMS_COLLECTION_SCHEMAS = {
   courses: courseSchema,
   cities: citySchema,
@@ -290,6 +398,10 @@ const CMS_COLLECTION_SCHEMAS = {
   trust_signals: trustSignalSchema,
   homepage_variants: homepageVariantSchema,
   persona_rules: personaRuleSchema,
+  about_page: aboutPageSchema,
+  placements_page: placementsPageSchema,
+  legal_documents: legalDocumentSchema,
+  page_copy: pageCopySchema,
 } satisfies Record<CmsCollection, z.ZodTypeAny>;
 
 /** Runtime allowlist for `collection` — a compile-time-only `CmsCollection` union

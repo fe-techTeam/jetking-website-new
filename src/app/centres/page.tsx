@@ -1,17 +1,13 @@
-import type { Metadata } from 'next';
 import { content } from '@/lib/content';
-import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { centresCopy } from '@/lib/content/copy/pages/centres';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
+import { breadcrumbSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { CentresLanding } from '@/components/centres/CentresLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Jetking Centres Across India | Find Your Nearest',
-    description:
-      'Find Jetking IT training centres by city. Browse centres across India offering cloud computing, cyber security, DevOps and networking courses.',
-  },
-  '/centres',
-);
+export async function generateMetadata() {
+  return pageMetadata(centresCopy, '/centres');
+}
 
 /**
  * Centres index — Future-Ready dark canvas (home / blog / student language).
@@ -25,17 +21,19 @@ export default async function CentresPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q: rawQuery } = await searchParams;
+  const copy = await loadCopy(centresCopy);
   const [cities, centres] = await Promise.all([content.listCities(), content.listCentres()]);
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Centres', path: '/centres' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.centres'], path: '/centres' },
   ];
 
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <CentresLanding
+        copy={copy}
         cities={cities.map((c) => ({ slug: c.slug, name: c.name, state: c.state }))}
         centres={centres.map((c) => ({
           slug: c.slug,

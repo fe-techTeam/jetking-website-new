@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import { useDialog } from '@/components/useDialog';
 import { Button } from '@/components/ui';
 import { QuickEnquiryForm, type EnquiryCentre, type QuickEnquiryStatus } from '@/components/QuickEnquiryForm';
+import { useSiteCopy } from '@/components/providers/site-copy';
 
 export type { EnquiryCentre };
 
@@ -30,6 +31,7 @@ export function EnquiryModal({
   source: string;
 }) {
   const id = useId();
+  const copy = useSiteCopy();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<QuickEnquiryStatus>('idle');
   const done = status === 'done';
@@ -57,7 +59,7 @@ export function EnquiryModal({
         <button
           type="button"
           onClick={handleClose}
-          aria-label="Close"
+          aria-label={copy['enquiry.modal.closeLabel']}
           className="absolute top-2.5 right-2.5 grid h-11 w-11 cursor-pointer place-items-center rounded-full sm:top-3 sm:right-3 text-foreground-muted transition-colors hover:bg-surface hover:text-foreground"
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -70,11 +72,11 @@ export function EnquiryModal({
             done ? 'sr-only' : 'pr-8 font-display text-[22px] font-extrabold text-foreground sm:text-[24px]'
           }
         >
-          Enquire now
+          {copy['enquiry.modal.title']}
         </p>
         {done ? null : (
           <p className="mt-2 mb-5 text-[15px] leading-relaxed text-foreground-secondary">
-            Tell us where you are and a Jetking counsellor from your nearest centre will call you.
+            {copy['enquiry.modal.intro']}
           </p>
         )}
 
@@ -84,7 +86,7 @@ export function EnquiryModal({
           onStatusChange={setStatus}
           successAction={
             <Button className="mt-6" onClick={handleClose}>
-              Close
+              {copy['enquiry.modal.closeButton']}
             </Button>
           }
         />

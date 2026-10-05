@@ -44542,5 +44542,2997 @@
       "enabled": true,
       "status": "published"
     }
-  ]
+  ],
+  "about_page": [
+    {
+      "id": "about",
+      "hero": {
+        "eyebrow": "Since 1947",
+        "titleLead": "Decades of legacy moulding",
+        "titleAccent": "the innovators of the future",
+        "lede": "India’s foremost computer networking institute, committed to creating a better life for students, franchisees, recruiters, and investors."
+      },
+      "purpose": [
+        {
+          "title": "Our vision",
+          "body": "To provide economic independence to 10 million people in India and overseas."
+        },
+        {
+          "title": "Our mission",
+          "body": "To become a world-class engine for employment generation through an efficient partnership network."
+        },
+        {
+          "title": "Our values",
+          "body": "Quality. Trust. Self-motivation. Innovation. Hands-on. Learning & teaching. Equanimity."
+        }
+      ],
+      "values": [
+        "Quality",
+        "Trust",
+        "Self-motivation",
+        "Innovation",
+        "Hands-on",
+        "Learning & teaching",
+        "Equanimity"
+      ],
+      "directors": [
+        {
+          "name": "Mr. Suresh G. Bharwani",
+          "role": "Chairman Emeritus"
+        },
+        {
+          "name": "Mr. Avinash Bharwani",
+          "role": "Chairman and Director",
+          "photoUrl": "/about/leaders/avinash.jpg",
+          "bio": [
+            "Avinash Bharwani’s focus area is to grow and maintain Jetking’s vast franchising network. He leads all aspects of the Franchising and Government associations that span across education, skill development, IT and recruitment.",
+            "He studied Commerce at Jai Hind College from the University of Mumbai."
+          ]
+        },
+        {
+          "name": "Mr. Harsh Bharwani",
+          "role": "Managing Director and CEO",
+          "photoUrl": "/about/leaders/harsh.jpg",
+          "bio": [
+            "Harsh Bharwani is the CEO and Managing Director of Jetking Infotrain Limited, bringing over two decades of experience in education, technology, and business innovation. He has been a driving force behind Jetking’s global expansion—launching two of the company’s largest owned centers and opening more than a dozen international locations.",
+            "Recognized by Business Week as one of the top entrepreneurs, Harsh played a pivotal role in revitalizing Jetking post-COVID, delivering an impressive 40% year-on-year growth. With a mission to empower the next generation, he has personally trained over one million students in employability, success, wellness, and personal development.",
+            "A certified success coach, neuro-linguistic hypnotherapist, and author of four bestselling books, Harsh is known for blending mindset mastery with business acumen.",
+            "A passionate advocate of Bitcoin, Harsh is leading Jetking’s strategic entry into the digital asset space. Under his leadership, the company has outlined an ambitious multi-phase plan to accumulate up to 18,000 BTC by 2030, beginning with an initial target of 180 BTC within six months, scaling to 1,800 BTC in a year. This visionary approach reflects his belief in Bitcoin’s long-term value and reinforces Jetking’s commitment to staying at the forefront of innovation and financial transformation."
+          ]
+        },
+        {
+          "name": "Mr. Siddarth Bharwani",
+          "role": "Joint Managing Director and CFO",
+          "photoUrl": "/about/leaders/siddarth.jpg",
+          "bio": [
+            "Ambitious about taking his family business to new heights and continue to expand overseas, Siddarth Bharwani is a third-generation entrepreneur. He was previously responsible for rejigging Jetking’s brand image and is now leading the charge to triple the business turnover within the next few years.",
+            "He completed his studies from Bond University, Australia and has 8 years of experience in the field of Marketing & Brand Management. Siddarth is a true “Apple” devotee and a tech fanatic."
+          ]
+        },
+        {
+          "name": "",
+          "role": "Independent Director"
+        }
+      ],
+      "managementTeam": [
+        {
+          "name": "Meghna"
+        },
+        {
+          "name": "Keyur"
+        },
+        {
+          "name": "Rajashree"
+        },
+        {
+          "name": "Akhilesh"
+        },
+        {
+          "name": "Shabnam"
+        },
+        {
+          "name": "Anand"
+        },
+        {
+          "name": "Dhruti"
+        }
+      ],
+      "timeline": [
+        {
+          "year": "1947",
+          "title": "Birth of a leader",
+          "body": "Jetking Electronics was established by late Shri Gordhandas P Bharwani for trading in electronic goods in various cities across India."
+        },
+        {
+          "year": "1962",
+          "title": "Pioneered do-it-yourself electronic kits in India",
+          "body": "Jetking was the first to bring the “do-it-yourself” kits to India and laid the foundation of training."
+        },
+        {
+          "year": "1972",
+          "title": "Introduced Asia 72, Fairchild & Wildcat transistors",
+          "body": "The Company introduced Asia 72, Fairchild and Wildcat transistors."
+        },
+        {
+          "year": "1986",
+          "title": "Established as a public limited company through an IPO",
+          "body": "The Company became Public Limited and also introduced electronics products, T.V. sets & amplifiers."
+        },
+        {
+          "year": "1990",
+          "title": "Launched Jetking School of Electronic Technology",
+          "body": "The Company launched its first institute for the training of non-technical students."
+        },
+        {
+          "year": "1999",
+          "title": "Microsoft recognition",
+          "body": "It became a Microsoft Certified Solution Provider and Certified Technical Education Centre (CTEC)."
+        },
+        {
+          "year": "2003",
+          "title": "Launched Masters in Network Administration (MNA) course",
+          "body": "The most advanced MNA course for graduates was introduced."
+        },
+        {
+          "year": "2007",
+          "title": "Pike’s Peak Award for implementing SmartLab Plus",
+          "body": "Honoured with the prestigious award for implementing the unique teaching methodology, SmartLab Plus."
+        },
+        {
+          "year": "2008",
+          "title": "“Best Franchisor Award” and launched Heathkit Omnifirm",
+          "body": "Jetking was felicitated with the “Best Franchisor Award” and introduced the computer fault simulator kit to develop the troubleshooting skills of IT students."
+        },
+        {
+          "year": "2009",
+          "title": "Launched JetEdge",
+          "body": "A soft-skills program to equip students with job skills, JetEdge was launched."
+        },
+        {
+          "year": "2010",
+          "title": "Launched Smartgrad, Ethical Hacking and Saral courses",
+          "body": "A course designed for graduates to give them a leading position in the IT space. Understanding the concerns of misuse of technology, Jetking launched an ethical hacking course to produce skilled professionals in this space. The Saral course was started to teach the basics of computers to lay people."
+        },
+        {
+          "year": "2011",
+          "title": "Alliance with Wipro and IBM, and launched the Do-It-Yourself Tablet PC course"
+        },
+        {
+          "year": "2012",
+          "title": "Launched centres in Vietnam",
+          "body": "Jetking started its international operations and launched its first centre in Vietnam."
+        },
+        {
+          "year": "2013",
+          "title": "Brand revamp with new identity and FICCI Award",
+          "body": "After 65 years we revamped our brand identity, showcasing the legacy of the brand and creating a fresh recall amongst consumers while retaining brand popularity. Jetking was felicitated with the FICCI LEAPVAULT Skills Champion of India Award for its extraordinary contribution to skill development in India. Launched centres in Nepal and Ghana: expanding our footprint in the international market, we launched centres in Nepal and Ghana this year."
+        },
+        {
+          "year": "2014",
+          "title": "Brand Trust Award and Lokmat Corporate Excellence Award",
+          "body": "Jetking Infotrain has been ranked as the No.1 most trusted brand in computer hardware training in India. It also showed a remarkable increase in overall ranking, coming in at 369 as opposed to 670 in the year 2013. The report is compiled to showcase the trustworthiness and affinity of the general public towards the brands. Jetking bagged the Lokmat Award for Corporate Excellence in IT Training & Placement."
+        },
+        {
+          "year": "2015",
+          "title": "ASSOCHAM National Education Summit Excellence Award & Computer Education Institute of the Year",
+          "body": "Jetking has been honoured as the Best Vocational Training Institute with Job Placements at the 5th National Awards on Excellence in Education."
+        },
+        {
+          "year": "2018",
+          "title": "Launch of technology courses and specialisation in AWS, IoT and Ethical Hacking"
+        },
+        {
+          "year": "2019",
+          "title": "VR pedagogy and Delhi Capitals partnership",
+          "body": "Introduced the concept of Virtual Reality (VR) to understand Jetking course pedagogy. Became the Official IT Skills Training partner of the Delhi Capitals IPL Team."
+        },
+        {
+          "year": "2021",
+          "title": "Launched Blockchain Technology courses"
+        },
+        {
+          "year": "2022",
+          "title": "BW Education Under 40 Award, and launched Metaverse, Gaming and Blockchain courses"
+        },
+        {
+          "year": "2023",
+          "title": "Franchise Award 2023"
+        },
+        {
+          "year": "2024",
+          "title": "Launched Chip Design & Semiconductor courses; tie-up with Pearson & Lincoln University"
+        },
+        {
+          "year": "2025",
+          "title": "Toward the Future",
+          "body": "Jetking is charting its next chapter as The First Bitcoin Treasury Company in India, with a multi-phase plan to accumulate up to 18,000 BTC by 2030.",
+          "link": {
+            "href": "https://www.jetking.org",
+            "label": "jetking.org"
+          }
+        }
+      ],
+      "achievements": [
+        {
+          "title": "Limca Book of Records",
+          "body": "Jetking received an official entry into the Limca Book of Records by achieving a record number of 11,451 placements.",
+          "imageSrc": "/about/achievements/limca.png"
+        },
+        {
+          "title": "Best Vocational Training Institute Award",
+          "body": "Jetking was honoured with the title Best Vocational Training Institute with Job Placements.",
+          "imageSrc": "/about/achievements/vocational.png"
+        },
+        {
+          "title": "Great Place to Work Certified",
+          "body": "The Great Place to Work certification program is the first step of an organization in its journey to build a high-trust, high-performance culture, and our organization successfully accomplished this milestone in 2019 and 2023 as well.",
+          "imageSrc": "/about/achievements/gptw.png"
+        },
+        {
+          "title": "Most Trusted Brand in Networking Training",
+          "body": "Jetking was awarded the Brand Trust Award. The award is compiled to showcase the trustworthiness and affinity of the general public towards the brand Jetking. We were ranked No. 1 most trusted brand in Networking training.",
+          "imageSrc": "/about/achievements/brand-trust.png"
+        },
+        {
+          "title": "Largest Training Partner Award",
+          "body": "Jetking Infotrain Ltd has been recognized as the Largest Training Partner by Red Hat in India. This recognition once again positions Jetking as the institute committed to building the careers of many young IT aspirants across sectors.",
+          "imageSrc": "/about/achievements/redhat.png"
+        },
+        {
+          "title": "Skills Champion Awards (FICCI)",
+          "body": "Jetking was felicitated with the FICCI LEAPVAULT Skills Champion of India Award for its extraordinary contribution to skill development in India.",
+          "imageSrc": "/about/achievements/ficci.png"
+        },
+        {
+          "title": "Pike’s Peak Award",
+          "body": "Pioneering the SmartLabPlus learning methodology, designed, developed and deployed under Mr. Suresh G Bharwani’s guidance, Jetking won the Pike’s Peak Award in 2007 towards developing the most advanced learning technique in India.",
+          "imageSrc": "/about/achievements/pikes-peak.png"
+        },
+        {
+          "title": "Best Franchisor Award",
+          "body": "Jetking Infotrain Limited was also awarded the Best Franchisor Award by Franchise India.",
+          "imageSrc": "/about/achievements/franchisor.png"
+        }
+      ],
+      "partnerships": [
+        {
+          "name": "NSDC",
+          "body": "National Skill Development Corporation — skilling and certification alignment.",
+          "logo": "/affiliations/nsdc.png"
+        },
+        {
+          "name": "Lincoln University",
+          "body": "Degree and certification tie-up for select courses.",
+          "logo": "/university-partners/lincoln-university.png"
+        },
+        {
+          "name": "Yenepoya University",
+          "body": "UGC-recognised postgraduate degrees, including the MCA in Cloud Computing & Cyber Security.",
+          "logo": "/university-partners/yenepoya.png"
+        }
+      ],
+      "status": "published"
+    }
+  ],
+  "placements_page": [
+    {
+      "id": "placements",
+      "hero": {
+        "eyebrow": "Placements",
+        "titleLead": "Career growth begins with",
+        "titleAccent": "the right placement",
+        "lede": "Gain the upper hand through Jetking's network of industry and placement partners — real preparation, real introductions to hiring companies."
+      },
+      "disclaimer": "Placement support is real work Jetking does on a learner’s behalf: resume preparation, interview practice and introductions to hiring partners where available. It is not a guarantee — outcomes depend on the course, the centre, the local employer market and the individual learner.",
+      "processSteps": [
+        {
+          "step": "01",
+          "title": "Complete the training",
+          "description": "Build strong technical and practical skills."
+        },
+        {
+          "step": "02",
+          "title": "Biodata preparation",
+          "description": "Create a professional resume with guidance."
+        },
+        {
+          "step": "03",
+          "title": "Mock interviews",
+          "description": "Practice with industry-style interview rounds."
+        },
+        {
+          "step": "04",
+          "title": "Student interviews",
+          "description": "Get introduced to hiring partners where available."
+        },
+        {
+          "step": "05",
+          "title": "Appointment letter",
+          "description": "Start the next step of your career journey."
+        }
+      ],
+      "studentBenefits": [
+        {
+          "title": "Learn practically",
+          "description": "Hands-on training with real-world tools."
+        },
+        {
+          "title": "English speaking",
+          "description": "Improve communication for the workplace."
+        },
+        {
+          "title": "Interview skills",
+          "description": "Build confidence and learn interview techniques."
+        },
+        {
+          "title": "Get jobs",
+          "description": "Explore opportunities through our hiring network."
+        },
+        {
+          "title": "Mock Interviews",
+          "description": "Practice with structured feedback."
+        },
+        {
+          "title": "AI Bot Interviews",
+          "description": "Experience realistic interview scenarios with AI."
+        },
+        {
+          "title": "Presentation",
+          "description": "Learn to present your skills effectively."
+        }
+      ],
+      "placedCandidates": [
+        {
+          "name": "Abhay Singh",
+          "company": "Reisnet"
+        },
+        {
+          "name": "Niloy Saha",
+          "company": "Laundryheap"
+        },
+        {
+          "name": "Vaibhav Mishra",
+          "company": "Futwork"
+        },
+        {
+          "name": "Umang Tiwari",
+          "company": "Vishwada Enterprises"
+        },
+        {
+          "name": "Amit Gupta",
+          "company": "Meenakshi Infotech"
+        },
+        {
+          "name": "Suresh Hansda",
+          "company": "Bharti Airtel Limited"
+        },
+        {
+          "name": "Pavan T",
+          "company": "Oraiyan Groups"
+        },
+        {
+          "name": "Ravi Kumar",
+          "company": "Birla Corp"
+        },
+        {
+          "name": "Aravind Andugula",
+          "company": "Sai Hadya Hospital"
+        },
+        {
+          "name": "Soumyajeet Mandal",
+          "company": "Cygnus Group"
+        },
+        {
+          "name": "Saurav Sarma",
+          "company": "ICICI Insurance"
+        },
+        {
+          "name": "Mohd Qasim",
+          "company": "Wipro"
+        }
+      ],
+      "testimonials": [
+        {
+          "name": "Ashwani Jaiswal",
+          "role": "Support Engineer, Apple",
+          "quote": "After completing my course from Jetking in 2015, I joined Apple Inc. as a Service Engineer, and now I am a Sr. Service Engineer with them."
+        },
+        {
+          "name": "Prakhar Dixit",
+          "role": "Service Engineer, Apple",
+          "quote": "This course helped me acquire thorough knowledge of hardware and networking."
+        },
+        {
+          "name": "Mr. Satish Dhiman",
+          "role": "Chief Business Manager, PNB MetLife",
+          "quote": "It's a really good approach to meet employers and encourage job seekers."
+        },
+        {
+          "name": "Preeti Madan",
+          "role": "Quatrro",
+          "quote": "Before joining Jetking, I was not sure what to do with my career. But after completing the course, I got the right platform to start my career. It's been nearly 5 years and I have never looked back. I am very satisfied with my decision to join Jetking which has proved that there is no disadvantage of being a girl in technical domain."
+        },
+        {
+          "name": "Nikhil Pathare",
+          "role": "Tata Consultancy Services",
+          "quote": "Without Jetking, I don’t know where I would be. You made a major difference in my life. All those times that you have gone the extra mile for me, I really did notice. Your belief in me makes me believe in myself."
+        },
+        {
+          "name": "Abhishek",
+          "role": "IBM-Collabera",
+          "quote": "I am very happy with Jetking for the placement assistance, even after my first job. I am grateful for all the guidance and technical knowledge provided. At Jetking we are not only trained in the technical domain as well as I have also improved my communication skills and confidence in appearing for interviews."
+        }
+      ],
+      "videoTestimonials": [
+        {
+          "name": "Prajwal",
+          "title": "Placement testimonial — Jetking Blockchain",
+          "provider": "youtube",
+          "videoId": "Q4-k5emEc54",
+          "thumbnail": "/media/video/youtube-Q4-k5emEc54.webp"
+        },
+        {
+          "name": "Shivam Thakur",
+          "title": "Placement testimonial — Jetking Blockchain",
+          "provider": "vimeo",
+          "videoId": "662754940",
+          "thumbnail": "/media/video/vimeo-662754940.webp"
+        },
+        {
+          "name": "Srinivas Balaji",
+          "title": "Placement testimonial — Jetking Blockchain",
+          "provider": "vimeo",
+          "videoId": "662750796",
+          "thumbnail": "/media/video/vimeo-662750796.webp"
+        },
+        {
+          "name": "Anandhu Krishnan",
+          "title": "Placement testimonial — Jetking Blockchain",
+          "provider": "vimeo",
+          "videoId": "672638981",
+          "thumbnail": "/media/video/vimeo-672638981.webp"
+        }
+      ],
+      "contact": {
+        "phone": "07666830000",
+        "email": "info@jetking.com"
+      },
+      "offerLetters": [
+        {
+          "src": "/placements/offers/sample-offer-it-services.svg",
+          "title": "Associate Systems Engineer",
+          "sector": "IT services & consulting"
+        },
+        {
+          "src": "/placements/offers/sample-offer-cloud-hosting.svg",
+          "title": "Cloud Support Engineer",
+          "sector": "Cloud & hosting"
+        },
+        {
+          "src": "/placements/offers/sample-offer-banking.svg",
+          "title": "IT Support Executive",
+          "sector": "Banking & financial services"
+        },
+        {
+          "src": "/placements/offers/sample-offer-telecom.svg",
+          "title": "Network Administrator",
+          "sector": "Telecom & networking"
+        },
+        {
+          "src": "/placements/offers/sample-offer-ecommerce.svg",
+          "title": "Technical Support Engineer",
+          "sector": "Retail & e-commerce"
+        },
+        {
+          "src": "/placements/offers/sample-offer-security.svg",
+          "title": "Junior Security Analyst",
+          "sector": "Managed security services"
+        }
+      ],
+      "recruiters": [
+        {
+          "name": "Microsoft",
+          "src": "/logos/employers/microsoft.svg"
+        },
+        {
+          "name": "Tech Mahindra",
+          "src": "/logos/employers/tech-mahindra.svg"
+        },
+        {
+          "name": "IBM",
+          "src": "/logos/employers/ibm.svg"
+        },
+        {
+          "name": "Amazon",
+          "src": "/logos/employers/amazon.svg"
+        },
+        {
+          "name": "Samsung",
+          "src": "/logos/employers/samsung.svg"
+        },
+        {
+          "name": "The Times of India",
+          "src": "/logos/employers/times-of-india.svg"
+        },
+        {
+          "name": "Infosys",
+          "src": "/logos/employers/infosys.svg"
+        },
+        {
+          "name": "Wipro",
+          "src": "/placements/partners/wipro.svg"
+        },
+        {
+          "name": "Tikona Digital Networks",
+          "src": "/placements/recruiters/tikona.png"
+        }
+      ],
+      "recruitersDisclaimer": "Placements are subject to recruitment norms. Jetking does not guarantee placements in the above organisations.",
+      "stats": {
+        "partners": "5000+",
+        "learnersPlaced": {
+          "value": "3586",
+          "label": "Learners placed in 2025"
+        }
+      },
+      "status": "published"
+    }
+  ],
+  "legal_documents": [
+    {
+      "slug": "privacy-policy",
+      "title": "Privacy Policy",
+      "sourceUrl": "https://www.jetking.com/privacy-policy",
+      "blocks": [
+        {
+          "t": "p",
+          "text": "This document is an electronic record in terms of applicable IT (“Information Technology”) laws and the amended provisions thereto pertaining to electronic records in various allied statutes as amended pursuant to the Information Technology laws. This electronic record is system generated and does not require any authentication."
+        },
+        {
+          "t": "p",
+          "text": "This policy applies to any information collected through our systems and/or when you use our services. This policy does not apply to, nor does Jetking take any responsibility for, any information collected by a third party."
+        },
+        {
+          "t": "h2",
+          "text": "Introduction"
+        },
+        {
+          "t": "p",
+          "text": "Your privacy is valuable to us. We do not sell or forward or rent your personal information that you share with Jetking Infotrain Limited, to any third party for any purposes like marketing, etc. without your explicit consent. This statement of privacy is applicable to our services available under the domain name www.jetking.com and any other connected sub-domain names and applies generally to subsidiaries of Jetking Infotrain Limited. Your use of the Jetking Infotrain Limited website signifies your acceptance of the Jetking Privacy Statement."
+        },
+        {
+          "t": "p",
+          "text": "Jetking strives to comply with applicable laws that are designed to protect your privacy.Any presentation of the terms of this Privacy Policy shall be in accordance with the “terms of use” on the website."
+        },
+        {
+          "t": "h2",
+          "text": "Log Files"
+        },
+        {
+          "t": "p",
+          "text": "The Jetking website uses log files to keep track of visitors’ activities when they visit the site. If you use a web-hosting service, this is a part of their analytics.These log files collect information such as IP addresses, browser types, Internet Service Provider (ISP), date and time stamps, referring/exit pages, and possibly the number of clicks. These data are not associated with any personal information in any way.This information is used for analyzing trends, administering the site, tracking users’ movements on the site, and gathering demographic data."
+        },
+        {
+          "t": "h2",
+          "text": "Jetking’s Principles to Protect Privacy"
+        },
+        {
+          "t": "p",
+          "text": "In order to protect your privacy, Jetking has adopted the following principles:"
+        },
+        {
+          "t": "h3",
+          "text": "(a) Security"
+        },
+        {
+          "t": "p",
+          "text": "Wherever your Personal Information or Credentials may be held within Jetking Infotrain Ltd., the company intends to take necessary steps to protect it from unauthorized access or declaration. Jetking is committed to protecting the security of your personal information. We use a variety of security technologies and procedures to help protect your personal information from unauthorized access, use, or disclosure. For example, we store the personal information you provide on computer systems with limited access, which are located in controlled facilities."
+        },
+        {
+          "t": "h3",
+          "text": "(b) Choice"
+        },
+        {
+          "t": "p",
+          "text": "You may choose whether or not to provide Personal Information to Jetking. The notice Jetking intends to provide at the point where it collects Personal Information on the Site or its official blog, should help you to make this choice. If you choose not to share your Personal Data that we request, you can still visit most of Jetking’s Web sites, but you may be unable to access certain options, offers, and services that involve our contact with you. If you chose to have a relationship with Jetking, such as a contractual or other business relationship, Jetking will naturally continue to contact you in connection with that business relationship."
+        },
+        {
+          "t": "h3",
+          "text": "(c) Notice"
+        },
+        {
+          "t": "p",
+          "text": "Where Jetking collects Personal Information on the Site or Blog, Jetking intends to post a purpose statement that explains why Personal Information will be collected and whether Jetking plans to share such Personal Information outside of Jetking or with those working on Jetking’s behalf. Unless the transfer of Personal Information is legally required, Jetking does not intend to transfer Personal Information without your permission to third parties who are not bound to act on Jetking’s behalf."
+        },
+        {
+          "t": "h3",
+          "text": "(d) Access/Accuracy"
+        },
+        {
+          "t": "p",
+          "text": "To the extent that you do provide Jetking with Personal Information, Jetking wishes to maintain accurate Personal Information. Where Jetking collects Personal Information from you on the Site, its aim is to provide a means of contacting Jetking should you need to update or correct that Information. If for any reason those means are unavailable or inaccessible, you may send updates and corrections about your Personal Information to info@jetking.com and Jetking will make reasonable efforts to incorporate the changes."
+        },
+        {
+          "t": "h2",
+          "text": "Your Consent"
+        },
+        {
+          "t": "p",
+          "text": "By using this Web site, you consent to the terms of Jetking’s Privacy Policy and to Jetking’s processing of Personal Information for the purposes given above. There are times, however, when Jetking may need information from you, such as your name and address. When information is needed, Jetking will try (but is not obligated) to let you know at the time of collection, how it will use the personal information. Usually, the personal information Jetking collects is used only by it to respond to your inquiry, process an order, or allow you to access specific account information. Occasionally, Jetking may make the e-mail addresses, of those who provide information, available to other reputable organizations whose products or services it thinks you may find interesting. In these cases, you will be offered an opportunity to limit access to your information. In case Jetking does not receive any response from you to limit the access of your information, it shall be deemed that you consent to such distribution of your Personal Information as mentioned above."
+        },
+        {
+          "t": "h2",
+          "text": "Jetking’s disclosure of your information"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "For the purpose of alumni interaction or academic interaction amongst the enrolled students"
+            },
+            {
+              "m": null,
+              "text": "For the purpose of intra-business interaction among various subsidiaries of Jetking."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Affiliated/Connected sites"
+        },
+        {
+          "t": "p",
+          "text": "We offer some of our valuable services in connection with other websites. Personal information that you provide to those sites may be sent to Jetking in order to deliver the service. We process such information in accordance with this Policy. If the affiliated websites have different privacy policy practices then the user is required to read their privacy policies before using them."
+        },
+        {
+          "t": "h2",
+          "text": "Information We Collect"
+        },
+        {
+          "t": "p",
+          "text": "We will only collect information that you voluntarily share with us. You are in control of what information or data you share with us. Your information will only be collected if you choose to share it through Jetking’s Systems. The following information will be collected about you or relating to your use of the Jetking’s systems:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "Any personal or PII that you may submit or may be required to submit for registration and continued use of the Jetking’s Systems or receive the services by Jetking."
+            },
+            {
+              "m": "2.",
+              "text": "Your name, title, gender, date of birth, email ID, Contact number, State/Country/Pin code, postal address, and details of respective social handles, such as Linkedin, Twitter, Facebook., Instagram, Snapchat, etc., along with IP addresses and other information collected."
+            },
+            {
+              "m": "3.",
+              "text": "Any other information you wish to share with us without limitation, including any information that will allow us to make your account or profile more current."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "If required, you can complete all forms, provide comments to surveys, or create any content on our servers."
+        },
+        {
+          "t": "h2",
+          "text": "General Data Protection Regulation (GDPR)"
+        },
+        {
+          "t": "p",
+          "text": "We follow GDPR guidelines. General Data Protection Regulation (GDPR) is designed to give EU citizens greater security over personal information. It’s a plan to establish a comprehensive privacy and security law that will safeguard Personal Data. Irrespective of the location they are located in, the GDPR applies to all relevant processors or controllers who handle personal information which is owned by EU citizens. For more details, please refer to GDPR: (https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)"
+        },
+        {
+          "t": "h2",
+          "text": "Cookies"
+        },
+        {
+          "t": "p",
+          "text": "The cookies installed by the Jetking shall be exclusively for the purpose of retrieving information from you which pertains to be useful for the purpose of running the Course of Jetking institution or Hardware & Networking Institutes of Jetking. Cookies shall, have limited scope, either for the purpose of students’ enrollment for imparting computer hardware & networking education or for the prospective business parties who will be availing the services of various Jetking Learning Centres."
+        },
+        {
+          "t": "h2",
+          "text": "Children’s Information"
+        },
+        {
+          "t": "p",
+          "text": "Another area of our concern is to ensure that children are protected when they use the internet. We urge parents and guardians or participate in or monitor and direct their children’s online activities."
+        },
+        {
+          "t": "p",
+          "text": "Jetking does not intend to collect any Personally Identifiable Information from children who are under 13 years of age. If you believe that your child/children may have provided the kind of information we collect on our website, We strongly urge you to notify the same to us immediately and we will make the best we can to erase the information or data from our databases."
+        },
+        {
+          "t": "h2",
+          "text": "Changes in privacy policy"
+        },
+        {
+          "t": "p",
+          "text": "Please note that this Privacy Policy (“Privacy Policy”) may change from time to time without notice. We will not reduce or limit your rights under this Policy without your explicit consent, and we expect most such changes will be a little. Nonetheless, we will post any Privacy Policy changes on this page and, if the changes are significant, we will provide a more important notice. Each and every version of this Privacy Policy will be recognized at the top of the page by its effective date."
+        },
+        {
+          "t": "p",
+          "text": "If you have any questions, or queries about this Policy, please feel free to contact us any time through this website."
+        },
+        {
+          "t": "h2",
+          "text": "How do we track?"
+        },
+        {
+          "t": "p",
+          "text": "Google Analytics – The third-party solutions described in this section allow Jetking to track and analyze the traffic on both services and websites. Google Analytics (Google Inc.) is an online analysis service that utilizes the data collected to monitor, study, and optimize the use by users of Websites and Services to prepare reports. Data collected includes cookies and usage information."
+        },
+        {
+          "t": "h2",
+          "text": "How do we use your information?"
+        },
+        {
+          "t": "p",
+          "text": "Jetking will process the information you provide as Personal Data only in accordance with the terms of this policy. If you do not want Jetking to keep using Your Personal Data in this manner you may request deletion of your account through your account settings. We will only collect the information you provide us with Personal Data if we have an appropriate legal basis to do it, and this includes but isn’t limited to the following:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Answer your questions."
+            },
+            {
+              "m": null,
+              "text": "Assess the technical aspects of service and website issues."
+            },
+            {
+              "m": null,
+              "text": "Announcements, newsletters and other educational materials, and other information on events."
+            },
+            {
+              "m": null,
+              "text": "Send you administrative messages like notices relating to the Services or changes to the policy."
+            },
+            {
+              "m": null,
+              "text": "Know, how websites and Services are used to improve and enhance their performance."
+            },
+            {
+              "m": null,
+              "text": "Reduce, prevent, detect and examine suspicious or illegal activities."
+            },
+            {
+              "m": null,
+              "text": "Respecting all legal obligations and resolving conflicts between customers, and enforcing our agreements."
+            },
+            {
+              "m": null,
+              "text": "Inquiring, defending, and preventing dangerous, fraudulent, illegal, or unauthorized activity."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Questions or suggestions"
+        },
+        {
+          "t": "p",
+          "text": "If you have any questions about Jetking’s Privacy Policy, collection, use, or disclosure of your personal information, please e-mail us at info@jetking.com. Jetking reserves its right to change, modify or update this privacy statement at any time without notice."
+        }
+      ],
+      "status": "published"
+    },
+    {
+      "slug": "terms-conditions",
+      "title": "Terms and Conditions",
+      "sourceUrl": "https://www.jetking.com/terms-conditions",
+      "blocks": [
+        {
+          "t": "p",
+          "text": "By giving your information on the website, you authorize Jetking Infotrain Ltd and its Partners to call you and send course information via email and phone up to a period of 6 months."
+        },
+        {
+          "t": "h2",
+          "text": "Disclaimer"
+        },
+        {
+          "t": "p",
+          "text": "Your use of Jetking’s services and web sites (referred to collectively as the “Services” in this document and excluding any services provided to you by Jetking under a separate written agreement) is subject to the terms of a legal agreement between you and Jetking. “Jetking” means Jetking Infotrain Limited a company incorporated under Companies Act, 1956., whose registered office is at 434, Bussa Udyog Bhavan, T. J. Road, Near Sewri Bus Terminus, Sewri (W), Mumbai-400015 & Corporate Office at 5th Floor, Amore Bldg., Junction of 2nd & 4th Road, Khar (W), Mumbai-400052. This document explains how the agreement is made up and sets out some of the terms of that agreement."
+        },
+        {
+          "t": "p",
+          "text": "The following terms and conditions will be deemed to have been accepted by the User on mere usage of the website https://www.jetking.com"
+        },
+        {
+          "t": "h2",
+          "text": "You are requested to read them carefully before you use the services of this site"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Jetking makes no warranty that the information contained in the Site has been obtained from sources believed to be reliable. Jetking disclaims all warranties as to the accuracy, completeness or adequacy of such information."
+            },
+            {
+              "m": null,
+              "text": "The User agrees to indemnify, defend and hold Jetking harmless from and against all losses, expenses, damages, and costs, including reasonable attorneys’ fees, arising out of or relating to any misuse by the User of the content and services provided on the Site."
+            },
+            {
+              "m": null,
+              "text": "In no event will Jetking be liable for damages of any kind, including without limitation, direct, incidental or consequential damages (including, but not limited to, damages for lost profits, business interruption and loss of programs or information) arising out of the use of or inability to use Jetking’s Web site, or any information provided on the Web site, or in the Products any claim attributable to errors, omissions or other inaccuracies in the Product or interpretations thereof. Some jurisdictions do not allow the limitation or exclusion of liability. Accordingly, some of the above limitations may not apply to the User."
+            },
+            {
+              "m": null,
+              "text": "Jetking may change or discontinue any aspect of its Web site at any time, including its content or features. Jetking reserves the right to change the terms and conditions applicable to the use of the Site. Such changes shall be effective immediately upon notice, which shall be placed on the Site."
+            },
+            {
+              "m": null,
+              "text": "Jetking shall have no responsibility for any damage to a User’s computer system or loss of data that results from the download of any content, materials, information from the Site."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "The Site, and all content, materials, information, software, products and services provided on the Site, are provided on an “as is” and “as available” basis. Jetking expressly disclaims all warranties of any kind, whether express or implied, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose and non-infringement."
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Jetking does not accept any responsibility towards the contents and/or information practices of third party sites that have links through Jetking’s Site. The said links to internal or external Web site locations are only for the purpose of facilitating your visit or clarify your query. Jetking does not make any warranties, express or implied, including without limitation, those of merchantability and fitness for a particular purpose, with respect to any information, data, statements or products made available on the Site."
+            },
+            {
+              "m": null,
+              "text": "All content present on this site is the exclusive property of Jetking. The software, text, images, graphics, video and audio used on this site belong to Jetking. No material from this site may be copied, modified, reproduced, republished, uploaded, transmitted, adopted, posted or distributed in any form whatsoever without prior written permission from Jetking. All rights not expressly granted herein are reserved. Unauthorized use of the materials appearing on this site may violate copyright, trademark and other applicable laws, and could result in criminal and/or civil actions. Jetking is a registered trademark of Jetking Infotrain Limited. This trademark may not be used in any manner without prior written consent/license/authorization from Jetking Infotrain Limited."
+            },
+            {
+              "m": null,
+              "text": "Jetking may terminate a User’s access at any time for any reason. The provisions regarding a disclaimer of warranty, accuracy of information and indemnification shall survive such termination. Jetking may monitor access to the Site."
+            },
+            {
+              "m": null,
+              "text": "By using the Site, you agree to follow and be bound by the following terms and conditions concerning your use of the Site. Jetking may revise the Terms of Use at any time without notice to you. Areas of the Site may have different terms of use posted. If there is a conflict between the Terms of Use and terms of use posted for a specific area of the Site, the latter shall have precedence with respect to your use of that area of the Site."
+            },
+            {
+              "m": null,
+              "text": "The term User shall refer to the user who is browsing the Site. The term Jetking shall refer to Jetking Infotrain Limited and/or its affiliates/subsidiary companies. The term Site refers to www.jetking.com and other websites as mentioned above, owned and monitored by Jetking."
+            },
+            {
+              "m": null,
+              "text": "the Site will meet your requirements;"
+            },
+            {
+              "m": null,
+              "text": "the Site will be available on an uninterrupted, timely, secure, or error-free basis;"
+            },
+            {
+              "m": null,
+              "text": "the results that may be obtained from the use of the Site or any services offered through the Site will be accurate or reliable."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "The User’s right to privacy is of paramount importance to Jetking. Any information provided by the User will not be shared with any third party. Jetking reserves the right to use the information to provide the User a more personalized online experience."
+        },
+        {
+          "t": "p",
+          "text": "The Site provides links to Web sites and access to content, products and services from third parties, including users, advertisers, affiliates and sponsors of the Site. You agree that Jetking is not responsible for the availability of, and content provided on, third party Web sites. The User is requested to peruse the policies posted by other Web sites regarding privacy and other topics before use."
+        },
+        {
+          "t": "p",
+          "text": "Jetking is not responsible for third party content accessible through the Site, including opinions, advice, statements and advertisements and User shall bear all risks associated with the use of such content. Jetking is not responsible for any loss or damage of any sort that a User may incur from dealing with any third party."
+        },
+        {
+          "t": "h2",
+          "text": "Feedback"
+        },
+        {
+          "t": "p",
+          "text": "Unless expressly provided otherwise by Jetking, all comments, feedback, information or materials submitted to Jetking through or in association with the Site shall be considered non-confidential and Jetking’s property. By submitting such comments, feedback, information or materials to Jetking, the visitor of the Site agree to a no-charge assignment to Jetking of all worldwide rights, title and interest in copyrights and other intellectual property rights to the comments, feedback, information or materials. Jetking shall be free to use, copy, publish or distribute such comments, feedback, information or materials on an unrestricted basis without accounting to the visitor of the Site."
+        },
+        {
+          "t": "h2",
+          "text": "Permission to use information/materials on this website"
+        },
+        {
+          "t": "p",
+          "text": "Permission is hereby granted to electronically copy and to print in hard copy, limited portions of the materials published by Jetking in this web site for the sole purpose of using material/information contained therein for personal informational and non-commercial use only. Except in connection with personal informational and non-commercial use, none of the Contents may be copied, reproduced, distributed, republished, downloaded, displayed, posted electronically or mechanically, transmitted, adopted, recorded, in any manner mirrored, photocopied, or reproduced without the prior written permission of Jetking or the applicable copyright owner. Any other use of materials/ information on this Web site, including any commercial use, reproduction for purposes other than that noted above, modification, distribution, or republication without the prior written permission of Jetking is strictly prohibited and may violate copyright or trademark laws. All contents on this site are protected by copyright. Except as specifically permitted herein, no portion of the information on this web site may be reproduced in any form, or by any means, without prior written permission from Jetking. Visitors or users are not permitted to modify, distribute, publish, transmit or create derivative works of any material found on this site for any public or commercial purposes"
+        },
+        {
+          "t": "h2",
+          "text": "Governing law and jurisdiction"
+        },
+        {
+          "t": "p",
+          "text": "Any dispute arising out of the use of this website or in connection therewith shall be governed by Laws of India and Mumbai Courts shall have exclusive jurisdiction to resolve any such dispute."
+        },
+        {
+          "t": "h2",
+          "text": "General Disclaimer"
+        },
+        {
+          "t": "p",
+          "text": "The documents and graphics on this website could include technical inaccuracies or typographical errors. Changes are periodically added to the information herein. Jetking may make improvements and/or changes herein at any time. Jetking makes no representations about the accuracy of the information contained in the documents and graphics on this web site for any purpose. All documents and graphics are provided “as is”. Jetking hereby disclaims all warranties and conditions with regard to this information, including all implied warranties and conditions of merchantability, fitness for any particular purpose, title and non-infringement. In no event, Jetking and/or its licensor/ supplier shall not be liable to any party for any direct, indirect, special or other consequential damages for any use of the sites, the information, or on any other hyperlinked web site, including, without limitation, any lost profits, business interruption, loss of programs or other data on your information handling system or otherwise, even if Jetking is expressly advised of the possibility of such damages."
+        },
+        {
+          "t": "h2",
+          "text": "Amendments in terms"
+        },
+        {
+          "t": "p",
+          "text": "Please note that these Terms of use may change from time to time. We will not reduce your rights under this Policy without your explicit consent, and we expect most such changes will be minor. Regardless, we will post any Policy changes on this page and, if the changes are significant, we will provide a more prominent notice. Each version of this policy will be identified at the top of the page by its effective date. All contents are Copyright © 2014 Jetking. All rights reserved without prior written approval from Jetking Infotrain Limited, no portion of these terms of use may be copied/ reproduced or adopted in any form, or by any means."
+        },
+        {
+          "t": "h2",
+          "text": "Grievance Redressal"
+        },
+        {
+          "t": "p",
+          "text": "We have a separate Support Portal to resolve all grievances. Kindly visit the below mentioned link to get the required Support."
+        },
+        {
+          "t": "p",
+          "text": "Support Portal: https://support.jetking.com/"
+        },
+        {
+          "t": "h2",
+          "text": "Cancellation & Refund Policy"
+        },
+        {
+          "t": "p",
+          "text": "All enrolments are final: once students enrol to any of our courses, there is no cancellation or refund option."
+        }
+      ],
+      "status": "published"
+    },
+    {
+      "slug": "enrollment-terms-and-conditions",
+      "title": "Enrollment Terms and Conditions",
+      "sourceUrl": "https://www.jetking.com/enrollment-terms-and-conditions",
+      "blocks": [
+        {
+          "t": "h2",
+          "text": "Get Set and Go: Your Passport to the Future"
+        },
+        {
+          "t": "p",
+          "text": "Dear Students,"
+        },
+        {
+          "t": "p",
+          "text": "On behalf of the facilitators, staff and management of Jetking, it is my pleasure to welcome you to the Jetking family. I would also like to take this opportunity to congratulate you for taking charge of your life and joining a skill-based course that will make you future ready. May all your dreams come true, and may you take your days at Jetking as the stepping stone to a long and fruitful career ahead."
+        },
+        {
+          "t": "p",
+          "text": "At Jetking, we are committed to providing you skills that can make you future ready. We are inline with rapid changes and technologies that are shaping the world today and have designed our courses to help you lead the way to the future. Your education at Jetking gives you much more than just a certificate. It gives you the confidence and ability to accept challenges and contribute to the IT industry across the world."
+        },
+        {
+          "t": "p",
+          "text": "Our facilitators and team are continually working towards improving your knowledge and skills, helping you build your confidence and ensuring that you are ready for the corporate sector."
+        },
+        {
+          "t": "p",
+          "text": "Use this opportunity to focus, practice and take charge of your life. Your confidence and self-belief can take you far ahead. This book is like a passport to the future. Please read the pages of this passport and follow it carefully. The information provided herewith acquaints you with the policies, procedures, and flow of course and extra -curricular activities both academically and outside the classroom. Wishing you all the best for a great life ahead."
+        },
+        {
+          "t": "p",
+          "text": "Sincerely"
+        },
+        {
+          "t": "p",
+          "text": "Suresh G. Bharwani Chairman"
+        },
+        {
+          "t": "h2",
+          "text": "History of Jetking"
+        },
+        {
+          "t": "p",
+          "text": "Jetking Infotrain Limited, as is known today, was founded as Navbharat Radio by the visionary and patriot Shri Gordhandas Bharwani in Mumbai as a trading agency dealing in electronic items such as transistors and radios. Through sheer hard work and consummate skills he made Navbharat Radio Agency as country’s leading manufacturer of transistors and radios."
+        },
+        {
+          "t": "p",
+          "text": "In 1980, Suresh G. Bharwani, the present Chairman joined his father and cut his teeth into this fiercely competitive business. However, he always believed in leaving his footprints for others to follow rather than following the herd. This approach led him in developing “Do-It- Yourself” electronic kits with lucidly written and graphically designed manual that enabled customers to assemble a whole range of electronic items. Soon these kits became a rage and the success experienced, laid the foundation for the Hardware training that was eventually started in 1990 at Sewri, Mumbai by him."
+        },
+        {
+          "t": "p",
+          "text": "During 1990, India witnessed an unprecedented boom in the IT industry, thanks to the advent of cost effective and affordable PCs. As the demand for software to run on these PCs rose, so did the demand for software professionals. Soon the software institutes started mushrooming in every nook and corner. Jetking, under the stewardship of Suresh G. Bharwani, added another dimension to this. Instead of joining the rat race, it ventured into Hardware training. People prophesized doom and called it a one-night dream. But soon they were proved wrong and Jetking went from strength to strength and today it stands tall and serves as the light post to lakhs of student who turn to Jetking to realize their unfulfilled dreams."
+        },
+        {
+          "t": "p",
+          "text": "What made it so successful? The first and foremost was the Chairman’s commitment to create opportunities for others and his foresight that caught the demand for the trained professionals in computer hardware early on. Second, was the training methodology that derives its origin from three great philosophies, the first being Yoga, the second being the Oriental Philosophy of “What I hear I forget, What I see I remember and What I do I understand” and the third being the Participant Centric Training Laws of world class famous training guru Robert W. Pike."
+        },
+        {
+          "t": "p",
+          "text": "Bob Pike’s three great philosophies gave rise to Smartlab Plus, a unique training methodology that develops students into successful professionals and fine human beings. It ensures that they are focused and have fun while learning."
+        },
+        {
+          "t": "p",
+          "text": "Jetking, initially offered basic courses in hardware, now offers advanced networking and many other advanced technologies like Cloud, Ethical hacking & Internet of Things (IoT). In order to ensure that Jetking students are globally accepted, it started vendor collaboration with the leaders. It joined hands with Novell in 1997 as NEAP (Novell Education Academic Partner) and with Microsoft in 2003 as MCP (Microsoft Certified Partner). It had also joined hands with VUE to offer testing facility for certification & had become corporate member of CompTIA in 2003."
+        },
+        {
+          "t": "p",
+          "text": "In 2008, Jetking Collaborated with Heathkit Educational Systems Inc., USA to bring Computer Fault Simulation Kits into India. Using these kits, students were provided exposure to real life problems. In 2008 Jetking also tied up with WatchGuard to provide firewall training to its student"
+        },
+        {
+          "t": "p",
+          "text": "In 2009, Jetking launched JetEdge an innovative computer based English and PD training program. In 2011, Tablet PC course, Mobile Application Development Printer and Laptop Repair courses were launched. In 2012, Jetking introduced “Digitization” a revolutionary delivery model."
+        },
+        {
+          "t": "p",
+          "text": "In 2015, introduced Learning Management System (LMS), an online platform for the students to access content from anywhere."
+        },
+        {
+          "t": "p",
+          "text": "Introduced the 21st century learning methodology \"Smartlabplus\" in 2016 and introduced hybrid learning methodology and Blockchain technology enabled courses in 2020-2021"
+        },
+        {
+          "t": "p",
+          "text": "Jetking believes in providing the best to its students, our facilitator is the central axis to any training delivery. In order to enable the facilitator to remain up-to-date with current technologies, regular training programs are conducted by the industry leaders. It also emphasises the uniformity of delivery across its centers and that is why it is audited for ISO 9001:2015."
+        },
+        {
+          "t": "p",
+          "text": "Jetking has survived the doom of IT crash and is one of the very few companies that did not report any adverse business performance. It is because of its strong fundamentals. Rather than flying high, it has quietly made enormous improvements in its service quality and made every operation customer (Student) oriented. So if the past is any testimony then Jetking is heading in only one direction and that is up and above."
+        },
+        {
+          "t": "h2",
+          "text": "Corporate Strategic Statement: Mission, Vision and Values"
+        },
+        {
+          "t": "p",
+          "text": "Vision : To Provide Economic Independence To 10 Million People In India And Overseas."
+        },
+        {
+          "t": "p",
+          "text": "Mission : To Become A World-class Engine For Employment Generation Through An Efficient Partnership Network."
+        },
+        {
+          "t": "p",
+          "text": "Values : Quality. Trust. Self-motivation. Innovation. Hands-On. Learning & Teaching. Equanimity."
+        },
+        {
+          "t": "p",
+          "text": "Credo :"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "When I hear, I forget"
+            },
+            {
+              "m": null,
+              "text": "When I hear and see, I remember"
+            },
+            {
+              "m": null,
+              "text": "When I question and discuss, I begin to understand"
+            },
+            {
+              "m": null,
+              "text": "When I go on 'to do', I acquire knowledge and skill"
+            },
+            {
+              "m": null,
+              "text": "When I teach another, I master"
+            },
+            {
+              "m": null,
+              "text": "When I learn to be equanimous, I am able to grow to my full potential"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "The Jetking Promise"
+        },
+        {
+          "t": "p",
+          "text": "The Goals of Jetking are:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "To enable and encourage students to rely on their unique and rich cultural background as a foundation for their learning, growth, and transformation."
+            },
+            {
+              "m": "2.",
+              "text": "To guide students to adapt their knowledge and skills to the context and needs of real people, real problems and real situations in which they live and work."
+            },
+            {
+              "m": "3.",
+              "text": "To provide facilities and world-class technologies that incorporate knowledge of human learning process, motivation, retention, satisfaction, knowledge construction and expertise."
+            },
+            {
+              "m": "4.",
+              "text": "To coach and prepare students for job placement and career success."
+            },
+            {
+              "m": "5.",
+              "text": "To create an environment where students and facilitators can learn from mutual experiences and excel as an individual and as team members in fulfillment of Jetking’s mission."
+            },
+            {
+              "m": "6.",
+              "text": "To enhance employability of students not only in technologies but also in personality development & communication skills."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "SmartLabplus 5.0 - 21st Century Learning Methodology"
+        },
+        {
+          "t": "p",
+          "text": "SmartLab+ 5.0 is a revolutionary training delivery methodology, designed for Gen Z. Highlights of this methodology are:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "The curriculum is designed based on tasks that a Desktop Support Engineer will have to do after joining a job."
+            },
+            {
+              "m": "2.",
+              "text": "Pre-sees will be available on LMS and Mobile. The students will be going through these pre-sees before coming to the class."
+            },
+            {
+              "m": "3.",
+              "text": "Before the session starts, students will perform 5 minutes of Yoga to settle down and improve concentration."
+            },
+            {
+              "m": "4.",
+              "text": "In the class the students will go through group work and discuss what they have studied at home."
+            },
+            {
+              "m": "5.",
+              "text": "The student will go through a technical scenario based on what he has learnt. The technical scenarios are basically industry applications. These scenarios will have customer support techniques."
+            },
+            {
+              "m": "6.",
+              "text": "Technical scenarios will be followed by simulations or videos demonstrating how the task needs to be performed. The simulations have “Show-Me” “Try Me” and “Test-Me” options too."
+            },
+            {
+              "m": "7.",
+              "text": "One day students will have theory/activity session and the next day will be practical."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "For better understanding and retention various active learning strategies are used in class like - Flipped Class Room, Group Work, Think- Pair-Share (TPS), Brainstorming, Role Plays, Scenarios, Case Studies, Mind Map and gamification."
+        },
+        {
+          "t": "h2",
+          "text": "Look for this certificate to be assured of Authorised Jetking Centre"
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/centre-certificate.webp",
+          "alt": "Sample Authorised Jetking Centre certificate, issued by Jetking Infotrain Ltd. to a centre",
+          "w": 337,
+          "h": 512
+        },
+        {
+          "t": "h2",
+          "text": "Jetking Official Receipt"
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/official-receipt.webp",
+          "alt": "Sample Jetking official receipt (student copy) showing enrollment fee, tax breakdown, receipt number and transaction details",
+          "w": 1400,
+          "h": 876
+        },
+        {
+          "t": "p",
+          "text": "Note: If you do not receive your receipt in the above format your installment /fee for that month will be waived off. Call us on +91 7666830000 to register the same or mail us on info@jetking.com"
+        },
+        {
+          "t": "h2",
+          "text": "Academic Policies & Guidelines"
+        },
+        {
+          "t": "h2",
+          "text": "1. Jetking’s Academic Program Goals"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Support the goals and purpose of the institution."
+            },
+            {
+              "m": "b.",
+              "text": "Teach technical skills, theoretical concepts and practical experience to prepare students for their careers."
+            },
+            {
+              "m": "c.",
+              "text": "Develop in students a sense of responsibility to the standards and ideals of the profession."
+            },
+            {
+              "m": "d.",
+              "text": "Train the importance of ethical behavior in students’ personal and professional lives."
+            },
+            {
+              "m": "e.",
+              "text": "Guide students, how to be become personally and professionally successful."
+            },
+            {
+              "m": "f.",
+              "text": "Preparing Students for Employability."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "2. Curriculum"
+        },
+        {
+          "t": "p",
+          "text": "Jetking’s curriculum has been designed keeping in mind the demand of the IT industry. Since the industry is changing fast, our curriculum is frequently updated to suit to the requirements of the IT industry. The curriculum is subject to change without notice from time to time."
+        },
+        {
+          "t": "h2",
+          "text": "3. Attendance"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Classes can be conducted in any of the following modes – physical, hybrid (part online & part-offline) and asynchronous (recorded session and online masterclass as schedule)."
+            },
+            {
+              "m": "b.",
+              "text": "Students to attend the sessions on the video-conference link provided by Jetking when the class conduction is done in hybrid mode or online masterclass sessions are conducted"
+            },
+            {
+              "m": "c.",
+              "text": "Students to be punctual and login for the session well in time, so that they do not miss out on lectures"
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.1 Absenteeism"
+        },
+        {
+          "t": "p",
+          "text": "Absenteeism is defined as not attending any session without proper permission from the facilitator. In case of sickness, the student has to submit an application duly signed by a parent / guardian & supported by a medical certificate issued by a registered doctor/medical practitioner."
+        },
+        {
+          "t": "p",
+          "text": "The following rules apply and must be followed:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Three (3) days absenteeism, either continuous or staggered per semester is allowed."
+            },
+            {
+              "m": "b.",
+              "text": "Minimum 80% attendance (in both technical and PD classes) is required to be eligible for placement. All matters related to student absenteeism are to be communicated to the class facilitator on Smartrain (Please note that absences are counted from the firstday of the start of the module. In case student joins the course in between the module, then for that module, 80% attendance will be considered from the day of joining). Students will be given marks on the basis of their class"
+            },
+            {
+              "m": "c.",
+              "text": "Students with Attendance below 80% in their final exam, will be given zero in “attendance” component in the exam evaluation."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.2 Late Coming"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Students are expected to be in class on time."
+            },
+            {
+              "m": "b.",
+              "text": "The late comers, i.e. those who come late by 10 minutes will be marked ‘L’ in the attendance."
+            },
+            {
+              "m": "c.",
+              "text": "If a student has 3 'L' marks in a month, they will be fined Rs. 100."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.3 Refund Policy/Admission Cancellation/Course Downgrade"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "NO REFUNDS (in any form – partial/full/conditional) of JK-course fees/registration or booking amount, wef 1st March 2022."
+            },
+            {
+              "m": "b.",
+              "text": "There is no provision of course downgrading."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.4 Drop-out Re-enrolment policy"
+        },
+        {
+          "t": "p",
+          "text": "Triggering Mechanism:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "If a student fails to pay their EMI within the stipulated time frame i.e. 30 days the auto dropout policy will be applicable."
+            },
+            {
+              "m": null,
+              "text": "This could be detected through an automated monitoring of payment records through the CRM/ERP system."
+            },
+            {
+              "m": null,
+              "text": "For example, if a student's EMI due dateisthe1stof April 2024 and if he/she has not paid the monthly EMIs by 30th of April 2024, the system will automatically mark the student as a dropout after 1st May 2024."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "Actions:"
+        },
+        {
+          "t": "p",
+          "text": "Once triggered, the auto dropout policy might initiate a series of actions. For instance:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Students will be debarred from accessing JK center's facilities and resources."
+            },
+            {
+              "m": null,
+              "text": "Students are not permitted to attend any Theory or Practical sessions in Drona/Arjuna classroom."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "To reactivate/resume from Auto dropout:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "The student needs to pay the EMI amount plus the Dropout charges which is INR.1180 (including GST) to reactivate or resume the course in the ERP/CRM system."
+            },
+            {
+              "m": null,
+              "text": "The INR.1180, as Dropout resume charges will be appilcable for the first 3 (three) instances. From the 4th instance, the charges will be INR.2360."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "A student Dropout for 5 instances/times, will be declared as complete dropout and his/her course will be discontinued from the date of Dropout. The Learning centre will not be liable to provide any service to the student, including and not limited to, exams, certification and placement support."
+        },
+        {
+          "t": "p",
+          "text": "Exception to the Policy:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "In case of Discount not updated in the system, then the student will not be dropped out on account of the EMI mismatch, provided the student pays the regular EMI committed (limited to the standard discount as approved by the Jetking-HO)"
+            },
+            {
+              "m": "b.",
+              "text": "In case of a student having paid in advance, then the student will not be dropped-out till the advance amount and the balance of the due EMI has been paid by the student. For example, a student pays INR.30,000 as advance, where his EMI is 4000 pm. Then in this case, the student cannot be dropped out in the 8th month, if he pays INR.4000 EMI in the 8 th month(regular EMI Payment). The payment of INR.4000 (regular EMI because of short invoicing not possible in the CRM)"
+            },
+            {
+              "m": "c.",
+              "text": "A waiver on the Re-admission fee shall not be given without approval from the head office."
+            },
+            {
+              "m": "d.",
+              "text": "Students need to clear all pending fees at the time of re-admission"
+            },
+            {
+              "m": "e.",
+              "text": "Students cannot downgrade or change the course."
+            },
+            {
+              "m": "f.",
+              "text": "The student needs to pursue the same course and No Certificate of Participation will be issued for the Dropout Students."
+            },
+            {
+              "m": "g.",
+              "text": "The students exceeding the statute of the limit will not be eligible for re-enrolment."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.5 Leave / Break"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Each student can be given maximum 2 days Leave in a month without any backup session."
+            },
+            {
+              "m": "b.",
+              "text": "In case of sick Leave: Medical certificate as a proof needs to be submitted. Medical certificate should be of a Doctor with MBBS or any equivalent/higher degree would be accepted."
+            },
+            {
+              "m": "c.",
+              "text": "A break may be granted once a year for up to 15 days, and for students engaged in formal education, it may be granted twice a year for up to 30 days each. However, the student must provide their hall ticket or admit card for the university or college examination."
+            },
+            {
+              "m": "d.",
+              "text": "Student will apply for leave/break through LMS."
+            },
+            {
+              "m": "e.",
+              "text": "Students have to pay instalments during his/her break Period. Before Break his/her instalments should be clear."
+            },
+            {
+              "m": "f.",
+              "text": "The Break Application must be signed by the parents first."
+            },
+            {
+              "m": "g.",
+              "text": "Applications for leave or breaks must first be approved by the CS and then by the CM."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.6 Batch Transfer"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Batch transfer fee would be Rs. 500/- + GST. If the student is assigned to the batch and if the batch sessions not yet started then no fee would be applicable. Batch transfer would be subject to availability of batch."
+            },
+            {
+              "m": "b.",
+              "text": "Batch transfer will be given only in a slot in which same Semester/Topic batch is going on irrespective of timing."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.7 Center Transfer"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Centre transfer will not be granted without Passport. (Centre transfer form in the passport has to be duly signed and stamped by your centre)."
+            },
+            {
+              "m": "b.",
+              "text": "Student Center Transfer can be done only once and after the completion of module/semester only."
+            },
+            {
+              "m": "c.",
+              "text": "Center Transfer fees to be paid at source center and it would be Rs. 1000/- Plus GST compulsory."
+            },
+            {
+              "m": "d.",
+              "text": "If student goes from B category center to A category center then difference of fee needs to be paid for the balance course and if the student goes from A category center to B category center then there will be no reversal offee."
+            },
+            {
+              "m": "e.",
+              "text": "Student can transfer his course based on availability of course at the Destination center."
+            },
+            {
+              "m": "f.",
+              "text": "Discount/Scholarship will be negligible during center Transfer. No discount will be carry forward in case of center transfer."
+            },
+            {
+              "m": "g.",
+              "text": "Within Same City, no center transfer will be allowed."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "3.8 Center Closure Transfer"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "In the event of a center closure for any reason, the student needs to collect Centre Transfer Form from the closing centre for getting them transferred to other Jetking Centre."
+            },
+            {
+              "m": "b.",
+              "text": "In case of centre closure, Jetking-HO will inform the student to join the nearest centre or the centre as per feasibility. Jetking Head Office retains the exclusive rights of centre allocation under this condition."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "If the student does not go adhere to the decision of centre- transfer by Jetking-HO. In this case, Jetking-HO is not liable to give any further service to the student."
+        },
+        {
+          "t": "h3",
+          "text": "3.9 On Hold"
+        },
+        {
+          "t": "p",
+          "text": "Student can be marked as on hold only twice during his course."
+        },
+        {
+          "t": "h3",
+          "text": "3.10 SOL (Statute of Limit)"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Statute of Limit for any career course is 1.5 times the duration of the course, except for Formal courses, where the guidelines of the external authority will be taken into consideration. In the event the course is retired, the student has to take fresh admission in the course which is being offered at the centre, without any contest and the current fees will be applicable."
+            },
+            {
+              "m": "b.",
+              "text": "Post statute of limit student will not be eligible to demand any services with respect to lectures, examination, certification, placement, re-enrolment or transfer and refund."
+            },
+            {
+              "m": "c.",
+              "text": "If Course has changed/upgraded within SOL or student joining after long break then Student has to pay as per current course fee structure."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "4. Unavoidable Batch Delays"
+        },
+        {
+          "t": "p",
+          "text": "In case the facilitator fails to conduct a session, then make-up session will be arranged on a specific day and time with the agreement of students. These are compulsory sessions and the students must attend them without fail. In case any student does not attend the makeup session, then he has to cover the session on his own."
+        },
+        {
+          "t": "h2",
+          "text": "5. Classroom Discipline"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "The students must not disobey the facilitator and in case there is a grievance, he/she must bring it to the notice of the management through a letter."
+            },
+            {
+              "m": "b.",
+              "text": "Talking loudly or joking is to be avoided at all cost."
+            },
+            {
+              "m": "c.",
+              "text": "Students, while learning Internet, must avoid visiting unwanted websites. The institute reserves the right to punish the offending student very severely in case he is found to have violated the rules for internet usage.(Call to Parents, Rusticate from Class or Admission cancelled)"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "6. Exam Policy"
+        },
+        {
+          "t": "h3",
+          "text": "Precautionary measures"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "There are 2 formats of Exam conduction - Semester-wise/Module-wise. Semester wise for Pan India centers and Module wise for Own centers."
+            },
+            {
+              "m": "2.",
+              "text": "Centers ensure exam conduction for eligible students within 15 days from their module/semester completion whichever be the format in practice."
+            },
+            {
+              "m": "3.",
+              "text": "Centers need to ensure 100% exam appearance from ERL"
+            },
+            {
+              "m": "4.",
+              "text": "Conduct regular mocks, performance tracking, identify weak-areas and inculcate timely action for improvement."
+            },
+            {
+              "m": "5.",
+              "text": "Monthly Mock conduction needs to be complete for 100% students. If a student is absent on the day of the scheduled mock. It will be the responsibility of the centre to get the mock conducted for the student within the month, without exception. The conduction in this case will be unannounced and immediate."
+            },
+            {
+              "m": "6.",
+              "text": "Students without monthly mock clearance will not be allowed to for exams (whichever be the case, module/semester)."
+            },
+            {
+              "m": "7.",
+              "text": "Centers need to plan & send the Exam schedule in advance"
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "Requirements for Exam Conduction"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "PC/Laptop with Webcam"
+            },
+            {
+              "m": "2.",
+              "text": "Headphones"
+            },
+            {
+              "m": "3.",
+              "text": "Internet connection of 100 Mbps speed"
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "E.g., in a lab of having 16 computers then there should be 16 webcams and 16 headphones."
+        },
+        {
+          "t": "h3",
+          "text": "Exam Conduction"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "Students will receive Google meet link / Zoom link from HO exam dept. before 2 days of examination"
+            },
+            {
+              "m": "2.",
+              "text": "Students must be physically present at the center for appearing online exam"
+            },
+            {
+              "m": "3.",
+              "text": "At the time of online exam, students will go through the given link and start the audio and video of Google meet / Zoom link and share his/her Desktop/Laptop screen"
+            },
+            {
+              "m": "4.",
+              "text": "HO team will monitor the exam. If any instance of cheating or taking help from others, exam will be stopped from JK-HO. The candidate will be declared as “FAIL”"
+            },
+            {
+              "m": "5.",
+              "text": "Technical and PD viva will also be conducted using the same link (Google meet/Zoom)."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "Exam Policy"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "1.",
+              "text": "The student will be eligible for exams if he/she has completed all the subjects related to that module/semester and successfully completed all deliverables towards partial fulfillment of the undergoing course leading to the award of the completion certificate. List of deliverables:"
+            }
+          ]
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Assignment (Subject-wise) Submission Report"
+            },
+            {
+              "m": null,
+              "text": "Daily Presentation Report"
+            },
+            {
+              "m": null,
+              "text": "Project (Module/Semester-wise) Report"
+            },
+            {
+              "m": null,
+              "text": "Attendance Report"
+            },
+            {
+              "m": null,
+              "text": "Fee Clearance Report"
+            }
+          ]
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "2.",
+              "text": "No pending fees against his/her name, which also means that the student has paid on-time and regularly as per schedule of payment."
+            },
+            {
+              "m": "3.",
+              "text": "In the BCA exam conduction, without the complete documentation and the fees clearance of both the University and of Jetking charter, the student will not be provided with either the exam clearance or the University authorization for appearing in the examination"
+            },
+            {
+              "m": "4.",
+              "text": "It is the ownership of the student to start the exam on time and complete the exam on time. No time extension of the Exam link can be provided, in any case. If there is a problem in the link/connectivity error/system hang-up, then the same needs to be reported by the centre to the HO-Exams Team, so that they can take the necessary action for re-scheduling the exam"
+            },
+            {
+              "m": "5.",
+              "text": "If any student is absent or failed in the modular exam and needs to re-appear, then repeater exam fees will be applicable, as per policy and defined process in the student passport"
+            },
+            {
+              "m": "6.",
+              "text": "A student needs to be passed in the Module/Semester Viva, to be eligible for attending classes for the next Module/Semester."
+            },
+            {
+              "m": "7.",
+              "text": "Student placement is governed as per the Placement policy of Jetking."
+            },
+            {
+              "m": "8.",
+              "text": "Three types of questions will come in the Modular exam i.e., Concept based, Scenario based, and Practical based. The grade distribution is as per the table below:"
+            }
+          ]
+        },
+        {
+          "t": "table",
+          "caption": "Grade distribution",
+          "head": [
+            "Percentage",
+            "Grade"
+          ],
+          "rows": [
+            [
+              "90% and above",
+              "Honours"
+            ],
+            [
+              "80% – 89%",
+              "Distinction"
+            ],
+            [
+              "65% – 79%",
+              "A"
+            ],
+            [
+              "50% – 64%",
+              "B"
+            ],
+            [
+              "49% and below",
+              "Fail"
+            ]
+          ]
+        },
+        {
+          "t": "p",
+          "text": "Note:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "A.",
+              "text": "Students not appearing for the exam once scheduled will be considered as absent and appearing in the next exam as a repeater student after paying the repeater fees."
+            },
+            {
+              "m": "B.",
+              "text": "It is the ownership of the centre Team to complete all the student deliverables before qualifying the student for exam appearance. The student’s module/semester should be complete in all respect, before processing the student’s name in the ERL."
+            },
+            {
+              "m": "C.",
+              "text": "The online exam and practical assessments will be conducted under the supervision of both internal and external examiners"
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1 Module/Semester Exam Schema"
+        },
+        {
+          "t": "p",
+          "text": "This exam is devised to aim students to assess their technical knowledge and skills in the respective subject. Marks and weightage distribution is as per the table below:"
+        },
+        {
+          "t": "table",
+          "caption": "Module/Semester exam schema",
+          "head": [
+            "Examination",
+            "Marks",
+            "Duration (in minutes)",
+            "Weightage"
+          ],
+          "rows": [
+            [
+              "1.1.1 Theory Exam (Online)",
+              "100",
+              "60",
+              "20%"
+            ],
+            [
+              "1.1.2 English & PD (Online)",
+              "100",
+              "60",
+              "15%"
+            ],
+            [
+              "1.1.3 Viva (External)",
+              "50",
+              "Based on no. of students",
+              "20%"
+            ],
+            [
+              "1.1.4 Practical Exam",
+              "100",
+              "120",
+              "25%"
+            ],
+            [
+              "1.1.5 Project (Module/Semester-wise)",
+              "25",
+              "240",
+              "10%"
+            ],
+            [
+              "1.1.6 Assignment (Subject-wise)",
+              "25",
+              "Home-study",
+              "10%"
+            ],
+            [
+              "Total",
+              "400",
+              "",
+              "100%"
+            ]
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.1 Theory Exam (Online) - Total Marks - 100, Duration – 60 Mins"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Duration of the exam will be 60 mins."
+            },
+            {
+              "m": null,
+              "text": "Single examination will be conducted by HO for all subjects"
+            },
+            {
+              "m": null,
+              "text": "The exam will consist of MCQ, SCQ."
+            },
+            {
+              "m": null,
+              "text": "Total number of questions will be 100"
+            },
+            {
+              "m": null,
+              "text": "It will be an online exam using proctoring software { mettl, wcp etc}*"
+            },
+            {
+              "m": null,
+              "text": "The learners will be getting a schedule of all the exams at the course start so they are already prepared."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.2 English & PD (Online) - Total Marks - 100, Duration – 60 Mins"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Duration of the exam will be 60 mins."
+            },
+            {
+              "m": null,
+              "text": "End of the subject, a single exam will be conducted by HO which includes Basic English, basic grammars, PD etc. MCQ based questions."
+            },
+            {
+              "m": null,
+              "text": "Total number of questions will be 100"
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.3 Technical Viva (External) - Total Marks - 50"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Duration of the viva will be based on the number of students. Approx. 10 minutes per candidate."
+            },
+            {
+              "m": null,
+              "text": "Viva will be conducted by SMEs/LDMs from HO. *"
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.4 Practical Exam - Total Marks - 100, Duration – 120 Mins"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Students need to perform the practicals from different subjects."
+            },
+            {
+              "m": null,
+              "text": "Min. 1 practical from each subject need to be performed."
+            },
+            {
+              "m": null,
+              "text": "Faculty needs to ensure the availability of hardware and software to the students."
+            },
+            {
+              "m": null,
+              "text": "Also faculty needs to evaluate the same and share the marks with HO exam dept."
+            },
+            {
+              "m": null,
+              "text": "There will be total 5 practicals and each practical will carry 20 marks each."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.5 Project (Module/Semester-wise) (25 marks)"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Faculty needs to assign different projects to a group of students (min. 1 project in 3 months’ time)."
+            },
+            {
+              "m": null,
+              "text": "Students need to work in a group and submit the project on time."
+            },
+            {
+              "m": null,
+              "text": "Faculty needs to evaluate and conduct viva on the same."
+            },
+            {
+              "m": null,
+              "text": "External examiner will finally check the project report (hard copy)."
+            }
+          ]
+        },
+        {
+          "t": "h3",
+          "text": "1.1.6 Assignment (Subject-wise) (25 marks)"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Subject-wise assignment questions will be given through LMS"
+            },
+            {
+              "m": null,
+              "text": "Candidates will write the assignments in a notebook and submit it on LMS-Learnyst (scan copy, image etc.)"
+            },
+            {
+              "m": null,
+              "text": "Candidates will record his/her answers of any assignment of the week and upload on to Learnyst platform"
+            },
+            {
+              "m": null,
+              "text": "Internal trainer will help students for uploading weekly assignments on LMS (Learnyst)"
+            },
+            {
+              "m": null,
+              "text": "Faculty will check and verify assignments"
+            },
+            {
+              "m": null,
+              "text": "External examiner will finally check the assignments (hard copy)."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "Students need to write **25 assignments** from different subjects (5) and submit for evaluation. And the trainer can give **1 mark** to each assignment. **Please note the number of assignments will vary based on the subject.**"
+        },
+        {
+          "t": "table",
+          "caption": "Worked example: Amit scored 69%, so he is awarded an A grade",
+          "head": [
+            "Component",
+            "Total marks",
+            "Weightage",
+            "Example: marks scored",
+            "Percentage"
+          ],
+          "rows": [
+            [
+              "Theory Exam (Online)",
+              "100",
+              "20%",
+              "75",
+              "15.00"
+            ],
+            [
+              "English & PD (Online)",
+              "100",
+              "15%",
+              "70",
+              "10.50"
+            ],
+            [
+              "Viva (External)",
+              "50",
+              "20%",
+              "30",
+              "12"
+            ],
+            [
+              "Practical Exam",
+              "100",
+              "25%",
+              "70",
+              "17.5"
+            ],
+            [
+              "Project (Module-wise)",
+              "25",
+              "10%",
+              "20",
+              "8"
+            ],
+            [
+              "Assignment (Subject-wise)",
+              "25",
+              "10%",
+              "15",
+              "6"
+            ],
+            [
+              "Total",
+              "400",
+              "100%",
+              "280",
+              "69.00"
+            ]
+          ]
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Minimum Passing is 50% in each component."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Result declaration"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "The result will be declared within 3-4 working days after completion of the exam (Activity based exam & Subject exam) by Exam dept."
+            },
+            {
+              "m": null,
+              "text": "Exam department will declare the result in soft copy format"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Certification award"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Candidates will receive soft copy of Mark sheet and Certificate from HO after completion of all Modular exams as per opted course within 15 working days"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "JK-DCC with AI Modular Pattern"
+        },
+        {
+          "t": "table",
+          "caption": "JK-DCC with AI — modular pattern",
+          "head": [
+            "Module 1",
+            "Module 2",
+            "Module 3"
+          ],
+          "rows": [
+            [
+              "Subject 1 – Install & Troubleshoot PC Hardware",
+              "Subject 4 – Behavioral Skills",
+              "Subject 8 – MCSA Paper 1"
+            ],
+            [
+              "Subject 2 – Configure & Troubleshoot OS (Windows + Linux)",
+              "Subject 5 – Networking Essentials",
+              "Subject 9 – Red Hat SA1"
+            ],
+            [
+              "Subject 3 – Service Desk Tool",
+              "Subject 6 – MS-365 & Outlook",
+              "Subject 10 – Cloud Computing (Azure + AWS)"
+            ],
+            [
+              "Subject – English & PD",
+              "Subject 7 – CCNA (Routing and Switching)",
+              "Subject 11 – Introduction to Firewall"
+            ],
+            [
+              "",
+              "Subject – English & PD",
+              "Subject 12 – Aspirational Technologies"
+            ],
+            [
+              "",
+              "",
+              "Subject – English & PD"
+            ]
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Semester Pattern"
+        },
+        {
+          "t": "table",
+          "caption": "JK-DCC with AI — semester pattern",
+          "head": [
+            "Semester 1",
+            "Semester 2"
+          ],
+          "rows": [
+            [
+              "Subject 1 – Install & Troubleshoot PC Hardware",
+              "Subject 8 – MCSA Paper 1"
+            ],
+            [
+              "Subject 2 – Configure & Troubleshoot OS (Windows + Linux)",
+              "Subject 9 – Red Hat SA1"
+            ],
+            [
+              "Subject 3 – Service Desk Tool",
+              "Subject 10 – Cloud Computing (Azure + AWS)"
+            ],
+            [
+              "Subject 4 – Behavioral Skills",
+              "Subject 11 – Introduction to Firewall"
+            ],
+            [
+              "Subject 5 – Networking Essentials",
+              "Subject 12 – Aspirational Technologies"
+            ],
+            [
+              "Subject 6 – MS-365 & Outlook",
+              ""
+            ],
+            [
+              "Subject 7 – CCNA (Routing and Switching)",
+              ""
+            ]
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "JK-MCC with AI Modular Pattern"
+        },
+        {
+          "t": "table",
+          "caption": "JK-MCC with AI — modular pattern",
+          "head": [
+            "Module 1",
+            "Module 2",
+            "Module 3"
+          ],
+          "rows": [
+            [
+              "Subject 1 – Install & Troubleshoot PC Hardware",
+              "Subject 6 – MCSA Paper 1",
+              "Subject 11 – Data Center & Server Hardware"
+            ],
+            [
+              "Subject 2 – Client OS",
+              "Subject 7 – Red Hat SA1",
+              "Subject 12 – Machine Learning"
+            ],
+            [
+              "Subject 3 – Service Desk Tool",
+              "Subject 8 – Python",
+              "Subject 13 – Artificial Intelligence"
+            ],
+            [
+              "Subject 4 – Networking Essentials",
+              "Subject 9 – MCSA 2019 Paper 2 (Azure)",
+              "Subject 14 – Prompt Engineering"
+            ],
+            [
+              "Subject 5 – CCNA (Routing and Switching)",
+              "Subject 10 – AWS – SAA-C03",
+              "Subject – English & PD"
+            ],
+            [
+              "Subject – English & PD",
+              "Subject – English & PD",
+              ""
+            ]
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "Semester Pattern"
+        },
+        {
+          "t": "table",
+          "caption": "JK-MCC with AI — semester pattern",
+          "head": [
+            "Semester 1",
+            "Semester 2"
+          ],
+          "rows": [
+            [
+              "Subject 1 – Install & Troubleshoot PC Hardware",
+              "Subject 7 – Red Hat SA1"
+            ],
+            [
+              "Subject 2 – Client OS (Windows + Linux)",
+              "Subject 8 – Python"
+            ],
+            [
+              "Subject 3 – Service Desk Tool",
+              "Subject 9 – MCSA 2019 Paper 2 (Azure)"
+            ],
+            [
+              "Subject 4 – Networking Essentials",
+              "Subject 10 – AWS – SAA-C03"
+            ],
+            [
+              "Subject 5 – CCNA (Routing and Switching)",
+              "Subject 11 – Aspirational Technologies"
+            ],
+            [
+              "Subject 6 – MCSA Paper 1",
+              "Subject – English & PD"
+            ]
+          ]
+        },
+        {
+          "t": "p",
+          "text": "**Note>> There is going to be ONLY SEMESTER EXAM pan India.**"
+        },
+        {
+          "t": "h2",
+          "text": "7. Certification"
+        },
+        {
+          "t": "p",
+          "text": "Upon successful completion of the course and passing the examination, students will be awarded a Jetking certification. Students scoring above 75% will receive the Jetking Job Guarantee, while those scoring above 50% will be provided with Job Assistance; both categories will also receive a Passing Certificate. However, students scoring below 50% will not be eligible for Placement Assistance or a Passing Certificate from the Institute."
+        },
+        {
+          "t": "p",
+          "text": "A Certificate of Participation (COP) can be issued to students who have completed the course on or before 1st April 2021. Students must settle any outstanding course fees and additionally, they need to pay Rs. 3841 (inclusive of GST) to get the Certificate of Practice (COP)."
+        },
+        {
+          "t": "p",
+          "text": "Please note that the NSDC logo will not appear on the COP."
+        },
+        {
+          "t": "h2",
+          "text": "8. Cancellation of admission"
+        },
+        {
+          "t": "p",
+          "text": "The institute may cancel the admission on account of the following:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Non-payment of tuition fee as per the tuition fee payment details."
+            },
+            {
+              "m": "b.",
+              "text": "Non-adherence to Student Code of Conduct."
+            },
+            {
+              "m": "c.",
+              "text": "Practicing of unfair means during the examination as detailed in “Cheating”."
+            },
+            {
+              "m": "d.",
+              "text": "In case of cancellation of admission, there is no further ownership of either Jetking Head Office or the learning centre to provide service to the student. The moment the admission is cancelled, the student forfeits the claim to any fees/monies paid to Jet-HO or the learning centre."
+            },
+            {
+              "m": "e.",
+              "text": "In case of student pursuing formal course, cancellation of Admission will be as per the procedure and guidelines laid down by the competent authority."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "9. Lab Facility"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Every student gets individual PC for performing practical in the classroom mode of training."
+            },
+            {
+              "m": "b.",
+              "text": "In the hybrid and asynchronous mode of training conduction, the student should mandatorily have his/her own PC/Laptop with a stable internet connectivity for the training."
+            },
+            {
+              "m": "c.",
+              "text": "The student’s personal PC/Laptop can be either new or refurbished. It is important that the standard configuration match is as per the Jetking-HO guidelines"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "10. Fee"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "On taking admission student is required to pay the admission fee as per the course selected."
+            },
+            {
+              "m": "b.",
+              "text": "Student has the facility to pay course fees in monthly installments. Student availing the installment facility has to make a certain down payment of the course fee at the time of admission."
+            },
+            {
+              "m": "c.",
+              "text": "The installment is due on the first day of each subsequent month. The student must pay the fees by 5th of every month. 5 days grace period is given to pay fees without late fee. In case student pays fee between 11th and 20th of a month, he has to pay an additional Rs.100/- inclusive of GST as fine. If the installment is paid after 20th till end of the month then he has to pay Rs. 200/- inclusive of GST as fine. Failing to pay beyond that month the student would be barred from attending classes."
+            },
+            {
+              "m": "d.",
+              "text": "As an exception to the above clause, a student whose admission took place on or after 25th of a month, the first installment will be due on the 1st day of second month, if batch starts on 25th April, then fee will be due on 1st June."
+            },
+            {
+              "m": "e.",
+              "text": "In case a cheque provided by the student is returned by the bankers, the student has to pay a penalty of Rs. 750/- inclusive of GST"
+            },
+            {
+              "m": "f.",
+              "text": "Installment is due on first day of each subsequent month, irrespective of whether a student continues with the batch or takes break/transfer."
+            },
+            {
+              "m": "g.",
+              "text": "Fees can be paid in cash, demand draft, multicity cheques or digital payment mode such as Debit/Credit cards, NEFT and Paytm."
+            },
+            {
+              "m": "h.",
+              "text": "Any Student availing the installment facility may discontinue the installment mode of payment, by paying a onetime amount within 45 days of enrolment. This will result in considerable saving to the student. For more details contact your academic counselor."
+            },
+            {
+              "m": "i.",
+              "text": "The institute reserves the right to make any changes in the fee structure from time to time. These charges will be binding on all old and new students."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "11. Placement"
+        },
+        {
+          "t": "p",
+          "text": "The institute offers placement free of cost to those students who complete the entire curriculum successfully. The following rules apply to the placement services offered by Jetking:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Passing criteria: In order to get the Jetking Passing Certificate a learner should score a minimum of 50 %."
+            },
+            {
+              "m": "b.",
+              "text": "Placements Eligibility: For a student who wants to get a placement from Jetking he/ she should score a minimum 50%."
+            },
+            {
+              "m": "c.",
+              "text": "On the last day of the batch, student should have completed 18 years of age."
+            },
+            {
+              "m": "d.",
+              "text": "The student must attend all mock interviews / extra grooming classes if required that are conducted by Jetking time to time to prepare him to face interviews."
+            },
+            {
+              "m": "e.",
+              "text": "The student should have 80% attendance in Technical and 80% attendance in E&PD classes."
+            },
+            {
+              "m": "f.",
+              "text": "The student should have appeared for all the Exams and earned a valid grade."
+            },
+            {
+              "m": "g.",
+              "text": "Placement registration form must be filled by the student at the beginning of the second semester/ third module."
+            },
+            {
+              "m": "h.",
+              "text": "Student can apply for delay (not more than 10 days) only once after his last exam. The job guarantee will no longer be applicable after a delay of 90 days. Students will receive placement assistance after a delay of 90 days."
+            },
+            {
+              "m": "i.",
+              "text": "The candidate will be sent for the interview which he/she must attend according to the schedule. In case student wishes to change the time and date of interview he/ she should inform the placement in-charge well in advance."
+            },
+            {
+              "m": "j.",
+              "text": "All correspondence with the employer must be routed through placement department only."
+            },
+            {
+              "m": "k.",
+              "text": "The candidate is advised to refrain from discussing the salary offer unless otherwise instructed by the placement in-charge."
+            },
+            {
+              "m": "l.",
+              "text": "The student would be placed only once by Jetking once he is placed."
+            },
+            {
+              "m": "m.",
+              "text": "In a company he/ she can’t refuse the placement and ask the Institute to search for another opportunity."
+            },
+            {
+              "m": "n.",
+              "text": "The candidate is required to contact Jetking after attending the interview to furnish all the details."
+            },
+            {
+              "m": "o.",
+              "text": "When a candidate gets an offer for a job either by an offer letter or appointment letter, he/ she will have to produce the same for Jetking record."
+            },
+            {
+              "m": "p.",
+              "text": "The candidate must work for minimum 12 months in a company where he/she has been placed by placement department."
+            },
+            {
+              "m": "q.",
+              "text": "Depending on the vacancies available, a student may be offered a job at any location in India, if he/ she refuses the placement his job guarantee will cease and he would be entitled to placement assistance only."
+            },
+            {
+              "m": "r.",
+              "text": "Jetking will take student testimonials and reserves the right to use it for showcasing and brand promotional purpose."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "12. Placement Guarantee"
+        },
+        {
+          "t": "p",
+          "text": "We can provide placement guarantee to the students scoring 75% and above i.e. Honors and Distinction. They will be getting a JETKING Passing Certificate."
+        },
+        {
+          "t": "h2",
+          "text": "13. Placement Assistance"
+        },
+        {
+          "t": "p",
+          "text": "We can provide placement assistance to the students scoring 50 to 74%. They will be getting a JETKING Passing Certificate."
+        },
+        {
+          "t": "p",
+          "text": "NOTE:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Students who fail are not eligible for placement assistance."
+            },
+            {
+              "m": null,
+              "text": "Students pursuing a career courses only are entitled under Jetking Job Guarantee/ Assistance."
+            },
+            {
+              "m": null,
+              "text": "There will be no Job guarantee/assistance for students pursuing Modular/Certification courses."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "14. Grade Improvement Opportunity: (GIO)"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Students scoring below 75% - Only 1 extra attempt would be given to improve their scores and come under job Guarantee program. This would be chargeable (Rs 1000 + GST)"
+            },
+            {
+              "m": "b.",
+              "text": "Students scoring below 50% - Students those who have failed would get 1 extra attempt to be eligible for JETKING PASSING CERTIFICATE. This would be chargeable (Rs 1000 + GST)"
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "15. Dress Code"
+        },
+        {
+          "t": "p",
+          "text": "Since potential employers keep visiting the campus of the institute and to get accustomed to the corporate culture, it is very important that the students are properly attired and are well- groomed. Students have to observe formal dress code from Monday to Friday which includes:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "For Boys"
+            }
+          ]
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Light colored shirt"
+            },
+            {
+              "m": null,
+              "text": "Dark colored trouser"
+            },
+            {
+              "m": null,
+              "text": "Matching tie, belt and shoes"
+            }
+          ]
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "b.",
+              "text": "For Girls"
+            }
+          ]
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Salwar-Kurta or Western Formats that are non gaudy and non revealing."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "Note:"
+        },
+        {
+          "t": "ul",
+          "items": [
+            {
+              "m": null,
+              "text": "Students will be allowed to wear rainy shoes (not sandals/ slippers) during monsoon."
+            },
+            {
+              "m": null,
+              "text": "Students will be allowed to wear decent casuals onSaturdays."
+            },
+            {
+              "m": null,
+              "text": "Students will not be allowed to wear shorts, jeans with hole/s or patch work etc. on any day."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "General Policies"
+        },
+        {
+          "t": "h2",
+          "text": "16. Name and Address Change"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "It is the responsibility of the student to contact the counselor immediately in the event of any change in address or name. Counselor would get done the necessary changes in SMARTRAIN."
+            },
+            {
+              "m": "b.",
+              "text": "The name correction can be done within 3 months from date of admission after this period, request will be considered with a fee of Rs.500/- inclusive of GST."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "17. Student Belongings"
+        },
+        {
+          "t": "p",
+          "text": "The institute will not be responsible for the loss of any personal possessions of a student. In addition, the student must not bring the following to the institute:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Tools of violence"
+            },
+            {
+              "m": "b.",
+              "text": "Pirated software"
+            },
+            {
+              "m": "c.",
+              "text": "CD/DVD, Pen drive or any device/media used to store data and or software."
+            },
+            {
+              "m": "d.",
+              "text": "Any books, periodicals, reading items and CD/DVD thatare pornographic or violent in nature"
+            },
+            {
+              "m": "e.",
+              "text": "Games software"
+            },
+            {
+              "m": "f.",
+              "text": "Any other material such as HDD, Motherboard etc."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "18. Abandoned Property"
+        },
+        {
+          "t": "p",
+          "text": "Any personal property, if found which is left in the institute premise will be held for 30 days, if the property is not claimed with in 30 days of possession than it can be destroyed discarded, used or donated as per the internal policies of the institute."
+        },
+        {
+          "t": "h2",
+          "text": "19. Smoking, Consumption of Alcohol, Chewing Paan etc"
+        },
+        {
+          "t": "p",
+          "text": "The institute is strictly smoke free, alcohol free premise. No student is allowed to smoke or drink or even attend the class while under the influence of alcohol if found, he would be immediately expelled from the institute. Chewing of pan, tobacco, pan masala, chewing gum is also prohibited in the center premises."
+        },
+        {
+          "t": "h2",
+          "text": "20. Complaints/Suggestions"
+        },
+        {
+          "t": "p",
+          "text": "Following process can be followed in case of any complaint procedures apply:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "The student should submit his/her complaint in writing within 7 days of the occurrence of the issue under concern to the Center Manager. Students can raise the ticket to Head Office at support.jetking.com or call national toll free number +91 7666830000 from any service provider."
+            },
+            {
+              "m": "b.",
+              "text": "The Center Manager should respond with resolution of the complaint in writing within seven (7) days of receipt of the complaint. The Center Manager may decide to arrange a formal meeting with concern student but the decision of the Center Manager will be final and binding."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "However complaints on following grounds will not be accepted:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "i.",
+              "text": "Request to change of facilitators in the class."
+            },
+            {
+              "m": "ii.",
+              "text": "Request to change of lab instructors."
+            },
+            {
+              "m": "iii.",
+              "text": "Facilitators have rights to warn students in case of discipline."
+            },
+            {
+              "m": "iv.",
+              "text": "Change of institute’s rules and regulations."
+            },
+            {
+              "m": "v.",
+              "text": "Transfer or change of batches."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "21. Student Code of Conduct"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "Offence related to Property"
+            },
+            {
+              "m": "i.",
+              "text": "An offence related to property is committed when a student: Knowingly damages the property owned by the institute by defacing the walls, tables, chairs, desks or other such articles."
+            },
+            {
+              "m": "ii.",
+              "text": "Commits a cyber related crime like hacking websites, sending or receiving e-mails."
+            },
+            {
+              "m": "iii.",
+              "text": "Sending viruses or using media that may have virus etc."
+            },
+            {
+              "m": "iv.",
+              "text": "Stealing computer and/or related parts, electronic gadgets, software etc."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "If the student does not adhere to the student code of conduct he is punishable as per the institute’s internal policies."
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "b.",
+              "text": "Offence related to the Operations of the Institute."
+            }
+          ]
+        },
+        {
+          "t": "p",
+          "text": "An offence related to operations occurs when a student:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "i.",
+              "text": "Engages in obscene or indecent or unruly behaviour in institute’s premise or at any event conducted by the institute outside the premise."
+            },
+            {
+              "m": "ii.",
+              "text": "Forges any document, course books and question papers."
+            },
+            {
+              "m": "iii.",
+              "text": "Intentionally acts to impair/interfere with or obstruct the orderly conduct, processes and functions of the institute."
+            },
+            {
+              "m": "iv.",
+              "text": "Students learning Ethical Hacking course has to sign an undertaking in a prescribe format."
+            }
+          ]
+        },
+        {
+          "t": "h2",
+          "text": "22. Alumni"
+        },
+        {
+          "t": "p",
+          "text": "A student who successfully completes the course becomes an alumni of the institute. As alumni he can serve as an important link between the institute and the outside world. He would be entitled as an alumni to the following:"
+        },
+        {
+          "t": "ol",
+          "items": [
+            {
+              "m": "a.",
+              "text": "As Jetking alumni, he/she would be entitled to get discount of 10% on all upgrades. This discount would be excluding of any current discount on the course"
+            },
+            {
+              "m": "b.",
+              "text": "He would be invited to the annual alumni meet"
+            },
+            {
+              "m": "c.",
+              "text": "He would be able to sponsor any of his relative or friend and claim loyalty incentive in return which will be defined by the centre from time to time."
+            }
+          ]
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-blockchain.webp",
+          "alt": "Syllabus table: Jetking Masters in Blockchain Development — 16 subjects of 20 sessions and 40 hours each, from Fundamentals of Blockchain Technology to Hyperledger Fabric SDK",
+          "w": 1400,
+          "h": 1323
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-diploma-cloud-computing.webp",
+          "alt": "Syllabus table: Jetking Diploma in Cloud Computing — job-ready, next-job-role and aspirational technologies, with sessions and hours for each subject",
+          "w": 1400,
+          "h": 1487
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-diploma-cloud-cyber-security.webp",
+          "alt": "Syllabus table: Jetking Diploma in Cloud Computing & Cyber Security — job-ready and next-role technologies with sessions and hours for each subject",
+          "w": 1400,
+          "h": 1817
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-professional-sem-1-3.webp",
+          "alt": "Syllabus table: JK Certified Cloud & Cyber Security Professional, semesters 1 to 3 — subjects with category and credits",
+          "w": 1400,
+          "h": 1587
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-professional-sem-4-6.webp",
+          "alt": "Syllabus table: JK Certified Cloud & Cyber Security Professional, semesters 4 to 6 — subjects with category and credits",
+          "w": 1400,
+          "h": 1579
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-masters-cloud-cyber-security.webp",
+          "alt": "Syllabus table: Jetking Masters in Cloud Computing & Cyber Security — job-ready and next-role technologies with sessions and hours for each subject",
+          "w": 1400,
+          "h": 1762
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-technical-support-engineer.webp",
+          "alt": "Syllabus table: Technical Support Engineer (TSE) — eight subjects, 97 sessions and 194 hours in total",
+          "w": 1400,
+          "h": 732
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/syllabus-certification-courses.webp",
+          "alt": "Certification and specialisation courses: Ethical Hacking (46 sessions, 92 hours), AWS (30, 60), IoT (45, 90) and RHCSA v8 (45, 90)",
+          "w": 1400,
+          "h": 1048
+        },
+        {
+          "t": "p",
+          "text": "Syllabus* is only mapped to Global Certifcations Student shall receive a Jetking certification on completion of course. Global Certification & exam voucher is not included in the course."
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/centre-transfer-form.webp",
+          "alt": "Centre transfer form with fields for centre, enrolment number, student, course, fees, sessions attended, reason for transfer and centre seal",
+          "w": 1084,
+          "h": 1104
+        },
+        {
+          "t": "h2",
+          "text": "Undertaking"
+        },
+        {
+          "t": "p",
+          "text": "Undertaking by the Student"
+        },
+        {
+          "t": "p",
+          "text": "[Please read the Passport, tear at the perforation after signing and hand it over to the counsellor / facilitator within 03 days from course start)."
+        },
+        {
+          "t": "p",
+          "text": "I hereby declare that I have read and understood the content of the Passport and agree to abide by all the rules and procedures as Laid out over here and understand that I am responsible to obey them. I also understand that I am liable to face disciplinary action for voluntary or involuntary disobedient actions of mine inside the premises of Jetking."
+        },
+        {
+          "t": "p",
+          "text": "Date: ................................................................ Place: ................................................................ Name: ................................................................ Enrolment No: ................................................................ Batch No.: ................................................................ Student’s Signature: ................................................................ Parent’s/Guardian’s Signature: ................................................................ Centre Manager Signature: ................................................................"
+        },
+        {
+          "t": "p",
+          "text": "Please Read &sign the Refund policy written overleaf"
+        },
+        {
+          "t": "p",
+          "text": "Note: Please read the refund policy and SOL (Statute of Limit) mentioned under Academic Policies and Guidelines"
+        },
+        {
+          "t": "img",
+          "src": "/legal/enrollment/passport-session-slips.webp",
+          "alt": "Tear-off slips confirming that the passport session and the Smartrain presentation were attended, with centre stamp and student signature",
+          "w": 1200,
+          "h": 1540
+        },
+        {
+          "t": "h2",
+          "text": "Disclaimer"
+        },
+        {
+          "t": "p",
+          "text": "The statements and policies set forth in this passport are for the information purposes only and should not be construed as the basis of contract between the student and Jetking Infotrain Ltd. (JIL). While every effort has been made by Jetking Infotrain Ltd. (JIL) to provide accurate and current information, Jetking Infotrain Ltd. (JIL) reserves the right to change, without notice, any provision in this passport without actual notice to individual student."
+        },
+        {
+          "t": "p",
+          "text": "However, every effort will be made to keep students acquainted of any such changes."
+        },
+        {
+          "t": "p",
+          "text": "Students enrolled at the Jetking Infotrain Ltd. (JIL) centers agree to comply with its rules and regulations without any preconditions and undertake to make changes in attitude, behaviour etc. wherever necessary."
+        },
+        {
+          "t": "p",
+          "text": "For questions regarding Jetking Infotrain Ltd. (JIL) passport, please Contact your Jetking Center"
+        },
+        {
+          "t": "p",
+          "text": "All logos are registered trademark of their respective organization."
+        },
+        {
+          "t": "p",
+          "text": "Follow us on:"
+        },
+        {
+          "t": "p",
+          "text": "Facebook.com/JetkingOfficial Twitter.com/JetkingLtd Youtube.com/JetkingSocial linkedIn.com/company/jetking Instagram.com/jetkingoffical/"
+        }
+      ],
+      "status": "published"
+    }
+  ],
+  "page_copy": []
 }

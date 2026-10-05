@@ -5,6 +5,7 @@ import { ArrowRight, Phone } from 'lucide-react';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { track } from '@/lib/analytics';
 import { siteConfig } from '@/lib/site';
+import type { coursesCopy } from '@/lib/content/copy/pages/courses';
 
 /**
  * Phone/tablet bottom bar for the long course page. Appears once the hero's own CTA row
@@ -16,7 +17,9 @@ export function StickyCourseCta({
   anchorId,
   title,
   duration,
+  copy,
 }: {
+  copy: typeof coursesCopy.defaults;
   anchorId: string;
   title: string;
   duration: string;
@@ -57,7 +60,7 @@ export function StickyCourseCta({
         </div>
         <a
           href={`tel:${siteConfig.phone || siteConfig.helpline}`}
-          aria-label="Call Jetking"
+          aria-label={copy['courseSticky.callLabel']}
           onClick={() => track('phone_clicked', { surface: 'sticky-course-cta' })}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--dc-hairline-strong)] text-[var(--dc-ink)] transition-colors hover:bg-[var(--dc-surface)]"
         >
@@ -67,7 +70,7 @@ export function StickyCourseCta({
           source="course-sticky-bar"
           className="dc-cta inline-flex h-11 flex-1 shrink-0 items-center justify-center gap-1.5 rounded-full px-4 text-[14px] font-bold xs:px-5 sm:flex-none"
         >
-          Enquire now
+          {copy['courseSticky.cta']}
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
         </EnquiryLink>
       </div>

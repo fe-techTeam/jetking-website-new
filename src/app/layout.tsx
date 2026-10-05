@@ -17,17 +17,23 @@ import { themeScript } from '@/components/providers/theme-script';
 import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
 import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
+import { loadCopy } from '@/lib/content/copy/load';
+import { siteCopy } from '@/lib/content/copy/pages/site';
+import { SiteCopyProvider } from '@/components/providers/site-copy';
 import '@/styles/globals.css';
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  formatDetection: { telephone: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(siteCopy);
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: copy['seo.title'],
+      template: copy['seo.titleTemplate'],
+    },
+    description: copy['seo.description'],
+    formatDetection: { telephone: true },
+  };
+}
 
 export const viewport: Viewport = {
   // Browser chrome can't resolve CSS variables: keep in sync with --color-background and --color-ink-950.
@@ -52,7 +58,8 @@ const fira = Fira_Sans({
   variable: '--font-fira',
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const copy = await loadCopy(siteCopy);
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
 
@@ -75,33 +82,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: iosInputZoomGuardScript }}
         />
         <AppProviders>
-          <JsonLd data={[organizationSchema(), websiteSchema()]} />
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-          >
-            Skip to content
-          </a>
+          <SiteCopyProvider copy={copy}>
+            <JsonLd data={[organizationSchema(), websiteSchema()]} />
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+            >
+              {copy['a11y.skipToContent']}
+            </a>
 
-          <PersonaProvider>
-            <AccountProvider>
-              <EnquirySheetServer>
-                <SilentPersonaInfer />
-                <SiteChrome>
-                  <SiteHeaderServer />
-                </SiteChrome>
-                <main id="main">{children}</main>
-                <FooterChrome>
-                  <SiteFooter />
-                </FooterChrome>
-                <SiteChrome>
-                  <MobileContactBar />
-                  <ExitIntentPopup />
-                  {showInspector ? <PersonaInspector /> : null}
-                </SiteChrome>
-              </EnquirySheetServer>
-            </AccountProvider>
-          </PersonaProvider>
+            <PersonaProvider>
+              <AccountProvider>
+                <EnquirySheetServer>
+                  <SilentPersonaInfer />
+                  <SiteChrome>
+                    <SiteHeaderServer />
+                  </SiteChrome>
+                  <main id="main">{children}</main>
+                  <FooterChrome>
+                    <SiteFooter />
+                  </FooterChrome>
+                  <SiteChrome>
+                    <MobileContactBar />
+                    <ExitIntentPopup />
+                    {showInspector ? <PersonaInspector /> : null}
+                  </SiteChrome>
+                </EnquirySheetServer>
+              </AccountProvider>
+            </PersonaProvider>
+          </SiteCopyProvider>
         </AppProviders>
       </body>
     </html>

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { ArrowRight, Award, Briefcase, Cpu, GraduationCap, MapPin, MessageCircle, Users, Wrench } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
 import { EnquiryLink } from '@/components/EnquirySheet';
-import { RECRUITERS } from '@/components/placements/data';
+import { RECRUITERS } from '@/lib/content/fixtures/placements-page';
 import {
   Callout,
   CardRail,

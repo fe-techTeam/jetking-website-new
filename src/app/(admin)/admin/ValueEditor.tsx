@@ -3,10 +3,21 @@
 import type { AdminFormConfig } from '@/lib/cms/admin-form-config';
 import { BlocksEditor, type Block } from './BlocksEditor';
 import { TagListEditor } from './TagListEditor';
+import { ParagraphListEditor } from './ParagraphListEditor';
+import { LegalBlocksEditor } from './LegalBlocksEditor';
+import type { LegalBlock } from '@/lib/content/types';
 
 /** Field names whose data key predates the website's wording. The site says "courses" everywhere. */
 const LABEL_OVERRIDES: Record<string, string> = {
   featuredProgrammes: 'Featured courses',
+  titleLead: 'Heading — first part',
+  titleAccent: 'Heading — highlighted part',
+  lede: 'Intro line',
+  photoUrl: 'Photo path',
+  imageSrc: 'Image path',
+  recruitersDisclaimer: 'Recruiters note',
+  videoId: 'Video ID',
+  sourceUrl: 'Original page URL',
 };
 
 export function humanize(key: string): string {
@@ -19,7 +30,7 @@ export function humanize(key: string): string {
  *  keyed by name since the value's own current length isn't a reliable signal
  *  for a field that's merely empty right now. */
 const LONG_TEXT_FIELDS =
-  /summary|answer|bio|intro|note(s)?|description|excerpt|address|eligibility|lede|headline|question/i;
+  /summary|answer|bio|intro|note(s)?|description|excerpt|address|eligibility|lede|headline|question|quote|disclaimer|body/i;
 
 function ObjectListEditor({
   value,
@@ -36,24 +47,52 @@ function ObjectListEditor({
   depth: number;
   fieldKey: string;
 }) {
+  function move(index: number, delta: -1 | 1) {
+    const target = index + delta;
+    if (target < 0 || target >= value.length) return;
+    const copy = [...value];
+    [copy[index], copy[target]] = [copy[target]!, copy[index]!];
+    onChange(copy);
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {value.map((item, i) => (
         <div key={i} className="rounded-[var(--admin-radius)] border border-border p-4">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between gap-2">
             <span className="label-mono">
               {humanize(fieldKey).replace(/s$/, '')} {i + 1}
             </span>
-            <button
-              type="button"
-              onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-              className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
-            >
-              Remove
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => move(i, -1)}
+                disabled={i === 0}
+                aria-label={`Move ${humanize(fieldKey).replace(/s$/, '').toLowerCase()} ${i + 1} up`}
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-[10px] text-base text-foreground-muted transition-colors hover:bg-surface hover:text-[var(--accent-ink)] disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                onClick={() => move(i, 1)}
+                disabled={i === value.length - 1}
+                aria-label={`Move ${humanize(fieldKey).replace(/s$/, '').toLowerCase()} ${i + 1} down`}
+                className="grid h-11 w-11 cursor-pointer place-items-center rounded-[10px] text-base text-foreground-muted transition-colors hover:bg-surface hover:text-[var(--accent-ink)] disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange(value.filter((_, idx) => idx !== i))}
+                className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
+              >
+                Remove
+              </button>
+            </div>
           </div>
           <ObjectFields
-            value={item}
+            value={{ ...itemTemplate, ...item }}
             config={config}
             depth={depth + 1}
             onChange={(next) => {
@@ -197,6 +236,12 @@ export function ValueEditor({
   if (Array.isArray(value)) {
     if (fieldKey === 'body') {
       return <BlocksEditor value={value as Block[]} onChange={onChange as (next: Block[]) => void} />;
+    }
+    if (fieldKey === 'blocks') {
+      return <LegalBlocksEditor value={value as LegalBlock[]} onChange={onChange as (next: LegalBlock[]) => void} />;
+    }
+    if (config.paragraphFields?.includes(fieldKey)) {
+      return <ParagraphListEditor value={value as string[]} onChange={onChange as (next: string[]) => void} />;
     }
     const itemTemplate = config.itemTemplates?.[fieldKey];
     if (itemTemplate) {

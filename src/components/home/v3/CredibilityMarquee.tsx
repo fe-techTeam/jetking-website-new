@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { HIRING_PARTNERS } from '@/components/professional/data';
 import { CERT_LOGOS, MORE_EMPLOYER_LOGOS } from './data';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 const EMPLOYER_LOGOS: ReadonlyArray<{ name: string; file: string; dark?: boolean }> = [
   ...HIRING_PARTNERS.map((p) => ({ name: p.name, file: p.logo })),
@@ -19,7 +20,7 @@ const EMPLOYER_LOGOS: ReadonlyArray<{ name: string; file: string; dark?: boolean
  * (matched against certifications named in the course fixtures) and `HIRING_PARTNERS`
  * (jetking.com's own published recruiter list) — nothing invented for this page.
  */
-export function CredibilityMarquee() {
+export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
   const [paused, setPaused] = useState(false);
 
   return (
@@ -29,12 +30,12 @@ export function CredibilityMarquee() {
             id="home-credibility-heading"
             className="section-title font-display text-[var(--dc-ink)]"
           >
-            Trusted by top companies. Our learners work at
+            {copy['marquee.heading']}
           </h2>
         </div>
 
         <div className="mt-8 sm:mt-10">
-          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">Certification tracks</p>
+          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.certs.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '32s' }}>
             <div className="dc-marquee-track">
               <LogoList items={CERT_LOGOS} />
@@ -44,7 +45,7 @@ export function CredibilityMarquee() {
         </div>
 
         <div className="mt-8 sm:mt-10">
-          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">Where alumni work</p>
+          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.alumni.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '40s' }}>
             <div className="dc-marquee-track">
               <LogoList items={EMPLOYER_LOGOS} />
@@ -58,7 +59,7 @@ export function CredibilityMarquee() {
             type="button"
             onClick={() => setPaused((p) => !p)}
             aria-pressed={paused}
-            aria-label={paused ? 'Resume scrolling logos' : 'Pause scrolling logos'}
+            aria-label={paused ? copy['marquee.play.aria'] : copy['marquee.pause.aria']}
             className="dc-chip inline-flex h-10 gap-2 px-4 text-[12.5px]"
           >
             {paused ? (
@@ -66,7 +67,7 @@ export function CredibilityMarquee() {
             ) : (
               <Pause className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
             )}
-            {paused ? 'Play' : 'Pause'}
+            {paused ? copy['marquee.play.label'] : copy['marquee.pause.label']}
           </button>
         </div>
       </Section>

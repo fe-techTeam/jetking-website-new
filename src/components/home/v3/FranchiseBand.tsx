@@ -2,27 +2,28 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, Handshake } from 'lucide-react';
 import { Callout, Section } from '@/components/kit';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
-export function FranchiseBand() {
+export function FranchiseBand({ copy }: { copy: HomeCopy }) {
   return (
     <Section tone="plain" labelledBy="home-franchise-heading">
       <h2 id="home-franchise-heading" className="sr-only">
-        Franchise opportunities
+        {copy['franchise.srHeading']}
       </h2>
       <Callout
         icon={Handshake}
-        title="Run a Jetking centre in your city"
+        title={copy['franchise.title']}
         action={
           <Link
-            href={'/franchise' as Route}
+            href={copy['franchise.cta.href'] as Route}
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
           >
-            Explore franchise
+            {copy['franchise.cta.label']}
             <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
           </Link>
         }
       >
-        Partner with India&rsquo;s most trusted brand &mdash; 78 years of brand equity, a countrywide network and end-to-end support.
+        {copy['franchise.body']}
       </Callout>
     </Section>
   );

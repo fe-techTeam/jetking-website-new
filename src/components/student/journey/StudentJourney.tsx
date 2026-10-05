@@ -26,6 +26,7 @@ import { SaveRecommendationsStep } from './SaveRecommendationsStep';
 import { RoadmapStep } from './RoadmapStep';
 import { CounsellingStep } from './CounsellingStep';
 import { scrollBehavior } from '@/lib/motion';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 function persist(state: StudentJourneyState) {
   writeStudentJourney(state);
@@ -40,9 +41,11 @@ function scrollToJourneyPanel() {
 export function StudentJourney({
   courses,
   counts,
+  copy,
 }: {
   courses: Course[];
   counts: { courses: number; centres: number; cities: number };
+  copy: StudentCopy;
 }) {
   const { hydrated, override, setIntent, record } = usePersona();
   const [journey, setJourney] = useState<StudentJourneyState>(() => readStudentJourney());
@@ -197,33 +200,41 @@ export function StudentJourney({
       <StudentExploreHero
         cities={counts.cities}
         onStartJourney={openJourney}
+        copy={copy}
       />
 
       <div className="rounded-t-[28px] bg-[var(--dc-surface)] xs:rounded-t-[40px]">
-        <RecommendedCourses courses={courses} />
+        <RecommendedCourses
+          courses={courses}
+          title={copy['courses.title']}
+          description={copy['courses.description']}
+          viewAllLabel={copy['courses.viewAll.label']}
+          viewAllHref={copy['courses.viewAll.href']}
+          badgeLabel={copy['courses.badge']}
+          trackLabel={copy['courses.trackLabel']}
+        />
       </div>
 
       {booted && showPanel ? (
         <section
           id="student-journey-panel"
           className="shell relative scroll-mt-24 pt-6 pb-10 xs:pt-8 sm:pt-10"
-          aria-label="Guided career journey"
+          aria-label={copy['journey.ariaLabel']}
         >
           <div className="mb-6 max-w-2xl">
             <p className="k-eyebrow">
-              Personalised path
+              {copy['journey.eyebrow']}
             </p>
             <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-              Your guided career journey
+              {copy['journey.title']}
             </h2>
             <p className="mt-2 text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
-              Answer a few questions — we&rsquo;ll recommend courses, build your roadmap, and
-              connect you with a counsellor.
+              {copy['journey.body']}
             </p>
           </div>
 
           <div className="stu-card overflow-hidden rounded-[28px] p-5 xs:rounded-[28px] xs:p-6 sm:p-8 lg:p-10">
-            <JourneyProgress current={journey.step} />
+            <JourneyProgress current={journey.step} copy={copy} />
 
             {/*
               Focus moves here on step change (see the effect above), which is what
@@ -237,7 +248,7 @@ export function StudentJourney({
               className="mt-8 rounded-2xl focus:outline-2 focus:outline-[var(--focus-ring)] focus:outline-offset-4 sm:mt-10"
             >
               {journey.step === 'discover' ? (
-                <DiscoveryStep initial={journey.discovery} onComplete={onDiscoveryComplete} />
+                <DiscoveryStep initial={journey.discovery} onComplete={onDiscoveryComplete} copy={copy} />
               ) : null}
 
               {journey.step === 'recommend' && journey.discovery ? (
@@ -247,6 +258,7 @@ export function StudentJourney({
                   selectedSlug={journey.selectedCourseSlug}
                   onSelect={onCourseSelect}
                   onContinue={onRecommendContinue}
+                  copy={copy}
                 />
               ) : null}
 
@@ -257,6 +269,7 @@ export function StudentJourney({
                   selectedCourseSlug={journey.selectedCourseSlug}
                   onSaved={onSoftSaved}
                   onSkip={() => goTo('roadmap')}
+                  copy={copy}
                 />
               ) : null}
 
@@ -265,6 +278,7 @@ export function StudentJourney({
                   course={selectedCourse}
                   discovery={journey.discovery}
                   onContinue={() => goTo('counsel')}
+                  copy={copy}
                 />
               ) : null}
 
@@ -275,17 +289,17 @@ export function StudentJourney({
                   softName={journey.softIdentity?.name}
                   softPhone={journey.softIdentity?.phone}
                   onComplete={() => goTo('complete')}
+                  copy={copy}
                 />
               ) : null}
 
               {journey.step === 'complete' ? (
                 <div className="space-y-4 text-center sm:text-left">
                   <h2 className="section-title font-display text-[var(--dc-ink)]">
-                    Journey complete
+                    {copy['journey.complete.title']}
                   </h2>
                   <p className="max-w-[48ch] text-[15px] text-[var(--dc-ink-secondary)]">
-                    Your counsellor will follow up soon. Keep exploring below or start a new
-                    path anytime.
+                    {copy['journey.complete.body']}
                   </p>
                   <button
                     type="button"
@@ -300,7 +314,7 @@ export function StudentJourney({
                     }
                     className="-my-2 inline-block cursor-pointer py-2 text-[14px] font-bold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
                   >
-                    Start a new journey
+                    {copy['journey.complete.restart']}
                   </button>
                 </div>
               ) : null}

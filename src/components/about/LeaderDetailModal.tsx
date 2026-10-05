@@ -6,7 +6,8 @@ import { ArrowRight, X } from 'lucide-react';
 import { useDialog } from '@/components/useDialog';
 import { useHydrated } from '@/components/useHydrated';
 import { cx } from '@/components/ui';
-import type { Leader } from './data';
+import type { Leader } from '@/lib/content/types';
+import type { aboutCopy } from '@/lib/content/copy/pages/about';
 import { LeaderAvatar } from './LeaderAvatar';
 
 /**
@@ -22,7 +23,13 @@ import { LeaderAvatar } from './LeaderAvatar';
  * out there (transparent panel, invisible text). The trigger button below stays
  * on `--dc-*` since it renders in place, inside the card, inside that scope.
  */
-export function LeaderDetailModal({ leader }: { leader: Leader }) {
+export function LeaderDetailModal({
+  leader,
+  copy,
+}: {
+  leader: Leader;
+  copy: Pick<typeof aboutCopy.defaults, 'leaders.readMore' | 'leaders.closeLabel'>;
+}) {
   const [open, setOpen] = useState(false);
   const mounted = useHydrated();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -62,7 +69,7 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
               <button
                 type="button"
                 onClick={close}
-                aria-label="Close"
+                aria-label={copy['leaders.closeLabel']}
                 className="absolute top-3 right-3 grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-surface text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
               >
                 <X className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
@@ -102,7 +109,7 @@ export function LeaderDetailModal({ leader }: { leader: Leader }) {
         aria-haspopup="dialog"
         className="tap mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
       >
-        Read more
+        {copy['leaders.readMore']}
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />
       </button>
       {modal}

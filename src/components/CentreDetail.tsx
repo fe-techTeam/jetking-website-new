@@ -33,6 +33,8 @@ import { CentreCatalogueProgrammes, CentreFeaturedProgrammes } from '@/component
 import { StickyCentreBar } from '@/components/centres/StickyCentreBar';
 import { TrackedAnchor } from '@/components/TrackedAnchor';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
+import { fill } from '@/lib/content/copy/define';
+import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
 const STAT_ICONS = [Award, Building2, Users, ShieldCheck] as const;
 const JOURNEY_ICONS = [BookOpen, Cpu, Trophy, Briefcase, GraduationCap] as const;
@@ -54,7 +56,9 @@ export function CentreDetail({
   siblingCentres = [],
   canonicalPath,
   network,
+  copy,
 }: {
+  copy: typeof centresCopy.defaults;
   centre: Centre;
   city: City;
   courses: Course[];
@@ -96,7 +100,7 @@ export function CentreDetail({
   const introCopy =
     centre.body ??
     centre.intro ??
-    `IT training centre in ${localityCityLabel}. Cloud, cyber security and BCA courses with placement support.`;
+    fill(copy['centreHero.introFallback'], { place: localityCityLabel });
   const heroAccent = centre.name.toLowerCase().includes(centre.locality.toLowerCase())
     ? (localitySameAsCity ? null : city.name)
     : centre.locality;
@@ -119,8 +123,8 @@ export function CentreDetail({
   // Cities have no page of their own — the centres directory, filtered to the city, is the
   // "all centres in {city}" view — so the trail goes straight from Centres to this centre.
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Centres', path: '/centres' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.centres'], path: '/centres' },
     { name: centre.name, path: canonicalPath },
   ];
   const cityDirectoryHref = `/centres?q=${encodeURIComponent(city.name)}` as Route;
@@ -147,14 +151,17 @@ export function CentreDetail({
   const hasCourses = featured.length > 0 || offered.length > 0;
   const hasAdmissions = eligibility.length > 0 || journey.length > 0;
   const jumpItems: JumpItem[] = [
-    ...(hasCourses ? [{ id: 'centre-courses', label: 'Courses' }] : []),
-    ...(hasAdmissions ? [{ id: 'centre-admissions', label: 'Admissions' }] : []),
-    ...(cleanFaculty.length ? [{ id: 'centre-faculty-section', label: 'Faculty' }] : []),
-    ...(placements.length ? [{ id: 'centre-placements-section', label: 'Placements' }] : []),
-    ...(testimonials.length ? [{ id: 'centre-stories-section', label: 'Stories' }] : []),
-    ...(faqs.length ? [{ id: 'centre-faq-section', label: 'FAQs' }] : []),
-    { id: 'centre-visit-section', label: 'Visit' },
+    ...(hasCourses ? [{ id: 'centre-courses', label: copy['centreJump.courses'] }] : []),
+    ...(hasAdmissions ? [{ id: 'centre-admissions', label: copy['centreJump.admissions'] }] : []),
+    ...(cleanFaculty.length ? [{ id: 'centre-faculty-section', label: copy['centreJump.faculty'] }] : []),
+    ...(placements.length ? [{ id: 'centre-placements-section', label: copy['centreJump.placements'] }] : []),
+    ...(testimonials.length ? [{ id: 'centre-stories-section', label: copy['centreJump.stories'] }] : []),
+    ...(faqs.length ? [{ id: 'centre-faq-section', label: copy['centreJump.faqs'] }] : []),
+    { id: 'centre-visit-section', label: copy['centreJump.visit'] },
   ];
+
+  // The closing headline keeps the live locality in an accent span, so its template is split around the token.
+  const [closingBefore = '', closingAfter = ''] = copy['centreClosing.title'].split('{locality}');
 
   const primaryBtn =
     'dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]';
@@ -180,7 +187,7 @@ export function CentreDetail({
       <section className="shell relative pt-5 pb-8 sm:pt-6 sm:pb-10 lg:pb-12">
         <div className="centres-detail-hero relative min-h-[min(78vw,440px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
           <Image
-            src="/home/journey-explore-v2.jpg"
+            src={copy['centreHero.image']}
             alt=""
             fill
             priority
@@ -220,7 +227,7 @@ export function CentreDetail({
               className="centres-reveal centres-reveal-delay-3 mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             >
               <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
-                Enquire at this centre
+                {copy['centreHero.enquire']}
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
               </Link>
 
@@ -232,7 +239,7 @@ export function CentreDetail({
                   className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-5 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
                 >
                   <Phone className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-                  Call {centre.phone}
+                  {fill(copy['centreHero.call'], { phone: centre.phone ?? '' })}
                 </TrackedAnchor>
               ) : null}
             </div>
@@ -244,7 +251,7 @@ export function CentreDetail({
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <GraduationCap className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
-                {featured.length || offered.length} courses
+                {fill(copy['centreHero.courses'], { count: featured.length || offered.length })}
               </span>
             </div>
           </div>
@@ -258,10 +265,10 @@ export function CentreDetail({
         <Section tone={nextTone()} labelledBy="centre-why-heading">
           <SectionHeader
             id="centre-why-heading"
-            eyebrow="Why Jetking"
+            eyebrow={copy['centreStats.eyebrow']}
             title={
               <>
-                Learn where industry <span className="text-[var(--k-red)]">actually trains</span>
+                {copy['centreStats.title']} <span className="text-[var(--k-red)]">{copy['centreStats.titleAccent']}</span>
               </>
             }
           />
@@ -280,16 +287,17 @@ export function CentreDetail({
         <Section tone={nextTone()} id="centre-courses" labelledBy="centre-courses-heading" className="scroll-mt-36">
           <SectionHeader
             id="centre-courses-heading"
-            eyebrow="At this centre"
-            title="Courses at this centre"
-            lede="Classroom and lab training, with placement support. Pick a course to see its curriculum, fees and certifications."
+            eyebrow={copy['centreCourses.eyebrow']}
+            title={copy['centreCourses.title']}
+            lede={copy['centreCourses.lede']}
           />
           <div className="space-y-10 sm:space-y-12">
-            <CentreFeaturedProgrammes programmes={featured} courses={courses} centreSlug={centre.slug} />
+            <CentreFeaturedProgrammes programmes={featured} courses={courses} centreSlug={centre.slug} copy={copy} />
             {featured.length && !moreCourses.length ? null : (
               <CentreCatalogueProgrammes
                 courses={featured.length ? moreCourses : offered}
-                title={featured.length ? 'More courses at this centre' : 'Courses offered'}
+                title={featured.length ? copy['centreCourses.moreTitle'] : copy['centreCourses.offeredTitle']}
+                copy={copy}
               />
             )}
           </div>
@@ -301,9 +309,9 @@ export function CentreDetail({
         <Section tone={nextTone()} id="centre-admissions" labelledBy="centre-admissions-heading" className="scroll-mt-36">
           <SectionHeader
             id="centre-admissions-heading"
-            eyebrow="Admissions"
-            title={eligibility.length ? 'Who can apply' : 'Your transformation journey'}
-            lede={eligibility.length ? undefined : 'From beginner to job-ready, step by step.'}
+            eyebrow={copy['centreAdmissions.eyebrow']}
+            title={eligibility.length ? copy['centreAdmissions.eligibilityTitle'] : copy['centreAdmissions.journeyTitle']}
+            lede={eligibility.length ? undefined : copy['centreAdmissions.journeyLede']}
           />
           {eligibility.length ? (
             <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
@@ -327,7 +335,7 @@ export function CentreDetail({
             <div className={eligibility.length ? 'mt-14 sm:mt-16' : ''}>
               {eligibility.length ? (
                 <h3 className="mb-8 text-center text-[22px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mb-10 sm:text-[26px]">
-                  Your transformation journey
+                  {copy['centreAdmissions.journeyTitle']}
                 </h3>
               ) : null}
               <StepPath
@@ -351,8 +359,8 @@ export function CentreDetail({
       {/* Faculty */}
       {cleanFaculty.length ? (
         <Section tone={nextTone()} id="centre-faculty-section" labelledBy="centre-faculty" className="scroll-mt-36">
-          <SectionHeader id="centre-faculty" eyebrow="Mentors" title="Our faculty" />
-          <CardRail label="Faculty" cols={3} colsMd={2}>
+          <SectionHeader id="centre-faculty" eyebrow={copy['centreFaculty.eyebrow']} title={copy['centreFaculty.title']} />
+          <CardRail label={copy['centreFaculty.label']} cols={3} colsMd={2}>
             {cleanFaculty.map((member) => {
               const bioLines = member.bio ? facultyBioLines(member.bio) : [];
               return (
@@ -389,8 +397,8 @@ export function CentreDetail({
       {/* Placements */}
       {placements.length ? (
         <Section tone={nextTone()} id="centre-placements-section" labelledBy="centre-placements" className="scroll-mt-36">
-          <SectionHeader id="centre-placements" eyebrow="Outcomes" title="Recent placements" />
-          <CardRail label="Recent placements" cols={4} colsMd={3}>
+          <SectionHeader id="centre-placements" eyebrow={copy['centrePlacements.eyebrow']} title={copy['centrePlacements.title']} />
+          <CardRail label={copy['centrePlacements.label']} cols={4} colsMd={3}>
             {placements.slice(0, 12).map((p) => (
               <article key={`${p.name}-${p.company}`} className="kit kit-card flex h-full flex-col items-center gap-3 p-5 text-center sm:p-6">
                 <span className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--k-red-wash)]">
@@ -423,8 +431,8 @@ export function CentreDetail({
       {/* Student stories */}
       {testimonials.length ? (
         <Section tone={nextTone()} id="centre-stories-section" labelledBy="centre-stories" className="scroll-mt-36">
-          <SectionHeader id="centre-stories" eyebrow="Voices" title="Student stories" />
-          <CardRail label="Student stories" cols={3} colsMd={2}>
+          <SectionHeader id="centre-stories" eyebrow={copy['centreStories.eyebrow']} title={copy['centreStories.title']} />
+          <CardRail label={copy['centreStories.label']} cols={3} colsMd={2}>
             {testimonials.map((t) => (
               <StoryCard key={`${t.name}-${t.quote.slice(0, 24)}`} name={t.name} outcome={t.role ?? ''} quote={t.quote} />
             ))}
@@ -435,7 +443,7 @@ export function CentreDetail({
       {/* FAQ */}
       {faqs.length ? (
         <Section tone={nextTone()} id="centre-faq-section" labelledBy="centre-faq" className="scroll-mt-36">
-          <SectionHeader id="centre-faq" eyebrow="Help" title="Frequently asked questions" />
+          <SectionHeader id="centre-faq" eyebrow={copy['centreFaq.eyebrow']} title={copy['centreFaq.title']} />
           <div className="kit kit-card divide-y divide-[var(--k-line)] px-5 sm:px-7">
             {faqs.map((faq) => (
               <details key={faq.question} className="group">
@@ -459,7 +467,7 @@ export function CentreDetail({
 
       {/* Visit this centre, and the other centres in the city */}
       <Section tone={nextTone()} id="centre-visit-section" labelledBy="centre-visit" className="scroll-mt-36">
-        <SectionHeader id="centre-visit" eyebrow="Visit" title={`Visit ${centre.locality}`} />
+        <SectionHeader id="centre-visit" eyebrow={copy['centreVisit.eyebrow']} title={fill(copy['centreVisit.title'], { locality: centre.locality })} />
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-6">
           <div className="kit kit-card p-5 sm:p-7">
             <address className="flex gap-3 text-[15px] leading-relaxed text-[var(--k-ink-2)] not-italic">
@@ -481,8 +489,8 @@ export function CentreDetail({
               className="tap mt-4 ml-8 inline-flex items-center gap-1.5 rounded-full border border-[var(--k-line-strong)] px-4 py-2 text-[14px] font-bold text-[var(--k-red)] transition-colors hover:border-[var(--k-red)]"
             >
               <Navigation className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              Open in Google Maps
-              <span className="sr-only"> (opens in a new tab)</span>
+              {copy['centreVisit.mapsLink']}
+              <span className="sr-only"> {copy['centreVisit.newTab']}</span>
             </a>
 
             <dl className="mt-6 space-y-5 border-t border-[var(--k-line)] pt-6">
@@ -490,7 +498,7 @@ export function CentreDetail({
                 <div className="flex gap-3">
                   <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
                   <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Phone</dt>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.phone']}</dt>
                     <dd>
                       {phoneHref ? (
                         <TrackedAnchor
@@ -512,7 +520,7 @@ export function CentreDetail({
                 <div className="flex gap-3">
                   <Headphones className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
                   <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Admissions helpline</dt>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.helpline']}</dt>
                     <dd>
                       {helplineHref ? (
                         <TrackedAnchor
@@ -534,7 +542,7 @@ export function CentreDetail({
                 <div className="flex gap-3">
                   <Mail className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
                   <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">Email</dt>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.email']}</dt>
                     <dd>
                       <a
                         href={`mailto:${centre.email}`}
@@ -550,18 +558,18 @@ export function CentreDetail({
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
-                Enquire about this centre
+                {copy['centreVisit.enquire']}
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
               </Link>
-              <Link href={'/centres' as Route} className={outlineBtn}>
-                Back to all centres
+              <Link href={copy['centreVisit.backHref'] as Route} className={outlineBtn}>
+                {copy['centreVisit.back']}
               </Link>
             </div>
           </div>
 
           <div className="kit kit-card p-5 sm:p-7">
             <h3 className="text-[20px] font-extrabold text-[var(--k-ink)]">
-              {siblings.length ? `Other centres in ${city.name}` : `Centres in ${city.name}`}
+              {fill(siblings.length ? copy['centreVisit.siblingsTitle'] : copy['centreVisit.onlyTitle'], { city: city.name })}
             </h3>
             {siblings.length ? (
               <ul className="mt-4 divide-y divide-[var(--k-line)]">
@@ -583,13 +591,13 @@ export function CentreDetail({
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-[15px] text-[var(--k-ink-2)]">This is the only Jetking centre in {city.name}.</p>
+              <p className="mt-3 text-[15px] text-[var(--k-ink-2)]">{fill(copy['centreVisit.onlyText'], { city: city.name })}</p>
             )}
             <Link
               href={cityDirectoryHref}
               className="tap mt-4 inline-flex items-center gap-1.5 text-[15px] font-bold text-[var(--k-red)]"
             >
-              View all {city.name} centres
+              {fill(copy['centreVisit.viewAll'], { city: city.name })}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
           </div>
@@ -601,15 +609,17 @@ export function CentreDetail({
         <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
           <div className="max-w-2xl">
             <h2 id="centre-cta-heading" className="section-title text-[var(--k-ink)]">
-              Ready to visit <span className="text-[var(--k-red)]">{centre.locality}</span>?
+              {closingBefore}
+              <span className="text-[var(--k-red)]">{centre.locality}</span>
+              {closingAfter}
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
-              Talk to a counsellor about batches, fees and the right course for your goals at this centre.
+              {copy['centreClosing.body']}
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
-              Book a counselling call
+              {copy['centreClosing.cta']}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
             {phoneHref ? (
@@ -627,7 +637,7 @@ export function CentreDetail({
         </div>
       </Section>
 
-      <StickyCentreBar anchorId="centre-hero-cta" centreSlug={centre.slug} phoneHref={phoneHref} />
+      <StickyCentreBar anchorId="centre-hero-cta" centreSlug={centre.slug} phoneHref={phoneHref} copy={copy} />
     </div>
   );
 }

@@ -3,7 +3,11 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { ImageRef, Post } from '@/lib/content/types';
+import { blogCopy } from '@/lib/content/copy/pages/blog';
 export const BLOG_PAGE_SIZE = 12;
+
+/** The card's own labels — callers on the blog pass their loaded copy; other pages get the shipped wording. */
+export type PostCardCopy = Pick<typeof blogCopy.defaults, 'card.latestBadge' | 'card.readArticle'>;
 
 export function formatPostDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', {
@@ -45,7 +49,15 @@ export function postCover(post: Post): ImageRef | null {
   return null;
 }
 
-export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
+export function PostCard({
+  post,
+  badge,
+  copy = blogCopy.defaults,
+}: {
+  post: Post;
+  badge?: 'latest';
+  copy?: PostCardCopy;
+}) {
   const cover = postCover(post);
 
   return (
@@ -53,7 +65,7 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
       {badge === 'latest' ? (
         <span className="blog-latest-badge">
           <Sparkles className="h-3 w-3" strokeWidth={2.25} aria-hidden="true" />
-          Latest
+          {copy['card.latestBadge']}
         </span>
       ) : null}
       <Link
@@ -109,7 +121,7 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
 
           {/* Same action row as the course card: the label, then the round red arrow. */}
           <div className="mt-auto flex items-center justify-between gap-3 pt-4 sm:pt-5">
-            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">Read article</span>
+            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">{copy['card.readArticle']}</span>
             <span aria-hidden="true" className="dc-cta grid h-10 w-10 shrink-0 place-items-center rounded-full">
               <ArrowRight
                 className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/post:translate-x-0.5"

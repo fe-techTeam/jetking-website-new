@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
-import type { Testimonial } from './data';
+import type { PlacementTestimonial as Testimonial } from '@/lib/content/types';
+import type { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 /* Generic avatar placeholders — same set every persona testimonial slider
    uses, since no real headshots exist for these published quotes. */
@@ -27,7 +28,13 @@ function splitRole(role: string): { title?: string; company: string } {
   return { title: role.slice(0, commaIndex).trim(), company: role.slice(commaIndex + 1).trim() };
 }
 
-export function PlacementsTestimonialSlider({ testimonials }: { testimonials: Testimonial[] }) {
+export function PlacementsTestimonialSlider({
+  testimonials,
+  copy,
+}: {
+  testimonials: Testimonial[];
+  copy: Pick<typeof placementsCopy.defaults, 'testimonials.carouselLabel'>;
+}) {
   const items: Slide[] = testimonials.map((t, i) => ({
     ...t,
     id: `placement-story-${i}-${t.name.replace(/\s+/g, '-').toLowerCase()}`,
@@ -36,7 +43,7 @@ export function PlacementsTestimonialSlider({ testimonials }: { testimonials: Te
   return (
     <Carousel
       items={items}
-      label="Placement stories"
+      label={copy['testimonials.carouselLabel']}
       dots={false}
       itemKey={(item) => item.id}
       itemLabel={(item) => `${item.name}, ${item.role}`}

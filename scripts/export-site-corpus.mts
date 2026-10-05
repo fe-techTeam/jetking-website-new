@@ -24,14 +24,14 @@ import {
   PURPOSE,
   TIMELINE,
   VALUES,
-} from '@/components/about/data';
+} from '@/lib/content/fixtures/about';
 import {
   PLACED_CANDIDATES,
   PLACEMENT_DISCLAIMER,
   PROCESS_STEPS,
   STUDENT_BENEFITS,
   TESTIMONIALS as PLACEMENT_TESTIMONIALS,
-} from '@/components/placements/data';
+} from '@/lib/content/fixtures/placements-page';
 import {
   COURSES as FRANCHISE_COURSES,
   FRANCHISE_INVESTMENT,

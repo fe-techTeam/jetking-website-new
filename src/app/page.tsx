@@ -1,5 +1,4 @@
 import { toEnquiryCentres } from '@/lib/enquiry-centres';
-import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
@@ -7,15 +6,20 @@ import { content } from '@/lib/content';
 import { loadHomeData } from '@/components/home/data';
 import { HomeV2 } from '@/components/home/v2/HomeV2';
 import { HomeSections } from '@/components/home/v3/HomeSections';
+import { fill } from '@/lib/content/copy/define';
+import { loadCopy } from '@/lib/content/copy/load';
+import { homeCopy } from '@/lib/content/copy/pages/home';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `${siteConfig.name} — Cloud, Cyber Security & IT Courses`,
-    description:
-      'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
-  },
-  '/',
-);
+export async function generateMetadata() {
+  const copy = await loadCopy(homeCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
+      description: fill(copy['seo.description'], { siteName: siteConfig.name }),
+    },
+    '/',
+  );
+}
 
 /**
  * The homepage.
@@ -25,10 +29,11 @@ export const metadata: Metadata = buildMetadata(
  * (see `FooterChrome`).
  */
 export default async function HomePage() {
-  const [data, centres, cities] = await Promise.all([
+  const [data, centres, cities, copy] = await Promise.all([
     loadHomeData(),
     content.listCentres(),
     content.listCities(),
+    loadCopy(homeCopy),
   ]);
   const enquiryCentres = toEnquiryCentres(centres, cities);
 
@@ -36,9 +41,13 @@ export default async function HomePage() {
     <>
       <ScrollDepthTracker />
       <div className="relative overflow-hidden [transform:translateZ(0)]">
-        <HomeV2 enquiryCentres={enquiryCentres} counts={{ centres: centres.length, cities: cities.length }} />
+        <HomeV2
+          enquiryCentres={enquiryCentres}
+          counts={{ centres: centres.length, cities: cities.length }}
+          copy={copy}
+        />
       </div>
-      <HomeSections data={data} enquiryCentres={enquiryCentres} />
+      <HomeSections data={data} enquiryCentres={enquiryCentres} copy={copy} />
     </>
   );
 }

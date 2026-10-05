@@ -2,6 +2,7 @@
 
 import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { usePersona } from '@/persona/PersonaProvider';
@@ -12,6 +13,8 @@ import { useAccount } from '@/components/account/AccountProvider';
 import { Button, Field, Input, Notice, Select, Textarea } from '@/components/ui';
 import { QUALIFICATIONS } from '@/lib/enquiry-fields';
 import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryLocation';
+import { fill } from '@/lib/content/copy/define';
+import type { enquiryCopy } from '@/lib/content/copy/pages/enquiry';
 
 /**
  * Enquiry form.
@@ -48,20 +51,21 @@ type Status = 'idle' | 'submitting' | 'done' | 'error';
 const fieldClass =
   'stu-field bg-[var(--dc-card)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)]';
 
-const INTRO: Record<string, string> = {
-  student: 'Tell us where you are in your studies and we will point you to the right track.',
-  professional: 'Tell us your current role and what you want to move into.',
-  parent: 'Tell us a little about your child’s situation and what you would like to know.',
-  unknown: 'Tell us what you are looking for.',
-};
-
 export function EnquiryForm({
   courses,
   centres,
+  copy,
 }: {
   courses: Option[];
   centres: LocatedCentre[];
+  copy: typeof enquiryCopy.defaults;
 }) {
+  const INTRO: Record<string, string> = {
+    student: copy['form.intro.student'],
+    professional: copy['form.intro.professional'],
+    parent: copy['form.intro.parent'],
+    unknown: copy['form.intro.unknown'],
+  };
   const { classification, visitor, profile, record } = usePersona();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>('idle');
@@ -134,7 +138,7 @@ export function EnquiryForm({
 
       if (!response.ok || !data.ok) {
         setStatus('error');
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setError(data.error ?? copy['form.error']);
         return;
       }
 
@@ -166,7 +170,7 @@ export function EnquiryForm({
       record({ kind: 'form', formId: 'enquiry', status: 'completed' });
     } catch {
       setStatus('error');
-      setError('We could not send that. Please check your connection and try again.');
+      setError(copy['form.errorNetwork']);
     }
   }
 
@@ -180,10 +184,9 @@ export function EnquiryForm({
        * announces it (WCAG 3.3.1, 4.1.3).
        */
       <div ref={successRef} tabIndex={-1} role="status" className="focus:outline-none">
-        <Notice tone="success" title="Thank you — that has reached us.">
+        <Notice tone="success" title={copy['form.thanks.title']}>
           <p>
-            A counsellor from your nearest centre will be in touch, usually within one
-            working day.
+            {copy['form.thanks.body']}
           </p>
           {siteConfig.whatsappNumber ? (
             <a
@@ -193,9 +196,9 @@ export function EnquiryForm({
               onClick={() => track('whatsapp_clicked', { persona: classification.persona })}
               className="link-underline mt-4 inline-flex items-center gap-1.5 font-semibold text-[var(--accent-ink)]"
             >
-              Prefer WhatsApp? Message us now
+              {copy['form.thanks.whatsapp']}
               <span aria-hidden="true">→</span>
-              <span className="sr-only">(opens in a new tab)</span>
+              <span className="sr-only">{copy['form.thanks.newTab']}</span>
             </a>
           ) : null}
         </Notice>
@@ -217,9 +220,9 @@ export function EnquiryForm({
       <p className="text-base text-[var(--dc-ink-secondary)]">
         {classification.persona === 'franchise' ? (
           <>
-            This form reaches a course counsellor. Looking to open a Jetking centre?{' '}
-            <Link href="/franchise#enquire" className="font-semibold text-[var(--accent-ink)] underline underline-offset-4">
-              Use the franchise enquiry form
+            {copy['form.intro.franchise.lead']}{' '}
+            <Link href={copy['form.intro.franchise.href'] as Route} className="font-semibold text-[var(--accent-ink)] underline underline-offset-4">
+              {copy['form.intro.franchise.link']}
             </Link>
             .
           </>
@@ -231,24 +234,24 @@ export function EnquiryForm({
       {account.ready ? (
         accountUser ? (
           <p className="text-sm text-[var(--dc-ink-muted)]">
-            Signed in as {accountUser.name} — your details are filled in below.
+            {fill(copy['form.signedIn'], { name: accountUser.name })}
           </p>
         ) : (
           <p className="text-sm text-[var(--dc-ink-muted)]">
-            Have a Jetking account?{' '}
+            {copy['form.login.lead']}{' '}
             <button
               type="button"
               onClick={() => account.openAuth('login')}
               className="tap cursor-pointer font-semibold text-[var(--accent-ink)] underline underline-offset-2"
             >
-              Log in
+              {copy['form.login.button']}
             </button>{' '}
-            to fill in your details.
+            {copy['form.login.trail']}
           </p>
         )
       ) : null}
 
-      <Field label="Your name" htmlFor="name" required>
+      <Field label={copy['form.name.label']} htmlFor="name" required>
         <Input
           id="name"
           name="name"
@@ -263,10 +266,10 @@ export function EnquiryForm({
       </Field>
 
       <Field
-        label="Phone number"
+        label={copy['form.phone.label']}
         htmlFor="phone"
         required
-        hint="A counsellor will call or message you on this."
+        hint={copy['form.phone.hint']}
       >
         <Input
           id="phone"
@@ -282,7 +285,7 @@ export function EnquiryForm({
         />
       </Field>
 
-      <Field label="Email" htmlFor="email" hint="Optional.">
+      <Field label={copy['form.email.label']} htmlFor="email" hint={copy['form.email.hint']}>
         <Input
           id="email"
           name="email"
@@ -296,7 +299,7 @@ export function EnquiryForm({
       </Field>
 
       <div className="grid gap-7 sm:grid-cols-2">
-        <Field label="State" htmlFor="state" required>
+        <Field label={copy['form.state.label']} htmlFor="state" required>
           <Select
             id="state"
             name="state"
@@ -305,7 +308,7 @@ export function EnquiryForm({
             onChange={(event) => loc.onState(event.target.value)}
             className={fieldClass}
           >
-            <option value="">Select state</option>
+            <option value="">{copy['form.state.placeholder']}</option>
             {loc.states.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -314,7 +317,7 @@ export function EnquiryForm({
           </Select>
         </Field>
 
-        <Field label="City" htmlFor="city" required>
+        <Field label={copy['form.city.label']} htmlFor="city" required>
           <Select
             id="city"
             name="city"
@@ -324,7 +327,7 @@ export function EnquiryForm({
             disabled={loc.cities.length === 0}
             className={fieldClass}
           >
-            <option value="">{loc.cities.length > 0 ? 'Select city' : 'State first'}</option>
+            <option value="">{loc.cities.length > 0 ? copy['form.city.placeholder'] : copy['form.city.stateFirst']}</option>
             {loc.cities.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -335,7 +338,7 @@ export function EnquiryForm({
       </div>
 
       <div className="grid gap-7 sm:grid-cols-2">
-        <Field label="Centre" htmlFor="centre" required>
+        <Field label={copy['form.centre.label']} htmlFor="centre" required>
           <Select
             id="centre"
             name="centre"
@@ -345,7 +348,7 @@ export function EnquiryForm({
             disabled={loc.centres.length === 0}
             className={fieldClass}
           >
-            <option value="">{loc.centres.length > 0 ? 'Select centre' : 'City first'}</option>
+            <option value="">{loc.centres.length > 0 ? copy['form.centre.placeholder'] : copy['form.centre.cityFirst']}</option>
             {loc.centres.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name}
@@ -354,7 +357,7 @@ export function EnquiryForm({
           </Select>
         </Field>
 
-        <Field label="Highest qualification" htmlFor="qualification" required>
+        <Field label={copy['form.qualification.label']} htmlFor="qualification" required>
           <Select
             id="qualification"
             name="qualification"
@@ -362,7 +365,7 @@ export function EnquiryForm({
             required
             className={fieldClass}
           >
-            <option value="">Qualification</option>
+            <option value="">{copy['form.qualification.placeholder']}</option>
             {QUALIFICATIONS.map((q) => (
               <option key={q.value} value={q.value}>
                 {q.label}
@@ -372,14 +375,14 @@ export function EnquiryForm({
         </Field>
       </div>
 
-      <Field label="Course of interest" htmlFor="courseSlug">
+      <Field label={copy['form.course.label']} htmlFor="courseSlug">
         <Select
           id="courseSlug"
           name="courseSlug"
           defaultValue={prefill.course}
           className={fieldClass}
         >
-          <option value="">Not sure yet</option>
+          <option value="">{copy['form.course.none']}</option>
           {courses.map((course) => (
             <option key={course.slug} value={course.slug}>
               {course.title}
@@ -388,7 +391,7 @@ export function EnquiryForm({
         </Select>
       </Field>
 
-      <Field label="Anything you would like to ask?" htmlFor="message">
+      <Field label={copy['form.message.label']} htmlFor="message">
         <Textarea
           id="message"
           name="message"
@@ -415,11 +418,11 @@ export function EnquiryForm({
         disabled={status === 'submitting'}
         className="w-full bg-[var(--dc-accent)] hover:bg-jk-700"
       >
-        {status === 'submitting' ? 'Sending…' : 'Send enquiry'}
+        {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
       </Button>
 
       <p className="text-sm text-[var(--dc-ink-muted)]">
-        We use your details only to respond to this enquiry.
+        {copy['form.privacy']}
       </p>
     </form>
   );

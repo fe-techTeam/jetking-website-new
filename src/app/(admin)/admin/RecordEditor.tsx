@@ -36,6 +36,7 @@ export function RecordEditor({
   live = true,
   appearsOn = [],
   note,
+  mode = 'list',
 }: {
   collection: CmsCollection;
   idKey: string;
@@ -46,6 +47,12 @@ export function RecordEditor({
   live?: boolean;
   appearsOn?: AppearsOn[];
   note?: string;
+  /**
+   * `list` — any number of records, add and delete. `fixed` — a set of documents that already exist
+   * (the legal pages): listed, but none can be added or deleted. `singleton` — exactly one document
+   * (About, Placements): no list at all, just its form.
+   */
+  mode?: 'list' | 'fixed' | 'singleton';
 }) {
   // Looked up here rather than passed as a prop: a Server Component page can't
   // hand a Client Component a config object whose `blank` field is a function —
@@ -83,7 +90,7 @@ export function RecordEditor({
   }
 
   const published = draft.status === 'published';
-  const fieldKeys = Object.keys(draft).filter((k) => k !== 'status');
+  const fieldKeys = Object.keys(draft).filter((k) => k !== 'status' && !config.hiddenFields?.includes(k));
 
   const sections = config.sections
     ? [
@@ -177,9 +184,11 @@ export function RecordEditor({
 
       <WebsiteUsage live={live} appearsOn={appearsOn} note={note} />
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:items-start">
+      <div
+        className={`mt-6 grid gap-6 lg:items-start ${mode === 'singleton' ? '' : 'lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]'}`}
+      >
         {/* ── Record list ─────────────────────────────────────────────── */}
-        <div className="min-w-0">
+        <div className={`min-w-0 ${mode === 'singleton' ? 'hidden' : ''}`}>
           <div className="adm-card overflow-hidden">
             <div className="flex items-center justify-between gap-4 border-b border-border bg-surface/70 px-4 py-3.5">
               <h2 className="text-sm font-bold tracking-tight text-foreground">Records</h2>
@@ -240,6 +249,7 @@ export function RecordEditor({
                       </span>
                     </button>
 
+                    {mode === 'list' ? (
                     <button
                       type="button"
                       disabled={pending}
@@ -249,12 +259,14 @@ export function RecordEditor({
                     >
                       Delete
                     </button>
+                    ) : null}
                   </li>
                 );
               })}
             </ul>
           </div>
 
+          {mode === 'list' ? (
           <button
             type="button"
             onClick={startNew}
@@ -262,6 +274,7 @@ export function RecordEditor({
           >
             + New record
           </button>
+          ) : null}
         </div>
 
         {/* ── Form ────────────────────────────────────────────────────── */}
@@ -324,15 +337,27 @@ export function RecordEditor({
                       const isWide = Array.isArray(value) || (typeof value === 'object' && value !== null);
                       return (
                         <div key={key} className={isWide ? 'sm:col-span-2' : ''}>
-                          <label className="mb-1.5 block text-xs font-semibold text-foreground-secondary">
-                            {config.selectFields?.[key]?.label ?? humanize(key)}
-                          </label>
-                          <ValueEditor
-                            fieldKey={key}
-                            value={value}
-                            config={config}
-                            onChange={(next) => setDraft((prev) => ({ ...prev, [key]: next }))}
-                          />
+                          {/* A section that is just one field already carries that field's name as its heading. */}
+                          {section.fields.length === 1 && section.title === humanize(key) ? null : (
+                            <label className="mb-1.5 block text-xs font-semibold text-foreground-secondary">
+                              {config.selectFields?.[key]?.label ?? humanize(key)}
+                            </label>
+                          )}
+                          {config.lockedFields?.includes(key) && typeof value === 'string' ? (
+                            <input
+                              value={value}
+                              readOnly
+                              aria-readonly="true"
+                              className="admin-input cursor-not-allowed bg-surface text-foreground-muted"
+                            />
+                          ) : (
+                            <ValueEditor
+                              fieldKey={key}
+                              value={value}
+                              config={config}
+                              onChange={(next) => setDraft((prev) => ({ ...prev, [key]: next }))}
+                            />
+                          )}
                         </div>
                       );
                     })}

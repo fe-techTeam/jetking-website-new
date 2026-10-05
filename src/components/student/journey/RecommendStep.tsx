@@ -7,6 +7,8 @@ import type { Course } from '@/lib/content/types';
 import type { StudentDiscovery } from '@/persona/studentJourney';
 import { interestIntent } from '@/persona/studentJourney';
 import { track } from '@/lib/analytics';
+import { fill } from '@/lib/content/copy/define';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 export function RecommendStep({
   courses,
@@ -14,12 +16,14 @@ export function RecommendStep({
   selectedSlug,
   onSelect,
   onContinue,
+  copy,
 }: {
   courses: Course[];
   discovery: StudentDiscovery;
   selectedSlug?: string;
   onSelect: (slug: string) => void;
   onContinue: () => void;
+  copy: StudentCopy;
 }) {
   const intent = interestIntent(discovery.interest);
 
@@ -27,14 +31,13 @@ export function RecommendStep({
     <div className="space-y-8">
       <div>
         <p className="k-eyebrow">
-          Step 2 · Recommended for you
+          {copy['recommend.eyebrow']}
         </p>
         <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-          Courses matched to your {intent} goal
+          {fill(copy['recommend.title'], { intent })}
         </h2>
         <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          Pick one to build your career roadmap. You can explore details or continue with
-          your top match.
+          {copy['recommend.body']}
         </p>
       </div>
 
@@ -63,9 +66,9 @@ export function RecommendStep({
                   <>
                     <span className="stu-course-badge" aria-hidden="true">
                       <Sparkles className="h-3 w-3" strokeWidth={2.25} />
-                      Best match
+                      {copy['recommend.badge']}
                     </span>
-                    <span className="sr-only">Best match for you</span>
+                    <span className="sr-only">{copy['recommend.badgeSr']}</span>
                   </>
                 ) : null}
                 <span className={`font-display text-[17px] font-extrabold text-[var(--dc-ink)] ${top ? 'pr-20' : ''}`}>
@@ -94,7 +97,7 @@ export function RecommendStep({
                   ))}
                 </ul>
                 <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]">
-                  {selected ? 'Selected' : 'Select for roadmap'}
+                  {selected ? copy['recommend.selected'] : copy['recommend.select']}
                   {selected ? (
                     <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                   ) : null}
@@ -112,7 +115,7 @@ export function RecommendStep({
             onClick={onContinue}
             className="group/next inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
           >
-            Continue with selected course
+            {copy['recommend.continue']}
             <span
               aria-hidden="true"
               className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform group-hover/next:translate-x-0.5"
@@ -125,12 +128,12 @@ export function RecommendStep({
             className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[var(--dc-hairline-strong)] px-6 text-[14px] font-bold text-[var(--dc-ink-secondary)] transition-colors hover:border-[var(--dc-accent-soft)]"
             onClick={() => track('journey_course_detail', { slug: selectedSlug })}
           >
-            View full course details
+            {copy['recommend.details']}
           </Link>
         </div>
       ) : (
         <p className="text-[14px] text-[var(--dc-ink-muted)]">
-          Select a course above to continue.
+          {copy['recommend.prompt']}
         </p>
       )}
     </div>

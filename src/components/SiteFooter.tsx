@@ -2,22 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, Mail, MapPin, Phone } from 'lucide-react';
 import { content } from '@/lib/content';
-import { siteConfig } from '@/lib/site';
 import { SOCIAL_LINKS } from '@/lib/social';
 import { SocialIcon } from '@/components/SocialIcon';
 import { LEGAL_LINKS } from '@/lib/legal';
-
-/**
- * Registered-office contact details, as published on the Investors page
- * (src/app/investors/page.tsx). Reused here so the footer's "Contact" block
- * always has real, working details instead of sitting empty when
- * NEXT_PUBLIC_PHONE is unset.
- */
-const COMPANY_CONTACT = {
-  address: '5th Floor, Amore Building, Junction of 2nd & 4th Road, Khar, Mumbai – 400052, India',
-  email: 'info@jetking.com',
-  phone: '07666830000',
-} as const;
+import { loadCopy } from '@/lib/content/copy/load';
+import { fill } from '@/lib/content/copy/define';
+import { siteCopy } from '@/lib/content/copy/pages/site';
+import { copyLinks } from '@/components/providers/site-copy-links';
 
 /** Curated subset shown directly; the rest stay reachable via the "View all" link and sitemap. */
 const FEATURED_COURSE_SLUGS = [
@@ -42,17 +33,6 @@ const FEATURED_CITY_SLUGS = [
   'chandigarh',
 ];
 
-const company = [
-  { label: 'About Us', href: '/about-us' },
-  { label: 'Placements', href: '/placements' },
-  { label: 'Franchise', href: '/franchise' },
-  { label: 'Investors', href: '/investors' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'FAQ', href: '/faq' },
-  { label: 'Enquire', href: '/enquiry' },
-  { label: 'Sitemap', href: '/sitemap' },
-] as const;
-
 /**
  * Server component, rendered on every public route except the homepage (see
  * FooterChrome). The footer is a significant internal-linking surface for
@@ -64,7 +44,7 @@ const company = [
  * every other themed section. There is no separate dark-mode branch.
  */
 export async function SiteFooter() {
-  const [courses, cities] = await Promise.all([content.listCourses(), content.listCities()]);
+  const [courses, cities, copy] = await Promise.all([content.listCourses(), content.listCities(), loadCopy(siteCopy)]);
 
   const featuredCourses = FEATURED_COURSE_SLUGS.map((slug) =>
     courses.find((c) => c.slug === slug),
@@ -74,8 +54,17 @@ export async function SiteFooter() {
     cities.find((c) => c.slug === slug),
   ).filter((c) => c !== undefined);
 
-  const phoneHref = siteConfig.phone || COMPANY_CONTACT.phone;
-  const phoneLabel = siteConfig.phone || COMPANY_CONTACT.phone;
+  // Registered-office contact details, as published on the Investors page. The phone defaults to
+  // NEXT_PUBLIC_PHONE when set, else the helpline (see the `site` copy defaults).
+  const phone = copy['contact.phone'];
+  const company = copyLinks(copy, 'footer.company', 8);
+  const socialCopy = copyLinks(copy, 'footer.social', SOCIAL_LINKS.length);
+  const socialLinks = SOCIAL_LINKS.map((link, i) => ({
+    network: link.network,
+    label: socialCopy[i]?.label ?? link.label,
+    href: socialCopy[i]?.href ?? link.href,
+  }));
+  const legal = copyLinks(copy, 'footer.legal', LEGAL_LINKS.length);
 
   return (
     <footer id="site-footer" className="border-t border-border bg-background">
@@ -84,14 +73,14 @@ export async function SiteFooter() {
           <div>
             <Image
               src="/brand/jetking-wordmark.png"
-              alt={siteConfig.name}
+              alt={copy['footer.logo.alt']}
               width={360}
               height={113}
               sizes="120px"
               className="h-8 w-auto object-contain object-left"
             />
             <p className="mt-5 max-w-sm text-base text-foreground-secondary text-balance">
-              {siteConfig.description}
+              {copy['footer.description']}
             </p>
 
             <ul className="mt-6 space-y-3 text-sm text-foreground-secondary">
@@ -100,29 +89,29 @@ export async function SiteFooter() {
                   className="mt-0.5 h-4 w-4 shrink-0 text-foreground-muted"
                   aria-hidden="true"
                 />
-                <span>{COMPANY_CONTACT.address}</span>
+                <span>{copy['contact.address']}</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
-                <a href={`tel:${phoneHref}`} className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground">
-                  {phoneLabel}
+                <a href={`tel:${phone}`} className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground">
+                  {phone}
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
                 <a
-                  href={`mailto:${COMPANY_CONTACT.email}`}
+                  href={`mailto:${copy['contact.email']}`}
                   className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground"
                 >
-                  {COMPANY_CONTACT.email}
+                  {copy['contact.email']}
                 </a>
               </li>
             </ul>
 
-            <nav aria-label="Jetking on social media" className="mt-8">
-              <h2 className="label-mono">Follow us</h2>
+            <nav aria-label={copy['footer.social.ariaLabel']} className="mt-8">
+              <h2 className="label-mono">{copy['footer.social.heading']}</h2>
               <ul className="mt-4 flex flex-wrap gap-3">
-                {SOCIAL_LINKS.map((social) => (
+                {socialLinks.map((social) => (
                   <li key={social.network}>
                     <a
                       href={social.href}
@@ -133,7 +122,7 @@ export async function SiteFooter() {
                       className="grid h-11 w-11 place-items-center rounded-full border border-border bg-background text-foreground-secondary transition-colors hover:border-[var(--accent-ink)] hover:text-[var(--accent-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-ink)]"
                     >
                       <SocialIcon network={social.network} className="h-[18px] w-[18px]" />
-                      <span className="sr-only"> (opens in a new tab)</span>
+                      <span className="sr-only">{copy['footer.social.newTabHint']}</span>
                     </a>
                   </li>
                 ))}
@@ -143,30 +132,30 @@ export async function SiteFooter() {
 
           {/* Phones: each link group collapses (see FooterNav). sm: three columns. lg: `contents` hands them back to the parent grid. */}
           <div className="border-t border-border sm:grid sm:grid-cols-3 sm:gap-x-6 sm:border-0 lg:contents">
-            <FooterNav label="Courses">
+            <FooterNav label={copy['footer.courses.heading']}>
               {featuredCourses.map((course) => (
                 <FooterLink key={course.slug} href={`/courses/${course.slug}`}>
                   {course.shortTitle}
                 </FooterLink>
               ))}
               <FooterLink href="/courses" emphasis>
-                View all courses
+                {copy['footer.courses.viewAll']}
               </FooterLink>
             </FooterNav>
 
-            <FooterNav label="Centres">
+            <FooterNav label={copy['footer.centres.heading']}>
               {featuredCities.map((city) => (
                 <FooterLink key={city.slug} href={`/centres?q=${encodeURIComponent(city.name)}`}>
-                  IT courses in {city.name}
+                  {fill(copy['footer.centres.cityLink'], { city: city.name })}
                 </FooterLink>
               ))}
               <FooterLink href="/centres" emphasis>
-                View all centres
+                {copy['footer.centres.viewAll']}
               </FooterLink>
             </FooterNav>
 
             <FooterNav
-              label="Company"
+              label={copy['footer.company.heading']}
               listClassName="grid grid-cols-2 gap-x-6 gap-y-0 sm:block sm:space-y-3"
             >
               {company.map((item) => (
@@ -181,21 +170,19 @@ export async function SiteFooter() {
 
       <div className="border-t border-border">
         <div className="shell flex flex-col gap-2 py-6 text-sm text-foreground-muted lg:flex-row lg:items-center lg:justify-between">
-          <p>
-            © {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.
-          </p>
-          <nav aria-label="Legal" className="flex flex-wrap gap-x-5">
-            {LEGAL_LINKS.map((l) => (
+          <p>{fill(copy['footer.copyright'], { year: new Date().getFullYear() })}</p>
+          <nav aria-label={copy['footer.legal.ariaLabel']} className="flex flex-wrap gap-x-5">
+            {legal.map((l) => (
               <Link
                 key={l.href}
-                href={l.href}
+                href={l.href as never}
                 className="inline-flex min-h-11 items-center transition-colors hover:text-foreground focus-visible:text-foreground lg:min-h-6"
               >
                 {l.label}
               </Link>
             ))}
           </nav>
-          <p>India&rsquo;s No.1 Technology Training Institute</p>
+          <p>{copy['footer.tagline']}</p>
         </div>
       </div>
     </footer>

@@ -8,6 +8,8 @@ import {
   type StudentDiscovery,
 } from '@/persona/studentJourney';
 import { track } from '@/lib/analytics';
+import { fill } from '@/lib/content/copy/define';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 const PHASE_ICONS = [BookOpen, Code2, Award, Briefcase] as const;
 
@@ -15,10 +17,12 @@ export function RoadmapStep({
   course,
   discovery,
   onContinue,
+  copy,
 }: {
   course: Course;
   discovery: StudentDiscovery;
   onContinue: () => void;
+  copy: StudentCopy;
 }) {
   const phases = buildCareerRoadmap(course, discovery);
   const intent = interestIntent(discovery.interest);
@@ -27,14 +31,14 @@ export function RoadmapStep({
     <div className="space-y-8">
       <div>
         <p className="k-eyebrow">
-          Step 4 · Your career roadmap
+          {copy['roadmap.eyebrow']}
         </p>
         <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
-          Your path to a {intent} career
+          {fill(copy['roadmap.title'], { intent })}
         </h2>
         <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          Based on <strong className="font-bold text-[var(--dc-ink)]">{course.title}</strong>{' '}
-          — here is how Jetking takes you from learning to employment.
+          {copy['roadmap.body.before']} <strong className="font-bold text-[var(--dc-ink)]">{course.title}</strong>{' '}
+          {copy['roadmap.body.after']}
         </p>
       </div>
 
@@ -85,7 +89,7 @@ export function RoadmapStep({
         }}
         className="group/next inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-navy)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
       >
-        Book free counselling for this path
+        {copy['roadmap.cta']}
         <span
           aria-hidden="true"
           className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform group-hover/next:translate-x-0.5"

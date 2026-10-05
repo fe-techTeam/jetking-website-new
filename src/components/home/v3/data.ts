@@ -80,53 +80,17 @@ export const MORE_EMPLOYER_LOGOS: ReadonlyArray<{ name: string; file: string; da
 export interface Recognition {
   icon: LucideIcon;
   hue: Hue;
-  badge: string;
-  title: string;
-  detail: string;
 }
 
-/** Every entry is taken from the About timeline (`about/data.ts` TIMELINE) or the course fixtures (`fixtures/courses.ts`) — nothing new is claimed here. */
+/**
+ * Every entry is taken from the About timeline (`about/data.ts` TIMELINE) or the course fixtures (`fixtures/courses.ts`) — nothing new is claimed here.
+ * Only the icon and hue live here; each card's badge, title and detail are the page copy `recognition.items.N.*`, in this order.
+ */
 export const RECOGNITIONS: Recognition[] = [
-  {
-    icon: BadgeCheck,
-    hue: 'cloud',
-    badge: '1999',
-    title: 'Microsoft Certified Solution Provider',
-    detail: 'Recognised as a Microsoft Certified Solution Provider and Certified Technical Education Centre (CTEC).',
-  },
-  {
-    icon: Award,
-    hue: 'ai',
-    badge: '2007',
-    title: "Pike's Peak Award",
-    detail: 'Honoured for implementing SmartLab Plus, Jetking\u2019s lab-first teaching methodology.',
-  },
-  {
-    icon: Trophy,
-    hue: 'cyber',
-    badge: '2008',
-    title: 'Best Franchisor Award',
-    detail: 'Felicitated as Best Franchisor, alongside the launch of a computer fault-simulator kit for troubleshooting practice.',
-  },
-  {
-    icon: Handshake,
-    hue: 'network',
-    badge: '2011',
-    title: 'Alliance with Wipro and IBM',
-    detail: 'Industry alliances that shaped the curriculum and placement network.',
-  },
-  {
-    icon: Landmark,
-    hue: 'cloud',
-    badge: 'Degrees',
-    title: 'UGC-approved BCA and MCA',
-    detail: 'Cloud Computing & Cyber Security degrees, with the MCA offered with Yenepoya Deemed University.',
-  },
-  {
-    icon: ShieldCheck,
-    hue: 'network',
-    badge: 'Skill India',
-    title: 'NSDC / Skill India recognition',
-    detail: 'The Certified Data Analyst course is NSDC / Skill India recognised.',
-  },
+  { icon: BadgeCheck, hue: 'cloud' },
+  { icon: Award, hue: 'ai' },
+  { icon: Trophy, hue: 'cyber' },
+  { icon: Handshake, hue: 'network' },
+  { icon: Landmark, hue: 'cloud' },
+  { icon: ShieldCheck, hue: 'network' },
 ];

@@ -21,6 +21,10 @@ import {
   MapPin,
   BadgeCheck,
   Trophy,
+  Info,
+  Award,
+  Scale,
+  Type,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
@@ -45,6 +49,10 @@ const ICONS: Record<string, LucideIcon> = {
   MapPin,
   BadgeCheck,
   Trophy,
+  Info,
+  Award,
+  Scale,
+  Type,
 };
 
 export function AdminSidebarNav({

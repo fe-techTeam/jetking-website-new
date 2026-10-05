@@ -423,6 +423,155 @@ export interface PersonaRule {
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
+/* Site pages managed in the CMS: About, Placements, legal documents           */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Leadership cards show photo + name + designation only; `bio` (when present) sits behind a
+ * "Read more" toggle. An empty `name` hides the card until a name is supplied.
+ */
+export interface Leader {
+  name: string;
+  role?: string;
+  photoUrl?: string;
+  bio?: string[];
+}
+
+export interface Milestone {
+  year: string;
+  title: string;
+  body?: string;
+  /** Optional trailing link rendered after `body`. */
+  link?: { href: string; label: string };
+}
+
+export interface Achievement {
+  title: string;
+  body: string;
+  imageSrc: string;
+}
+
+export interface Partnership {
+  name: string;
+  body: string;
+  logo: string;
+}
+
+/**
+ * Overrides for one page's editable text (see `lib/content/copy`). Only fields an editor changed are
+ * stored; `id` is the page's copy id ('home', 'site', …).
+ */
+export interface PageCopyRecord {
+  id: string;
+  entries: Record<string, string>;
+}
+
+/** The About page (/about-us) — one document. */
+export interface AboutPageContent {
+  id: 'about';
+  hero: { eyebrow: string; titleLead: string; titleAccent: string; lede: string };
+  /** Vision / mission / values cards. */
+  purpose: { title: string; body: string }[];
+  values: string[];
+  directors: Leader[];
+  managementTeam: Leader[];
+  timeline: Milestone[];
+  achievements: Achievement[];
+  partnerships: Partnership[];
+}
+
+export interface PlacementProcessStep {
+  step: string;
+  title: string;
+  description: string;
+}
+
+export interface StudentBenefit {
+  title: string;
+  description: string;
+}
+
+export interface PlacedCandidate {
+  name: string;
+  company: string;
+}
+
+export interface PlacementTestimonial {
+  name: string;
+  role: string;
+  quote: string;
+}
+
+export interface VideoTestimonial {
+  name: string;
+  title: string;
+  provider: 'youtube' | 'vimeo';
+  videoId: string;
+  thumbnail: string;
+}
+
+export interface OfferLetterSample {
+  src: string;
+  title: string;
+  sector: string;
+  /** Derived from `title` when the page is loaded — not an authored field. */
+  alt: string;
+}
+
+export interface Recruiter {
+  name: string;
+  src: string;
+}
+
+/**
+ * The Placements page (/placements) and every figure/line reused from it elsewhere (home,
+ * course pages, Explore). One document. Distinct from `PlacementPage`, the Jetking Guide's
+ * own knowledge-base record.
+ */
+export interface PlacementsPageContent {
+  id: 'placements';
+  hero: { eyebrow: string; titleLead: string; titleAccent: string; lede: string };
+  /** Load-bearing: no placement figure here implies a guarantee. */
+  disclaimer: string;
+  processSteps: PlacementProcessStep[];
+  studentBenefits: StudentBenefit[];
+  placedCandidates: PlacedCandidate[];
+  testimonials: PlacementTestimonial[];
+  videoTestimonials: VideoTestimonial[];
+  contact: { phone: string; /** `tel:` link, derived from `phone`. */ tel: string; email: string };
+  offerLetters: OfferLetterSample[];
+  recruiters: Recruiter[];
+  recruitersDisclaimer: string;
+  /** Headline placement figures shown on the home and course pages. */
+  stats: { partners: string; learnersPlaced: { value: string; label: string } };
+}
+
+/**
+ * What the CMS stores for the Placements page: `contact.tel` and each offer letter's `alt` are
+ * derived when the page is loaded, so editors never see (or desync) them.
+ */
+export type PlacementsPageRecord = Omit<PlacementsPageContent, 'contact' | 'offerLetters'> & {
+  contact: { phone: string; email: string };
+  offerLetters: { src: string; title: string; sector: string }[];
+};
+
+export type LegalBlock =
+  | { t: 'h2' | 'h3'; text: string }
+  | { t: 'p'; text: string }
+  /** Marker `m` is the source's own numbering ("a.", "3."); bullets have none. */
+  | { t: 'ul' | 'ol'; items: { m: string | null; text: string }[] }
+  | { t: 'table'; caption?: string; head: string[]; rows: string[][] }
+  | { t: 'img'; src: string; alt: string; w: number; h: number };
+
+/** A legal page (privacy, terms, enrollment terms). `slug` is its CMS id. */
+export interface LegalDoc {
+  slug: string;
+  title: string;
+  sourceUrl: string;
+  blocks: LegalBlock[];
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
 /* Content source contract                                                    */
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -461,4 +610,16 @@ export interface ContentSource {
   getHomepageVariant(id: string): Promise<HomepageVariant | null>;
 
   listPersonaRules(): Promise<PersonaRule[]>;
+
+  /** About page content. Never null: falls back to the in-repo defaults if the CMS record is missing or a draft. */
+  getAboutPage(): Promise<AboutPageContent>;
+  /** Placements page content (same fallback rule). */
+  getPlacementsPage(): Promise<PlacementsPageContent>;
+
+  /** Published text overrides for a page (empty when none, or when the record is a draft). */
+  getPageCopyOverrides(id: string): Promise<Record<string, string>>;
+
+  listLegalDocuments(): Promise<LegalDoc[]>;
+  /** One legal page by slug; falls back to the in-repo copy if the CMS record is missing or a draft. */
+  getLegalDocument(slug: string): Promise<LegalDoc | null>;
 }

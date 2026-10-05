@@ -1,4 +1,10 @@
-/** About Us content — full text mirrored from jetking.com/about-us (fetched 2026-08-07). */
+/**
+ * About Us content — full text mirrored from jetking.com/about-us (fetched 2026-08-07).
+ * These are the in-repo DEFAULTS: they seed the CMS (`about_page`) and are what the page falls back to
+ * when the CMS record is missing or unpublished. The live copy is edited in the admin.
+ */
+import type { AboutPageContent, Achievement, Leader, Milestone, Partnership } from '../types';
+
 
 export const ABOUT_HERO = {
   eyebrow: 'Since 1947',
@@ -43,14 +49,6 @@ export const VALUES = [
  * (new ones, replacing the current three), SGB, the Management Team and the
  * Independent Director are not yet supplied.
  */
-export type Leader = {
-  /** Empty until supplied — `AboutLanding` skips nameless cards. */
-  name: string;
-  /** Omitted until supplied: the card shows the name alone rather than a placeholder. */
-  role?: string;
-  photoUrl?: string;
-  bio?: string[];
-};
 
 export const DIRECTORS: Leader[] = [
   {
@@ -104,13 +102,6 @@ export const MANAGEMENT_TEAM: Leader[] = [
   { name: 'Dhruti' },
 ];
 
-export type Milestone = {
-  year: string;
-  title: string;
-  body?: string;
-  /** Optional trailing link rendered after `body` (used by "Toward the Future"). */
-  link?: { href: string; label: string };
-};
 
 /** Legacy timeline — full copy from the live about-us page; years from its markers. */
 export const TIMELINE: Milestone[] = [
@@ -226,11 +217,6 @@ export const TIMELINE: Milestone[] = [
   },
 ];
 
-export type Achievement = {
-  title: string;
-  body: string;
-  imageSrc: string;
-};
 
 export const ACHIEVEMENTS: Achievement[] = [
   {
@@ -275,11 +261,6 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
 ];
 
-export type Partnership = {
-  name: string;
-  body: string;
-  logo: string;
-};
 
 export const PARTNERSHIPS: Partnership[] = [
   {
@@ -298,3 +279,16 @@ export const PARTNERSHIPS: Partnership[] = [
     logo: '/university-partners/yenepoya.png',
   },
 ];
+
+/** The whole page as one CMS document (mutable copies of the constants above). */
+export const aboutDefaults: AboutPageContent = {
+  id: 'about',
+  hero: { ...ABOUT_HERO },
+  purpose: PURPOSE.map((p) => ({ ...p })),
+  values: [...VALUES],
+  directors: DIRECTORS.map((d) => ({ ...d, bio: d.bio ? [...d.bio] : undefined })),
+  managementTeam: MANAGEMENT_TEAM.map((m) => ({ ...m })),
+  timeline: TIMELINE.map((m) => ({ ...m, link: m.link ? { ...m.link } : undefined })),
+  achievements: ACHIEVEMENTS.map((a) => ({ ...a })),
+  partnerships: PARTNERSHIPS.map((p) => ({ ...p })),
+};

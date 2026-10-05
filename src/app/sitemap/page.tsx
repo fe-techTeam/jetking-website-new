@@ -3,60 +3,56 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { content } from '@/lib/content';
 import { centrePath } from '@/lib/centre-path';
-import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { breadcrumbSchema } from '@/lib/seo';
+import { sitemapCopy } from '@/lib/content/copy/pages/sitemap';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Sitemap — All Pages | Jetking',
-    description:
-      'Every page on the Jetking website in one place — learner paths, courses, centres by state, company information and the blog.',
-  },
-  '/sitemap',
-);
-
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Sitemap', path: '/sitemap' },
-];
-
-const PAGE_GROUPS: { title: string; links: { label: string; href: string }[] }[] = [
-  {
-    title: 'Start here',
-    links: [
-      { label: 'Home', href: '/' },
-      { label: "I'm a student", href: '/student' },
-      { label: "I'm a parent", href: '/parent' },
-      { label: "I'm a working professional", href: '/professional' },
-      { label: "I'm exploring", href: '/explore' },
-      { label: 'Franchise', href: '/franchise' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About us', href: '/about-us' },
-      { label: 'Placements', href: '/placements' },
-      { label: 'Investors', href: '/investors' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'FAQ', href: '/faq' },
-    ],
-  },
-  {
-    title: 'Get in touch',
-    links: [
-      { label: 'Enquire now', href: '/enquiry' },
-      { label: 'Jetking AI assistant', href: '/chatbot' },
-      { label: 'Log in / My account', href: '/account' },
-    ],
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(sitemapCopy, '/sitemap');
+}
 
 /**
  * Human-readable sitemap. It is generated from the same content source as `/sitemap.xml`, so a
  * new course, centre or article shows up here without anyone editing this file.
  */
 export default async function SitemapPage() {
+  const copy = await loadCopy(sitemapCopy);
+  const trail: Crumb[] = [
+    { name: 'Home', path: '/' },
+    { name: copy['breadcrumb.label'], path: '/sitemap' },
+  ];
+  const PAGE_GROUPS: { title: string; links: { label: string; href: string }[] }[] = [
+    {
+      title: copy['groups.0.title'],
+      links: [
+        { label: copy['groups.0.links.0.label'], href: copy['groups.0.links.0.href'] },
+        { label: copy['groups.0.links.1.label'], href: copy['groups.0.links.1.href'] },
+        { label: copy['groups.0.links.2.label'], href: copy['groups.0.links.2.href'] },
+        { label: copy['groups.0.links.3.label'], href: copy['groups.0.links.3.href'] },
+        { label: copy['groups.0.links.4.label'], href: copy['groups.0.links.4.href'] },
+        { label: copy['groups.0.links.5.label'], href: copy['groups.0.links.5.href'] },
+      ],
+    },
+    {
+      title: copy['groups.1.title'],
+      links: [
+        { label: copy['groups.1.links.0.label'], href: copy['groups.1.links.0.href'] },
+        { label: copy['groups.1.links.1.label'], href: copy['groups.1.links.1.href'] },
+        { label: copy['groups.1.links.2.label'], href: copy['groups.1.links.2.href'] },
+        { label: copy['groups.1.links.3.label'], href: copy['groups.1.links.3.href'] },
+        { label: copy['groups.1.links.4.label'], href: copy['groups.1.links.4.href'] },
+      ],
+    },
+    {
+      title: copy['groups.2.title'],
+      links: [
+        { label: copy['groups.2.links.0.label'], href: copy['groups.2.links.0.href'] },
+        { label: copy['groups.2.links.1.label'], href: copy['groups.2.links.1.href'] },
+        { label: copy['groups.2.links.2.label'], href: copy['groups.2.links.2.href'] },
+      ],
+    },
+  ];
   const [courses, centres, posts] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
@@ -86,7 +82,7 @@ export default async function SitemapPage() {
           <div className="relative mt-5 sm:mt-6">
             <div className="dc-banner relative min-h-[220px] overflow-hidden rounded-[24px] xs:min-h-[240px] xs:rounded-[28px] sm:min-h-[260px] sm:rounded-[28px]">
               <Image
-                src="/home/journey-explore-v2.jpg"
+                src={copy['hero.image']}
                 alt=""
                 fill
                 priority
@@ -96,12 +92,12 @@ export default async function SitemapPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 sm:justify-center sm:px-10 sm:py-12 lg:max-w-[62%] lg:px-12 xl:px-14">
-                <p className="k-hero-eyebrow">Sitemap</p>
+                <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
                 <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)]">
-                  Every page, <span className="dc-accent-glow">in one place</span>
+                  {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
                 </h1>
                 <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] sm:text-[16px]">
-                  Find a course, a centre or a page without hunting through the menu.
+                  {copy['hero.body']}
                 </p>
               </div>
             </div>
@@ -142,13 +138,13 @@ export default async function SitemapPage() {
                 id="sm-courses"
                 className="subsection-title font-display text-[var(--dc-ink)]"
               >
-                Courses
+                {copy['courses.title']}
               </h2>
               <Link
-                href={'/courses' as Route}
+                href={copy['courses.cta.href'] as Route}
                 className="tap text-[14px] font-bold text-[var(--dc-accent-soft)] hover:underline"
               >
-                All courses →
+                {copy['courses.cta.label']}
               </Link>
             </div>
             <ul className="mt-4 grid gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -169,13 +165,13 @@ export default async function SitemapPage() {
                 id="sm-centres"
                 className="subsection-title font-display text-[var(--dc-ink)]"
               >
-                Centres
+                {copy['centres.title']}
               </h2>
               <Link
-                href={'/centres' as Route}
+                href={copy['centres.cta.href'] as Route}
                 className="tap text-[14px] font-bold text-[var(--dc-accent-soft)] hover:underline"
               >
-                All centres →
+                {copy['centres.cta.label']}
               </Link>
             </div>
             <div className="mt-5 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">
@@ -204,13 +200,13 @@ export default async function SitemapPage() {
                   id="sm-blog"
                   className="subsection-title font-display text-[var(--dc-ink)]"
                 >
-                  Latest from the blog
+                  {copy['blog.title']}
                 </h2>
                 <Link
-                  href={'/blog' as Route}
+                  href={copy['blog.cta.href'] as Route}
                   className="tap text-[14px] font-bold text-[var(--dc-accent-soft)] hover:underline"
                 >
-                  All articles →
+                  {copy['blog.cta.label']}
                 </Link>
               </div>
               <ul className="mt-4 grid gap-x-8 gap-y-1 sm:grid-cols-2">
@@ -224,9 +220,9 @@ export default async function SitemapPage() {
           )}
 
           <p className="text-center text-[14px] text-[var(--dc-ink-muted)]">
-            Looking for the machine-readable version?{' '}
-            <a href="/sitemap.xml" className="font-semibold text-[var(--dc-accent-soft)] hover:underline">
-              sitemap.xml
+            {copy['xml.lead']}{' '}
+            <a href={copy['xml.href']} className="font-semibold text-[var(--dc-accent-soft)] hover:underline">
+              {copy['xml.label']}
             </a>
           </p>
         </div>

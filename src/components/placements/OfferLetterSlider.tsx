@@ -4,6 +4,8 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { useDialog } from '@/components/useDialog';
+import { fill } from '@/lib/content/copy/define';
+import type { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 export interface OfferLetterSample {
   /** Path under /public — replace with a real, consented letter to swap a sample out. */
@@ -15,7 +17,7 @@ export interface OfferLetterSample {
   sector: string;
 }
 
-const NOTE = 'Illustrative sample — actual offer letters vary by employer.';
+type OfferCopy = typeof placementsCopy.defaults;
 
 const roundButton =
   'grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--dc-hairline-strong)] disabled:hover:bg-[var(--dc-card)]';
@@ -29,7 +31,15 @@ const roundButton =
  * documents people want to read, and a self-moving row is what WCAG 2.2.2 asks a pause
  * control for.
  */
-export function OfferLetterSlider({ items, label }: { items: readonly OfferLetterSample[]; label: string }) {
+export function OfferLetterSlider({
+  items,
+  label,
+  copy,
+}: {
+  items: readonly OfferLetterSample[];
+  label: string;
+  copy: OfferCopy;
+}) {
   const trackRef = useRef<HTMLUListElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -78,14 +88,14 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
     <div role="region" aria-roledescription="carousel" aria-label={label} className="relative">
       <div className="flex items-center justify-between gap-3">
         <p id={hintId} className="text-[14px] font-semibold text-[var(--dc-ink-muted)]">
-          Tap a letter to view it full size
+          {copy['offers.hint']}
         </p>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => scrollByCard(-1)}
             disabled={edge.start}
-            aria-label="Previous sample offer letter"
+            aria-label={copy['offers.prevLabel']}
             className={roundButton}
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
@@ -94,7 +104,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
             type="button"
             onClick={() => scrollByCard(1)}
             disabled={edge.end}
-            aria-label="Next sample offer letter"
+            aria-label={copy['offers.nextLabel']}
             className={roundButton}
           >
             <ChevronRight className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
@@ -114,7 +124,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
           <li
             key={item.src}
             aria-roledescription="slide"
-            aria-label={`${index + 1} of ${items.length}: ${item.title}`}
+            aria-label={fill(copy['offers.slideLabel'], { n: index + 1, total: items.length, title: item.title })}
             className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
           >
             <figure className="kit kit-card flex h-full flex-col overflow-hidden p-3 sm:p-4">
@@ -122,7 +132,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
                 type="button"
                 onClick={() => setOpenIndex(index)}
                 aria-haspopup="dialog"
-                aria-label={`View ${item.title} sample offer letter full size`}
+                aria-label={fill(copy['offers.viewLabel'], { title: item.title })}
                 className="group relative flex h-64 cursor-zoom-in items-center justify-center overflow-hidden rounded-[12px] bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:h-72"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- static SVG specimen; nothing for the image optimiser to do */}
@@ -137,7 +147,7 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
               <figcaption className="mt-3 px-1">
                 <p className="text-[15px] font-bold text-[var(--dc-ink)]">{item.title}</p>
                 <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)]">
-                  {item.sector} · {NOTE}
+                  {item.sector} · {copy['offers.note']}
                 </p>
               </figcaption>
             </figure>
@@ -146,7 +156,13 @@ export function OfferLetterSlider({ items, label }: { items: readonly OfferLette
       </ul>
 
       {openIndex !== null ? (
-        <OfferLetterGallery items={items} index={openIndex} onIndexChange={setOpenIndex} onClose={closeGallery} />
+        <OfferLetterGallery
+          items={items}
+          index={openIndex}
+          onIndexChange={setOpenIndex}
+          onClose={closeGallery}
+          copy={copy}
+        />
       ) : null}
     </div>
   );
@@ -162,11 +178,13 @@ function OfferLetterGallery({
   index,
   onIndexChange,
   onClose,
+  copy,
 }: {
   items: readonly OfferLetterSample[];
   index: number;
   onIndexChange: (index: number) => void;
   onClose: () => void;
+  copy: OfferCopy;
 }) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -201,7 +219,7 @@ function OfferLetterGallery({
               {item.title}
             </p>
             <p className="mt-0.5 text-[14px] leading-snug text-white/65">
-              {item.sector} · {NOTE}
+              {item.sector} · {copy['offers.note']}
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
@@ -211,7 +229,7 @@ function OfferLetterGallery({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close gallery"
+              aria-label={copy['offers.gallery.closeLabel']}
               className="grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <X className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
@@ -229,7 +247,7 @@ function OfferLetterGallery({
             type="button"
             onClick={() => onIndexChange(index - 1)}
             disabled={index === 0}
-            aria-label="Previous letter"
+            aria-label={copy['offers.gallery.prevLabel']}
             className="absolute top-1/2 left-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-ink-900/82 text-white shadow-lg transition-colors hover:bg-ink-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
@@ -238,20 +256,20 @@ function OfferLetterGallery({
             type="button"
             onClick={() => onIndexChange(index + 1)}
             disabled={index === last}
-            aria-label="Next letter"
+            aria-label={copy['offers.gallery.nextLabel']}
             className="absolute top-1/2 right-2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-ink-900/82 text-white shadow-lg transition-colors hover:bg-ink-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-30"
           >
             <ChevronRight className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
           </button>
         </div>
 
-        <ul className="flex justify-center gap-2 overflow-x-auto px-1 pb-1" aria-label="Choose a letter">
+        <ul className="flex justify-center gap-2 overflow-x-auto px-1 pb-1" aria-label={copy['offers.gallery.thumbsLabel']}>
           {items.map((thumb, i) => (
             <li key={thumb.src} className="shrink-0">
               <button
                 type="button"
                 onClick={() => onIndexChange(i)}
-                aria-label={`Show ${thumb.title}`}
+                aria-label={fill(copy['offers.gallery.showLabel'], { title: thumb.title })}
                 aria-current={i === index ? 'true' : undefined}
                 className={`h-16 w-12 cursor-pointer overflow-hidden rounded-md bg-white transition-[opacity,box-shadow] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-[72px] sm:w-[52px] ${
                   i === index ? 'opacity-100 ring-2 ring-[var(--dc-accent-soft)]' : 'opacity-55 hover:opacity-100'

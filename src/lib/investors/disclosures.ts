@@ -40,10 +40,10 @@ export const disclosures: DisclosureData = {
   })),
 };
 
-/** What the button beside a row should say — the file type when the URL gives it away. */
-export function linkLabel(href: string): string {
-  if (href.startsWith('/')) return 'View Page';
-  if (/\.pdf($|\?)/i.test(href)) return 'PDF Download';
-  if (/drive\.google\.com\/file/i.test(href)) return 'View Document';
-  return 'View Link';
+/** What kind of target a row links to — the file type when the URL gives it away. The page maps it to the button's wording (`docs.link.*` copy). */
+export function linkKind(href: string): 'page' | 'pdf' | 'drive' | 'other' {
+  if (href.startsWith('/')) return 'page';
+  if (/\.pdf($|\?)/i.test(href)) return 'pdf';
+  if (/drive\.google\.com\/file/i.test(href)) return 'drive';
+  return 'other';
 }

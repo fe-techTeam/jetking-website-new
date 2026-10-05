@@ -16,7 +16,7 @@ export default async function AdminDashboard() {
   const user = await requireRole(['admin', 'editor', 'centre_staff']);
 
   const rows = await Promise.all(
-    COLLECTIONS.map(async (c) => ({ ...c, items: await listCollection(c.key) })),
+    COLLECTIONS.filter((c) => c.dashboard !== false).map(async (c) => ({ ...c, items: await listCollection(c.key) })),
   );
   const bars = rows.map((r) => ({
     label: r.label,

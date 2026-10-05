@@ -4,6 +4,8 @@ import { content } from '@/lib/content';
 import { articleSchema, breadcrumbSchema, buildMetadata, postDescription } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { BlogArticle } from '@/components/blog/BlogArticle';
+import { blogCopy } from '@/lib/content/copy/pages/blog';
+import { loadCopy } from '@/lib/content/copy/load';
 import { ArticleViewTracker } from './ArticleViewTracker';
 
 /**
@@ -36,14 +38,15 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const post = await content.getPost(slug);
   if (!post) notFound();
 
+  const copy = await loadCopy(blogCopy);
   const allPosts = await content.listPosts();
   const related = allPosts
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .slice(0, 3);
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Blog', path: '/blog' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.blog'], path: '/blog' },
     { name: post.title, path: `/blog/${post.slug}` },
   ];
 
@@ -51,7 +54,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <>
       <JsonLd data={[articleSchema(post), breadcrumbSchema(trail)]} />
       <ArticleViewTracker slug={post.slug} category={post.category} title={post.title} />
-      <BlogArticle post={post} related={related} trail={trail} />
+      <BlogArticle post={post} related={related} trail={trail} copy={copy} />
     </>
   );
 }

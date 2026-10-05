@@ -1,4 +1,3 @@
-import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import {
   Award,
   Briefcase,
@@ -17,93 +16,20 @@ import {
   Wrench,
 } from 'lucide-react';
 
-export const HERO_FEATURES = [
-  { label: 'Practical Learning', icon: Sparkles },
-  { label: 'Flexible Batches', icon: Clock3 },
-  { label: 'Career Support', icon: Users },
-  { label: 'Recognized Certs', icon: Award },
-] as const;
+// The words for all of these live in the page copy (`lib/content/copy/pages/professional.ts`, keyed by
+// index: `hero.features.N`, `growth.N.*`, `impact.N.*`, `benefits.N.*`, `flex.N.label`, `cta.features.N`).
+// Only the icon paired with each item stays here — it is layout, not copy.
+export const HERO_FEATURE_ICONS = [Sparkles, Clock3, Users, Award] as const;
 
-export const GROWTH_STEPS = [
-  {
-    title: 'Where You Are',
-    detail: 'Current Role',
-    icon: Briefcase,
-  },
-  {
-    title: 'Upskill',
-    detail: 'Industry-Relevant Courses',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Get Certified',
-    detail: 'Build Credibility',
-    icon: Award,
-  },
-  {
-    title: 'Interview Ready',
-    detail: 'Expert Training & Mock Interviews',
-    icon: GraduationCap,
-  },
-  {
-    title: 'Get Hired',
-    detail: 'Better Role. Bigger Package.',
-    icon: Trophy,
-  },
-] as const;
+export const GROWTH_STEP_ICONS = [Briefcase, TrendingUp, Award, GraduationCap, Trophy] as const;
 
-export const IMPACT_STATS = [
-  { value: 'Hands-on', label: 'Portfolio-ready lab projects', icon: Wrench },
-  { value: 'Certified', label: 'Industry credentials included', icon: Award },
-  { value: 'Placement', label: 'Assistance & interview prep', icon: Briefcase },
-  { value: SINCE_FOUNDED, label: 'Training IT talent', icon: Landmark },
-] as const;
+export const IMPACT_STAT_ICONS = [Wrench, Award, Briefcase, Landmark] as const;
 
-export const PROFESSIONAL_BENEFITS = [
-  {
-    title: 'Hands-on Projects',
-    detail: 'Build portfolio-ready work in guided labs — not theory-only sessions.',
-    icon: Sparkles,
-  },
-  {
-    title: 'Recognized Certifications',
-    detail: 'Industry credentials included to strengthen your professional profile.',
-    icon: Award,
-  },
-  {
-    title: 'Flexible Batches',
-    detail: 'Weekend and evening options designed around a full-time work schedule.',
-    icon: Clock3,
-  },
-  {
-    title: 'Career Counsellors',
-    detail: 'Dedicated guidance on courses, timing, and your next career move.',
-    icon: Users,
-  },
-  {
-    title: 'Interview Preparation',
-    detail: 'Mock interviews and resume support before you step into hiring loops.',
-    icon: Mic,
-  },
-  {
-    title: 'Hiring Network',
-    detail: 'Access to Jetking’s hiring partners across roles, sectors, and cities.',
-    icon: Briefcase,
-  },
-] as const;
+export const BENEFIT_ICONS = [Sparkles, Award, Clock3, Users, Mic, Briefcase] as const;
 
-export const FLEXIBLE_OPTIONS = [
-  { label: 'Weekend Batches', icon: CalendarDays },
-  { label: 'Evening Batches', icon: Moon },
-  { label: 'Online Live Classes', icon: MonitorPlay },
-  { label: 'Career Break Friendly', icon: HeartHandshake },
-] as const;
+export const FLEXIBLE_OPTION_ICONS = [CalendarDays, Moon, MonitorPlay, HeartHandshake] as const;
 
-export const BOTTOM_CTA_FEATURES = [
-  { label: '1:1 Expert Counseling', icon: Users },
-  { label: 'Personalized Career Plan', icon: Sparkles },
-  { label: 'Course Recommendation', icon: GraduationCap },
-] as const;
+export const BOTTOM_CTA_FEATURE_ICONS = [Users, Sparkles, GraduationCap] as const;
 
 /**
  * Recruiters Jetking itself publishes on jetking.com. Logos are the site's own
@@ -125,35 +51,9 @@ export const HIRING_PARTNERS = [
   { name: 'Wipro', logo: '/placements/partners/wipro.svg' },
 ] as const;
 
+/** Story ids and portraits; the story text (`stories.N.*`) lives in the page copy. */
 export const SUCCESS_STORIES = [
-  {
-    id: 'pro-story-1',
-    from: 'System Admin',
-    to: 'Cloud Engineer',
-    quote:
-      'Evening batches meant I could upskill without quitting. Within 8 months I moved to a cloud role with a 70% salary hike.',
-    name: 'Rahul M.',
-    hike: '70%',
-    avatar: '/professional/avatar-rahul.webp',
-  },
-  {
-    id: 'pro-story-2',
-    from: 'IT Support',
-    to: 'Cyber Security Analyst',
-    quote:
-      'The hands-on labs and mock interviews made the career switch feel achievable — not just theoretical.',
-    name: 'Priya K.',
-    hike: '85%',
-    avatar: '/professional/avatar-priya.webp',
-  },
-  {
-    id: 'pro-story-3',
-    from: 'Network Engineer',
-    to: 'DevOps Lead',
-    quote:
-      'Jetking mapped my existing skills to what hiring managers actually wanted. The DevOps track was spot on.',
-    name: 'Vikram S.',
-    hike: '60%',
-    avatar: '/professional/avatar-vikram.webp',
-  },
+  { id: 'pro-story-1', avatar: '/professional/avatar-rahul.webp' },
+  { id: 'pro-story-2', avatar: '/professional/avatar-priya.webp' },
+  { id: 'pro-story-3', avatar: '/professional/avatar-vikram.webp' },
 ] as const;

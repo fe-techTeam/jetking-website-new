@@ -7,6 +7,7 @@ import type {
   Faculty,
   Faq,
   HomepageVariant,
+  LegalDoc,
   PersonaRule,
   PlacementPage,
   Policy,
@@ -14,6 +15,8 @@ import type {
   TrustSignal,
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
+import { legalDefaults } from '../fixtures/legal';
+import { aboutFallback, normalizeAbout, normalizePlacements, placementsFallback } from '../page-content';
 
 function published<T extends { status: string }>(rows: T[]): Omit<T, 'status'>[] {
   return rows.map(({ status: _s, ...rest }) => rest);
@@ -134,5 +137,33 @@ export const adminSource: ContentSource = {
       await listCollection('persona_rules', { publishedOnly: true }),
     ) as PersonaRule[];
     return rows.filter((r) => r.enabled).sort((a, b) => b.priority - a.priority);
+  },
+
+  // About, Placements and the legal pages are CMS documents, but a page must never go blank: if the
+  // record is missing or still a draft, the in-repo copy is served instead of nothing.
+  async getAboutPage() {
+    const [record] = await listCollection('about_page', { publishedOnly: true });
+    return record ? normalizeAbout(published([record])[0]!) : aboutFallback();
+  },
+
+  async getPlacementsPage() {
+    const [record] = await listCollection('placements_page', { publishedOnly: true });
+    return record ? normalizePlacements(published([record])[0]!) : placementsFallback();
+  },
+
+  async getPageCopyOverrides(id: string) {
+    const rows = await listCollection('page_copy', { publishedOnly: true });
+    return rows.find((r) => r.id === id)?.entries ?? {};
+  },
+
+  async listLegalDocuments() {
+    const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
+    // A document that is unpublished (or absent) falls back to its in-repo copy.
+    return legalDefaults.map((fallback) => rows.find((d) => d.slug === fallback.slug) ?? fallback);
+  },
+
+  async getLegalDocument(slug: string) {
+    const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
+    return rows.find((d) => d.slug === slug) ?? legalDefaults.find((d) => d.slug === slug) ?? null;
   },
 };

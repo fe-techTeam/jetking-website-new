@@ -8,6 +8,8 @@ import { ArrowRight, ChevronDown, MapPin, Search } from 'lucide-react';
 import type { City } from '@/lib/content/types';
 import { centrePath } from '@/lib/centre-path';
 import { CITY_COORDS, INDIA_MAP, projectPercent } from './india-map';
+import { fill } from '@/lib/content/copy/define';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 interface MapCentre {
   slug: string;
@@ -31,10 +33,12 @@ export function CentreNetwork({
   cities,
   centres,
   counts,
+  copy,
 }: {
   cities: City[];
   centres: MapCentre[];
   counts: { centres: number; cities: number };
+  copy: HomeCopy;
 }) {
   const groups = useMemo(() => {
     const byCity = new Map<string, MapCentre[]>();
@@ -55,15 +59,15 @@ export function CentreNetwork({
     <Section tone="tint" labelledBy="home-centres-heading">
         <SectionHeader
           id="home-centres-heading"
-          eyebrow="Centre network"
-          title={`${counts.centres} centres across ${counts.cities} cities`}
-          lede="In-person classes and labs, not a remote-only course. Find a Jetking centre near you and start your journey today."
+          eyebrow={copy['network.eyebrow']}
+          title={fill(copy['network.title'], { centres: counts.centres, cities: counts.cities })}
+          lede={copy['network.lede']}
           action={
             <Link
-              href={'/centres' as Route}
+              href={copy['network.cta.href'] as Route}
               className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
-              Find your centre
+              {copy['network.cta.label']}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
           }
@@ -79,7 +83,7 @@ export function CentreNetwork({
               viewBox={`0 0 ${INDIA_MAP.width} ${INDIA_MAP.height}`}
               className="absolute inset-0 h-full w-full"
               role="img"
-              aria-label={`Map of India with pins for ${counts.centres} Jetking centres in ${counts.cities} cities`}
+              aria-label={fill(copy['network.map.aria'], { centres: counts.centres, cities: counts.cities })}
             >
               <path
                 d={INDIA_MAP.path}
@@ -133,7 +137,7 @@ export function CentreNetwork({
           {/* One card: search + city list on the left, the selected city's centres on the right */}
           <div className="min-w-0 rounded-[24px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] p-5 shadow-[var(--dc-shadow)] sm:p-6">
             <label htmlFor="home-city-search" className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]">
-              Find a centre near you
+              {copy['network.finder.title']}
             </label>
             <div className="relative mt-3">
               <Search
@@ -146,7 +150,7 @@ export function CentreNetwork({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search city, e.g. Mumbai"
+                placeholder={copy['network.finder.placeholder']}
                 autoComplete="off"
                 className="h-11 w-full rounded-xl border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] pr-3 pl-10 text-[14px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] focus-visible:outline-2 focus-visible:outline-[var(--dc-accent-soft)]"
               />
@@ -158,11 +162,11 @@ export function CentreNetwork({
                 value={filtered.some((g) => g.city.slug === selected) ? selected : ''}
                 onChange={(e) => setSelected(e.target.value)}
                 disabled={filtered.length === 0}
-                aria-label="Choose a city"
+                aria-label={copy['network.finder.select.aria']}
                 className="h-11 w-full appearance-none rounded-xl border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] pr-10 pl-3.5 text-[14px] font-semibold text-[var(--dc-ink)] focus-visible:outline-2 focus-visible:outline-[var(--dc-accent-soft)] disabled:text-[var(--dc-ink-muted)]"
               >
                 {filtered.length === 0 ? (
-                  <option value="">No centre found for &ldquo;{query}&rdquo;</option>
+                  <option value="">{fill(copy['network.finder.empty.select'], { query })}</option>
                 ) : (
                   filtered.map(({ city, centres: list }) => (
                     <option key={city.slug} value={city.slug}>
@@ -181,7 +185,7 @@ export function CentreNetwork({
             <div className="mt-2 grid gap-5 sm:mt-4 sm:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[minmax(0,9.5rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)]">
               <ul
                 className="hidden sm:block sm:max-h-[340px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--dc-hairline)] sm:pr-4"
-                aria-label="Cities with a Jetking centre"
+                aria-label={copy['network.finder.list.aria']}
                 // Scroll container: focusable so keyboard users can scroll it with the arrow keys.
                 tabIndex={0}
               >
@@ -208,7 +212,9 @@ export function CentreNetwork({
                   );
                 })}
                 {filtered.length === 0 ? (
-                  <li className="py-3 text-[14px] text-[var(--dc-ink-muted)]">No centre found for &ldquo;{query}&rdquo;.</li>
+                  <li className="py-3 text-[14px] text-[var(--dc-ink-muted)]">
+                    {fill(copy['network.finder.empty.list'], { query })}
+                  </li>
                 ) : null}
               </ul>
 
@@ -222,7 +228,9 @@ export function CentreNetwork({
                       </h3>
                     </div>
                     <span className="dc-chip px-3 py-1 text-[12px] uppercase">
-                      {active.centres.length} {active.centres.length === 1 ? 'centre' : 'centres'}
+                      {fill(active.centres.length === 1 ? copy['network.city.one'] : copy['network.city.many'], {
+                        count: active.centres.length,
+                      })}
                     </span>
                   </div>
                   <ul className="mt-3 border-t border-[var(--dc-hairline)]">
@@ -260,7 +268,7 @@ export function CentreNetwork({
                     href={cityHref(active.city.name)}
                     className="tap mt-3 inline-flex items-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)]"
                   >
-                    All centres in {active.city.name}
+                    {fill(copy['network.city.all'], { city: active.city.name })}
                     <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
                   </Link>
                 </div>
@@ -268,10 +276,10 @@ export function CentreNetwork({
             </div>
 
             <Link
-              href={'/centres' as Route}
+              href={copy['network.all.href'] as Route}
               className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--dc-hairline-strong)] px-4 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
             >
-              View all {counts.centres} centres
+              {fill(copy['network.all.label'], { centres: counts.centres })}
               <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
             </Link>
           </div>

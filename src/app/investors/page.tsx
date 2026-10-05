@@ -5,21 +5,24 @@ import { ArrowUpRight, ChevronDown, FileText, TrendingUp } from 'lucide-react';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { Breadcrumbs, JsonLd, cx, type Crumb } from '@/components/ui';
 import { siteConfig } from '@/lib/site';
-import { COMPANY, GRIEVANCE_OFFICER, KMP, KMP_CONTACT, REGISTRAR } from '@/lib/investors/contacts';
-import { disclosures, linkLabel, type DisclosureSection } from '@/lib/investors/disclosures';
+import { disclosures, linkKind, type DisclosureSection } from '@/lib/investors/disclosures';
+import { investorsCopy } from '@/lib/content/copy/pages/investors';
+import { fill } from '@/lib/content/copy/define';
+import { loadCopy } from '@/lib/content/copy/load';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Investor Information | ${siteConfig.name}`,
-    description: `SEBI (LODR) Regulation 46 and 62 disclosures by ${siteConfig.legalName}: financial results, shareholding, annual reports, policies and investor contacts.`,
-  },
-  '/investors',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(investorsCopy);
+  const live = { brand: siteConfig.name, legalName: siteConfig.legalName };
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], live),
+      description: fill(copy['seo.description'], live),
+    },
+    '/investors',
+  );
+}
 
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Investors', path: '/investors' },
-];
+type Copy = typeof investorsCopy.defaults;
 
 /** Lists longer than this scroll inside their panel instead of stretching the page. */
 const SCROLL_AFTER = 12;
@@ -35,7 +38,13 @@ const externalLink = { target: '_blank', rel: 'noopener noreferrer' } as const;
  * page never invents a filing. Built on native <details>, so it is server-rendered,
  * works without JavaScript and keeps every document in the DOM for search engines.
  */
-export default function InvestorsPage() {
+export default async function InvestorsPage() {
+  const copy = await loadCopy(investorsCopy);
+  const trail: Crumb[] = [
+    { name: 'Home', path: '/' },
+    { name: copy['breadcrumb.label'], path: '/investors' },
+  ];
+  const live = { brand: siteConfig.name, legalName: siteConfig.legalName };
   const sections = disclosures.sections;
   // The contacts accordion follows the policies, where NIIT's page places it.
   const contactsAfter = 'code-of-conduct-policies';
@@ -52,7 +61,7 @@ export default function InvestorsPage() {
           <div className="relative mt-5 sm:mt-6">
             <div className="dc-banner relative min-h-[240px] overflow-hidden rounded-[24px] xs:min-h-[260px] xs:rounded-[28px] sm:min-h-[300px] sm:rounded-[28px] lg:min-h-[320px]">
               <Image
-                src="/home/journey-franchise-v2.jpg"
+                src={copy['hero.image']}
                 alt=""
                 fill
                 priority
@@ -62,14 +71,12 @@ export default function InvestorsPage() {
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
-                <p className="k-hero-eyebrow">Investors</p>
+                <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
                 <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)] sm:mt-4">
-                  Investor <span className="dc-accent-glow">Information</span>
+                  {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
                 </h1>
                 <p className="mt-3 max-w-[52ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-4 sm:text-[16px]">
-                  Disclosure under Regulation 46 and 62 of SEBI (LODR) Regulations —
-                  financial information and updates for the shareholders of{' '}
-                  {siteConfig.legalName}.
+                  {fill(copy['hero.body'], live)}
                 </p>
               </div>
             </div>
@@ -84,42 +91,41 @@ export default function InvestorsPage() {
           <div className="text-center">
             <p className="dc-eyebrow label-mono inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 py-1.5">
               <TrendingUp className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
-              Financial documents
+              {copy['reports.eyebrow']}
             </p>
             <h2
               id="investors-reports"
               className="section-title mt-4 font-display text-[var(--dc-ink)]"
             >
-              Access our <span className="dc-accent-glow">reports</span>
+              {copy['reports.titleLead']} <span className="dc-accent-glow">{copy['reports.titleAccent']}</span>
             </h2>
             <p className="mx-auto mt-3 max-w-[56ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
-              Financial reports, quarterly results and governance documents.
+              {copy['reports.body']}
             </p>
           </div>
 
           <div className="mx-auto mt-8 max-w-[56rem] space-y-3 sm:mt-10">
-            <Accordion title="Company Details" defaultOpen>
-              <CompanyDetails stockLive={disclosures.links.stockLive} latestNews={disclosures.links.latestNews} />
+            <Accordion title={copy['company.accordion']} defaultOpen>
+              <CompanyDetails copy={copy} stockLive={disclosures.links.stockLive} latestNews={disclosures.links.latestNews} />
             </Accordion>
 
             {sections.map((section) => (
               <SectionAccordions
                 key={section.id}
                 section={section}
+                copy={copy}
                 withContacts={section.id === contactsAfter}
               />
             ))}
           </div>
 
           <p className="mx-auto mt-8 max-w-[56rem] text-center text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
-            Documents open in a new tab and are hosted by {siteConfig.legalName} on external
-            file storage. Source: jetking.com/investors, last updated{' '}
-            {formatDate(disclosures.syncedAt)}. Questions about a disclosure? Write to{' '}
+            {fill(copy['reports.note'], { ...live, date: formatDate(disclosures.syncedAt) })}{' '}
             <a
-              href={`mailto:${COMPANY.email}`}
+              href={`mailto:${copy['company.email']}`}
               className="font-bold text-[var(--dc-accent-soft)] hover:underline"
             >
-              {COMPANY.email}
+              {copy['company.email']}
             </a>
             .
           </p>
@@ -143,33 +149,37 @@ function formatDate(iso: string): string {
 function SectionAccordions({
   section,
   withContacts,
+  copy,
 }: {
   section: DisclosureSection;
   withContacts: boolean;
+  copy: Copy;
 }) {
   if (section.items.length === 0) return null;
+  // The heading is editable per section id; a section the sync adds later keeps its synced title.
+  const title = (copy as Record<string, string>)[`sections.${section.id}.title`] ?? section.title;
   const scroll = section.items.length > SCROLL_AFTER;
 
   return (
     <>
-      <Accordion title={section.title} count={section.items.length}>
+      <Accordion title={title} count={section.items.length}>
         <ul
           // A long list scrolls in place; make that region reachable and named for keyboard and
           // screen-reader users, who otherwise cannot scroll it.
-          {...(scroll ? { tabIndex: 0, 'aria-label': `${section.title} — ${section.items.length} documents` } : {})}
+          {...(scroll ? { tabIndex: 0, 'aria-label': fill(copy['docs.scrollLabel'], { title, count: section.items.length }) } : {})}
           className={cx('space-y-2', scroll && 'dc-filter-scroll max-h-[28rem] overflow-y-auto pr-1')}
         >
           {section.items.map((item, index) => (
             <li key={`${index}-${item.href}`}>
-              <DocumentRow label={item.label} href={item.href} />
+              <DocumentRow copy={copy} label={item.label} href={item.href} />
             </li>
           ))}
         </ul>
       </Accordion>
 
       {withContacts ? (
-        <Accordion title="Investor Contact Details">
-          <InvestorContacts />
+        <Accordion title={copy['contacts.accordion']}>
+          <InvestorContacts copy={copy} />
         </Accordion>
       ) : null}
     </>
@@ -213,7 +223,8 @@ function Accordion({
 }
 
 /** File icon + label on the left, the download/view button on the right. */
-function DocumentRow({ label, href }: { label: string; href: string }) {
+function DocumentRow({ label, href, copy }: { label: string; href: string; copy: Copy }) {
+  const linkText = { page: copy['docs.link.page'], pdf: copy['docs.link.pdf'], drive: copy['docs.link.drive'], other: copy['docs.link.other'] }[linkKind(href)];
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-3.5 py-3 sm:flex-nowrap sm:px-4">
       <span
@@ -230,33 +241,33 @@ function DocumentRow({ label, href }: { label: string; href: string }) {
         {...(href.startsWith('/') ? {} : externalLink)}
         className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] px-3.5 text-[12.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)]"
       >
-        {linkLabel(href)}
+        {linkText}
         <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
         <span className="sr-only">
-          : {label}{href.startsWith('/') ? '' : ' (opens in a new tab)'}
+          : {label}{href.startsWith('/') ? '' : ` ${copy['common.newTab']}`}
         </span>
       </a>
     </div>
   );
 }
 
-function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestNews?: string }) {
+function CompanyDetails({ stockLive, latestNews, copy }: { stockLive?: string; latestNews?: string; copy: Copy }) {
   const rows: Array<[string, ReactNode]> = [
-    ['Company', siteConfig.legalName],
-    ['Listed at', COMPANY.listedAt],
-    ['BSE scrip code', COMPANY.scripCode],
-    ['Trading symbol', COMPANY.tradingSymbol],
-    ['Registered office', COMPANY.registeredOffice],
+    [copy['company.label.company'], siteConfig.legalName],
+    [copy['company.label.listedAt'], copy['company.listedAt']],
+    [copy['company.label.scripCode'], copy['company.scripCode']],
+    [copy['company.label.tradingSymbol'], copy['company.tradingSymbol']],
+    [copy['company.label.registeredOffice'], copy['company.registeredOffice']],
     [
-      'Investor line',
-      <a key="tel" href={`tel:${COMPANY.phone}`} className={contactLink}>
-        {COMPANY.phone}
+      copy['company.label.phone'],
+      <a key="tel" href={`tel:${copy['company.phone']}`} className={contactLink}>
+        {copy['company.phone']}
       </a>,
     ],
     [
-      'Email',
-      <a key="mail" href={`mailto:${COMPANY.email}`} className={contactLink}>
-        {COMPANY.email}
+      copy['company.label.email'],
+      <a key="mail" href={`mailto:${copy['company.email']}`} className={contactLink}>
+        {copy['company.email']}
       </a>,
     ],
   ];
@@ -264,7 +275,7 @@ function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestN
   return (
     <div>
       <h3 className="k-eyebrow">
-        Listing information
+        {copy['company.heading']}
       </h3>
       <dl className="mt-3 divide-y divide-[var(--dc-hairline)]">
         {rows.map(([term, value]) => (
@@ -283,9 +294,9 @@ function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestN
               {...externalLink}
               className="dc-cta inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold"
             >
-              Stock live on BSE
+              {copy['company.stock.label']}
               <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              <span className="sr-only">(opens in a new tab)</span>
+              <span className="sr-only">{copy['common.newTab']}</span>
             </a>
           ) : null}
           {latestNews ? (
@@ -294,9 +305,9 @@ function CompanyDetails({ stockLive, latestNews }: { stockLive?: string; latestN
               {...externalLink}
               className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] px-5 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
             >
-              Latest corporate announcements
+              {copy['company.news.label']}
               <ArrowUpRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              <span className="sr-only">(opens in a new tab)</span>
+              <span className="sr-only">{copy['common.newTab']}</span>
             </a>
           ) : null}
         </div>
@@ -320,72 +331,78 @@ const contactLink =
   'inline-flex min-h-11 items-center font-bold [overflow-wrap:anywhere] text-[var(--dc-accent-soft)] hover:underline';
 
 /** Grievance redressal, the registrar and transfer agent, and the KMP authorised on materiality. */
-function InvestorContacts() {
+function InvestorContacts({ copy }: { copy: Copy }) {
+  const byKey: Record<string, string> = copy;
+  const kmp = Array.from({ length: 4 }, (_, i) => ({
+    name: byKey[`kmp.${i}.name`] ?? '',
+    designation: byKey[`kmp.${i}.designation`] ?? '',
+  }));
+
   return (
     <div className="space-y-3">
-      <ContactBlock heading="Grievance redressal (designated person)">
-        <p className="font-semibold text-[var(--dc-ink)]">{GRIEVANCE_OFFICER.name}</p>
+      <ContactBlock heading={copy['grievance.heading']}>
+        <p className="font-semibold text-[var(--dc-ink)]">{copy['grievance.name']}</p>
         <p>
-          Tel:{' '}
-          <a href={`tel:${GRIEVANCE_OFFICER.phone.replace(/\s/g, '')}`} className={contactLink}>
-            {GRIEVANCE_OFFICER.phone}
+          {copy['contacts.tel']}{' '}
+          <a href={`tel:${copy['grievance.phone'].replace(/\s/g, '')}`} className={contactLink}>
+            {copy['grievance.phone']}
           </a>
         </p>
         <p>
-          Email:{' '}
-          <a href={`mailto:${GRIEVANCE_OFFICER.email}`} className={contactLink}>
-            {GRIEVANCE_OFFICER.email}
+          {copy['contacts.email']}{' '}
+          <a href={`mailto:${copy['grievance.email']}`} className={contactLink}>
+            {copy['grievance.email']}
           </a>
         </p>
       </ContactBlock>
 
-      <ContactBlock heading="Registrar and share transfer agent">
-        <p className="font-semibold text-[var(--dc-ink)]">{REGISTRAR.name}</p>
-        <p>{REGISTRAR.address}</p>
+      <ContactBlock heading={copy['registrar.heading']}>
+        <p className="font-semibold text-[var(--dc-ink)]">{copy['registrar.name']}</p>
+        <p>{copy['registrar.address']}</p>
         <p>
-          Tel:{' '}
-          <a href={`tel:${REGISTRAR.phone.replace(/\s/g, '')}`} className={contactLink}>
-            {REGISTRAR.phone}
+          {copy['contacts.tel']}{' '}
+          <a href={`tel:${copy['registrar.phone'].replace(/\s/g, '')}`} className={contactLink}>
+            {copy['registrar.phone']}
           </a>{' '}
-          · Fax: {REGISTRAR.fax}
+          · {copy['contacts.fax']} {copy['registrar.fax']}
         </p>
         <p>
-          Email:{' '}
-          <a href={`mailto:${REGISTRAR.email}`} className={contactLink}>
-            {REGISTRAR.email}
+          {copy['contacts.email']}{' '}
+          <a href={`mailto:${copy['registrar.email']}`} className={contactLink}>
+            {copy['registrar.email']}
           </a>
         </p>
         <p>
-          Website:{' '}
-          <a href={REGISTRAR.website} {...externalLink} className={contactLink}>
-            {REGISTRAR.website}
-            <span className="sr-only"> (opens in a new tab)</span>
+          {copy['contacts.website']}{' '}
+          <a href={copy['registrar.website']} {...externalLink} className={contactLink}>
+            {copy['registrar.website']}
+            <span className="sr-only"> {copy['common.newTab']}</span>
           </a>
         </p>
       </ContactBlock>
 
-      <ContactBlock heading="Key Managerial Personnel authorised to determine the materiality of an event or information">
+      <ContactBlock heading={copy['kmp.heading']}>
         <div className="mt-1 overflow-x-auto">
           <table className="w-full min-w-[520px] border-collapse text-left text-[13.5px]">
-            <caption className="sr-only">Key Managerial Personnel and their contact details</caption>
+            <caption className="sr-only">{copy['kmp.caption']}</caption>
             <thead>
               <tr className="border-b border-[var(--dc-hairline-strong)] text-[12px] tracking-[0.08em] text-[var(--dc-ink-muted)] uppercase">
-                <th scope="col" className="py-2 pr-4 font-bold">Name of the KMP</th>
-                <th scope="col" className="py-2 pr-4 font-bold">Designation</th>
-                <th scope="col" className="py-2 pr-4 font-bold">Phone number</th>
-                <th scope="col" className="py-2 font-bold">Email id</th>
+                <th scope="col" className="py-2 pr-4 font-bold">{copy['kmp.col.name']}</th>
+                <th scope="col" className="py-2 pr-4 font-bold">{copy['kmp.col.designation']}</th>
+                <th scope="col" className="py-2 pr-4 font-bold">{copy['kmp.col.phone']}</th>
+                <th scope="col" className="py-2 font-bold">{copy['kmp.col.email']}</th>
               </tr>
             </thead>
             <tbody>
-              {KMP.map((person) => (
-                <tr key={person.name} className="border-b border-[var(--dc-hairline)] last:border-0">
+              {kmp.map((person, i) => (
+                <tr key={i} className="border-b border-[var(--dc-hairline)] last:border-0">
                   <th scope="row" className="py-2.5 pr-4 font-semibold text-[var(--dc-ink)]">{person.name}</th>
                   <td className="py-2.5 pr-4">{person.designation}</td>
                   <td className="py-2.5 pr-4">
-                    <a href={`tel:${KMP_CONTACT.phone}`} className={contactLink}>{KMP_CONTACT.phone}</a>
+                    <a href={`tel:${copy['kmp.phone']}`} className={contactLink}>{copy['kmp.phone']}</a>
                   </td>
                   <td className="py-2.5">
-                    <a href={`mailto:${KMP_CONTACT.email}`} className={contactLink}>{KMP_CONTACT.email}</a>
+                    <a href={`mailto:${copy['kmp.email']}`} className={contactLink}>{copy['kmp.email']}</a>
                   </td>
                 </tr>
               ))}

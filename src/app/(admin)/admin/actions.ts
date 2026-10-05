@@ -17,6 +17,7 @@ import { CMS_COLLECTIONS, validateCmsRecord } from '@/lib/cms/schemas';
 import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, type Role } from '@/lib/auth/users';
 import { verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
+import { collectionByKey } from './registry';
 
 /** `CmsCollection` is compile-time only — a raw call to this action (bypassing the
  *  generated client stub) could otherwise pass any string through to the store. */
@@ -24,6 +25,13 @@ function assertKnownCollection(collection: CmsCollection): void {
   if (!CMS_COLLECTIONS.includes(collection)) {
     throw new Error(`Unknown collection "${collection}".`);
   }
+}
+
+/** Who may touch a collection — the legal pages are admin-only, everything else admin + editor. Enforced
+ *  here, not just by hiding the sidebar link, because these server actions can be called directly. */
+function rolesFor(collection: CmsCollection): Role[] {
+  assertKnownCollection(collection);
+  return collectionByKey(collection).roles ?? ['admin', 'editor'];
 }
 
 const ADMIN_COOKIE = 'jk_admin_session';
@@ -261,8 +269,7 @@ export async function saveCollectionItem(
    *  a genuinely new record. */
   previousId?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
+  const user = await requireRole(rolesFor(collection));
   try {
     const record = JSON.parse(json) as Record<string, unknown>;
     if (!record[idKey]) return { ok: false, error: `Missing ${idKey}` };
@@ -297,8 +304,7 @@ export async function removeCollectionItem(
   idKey: string,
   id: string,
 ): Promise<void> {
-  const user = await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
+  const user = await requireRole(rolesFor(collection));
   await deleteRecord(collection, idKey, id);
   await publishContent();
   void recordAudit(user, 'cms.delete', collection, id, `Deleted ${collection} "${id}"`);
@@ -312,7 +318,6 @@ export async function seedCmsFromFixtures(): Promise<void> {
 }
 
 export async function getAdminCollection(collection: CmsCollection) {
-  await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
+  await requireRole(rolesFor(collection));
   return listCollection(collection);
 }

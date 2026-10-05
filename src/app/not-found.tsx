@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ButtonLink } from '@/components/ui';
+import { loadCopy } from '@/lib/content/copy/load';
+import { siteCopy } from '@/lib/content/copy/pages/site';
 
 /**
  * 404.
@@ -24,39 +26,39 @@ import { ButtonLink } from '@/components/ui';
  * built from theme tokens so it tracks the light / dark toggle.
  */
 
-const DESTINATIONS: Array<{ href: Route; title: string; meta: string; icon: LucideIcon }> = [
-  { href: '/courses', title: 'Courses', meta: 'Degrees, diplomas and short courses', icon: GraduationCap },
-  { href: '/centres', title: 'Centres', meta: '39 centres across 28 cities', icon: MapPin },
-  { href: '/placements', title: 'Placements', meta: 'How placement support works', icon: Briefcase },
-  { href: '/blog', title: 'Guidance', meta: 'Choosing a course and a career', icon: Newspaper },
-  { href: '/franchise', title: 'Franchise', meta: 'The operating model', icon: Store },
-  { href: '/enquiry', title: 'Talk to a counsellor', meta: 'Get a call back, free', icon: MessageCircle },
-];
+/** Icons for the six destination cards, in order; their titles, descriptions and links are site copy. */
+const DESTINATION_ICONS: LucideIcon[] = [GraduationCap, MapPin, Briefcase, Newspaper, Store, MessageCircle];
 
-export default function NotFound() {
+export default async function NotFound() {
+  const copy = await loadCopy(siteCopy);
+  const destinations = DESTINATION_ICONS.map((icon, i) => ({
+    href: copy[`errors.notFound.destinations.${i}.href` as keyof typeof copy] as Route,
+    title: copy[`errors.notFound.destinations.${i}.title` as keyof typeof copy],
+    meta: copy[`errors.notFound.destinations.${i}.meta` as keyof typeof copy],
+    icon,
+  }));
+
   return (
     <div className="shell py-12 sm:py-16 lg:py-20">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:gap-16">
         <div className="min-w-0">
           <p className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1 text-[12px] font-bold tracking-[0.1em] text-[var(--accent-ink)] uppercase">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-            Error 404
+            {copy['errors.notFound.eyebrow']}
           </p>
           <h1 className="page-title mt-5 text-balance text-foreground">
-            We couldn&rsquo;t find that page
+            {copy['errors.notFound.title']}
           </h1>
           <p className="mt-5 max-w-[52ch] text-[17px] leading-relaxed text-foreground-secondary">
-            The link may be old, or the page may have moved during our site migration. Try one of
-            the places below, or tell us what you were looking for and a counsellor will point you
-            to it.
+            {copy['errors.notFound.body']}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/" size="lg">
-              Back to home
+            <ButtonLink href={copy['errors.notFound.primaryCta.href'] as Route} size="lg">
+              {copy['errors.notFound.primaryCta.label']}
             </ButtonLink>
-            <ButtonLink href="/courses" tone="secondary" size="lg">
-              Browse courses
+            <ButtonLink href={copy['errors.notFound.secondaryCta.href'] as Route} tone="secondary" size="lg">
+              {copy['errors.notFound.secondaryCta.label']}
             </ButtonLink>
           </div>
         </div>
@@ -85,10 +87,10 @@ export default function NotFound() {
 
       <section className="mt-14 sm:mt-16" aria-labelledby="nf-where">
         <h2 id="nf-where" className="text-[13px] font-bold tracking-[0.1em] text-foreground-muted uppercase">
-          Where would you like to go?
+          {copy['errors.notFound.destinations.heading']}
         </h2>
         <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {DESTINATIONS.map((d) => {
+          {destinations.map((d) => {
             const Icon = d.icon;
             return (
               <li key={d.href}>

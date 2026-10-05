@@ -9,6 +9,7 @@ import { usePersona } from '@/persona/PersonaProvider';
 import { track } from '@/lib/analytics';
 import { cx } from '@/components/ui';
 import { JOURNEYS } from '../journeys';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 /**
  * Hex journey chooser — responsive:
@@ -19,13 +20,12 @@ import { JOURNEYS } from '../journeys';
  * browsing) — the parent and franchise entries stay in the shared
  * JOURNEYS list (v1's JourneyChooser still uses all five) but are
  * filtered out here. "Just Exploring" is relabelled "Just Browsing"
- * for this lead only.
+ * for this lead only. Titles, details, links and photos come from the page copy
+ * (`journeys.N.*`, in the order below); ids, personas and hues stay in code.
  */
 const HOME_V2_JOURNEY_IDS = ['student', 'professional', 'exploring'];
 
-const homeV2Journeys = JOURNEYS.filter((journey) => HOME_V2_JOURNEY_IDS.includes(journey.id)).map(
-  (journey) => (journey.id === 'exploring' ? { ...journey, title: "I'm Just Browsing" } : journey),
-);
+const homeV2Journeys = JOURNEYS.filter((journey) => HOME_V2_JOURNEY_IDS.includes(journey.id));
 
 const STAGGER = [
   'lg:mt-0',
@@ -45,7 +45,7 @@ const GRID_PLACE = [
   'lg:col-span-2 lg:col-start-4',
 ];
 
-export function JourneyHexes() {
+export function JourneyHexes({ copy }: { copy: HomeCopy }) {
   const { override } = usePersona();
 
   return (
@@ -63,7 +63,14 @@ export function JourneyHexes() {
         '4xl:max-w-[min(100%,1024px)]',
       ].join(' ')}
     >
-      {homeV2Journeys.map((journey, index) => {
+      {homeV2Journeys.map((base, index) => {
+        const journey = {
+          ...base,
+          title: copy[`journeys.${index}.title` as keyof HomeCopy],
+          detail: copy[`journeys.${index}.detail` as keyof HomeCopy],
+          href: copy[`journeys.${index}.href` as keyof HomeCopy],
+          image: copy[`journeys.${index}.image` as keyof HomeCopy],
+        };
         const ink = `var(--v2-${journey.hue}-ink)`;
 
         return (

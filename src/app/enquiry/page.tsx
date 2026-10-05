@@ -3,29 +3,22 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Clock3, MessageCircle, PhoneCall, ShieldCheck } from 'lucide-react';
 import { content } from '@/lib/content';
-import { buildMetadata } from '@/lib/seo';
+import { enquiryCopy } from '@/lib/content/copy/pages/enquiry';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { siteConfig } from '@/lib/site';
 import { EnquiryForm } from './EnquiryForm';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Enquire About a Jetking Course',
-    description:
-      'Send an enquiry and a Jetking counsellor will get in touch about courses, fees, centres and admissions.',
-    // Thin, transactional, and duplicated in intent across the funnel — kept out of
-    // the index deliberately. It is a conversion page, not a ranking page.
-    noindex: true,
-  },
-  '/enquiry',
-);
-
-const NEXT_STEPS = [
-  { icon: MessageCircle, title: 'We read your enquiry', detail: 'Routed to a counsellor at your nearest centre.' },
-  { icon: PhoneCall, title: 'A counsellor reaches out', detail: 'Usually a call or WhatsApp within one working day.' },
-  { icon: ShieldCheck, title: 'Get clear answers', detail: 'Fees, eligibility and batch timings — no pressure.' },
-] as const;
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(enquiryCopy, '/enquiry');
+}
 
 export default async function EnquiryPage() {
+  const copy = await loadCopy(enquiryCopy);
+  const nextSteps = [
+    { icon: MessageCircle, title: copy['next.0.title'], detail: copy['next.0.detail'] },
+    { icon: PhoneCall, title: copy['next.1.title'], detail: copy['next.1.detail'] },
+    { icon: ShieldCheck, title: copy['next.2.title'], detail: copy['next.2.detail'] },
+  ];
   const [courses, cities, centres] = await Promise.all([
     content.listCourses(),
     content.listCities(),
@@ -48,14 +41,13 @@ export default async function EnquiryPage() {
     >
       <section className="shell relative pt-10 pb-8 xs:pt-12 sm:pt-14 sm:pb-10 lg:pt-16">
         <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
-          💬 Enquiry
+          {copy['hero.eyebrow']}
         </p>
         <h1 className="page-title-sm mt-4 max-w-xl font-display text-[var(--dc-ink)]">
-          Talk to a counsellor
+          {copy['hero.title']}
         </h1>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          Tell us a little about what you are looking for. A counsellor from your nearest
-          centre will get in touch — usually within one working day.
+          {copy['hero.body']}
         </p>
       </section>
 
@@ -63,20 +55,21 @@ export default async function EnquiryPage() {
         <div className="shell">
           <div className="stu-card overflow-hidden rounded-[24px] xs:rounded-[28px] lg:grid lg:grid-cols-[1.1fr_0.9fr]">
             <div className="p-6 xs:p-7 sm:p-8 lg:p-10">
-              <Suspense fallback={<p className="text-sm text-[var(--dc-ink-muted)]">Loading form…</p>}>
+              <Suspense fallback={<p className="text-sm text-[var(--dc-ink-muted)]">{copy['form.loading']}</p>}>
                 <EnquiryForm
                   courses={courses.map((c) => ({ slug: c.slug, title: c.shortTitle }))}
                   centres={toEnquiryCentres(centres, cities)}
+                  copy={copy}
                 />
               </Suspense>
             </div>
 
             <div className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] p-6 xs:p-7 sm:p-8 lg:border-t-0 lg:border-l lg:p-10">
               <h2 className="font-display text-[19px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[20px]">
-                What happens next
+                {copy['next.title']}
               </h2>
               <ol className="mt-6 space-y-5">
-                {NEXT_STEPS.map((step, index) => (
+                {nextSteps.map((step, index) => (
                   <li key={step.title} className="flex items-start gap-3.5">
                     <span
                       aria-hidden="true"
@@ -96,7 +89,7 @@ export default async function EnquiryPage() {
 
               <div className="mt-7 flex items-center gap-2 border-t border-[var(--dc-hairline-strong)] pt-6 text-[13.5px] text-[var(--dc-ink-muted)]">
                 <Clock3 className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]" strokeWidth={2} aria-hidden="true" />
-                Usually within one working day.
+                {copy['next.eta']}
               </div>
 
               {siteConfig.whatsappNumber ? (
@@ -106,9 +99,9 @@ export default async function EnquiryPage() {
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-bold text-[var(--dc-accent-soft)] hover:underline"
                 >
-                  Prefer WhatsApp? Message us now
+                  {copy['next.whatsapp.label']}
                   <span aria-hidden="true">→</span>
-                  <span className="sr-only">(opens in a new tab)</span>
+                  <span className="sr-only">{copy['next.whatsapp.newTab']}</span>
                 </a>
               ) : null}
             </div>

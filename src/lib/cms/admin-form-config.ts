@@ -30,6 +30,12 @@ export interface AdminFormConfig {
    *  section, so a config that misses a field can't silently hide it.
    *  Collections without `sections` render as one flat list, unchanged. */
   sections?: Array<{ title: string; fields: string[] }>;
+  /** String-array fields that hold paragraphs (one textarea each) rather than short tags. */
+  paragraphFields?: string[];
+  /** Top-level fields not shown at all — a singleton's fixed `id` means nothing to an editor. */
+  hiddenFields?: string[];
+  /** Top-level fields shown read-only — identity keys that must not be renamed (a singleton's `id`). */
+  lockedFields?: string[];
 }
 
 const seoBlank = () => ({ title: '', description: '', canonicalPath: '', ogImage: '', noindex: false });
@@ -351,6 +357,105 @@ const persona_rules: AdminFormConfig = {
   },
 };
 
+/* ── Site pages managed as CMS documents ───────────────────────────────────── */
+
+const about_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'about',
+    hero: { eyebrow: '', titleLead: '', titleAccent: '', lede: '' },
+    purpose: [],
+    values: [],
+    directors: [],
+    managementTeam: [],
+    timeline: [],
+    achievements: [],
+    partnerships: [],
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  paragraphFields: ['bio'],
+  itemTemplates: {
+    purpose: { title: '', body: '' },
+    directors: { name: '', role: '', photoUrl: '', bio: [] },
+    managementTeam: { name: '', role: '', photoUrl: '', bio: [] },
+    timeline: { year: '', title: '', body: '', link: { href: '', label: '' } },
+    achievements: { title: '', body: '', imageSrc: '' },
+    partnerships: { name: '', body: '', logo: '' },
+  },
+  sections: [
+    { title: 'Hero', fields: ['hero'] },
+    { title: 'Vision, mission & values', fields: ['purpose', 'values'] },
+    { title: 'Leadership', fields: ['directors', 'managementTeam'] },
+    { title: 'History', fields: ['timeline'] },
+    { title: 'Recognition & partners', fields: ['achievements', 'partnerships'] },
+  ],
+};
+
+const placements_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'placements',
+    hero: { eyebrow: '', titleLead: '', titleAccent: '', lede: '' },
+    disclaimer: '',
+    processSteps: [],
+    studentBenefits: [],
+    placedCandidates: [],
+    testimonials: [],
+    videoTestimonials: [],
+    contact: { phone: '', email: '' },
+    offerLetters: [],
+    recruiters: [],
+    recruitersDisclaimer: '',
+    stats: { partners: '', learnersPlaced: { value: '', label: '' } },
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  itemTemplates: {
+    processSteps: { step: '', title: '', description: '' },
+    studentBenefits: { title: '', description: '' },
+    placedCandidates: { name: '', company: '' },
+    testimonials: { name: '', role: '', quote: '' },
+    videoTestimonials: { name: '', title: '', provider: 'youtube', videoId: '', thumbnail: '' },
+    offerLetters: { src: '', title: '', sector: '' },
+    recruiters: { name: '', src: '' },
+  },
+  selectFields: {
+    provider: {
+      label: 'Video provider',
+      options: [
+        { value: 'youtube', label: 'YouTube' },
+        { value: 'vimeo', label: 'Vimeo' },
+      ],
+    },
+  },
+  sections: [
+    { title: 'Hero & disclaimer', fields: ['hero', 'disclaimer'] },
+    { title: 'Process & benefits', fields: ['processSteps', 'studentBenefits'] },
+    { title: 'Stories', fields: ['placedCandidates', 'testimonials', 'videoTestimonials'] },
+    { title: 'Recruiters & offer letters', fields: ['recruiters', 'recruitersDisclaimer', 'offerLetters'] },
+    { title: 'Figures & contact', fields: ['stats', 'contact'] },
+  ],
+};
+
+const legal_documents: AdminFormConfig = {
+  blank: () => ({
+    slug: '',
+    title: '',
+    sourceUrl: '',
+    blocks: [],
+    status: 'draft',
+  }),
+  lockedFields: ['slug'],
+  sections: [
+    { title: 'Document', fields: ['slug', 'title', 'sourceUrl'] },
+    { title: 'Text', fields: ['blocks'] },
+  ],
+};
+
+/** Edited by the dedicated Page text editor, not the generic record form — present only to satisfy the collection map. */
+const page_copy: AdminFormConfig = {
+  blank: () => ({ id: '', entries: {}, status: 'published' }),
+};
+
 export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   courses,
   cities,
@@ -363,4 +468,8 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   trust_signals,
   homepage_variants,
   persona_rules,
+  about_page,
+  placements_page,
+  legal_documents,
+  page_copy,
 };

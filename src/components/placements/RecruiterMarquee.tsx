@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
+import { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 export interface Recruiter {
   name: string;
@@ -17,7 +18,17 @@ export interface Recruiter {
  * button, since there is nothing to pause. The second copy of the list is decoration for the
  * seamless loop, so it is `aria-hidden` and screen readers hear each recruiter once.
  */
-export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
+export function RecruiterMarquee({
+  items,
+  copy = placementsCopy.defaults,
+}: {
+  items: readonly Recruiter[];
+  /** The Pause / Play labels — the Placements page passes its loaded copy; other pages get the shipped wording. */
+  copy?: Pick<
+    typeof placementsCopy.defaults,
+    'recruiters.pauseLabel' | 'recruiters.resumeLabel' | 'recruiters.pause' | 'recruiters.play'
+  >;
+}) {
   const [paused, setPaused] = useState(false);
 
   return (
@@ -34,7 +45,7 @@ export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
           type="button"
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
-          aria-label={paused ? 'Resume scrolling recruiter logos' : 'Pause scrolling recruiter logos'}
+          aria-label={paused ? copy['recruiters.resumeLabel'] : copy['recruiters.pauseLabel']}
           className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           {paused ? (
@@ -42,7 +53,7 @@ export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
           ) : (
             <Pause className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
           )}
-          {paused ? 'Play' : 'Pause'}
+          {paused ? copy['recruiters.play'] : copy['recruiters.pause']}
         </button>
       </div>
     </div>

@@ -1,4 +1,7 @@
+'use client';
+
 import { QuickEnquiryForm, type EnquiryCentre } from '@/components/QuickEnquiryForm';
+import { useSiteCopy } from '@/components/providers/site-copy';
 
 /**
  * The lead-form card that sits in the open right-hand side of a page banner (/centres, /courses).
@@ -35,6 +38,7 @@ export function HeroEnquiryCard({
   titleId: string;
 }) {
   const t = TONES[tone];
+  const copy = useSiteCopy();
   return (
     <aside
       aria-labelledby={titleId}
@@ -42,7 +46,7 @@ export function HeroEnquiryCard({
     >
       <div className={`rounded-[24px] border p-4 ${t.card}`}>
         <h2 id={titleId} className={`mb-3 ${t.eyebrow}`}>
-          Quick enquiry
+          {copy['enquiry.heroCard.title']}
         </h2>
         <QuickEnquiryForm centres={centres} source={source} compact />
       </div>

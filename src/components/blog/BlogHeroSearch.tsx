@@ -4,6 +4,7 @@ import { FormEvent, useId, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { usePersona } from '@/persona/PersonaProvider';
+import type { blogCopy } from '@/lib/content/copy/pages/blog';
 
 const EVENT = 'blog:search';
 
@@ -26,9 +27,11 @@ export function subscribeBlogSearch(handler: (query: string) => void) {
  * On submit: syncs ?q=, scrolls to #blog-index, notifies BlogIndex.
  */
 export function BlogHeroSearch({
+  copy,
   initialQuery = '',
   activeCategory = null,
 }: {
+  copy: typeof blogCopy.defaults;
   initialQuery?: string;
   activeCategory?: string | null;
 }) {
@@ -75,7 +78,7 @@ export function BlogHeroSearch({
   return (
     <form onSubmit={onSubmit} className="blog-hero-search relative w-full max-w-md" role="search">
       <label htmlFor={inputId} className="sr-only">
-        Search articles
+        {copy['hero.searchLabel']}
       </label>
       <input
         id={inputId}
@@ -83,13 +86,13 @@ export function BlogHeroSearch({
         name="q"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="Search articles, topics, skills..."
+        placeholder={copy['hero.searchPlaceholder']}
         autoComplete="off"
         className="blog-hero-search-input w-full rounded-full border border-white/12 bg-scrim/72 py-3.5 pr-14 pl-5 text-[14.5px] text-white shadow-[inset_3px_0_0_0_var(--dc-accent)] backdrop-blur-md placeholder:text-white/50 transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--dc-accent-soft)]/45 focus:border-[var(--dc-accent-soft)]/70 focus:ring-3 focus:ring-[var(--dc-accent-soft)]/20"
       />
       <button
         type="submit"
-        aria-label="Search articles"
+        aria-label={copy['hero.searchButtonLabel']}
         className="absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-white transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)]"
       >
         <Search className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

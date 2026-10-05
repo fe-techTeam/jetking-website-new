@@ -2,14 +2,18 @@ import 'server-only';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import type {
+  AboutPageContent,
   Centre,
   City,
   Course,
   Faculty,
   Faq,
   HomepageVariant,
+  LegalDoc,
+  PageCopyRecord,
   PersonaRule,
   PlacementPage,
+  PlacementsPageRecord,
   Policy,
   Post,
   TrustSignal,
@@ -27,8 +31,12 @@ import {
   placements as seedPlacements,
   policies as seedPolicies,
 } from '@/lib/content/fixtures/kb';
+import { aboutDefaults } from '@/lib/content/fixtures/about';
+import { legalDefaults } from '@/lib/content/fixtures/legal';
+import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { CmsCollection, PublishStatus } from '@/lib/cms/types';
+import { CMS_COLLECTIONS } from '@/lib/cms/schemas';
 
 export type { CmsCollection } from '@/lib/cms/types';
 
@@ -46,6 +54,10 @@ export interface CmsStore {
   trust_signals: WithStatus<TrustSignal>[];
   homepage_variants: WithStatus<HomepageVariant>[];
   persona_rules: WithStatus<PersonaRule>[];
+  about_page: WithStatus<AboutPageContent>[];
+  placements_page: WithStatus<PlacementsPageRecord>[];
+  legal_documents: WithStatus<LegalDoc>[];
+  page_copy: WithStatus<PageCopyRecord>[];
 }
 
 const STORE_PATH = path.join(process.cwd(), 'data', 'cms', 'store.json');
@@ -67,7 +79,27 @@ function seedStore(): CmsStore {
     trust_signals: published(seedTrust),
     homepage_variants: published(seedVariants),
     persona_rules: published(seedRules),
+    about_page: published([aboutDefaults]),
+    placements_page: published([placementsDefaults]),
+    legal_documents: published(legalDefaults),
+    // No overrides until an editor changes something: every page starts on its shipped text.
+    page_copy: [],
   };
+}
+
+/**
+ * A store file written before a collection existed has no key for it. Fill the gap from the in-repo
+ * defaults — in memory only, so a read-only filesystem (a deployed build) still serves every page,
+ * and the next save writes the full set back to disk.
+ */
+function withMissingCollections(store: CmsStore): CmsStore {
+  const missing = CMS_COLLECTIONS.filter((key) => !Array.isArray((store as unknown as Record<string, unknown>)[key]));
+  if (missing.length === 0) return store;
+  // Seeding builds every collection (416 posts…), so only pay for it when something is actually absent.
+  const seeded = seedStore() as unknown as Record<string, unknown>;
+  const filled = { ...store } as unknown as Record<string, unknown>;
+  for (const key of missing) filled[key] = seeded[key];
+  return filled as unknown as CmsStore;
 }
 
 function isEnoent(error: unknown): boolean {
@@ -94,7 +126,7 @@ async function ensureFileStore(): Promise<CmsStore> {
   }
 
   try {
-    return JSON.parse(raw) as CmsStore;
+    return withMissingCollections(JSON.parse(raw) as CmsStore);
   } catch (error) {
     console.error(
       `[cms:store] ${STORE_PATH} contains invalid JSON — refusing to reseed and discard it. Fix or delete the file manually.`,

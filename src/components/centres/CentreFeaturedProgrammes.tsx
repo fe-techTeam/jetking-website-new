@@ -1,5 +1,6 @@
 import type { CentreFeaturedProgramme, Course } from '@/lib/content/types';
 import { CourseCard } from '@/components/CourseCard';
+import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
 /** Courses whose own page a centre programme title can safely point at. */
 const KNOWN_SLUGS = new Set([
@@ -43,17 +44,19 @@ export function CentreFeaturedProgrammes({
   programmes,
   courses,
   centreSlug,
+  copy,
 }: {
   programmes: CentreFeaturedProgramme[];
   courses: Course[];
   centreSlug: string;
+  copy: typeof centresCopy.defaults;
 }) {
   if (!programmes.length) return null;
 
   return (
     <div>
       <h3 id="centre-featured" className="text-[18px] font-extrabold text-[var(--k-ink)]">
-        Featured courses
+        {copy['centreCourses.featuredTitle']}
       </h3>
       <ul className={GRID}>
         {programmes.map((prog, i) => {
@@ -71,9 +74,9 @@ export function CentreFeaturedProgrammes({
                 }}
                 surface="centre-featured"
                 href={course ? undefined : `/enquiry?centre=${centreSlug}`}
-                cta={course ? 'View course' : 'Enquire now'}
+                cta={course ? copy['centreCourses.viewCourse'] : copy['centreCourses.enquire']}
                 tag={prog.mode ?? prog.subtitle}
-                badge={i === 0 ? 'Featured' : undefined}
+                badge={i === 0 ? copy['centreCourses.featuredBadge'] : undefined}
               />
             </li>
           );
@@ -86,10 +89,12 @@ export function CentreFeaturedProgrammes({
 /** The rest of the catalogue offered at this centre. */
 export function CentreCatalogueProgrammes({
   courses,
-  title = 'All courses',
+  title,
+  copy,
 }: {
   courses: Course[];
-  title?: string;
+  title: string;
+  copy: typeof centresCopy.defaults;
 }) {
   return (
     <div>
@@ -100,12 +105,12 @@ export function CentreCatalogueProgrammes({
         <ul className={GRID}>
           {courses.map((course) => (
             <li key={course.slug} className="min-w-0">
-              <CourseCard course={course} surface="centre-courses" />
+              <CourseCard course={course} surface="centre-courses" cta={copy['centreCourses.viewCourse']} />
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-[15px] text-[var(--k-ink-2)]">Ask a counsellor which courses run at this centre.</p>
+        <p className="mt-4 text-[15px] text-[var(--k-ink-2)]">{copy['centreCourses.empty']}</p>
       )}
     </div>
   );

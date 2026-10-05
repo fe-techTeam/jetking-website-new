@@ -1,5 +1,7 @@
-import type { Metadata } from 'next';
 import { content } from '@/lib/content';
+import { loadCopy } from '@/lib/content/copy/load';
+import { fill } from '@/lib/content/copy/define';
+import { studentCopy } from '@/lib/content/copy/pages/student';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import { JsonLd, type Crumb } from '@/components/ui';
@@ -7,17 +9,19 @@ import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
 import { StudentLanding } from '@/components/student/StudentLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Student Path — Courses & Career Start | ${siteConfig.name}`,
-    description:
-      'Explore Jetking courses for students after 10th or 12th — cloud, cyber security and IT tracks with labs, certifications and placement support.',
-  },
-  '/student',
-);
+export async function generateMetadata() {
+  const copy = await loadCopy(studentCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
+      description: copy['seo.description'],
+    },
+    '/student',
+  );
+}
 
 export default async function StudentPage() {
-  const [courses, home] = await Promise.all([content.listCourses(), loadHomeData()]);
+  const [courses, home, copy] = await Promise.all([content.listCourses(), loadHomeData(), loadCopy(studentCopy)]);
 
   const preferred = [
     'ethical-hacking-specialist',
@@ -43,8 +47,8 @@ export default async function StudentPage() {
   const testimonials = studentVariant?.testimonials ?? [];
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Student', path: '/student' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.current'], path: '/student' },
   ];
 
   return (
@@ -57,6 +61,7 @@ export default async function StudentPage() {
         trust={home.trust}
         heroImage={home.heroImage}
         testimonials={testimonials}
+        copy={copy}
       />
     </>
   );

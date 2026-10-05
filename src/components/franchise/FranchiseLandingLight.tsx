@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Reveal, Section, StepPath } from '@/components/kit';
 import Link from 'next/link';
+import type { Route } from 'next';
 import {
   ArrowRight,
   Award,
@@ -26,12 +27,12 @@ import {
 } from 'lucide-react';
 import type { Faq, Testimonial } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
+import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 import { FranchiseTestimonialSliderLight } from './FranchiseTestimonialSliderLight';
 import { FranchiseEnquiryFormLight } from './FranchiseEnquiryFormLight';
 import { HeroOrbit } from '@/components/HeroOrbit';
 import { Disclosure } from '@/components/Disclosure';
-import { SINCE_FOUNDED } from '@/lib/brand-facts';
-import { COURSES, JUMP_START, LAUNCH_STEPS, MARKET_STATS, WHY_STATS } from './data';
 
 // Icons paired with ./data's arrays by index — kept here, not in the shared
 // data file, since lucide-react's icon components use React context
@@ -49,42 +50,33 @@ const PARTNER_AVATARS = [
   '/franchise/hero-partner.webp',
 ] as const;
 
-const ORBIT = [
-  {
-    label: 'Brand',
-    detail: `Trusted ${SINCE_FOUNDED.toLowerCase()}`,
-    icon: Award,
-    className: 'top-[6%] left-0 sm:left-[-4%] lg:left-[-8%]',
-  },
-  {
-    label: 'Support',
-    detail: 'End-to-end ops help',
-    icon: Handshake,
-    className: 'top-[4%] right-0 sm:right-[-2%] lg:right-[-6%]',
-  },
-  {
-    label: 'Growth',
-    detail: 'Local marketing push',
-    icon: Megaphone,
-    className: 'bottom-[10%] left-0 sm:left-[-2%] lg:left-[-10%]',
-  },
-  {
-    label: 'Returns',
-    detail: 'Attractive ROI path',
-    icon: LineChart,
-    className: 'bottom-[8%] right-0 sm:right-[-2%] lg:right-[-8%]',
-  },
+// Orbit chips: icon + position are layout; their words come from the page copy (`orbit.N.*`).
+const ORBIT_LAYOUT = [
+  { icon: Award, className: 'top-[6%] left-0 sm:left-[-4%] lg:left-[-8%]' },
+  { icon: Handshake, className: 'top-[4%] right-0 sm:right-[-2%] lg:right-[-6%]' },
+  { icon: Megaphone, className: 'bottom-[10%] left-0 sm:left-[-2%] lg:left-[-10%]' },
+  { icon: LineChart, className: 'bottom-[8%] right-0 sm:right-[-2%] lg:right-[-8%]' },
 ] as const;
 
 export function FranchiseLandingLight({
+  copy,
   testimonials,
   faqs,
 }: {
+  copy: typeof franchiseCopy.defaults;
   testimonials?: Testimonial[];
   faqs?: Faq[];
 }) {
   const phone = siteConfig.phone || '8422055373';
   const telPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+  // Indexed copy fields (`why.0.value`, `jump.2.title`…): the item count is fixed by the layout.
+  const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
+  const orbit = ORBIT_LAYOUT.map((item, i) => ({
+    ...item,
+    label: k(`orbit.${i}.label`),
+    detail: k(`orbit.${i}.detail`),
+  }));
+  const bands = [0, 1, 2].map((i) => k(`investment.band.${i}`));
 
   return (
     <div
@@ -106,25 +98,24 @@ export function FranchiseLandingLight({
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
           <div>
             <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
-              Become A Franchise Partner
+              {copy['hero.eyebrow']}
             </p>
 
             <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
-              Transform youth with a Jetking Franchise in your{' '}
-              <span className="text-[var(--dc-accent-soft)]">City</span>
+              {copy['hero.title.prefix']}{' '}
+              <span className="text-[var(--dc-accent-soft)]">{copy['hero.title.accent']}</span>
             </h1>
 
             <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
-              Join India&rsquo;s trusted IT training network. Proven model, end-to-end
-              support, and a path to build lasting local impact — and wealth.
+              {copy['hero.sub']}
             </p>
 
             <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
-                href="#enquire"
+                href={copy['hero.cta.href'] as Route}
                 className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--dc-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
-                Enquire Now
+                {copy['hero.cta.label']}
                 <span
                   aria-hidden="true"
                   className="grid h-7 w-7 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5 sm:h-9 sm:w-9"
@@ -134,11 +125,11 @@ export function FranchiseLandingLight({
               </Link>
 
               <Link
-                href="#enquire"
+                href={copy['hero.secondary.href'] as Route}
                 className="group/path inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-3.5 py-2 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
               >
                 <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden="true" />
-                Download Brochure
+                {copy['hero.secondary.label']}
               </Link>
             </div>
 
@@ -155,7 +146,7 @@ export function FranchiseLandingLight({
                   ))}
                 </span>
                 <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
-                  Partners across India
+                  {copy['hero.partners']}
                 </span>
               </div>
               <span
@@ -168,7 +159,7 @@ export function FranchiseLandingLight({
                   strokeWidth={2.25}
                   aria-hidden="true"
                 />
-                Capacity from ₹50L
+                {copy['hero.capacity']}
               </span>
             </div>
 
@@ -177,14 +168,14 @@ export function FranchiseLandingLight({
               className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-              Prefer to talk? Call franchise manager
+              {copy['hero.call']}
             </a>
           </div>
 
           <HeroOrbit
-            src="/franchise/hero-building.webp"
-            alt="Modern Jetking franchise training centre building"
-            items={ORBIT}
+            src={copy['hero.image']}
+            alt={copy['hero.image.alt']}
+            items={orbit}
           />
         </div>
       </section>
@@ -198,18 +189,18 @@ export function FranchiseLandingLight({
                   id="fra-why"
                   className="section-title font-display text-[var(--dc-ink)]"
                 >
-                  Why Partners Choose{' '}
+                  {copy['why.title.prefix']}{' '}
                   <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
                 <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-                  The numbers behind a franchise model built on decades of trust.
+                  {copy['why.lede']}
                 </p>
 
                 {/* Wraps into as many rows as the width allows; each row's tiles grow to fill it. */}
                 <dl className="mt-7 flex flex-wrap gap-3 sm:gap-4 lg:gap-3 xl:gap-4">
-                  {WHY_STATS.map((stat, i) => {
-                    const Icon = WHY_STATS_ICONS[i]!;
+                  {WHY_STATS_ICONS.map((Icon, i) => {
+                    const stat = { value: k(`why.${i}.value`), label: k(`why.${i}.label`) };
                     return (
                     <div
                       key={stat.label}
@@ -238,7 +229,7 @@ export function FranchiseLandingLight({
                 </dl>
               </div>
 
-              <FranchiseTestimonialSliderLight testimonials={testimonials} />
+              <FranchiseTestimonialSliderLight copy={copy} testimonials={testimonials} />
             </div>
           </div>
         </Section>
@@ -251,16 +242,16 @@ export function FranchiseLandingLight({
                 id="fra-benefits"
                 className="section-title font-display text-[var(--dc-ink)]"
               >
-                Jump-start your centre
+                {copy['jump.title']}
               </h2>
               <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-                What you get when you partner with Jetking.
+                {copy['jump.lede']}
               </p>
             </div>
 
             <ul className="grid grid-cols-1 gap-3 xs:gap-3.5 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:row-start-2 xl:col-span-8">
-              {JUMP_START.map((item, i) => {
-                const Icon = JUMP_START_ICONS[i]!;
+              {JUMP_START_ICONS.map((Icon, i) => {
+                const item = { title: k(`jump.${i}.title`), detail: k(`jump.${i}.detail`) };
                 return (
                 <li key={item.title} className="min-w-0">
                   <article className="kit kit-card flex h-full gap-3.5 p-4 xs:gap-4 xs:p-5 sm:flex-col sm:gap-0">
@@ -294,18 +285,17 @@ export function FranchiseLandingLight({
                 </span>
 
                 <h2 className="subsection-title relative mt-4 font-display text-[var(--dc-ink)] xs:mt-5">
-                  Ready to partner?
+                  {copy['cta.title']}
                 </h2>
                 <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] xs:mt-3 xs:text-[15px]">
-                  Tell us your preferred city and investment capacity — our franchise team
-                  replies within 24 hours.
+                  {copy['cta.body']}
                 </p>
 
                 <a
-                  href="#enquire"
+                  href={copy['cta.button.href']}
                   className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
                 >
-                  <span>Start franchise enquiry</span>
+                  <span>{copy['cta.button.label']}</span>
                   <span
                     aria-hidden="true"
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
@@ -315,7 +305,7 @@ export function FranchiseLandingLight({
                 </a>
 
                 <p className="relative mt-4 text-[14px] text-[var(--dc-ink-muted)]">
-                  Capacity bands: UPTO 50 L · UPTO 1 CR · UPTO 3 CR
+                  {fill(copy['cta.bands'], { bands: bands.join(' · ') })}
                 </p>
               </div>
             </div>
@@ -326,21 +316,21 @@ export function FranchiseLandingLight({
       <Section tone="plain" deco="grid" id="journey">
           <div className="max-w-xl">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
-              Launch Plan
+              {copy['launch.title']}
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-              A clear path from territory selection to day-to-day operations.
+              {copy['launch.lede']}
             </p>
           </div>
 
           <div className="mt-10">
             <Reveal>
               <StepPath
-                steps={LAUNCH_STEPS.map((step, i) => ({
-                  icon: LAUNCH_STEPS_ICONS[i]!,
-                  label: String(step.step),
-                  title: step.title,
-                  body: <p className="lg:max-w-[13rem]">{step.body}</p>,
+                steps={LAUNCH_STEPS_ICONS.map((icon, i) => ({
+                  icon,
+                  label: k(`launch.${i}.step`),
+                  title: k(`launch.${i}.title`),
+                  body: <p className="lg:max-w-[13rem]">{k(`launch.${i}.body`)}</p>,
                 }))}
               />
             </Reveal>
@@ -352,8 +342,8 @@ export function FranchiseLandingLight({
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="kit kit-card relative overflow-hidden lg:col-span-5">
               <Image
-                src="/franchise/centre-interior.webp"
-                alt="Students learning in a modern Jetking-style IT training classroom"
+                src={copy['market.image']}
+                alt={copy['market.image.alt']}
                 width={1200}
                 height={900}
                 className="aspect-[4/3] w-full object-cover"
@@ -366,21 +356,20 @@ export function FranchiseLandingLight({
 
             <div className="lg:col-span-7">
               <h2 className="section-title font-display text-[var(--dc-ink)]">
-                The opportunity is real
+                {copy['market.title']}
               </h2>
               <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-                Skill gaps in cloud, cyber and emerging tech create lasting demand for
-                job-ready training centres in every city.
+                {copy['market.lede']}
               </p>
 
               <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
-                {MARKET_STATS.map((stat) => (
-                  <li key={stat.label} className="kit kit-card p-3.5 sm:p-5">
+                {[0, 1, 2, 3].map((i) => (
+                  <li key={i} className="kit kit-card p-3.5 sm:p-5">
                     <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
-                      {stat.value}
+                      {k(`market.${i}.value`)}
                     </p>
                     <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
-                      {stat.label}
+                      {k(`market.${i}.label`)}
                     </p>
                   </li>
                 ))}
@@ -393,18 +382,18 @@ export function FranchiseLandingLight({
       <Section tone="plain" id="courses">
           <div className="max-w-xl">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
-              Courses your centre will deliver
+              {copy['courses.title']}
             </h2>
             <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-              Proven courses parents trust and employers recognise.
+              {copy['courses.lede']}
             </p>
           </div>
 
           <ul className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
-            {COURSES.map((course, i) => {
-              const Icon = COURSES_ICONS[i]!;
+            {COURSES_ICONS.map((Icon, i) => {
+              const course = { title: k(`courses.${i}.title`), body: k(`courses.${i}.body`) };
               return (
-              <li key={course.title}>
+              <li key={i}>
                 <article className="kit kit-card flex h-full flex-col p-5 sm:p-6">
                   <span
                     aria-hidden="true"
@@ -429,7 +418,7 @@ export function FranchiseLandingLight({
       {faqs?.length ? (
         <Section tone="tint" id="faqs">
             <h2 className="section-title font-display text-[var(--dc-ink)]">
-              Frequently Asked Questions
+              {copy['faq.title']}
             </h2>
             <div className="fra-faq mt-8 space-y-3">
               {faqs.map((faq) => (
@@ -450,7 +439,7 @@ export function FranchiseLandingLight({
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
                   src="/franchise/hero-building.webp"
-                  alt="Modern Jetking franchise centre exterior"
+                  alt={copy['enquire.image.alt']}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
@@ -458,16 +447,16 @@ export function FranchiseLandingLight({
                 <div className="absolute inset-0 bg-gradient-to-t from-scrim/88 via-scrim/35 to-transparent lg:bg-gradient-to-r" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
                   <p className="font-display text-[22px] font-extrabold leading-snug tracking-[-0.02em] text-white sm:text-[26px]">
-                    Be your own boss. Build lasting wealth with a trusted brand.
+                    {copy['enquire.tagline']}
                   </p>
                   <p className="mt-3 text-[14px] text-white/75">
-                    Our franchise team gets back within 24 hours.
+                    {copy['enquire.note']}
                   </p>
                 </div>
               </div>
 
               <div className="p-6 sm:p-8 lg:p-10">
-                <FranchiseEnquiryFormLight />
+                <FranchiseEnquiryFormLight copy={copy} />
               </div>
             </div>
           </div>
@@ -486,10 +475,10 @@ export function FranchiseLandingLight({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              Speak to Franchise Manager: +91 {phone}
+              {fill(copy['contact.call'], { phone })}
             </a>
             <a
-              href="mailto:franchise@jetking.com"
+              href={`mailto:${copy['contact.email']}`}
               className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Mail
@@ -497,10 +486,10 @@ export function FranchiseLandingLight({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              franchise@jetking.com
+              {copy['contact.email']}
             </a>
             <Link
-              href="/franchise"
+              href={copy['contact.web.href'] as Route}
               className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Download
@@ -508,7 +497,7 @@ export function FranchiseLandingLight({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              www.jetking.com/franchise
+              {copy['contact.web.label']}
             </Link>
           </div>
         </div>

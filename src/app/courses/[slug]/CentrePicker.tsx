@@ -2,6 +2,8 @@
 
 import { useId, useState } from 'react';
 import { ChevronDown, MapPin, Navigation, Phone } from 'lucide-react';
+import { fill } from '@/lib/content/copy/define';
+import type { coursesCopy } from '@/lib/content/copy/pages/courses';
 
 export interface PickerCentre {
   slug: string;
@@ -25,7 +27,9 @@ export function CentrePicker({
   cities,
   centreCount,
   fallbackPhone,
+  copy,
 }: {
+  copy: typeof coursesCopy.defaults;
   cities: PickerCity[];
   centreCount: number;
   fallbackPhone: string;
@@ -40,11 +44,14 @@ export function CentrePicker({
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="text-[1.375rem] leading-tight font-bold text-[var(--cp-ink)]">
-            Available at <span className="text-[var(--cp-red)]">{centreCount}</span>{' '}
-            {centreCount === 1 ? 'centre' : 'centres'}
+            {copy['centrePicker.availablePrefix']} <span className="text-[var(--cp-red)]">{centreCount}</span>{' '}
+            {centreCount === 1 ? copy['centrePicker.centreOne'] : copy['centrePicker.centreMany']}
           </p>
           <p className="mt-1 text-[15px] text-[var(--cp-ink-2)]">
-            Across {cities.length} {cities.length === 1 ? 'city' : 'cities'} — pick a location that works for you.
+            {fill(copy['centrePicker.across'], {
+              count: cities.length,
+              unit: cities.length === 1 ? copy['centrePicker.cityOne'] : copy['centrePicker.cityMany'],
+            })}
           </p>
         </div>
         <button
@@ -54,7 +61,7 @@ export function CentrePicker({
           aria-controls={panelId}
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? 'Hide centres' : 'Find your centre'}
+          {open ? copy['centrePicker.hide'] : copy['centrePicker.find']}
           <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
         </button>
       </div>
@@ -62,7 +69,7 @@ export function CentrePicker({
       <div id={panelId} hidden={!open} className="mt-6 border-t border-[var(--cp-line)] pt-6">
         <div className="sm:hidden">
           <label htmlFor={`${panelId}-city`} className="mb-1.5 block text-[13px] font-bold text-[var(--cp-ink-2)]">
-            City
+            {copy['centrePicker.cityLabel']}
           </label>
           <div className="relative">
             <select
@@ -83,7 +90,7 @@ export function CentrePicker({
             />
           </div>
         </div>
-        <div role="tablist" aria-label="Choose a city" className="-mx-1 hidden gap-2 overflow-x-auto px-1 pb-2 sm:flex">
+        <div role="tablist" aria-label={copy['centrePicker.tabsLabel']} className="-mx-1 hidden gap-2 overflow-x-auto px-1 pb-2 sm:flex">
           {cities.map((city) => {
             const on = city.slug === active?.slug;
             return (
@@ -124,7 +131,7 @@ export function CentrePicker({
                       className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[var(--cp-red-fill)] px-4 text-[13.5px] font-bold text-white"
                     >
                       <Phone className="h-3.5 w-3.5" aria-hidden="true" />
-                      Call
+                      {copy['centrePicker.call']}
                     </a>
                     <a
                       href={maps}
@@ -133,7 +140,7 @@ export function CentrePicker({
                       className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-[var(--cp-line)] bg-[var(--cp-bg)] px-4 text-[13.5px] font-bold text-[var(--cp-ink)]"
                     >
                       <Navigation className="h-3.5 w-3.5" aria-hidden="true" />
-                      Directions
+                      {copy['centrePicker.directions']}
                     </a>
                   </div>
                 </li>

@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { content } from '@/lib/content';
+import { coursesCopy } from '@/lib/content/copy/pages/courses';
+import { loadCopy } from '@/lib/content/copy/load';
 import { breadcrumbSchema, buildMetadata, courseSchema, faqSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { CourseViewTracker } from './CourseViewTracker';
@@ -29,11 +31,13 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const course = await content.getCourse(slug);
   if (!course) notFound();
 
-  const [allCourses, centres, cities, siteFaqs] = await Promise.all([
+  const copy = await loadCopy(coursesCopy);
+  const [allCourses, centres, cities, siteFaqs, placements] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
     content.listCities(),
     content.listFaqs(),
+    content.getPlacementsPage(),
   ]);
 
   // The course's own Q&A first, then the site-wide answers about fees and placement support that
@@ -51,8 +55,8 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
     .slice(0, 3);
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Courses', path: '/courses' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.courses'], path: '/courses' },
     { name: course.shortTitle, path: `/courses/${course.slug}` },
   ];
 
@@ -77,8 +81,10 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
         related={related}
         ownFaqs={ownFaqs}
         feeFaqs={feeFaqs}
+        placements={placements}
+        copy={copy}
       />
-      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} />
+      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} copy={copy} />
     </>
   );
 }

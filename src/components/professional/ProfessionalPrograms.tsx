@@ -7,8 +7,9 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
 import { CardTrack } from '@/components/CardTrack';
 import { CourseCard } from '@/components/CourseCard';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
 
-export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
+export function ProfessionalPrograms({ copy, courses }: { copy: typeof professionalCopy.defaults; courses: Course[] }) {
   const items = courses.slice(0, 4);
 
   return (
@@ -23,33 +24,33 @@ export function ProfessionalPrograms({ courses }: { courses: Course[] }) {
               strokeWidth={1.75}
               aria-hidden="true"
             />
-            Top Courses for High-Growth Careers
+            {copy['programs.title']}
           </h2>
           <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
-            Short and professional tracks designed to fit around a full-time job.
+            {copy['programs.lede']}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
-            href={'/courses' as Route}
+            href={copy['programs.viewAll.href'] as Route}
             className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
-            View all
+            {copy['programs.viewAll.label']}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
           </Link>
         </div>
       </div>
 
       <div className="mt-4">
-        <CardTrack label="top courses">
+        <CardTrack label={copy['programs.track.label']}>
           {items.map((course, i) => (
             <li key={course.slug} className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]">
               <CourseCard
                 course={course}
                 surface="professional-programs"
                 layout="stack"
-                badge={i === 0 ? 'Top pick' : undefined}
+                badge={i === 0 ? copy['programs.badge'] : undefined}
               />
             </li>
           ))}

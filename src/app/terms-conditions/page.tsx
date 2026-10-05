@@ -1,32 +1,42 @@
 import type { Metadata } from 'next';
 import { LegalDocument } from '@/components/legal/LegalDocument';
 import { JsonLd, type Crumb } from '@/components/ui';
-import { termsConditions } from '@/lib/legal';
+import { notFound } from 'next/navigation';
+import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { legalCopy } from '@/lib/content/copy/pages/legal';
+import { loadCopy } from '@/lib/content/copy/load';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Terms and Conditions | Jetking',
-    description:
-      'The terms of use for the Jetking website and services, including disclaimers, intellectual property, governing law, and the cancellation and refund policy.',
-  },
-  '/terms-conditions',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(legalCopy);
+  return buildMetadata(
+    {
+      title: copy['terms.seo.title'],
+      description: copy['terms.seo.description'],
+    },
+    '/terms-conditions',
+  );
+}
 
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Terms and Conditions', path: '/terms-conditions' },
-];
+export default async function TermsConditionsPage() {
+  const copy = await loadCopy(legalCopy);
+  const trail: Crumb[] = [
+    { name: copy['labels.breadcrumbHome'], path: '/' },
+    { name: copy['terms.breadcrumb'], path: '/terms-conditions' },
+  ];
+  // Legal wording is CMS content (`legal_documents`); the in-repo copy is the fallback.
+  const doc = await content.getLegalDocument('terms-conditions');
+  if (!doc) notFound();
 
-export default function TermsConditionsPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <LegalDocument
-        doc={termsConditions}
+        doc={doc}
         trail={trail}
         path="/terms-conditions"
-        intro="The terms that apply when you use the Jetking website and its services."
+        intro={copy['terms.intro']}
+        copy={copy}
       />
     </>
   );

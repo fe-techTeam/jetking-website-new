@@ -5,6 +5,7 @@ import type { LucideIcon } from 'lucide-react';
 import { usePersona } from '@/persona/PersonaProvider';
 import { track } from '@/lib/analytics';
 import type { EventName } from '@/lib/analytics';
+import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 /**
  * The light three-up promise bar that closes the v2 lead. Each item jumps to its section on this page (no page exits).
@@ -20,30 +21,30 @@ interface Action {
   event?: EventName;
 }
 
-export function ActionBar() {
+export function ActionBar({ copy }: { copy: HomeCopy }) {
   const { classification } = usePersona();
 
   const actions: Action[] = [
     {
       icon: Wrench,
-      label: 'Industry-Relevant Training',
-      href: '#home-programs-heading',
+      label: copy['actions.0.label'],
+      href: copy['actions.0.href'],
     },
     {
       icon: GraduationCap,
-      label: 'Real-World Projects',
-      href: '#home-how-heading',
+      label: copy['actions.1.label'],
+      href: copy['actions.1.href'],
     },
     {
       icon: Target,
-      label: 'Placement Support That Delivers',
-      href: '#home-proof-heading',
+      label: copy['actions.2.label'],
+      href: copy['actions.2.href'],
     },
   ];
 
   return (
     <nav
-      aria-label="Next steps"
+      aria-label={copy['actions.ariaLabel']}
       className="overflow-hidden rounded-[16px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] text-[var(--v2-ink)] shadow-[0_8px_24px_-16px_rgb(16_16_24/0.25)]"
     >
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:h-[68px] lg:grid-cols-none lg:flex-row lg:items-stretch 3xl:h-[72px]">

@@ -6,22 +6,9 @@ import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StepPath } from 
 import { OfferLetterSlider } from './OfferLetterSlider';
 import { PlacementsTestimonialSlider } from './PlacementsTestimonialSlider';
 import { RecruiterMarquee } from './RecruiterMarquee';
-import {
-  PLACEMENTS_HERO,
-  OFFER_LETTER_SAMPLES,
-  PLACEMENT_DISCLAIMER,
-  PROCESS_STEPS,
-  RECRUITERS,
-  RECRUITERS_DISCLAIMER,
-  STUDENT_BENEFITS,
-  TESTIMONIALS,
-  PLACEMENTS_CONTACT,
-} from './data';
-
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Placements', path: '/placements' },
-];
+import type { PlacementsPageContent } from '@/lib/content/types';
+import { fill } from '@/lib/content/copy/define';
+import type { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 /**
  * Icon glyphs from the Placements source-asset pack (kept as plain <img>,
@@ -77,10 +64,10 @@ const BENEFIT_ICON_SRCS = [
 ];
 
 const CTA_FEATURES = [
-  { label: 'Personalised guidance', icon: ICONS.personalisedGuidance },
-  { label: 'Centre-wise information', icon: ICONS.centreInformation },
-  { label: 'Quick response', icon: ICONS.quickResponse },
-];
+  { labelKey: 'cta.features.0', icon: ICONS.personalisedGuidance },
+  { labelKey: 'cta.features.1', icon: ICONS.centreInformation },
+  { labelKey: 'cta.features.2', icon: ICONS.quickResponse },
+] as const;
 
 /**
  * Qualitative only — no headline counts here. A specific figure like "500+
@@ -88,14 +75,36 @@ const CTA_FEATURES = [
  * codebase's content backs one, so these stay descriptive.
  */
 const HERO_HIGHLIGHTS = [
-  { label: 'Hiring partner network', icon: ICONS.hiringPartners },
-  { label: 'Real-world interview prep', icon: ICONS.realworldPreparation },
-  { label: 'Dedicated placement support', icon: ICONS.placementSupport },
-];
+  { labelKey: 'hero.highlights.0', icon: ICONS.hiringPartners },
+  { labelKey: 'hero.highlights.1', icon: ICONS.realworldPreparation },
+  { labelKey: 'hero.highlights.2', icon: ICONS.placementSupport },
+] as const;
 
-const HERO_CHECKLIST = ['Industry connected', 'Personalised support', 'Real career opportunities'];
+const HERO_CHECKLIST_KEYS = ['hero.checklist.0', 'hero.checklist.1', 'hero.checklist.2'] as const;
 
-export function PlacementsLanding() {
+export function PlacementsLanding({
+  placements,
+  copy,
+}: {
+  placements: PlacementsPageContent;
+  copy: typeof placementsCopy.defaults;
+}) {
+  const trail: Crumb[] = [
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.placements'], path: '/placements' },
+  ];
+  const {
+    hero: PLACEMENTS_HERO,
+    offerLetters: OFFER_LETTER_SAMPLES,
+    disclaimer: PLACEMENT_DISCLAIMER,
+    processSteps: PROCESS_STEPS,
+    recruiters: RECRUITERS,
+    recruitersDisclaimer: RECRUITERS_DISCLAIMER,
+    studentBenefits: STUDENT_BENEFITS,
+    testimonials: TESTIMONIALS,
+    contact: PLACEMENTS_CONTACT,
+  } = placements;
+
   return (
     <div className="dark-canvas">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -105,7 +114,7 @@ export function PlacementsLanding() {
         <div className="relative mt-5 sm:mt-6">
           <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
             <Image
-              src="/placements/photos/hero-male.webp"
+              src={copy['hero.image']}
               alt=""
               fill
               priority
@@ -134,27 +143,29 @@ export function PlacementsLanding() {
                   source="placements-hero"
                   className="dc-cta inline-flex h-11 grow items-center justify-center rounded-full px-4 text-[13px] font-bold whitespace-nowrap sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
-                  Talk to a counsellor
+                  {copy['hero.cta.label']}
                 </EnquiryLink>
                 <a
                   href={PLACEMENTS_CONTACT.tel}
-                  aria-label={`Call ${PLACEMENTS_CONTACT.phone}`}
+                  aria-label={fill(copy['hero.call.ariaLabel'], { phone: PLACEMENTS_CONTACT.phone })}
                   className="inline-flex h-11 grow items-center justify-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[13px] font-bold whitespace-nowrap text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
                   <Phone className="h-4 w-4 text-[var(--dc-accent-soft)] lg:hidden" aria-hidden="true" />
-                  <span className="lg:hidden">Call now</span>
-                  <span className="hidden lg:inline">Call {PLACEMENTS_CONTACT.phone}</span>
+                  <span className="lg:hidden">{copy['hero.call.shortLabel']}</span>
+                  <span className="hidden lg:inline">
+                    {fill(copy['hero.call.longLabel'], { phone: PLACEMENTS_CONTACT.phone })}
+                  </span>
                 </a>
               </div>
 
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
-                {HERO_CHECKLIST.map((label) => (
+                {HERO_CHECKLIST_KEYS.map((key) => (
                   <li
-                    key={label}
+                    key={key}
                     className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]"
                   >
                     <Check className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2.5} aria-hidden="true" />
-                    {label}
+                    {copy[key]}
                   </li>
                 ))}
               </ul>
@@ -165,7 +176,7 @@ export function PlacementsLanding() {
             <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[36%] flex-col justify-center gap-3 p-6 lg:flex xl:w-[32%] xl:gap-4 xl:p-8">
               {HERO_HIGHLIGHTS.map((item) => (
                 <div
-                  key={item.label}
+                  key={item.labelKey}
                   className="dc-panel pointer-events-auto flex items-center gap-3 rounded-2xl px-4 py-3.5"
                 >
                   <span
@@ -175,7 +186,7 @@ export function PlacementsLanding() {
                     <IconGlyph src={item.icon} className="h-5 w-5" />
                   </span>
                   <span className="text-[13px] leading-tight font-bold text-[var(--dc-ink)]">
-                    {item.label}
+                    {copy[item.labelKey]}
                   </span>
                 </div>
               ))}
@@ -197,10 +208,11 @@ export function PlacementsLanding() {
       <Section tone="tint" deco="grid" labelledBy="placements-process">
         <SectionHeader
           id="placements-process"
-          eyebrow="How it works"
+          eyebrow={copy['process.eyebrow']}
           title={
             <>
-              Five steps from <span className="text-[var(--k-red)]">classroom to offer</span>
+              {copy['process.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['process.titleAccent']}</span>
             </>
           }
         />
@@ -221,14 +233,15 @@ export function PlacementsLanding() {
         <SectionHeader
           id="placements-recruiters"
           align="center"
-          eyebrow="Our recruiters"
+          eyebrow={copy['recruiters.eyebrow']}
           title={
             <>
-              Brands that are our <span className="text-[var(--k-red)]">placement partners</span>
+              {copy['recruiters.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['recruiters.titleAccent']}</span>
             </>
           }
         />
-        <RecruiterMarquee items={RECRUITERS} />
+        <RecruiterMarquee items={RECRUITERS} copy={copy} />
         <p className="mx-auto mt-6 max-w-[48rem] text-center text-[14px] leading-relaxed text-[var(--k-ink-3)]">
           {RECRUITERS_DISCLAIMER}
         </p>
@@ -238,12 +251,12 @@ export function PlacementsLanding() {
       <Section tone="tint" labelledBy="placements-benefits">
         <SectionHeader
           id="placements-benefits"
-          eyebrow="What you build"
-          title="What placement preparation covers"
-          lede="More than training — a complete career readiness course."
+          eyebrow={copy['benefits.eyebrow']}
+          title={copy['benefits.title']}
+          lede={copy['benefits.lede']}
         />
         <Reveal>
-          <CardRail label="What placement preparation covers" cols={4} colsMd={2}>
+          <CardRail label={copy['benefits.railLabel']} cols={4} colsMd={2}>
             {STUDENT_BENEFITS.map((benefit, index) => (
               <FeatureCard
                 key={benefit.title}
@@ -261,47 +274,50 @@ export function PlacementsLanding() {
       <Section tone="plain" labelledBy="placements-offers">
         <SectionHeader
           id="placements-offers"
-          eyebrow="What an offer looks like"
+          eyebrow={copy['offers.eyebrow']}
           title={
             <>
-              Sample <span className="text-[var(--k-red)]">offer letters</span>
+              {copy['offers.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['offers.titleAccent']}</span>
             </>
           }
-          lede="Illustrative samples across sectors and roles. They show the shape of a typical offer — not a promise of any employer, role or package."
+          lede={copy['offers.lede']}
         />
-        <OfferLetterSlider items={OFFER_LETTER_SAMPLES} label="Offer letter samples, carousel" />
+        <OfferLetterSlider items={OFFER_LETTER_SAMPLES} label={copy['offers.carouselLabel']} copy={copy} />
       </Section>
 
       {/* ── Testimonials ──────────────────────────────────────────────────── */}
       <Section tone="wash" labelledBy="placements-testimonials">
         <SectionHeader
           id="placements-testimonials"
-          eyebrow="In their words"
+          eyebrow={copy['testimonials.eyebrow']}
           title={
             <>
-              What placed learners <span className="text-[var(--k-red)]">say</span>
+              {copy['testimonials.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['testimonials.titleAccent']}</span>
             </>
           }
         />
-        <PlacementsTestimonialSlider testimonials={TESTIMONIALS} />
+        <PlacementsTestimonialSlider testimonials={TESTIMONIALS} copy={copy} />
       </Section>
 
       {/* ── Close CTA ─────────────────────────────────────────────────────── */}
       <Section tone="tint" deco="glow" labelledBy="placements-cta">
         <div className="kit-card flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-10">
           <div className="max-w-2xl">
-            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">Next step</p>
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
             <h2 id="placements-cta" className="section-title mt-2.5 text-[var(--k-ink)]">
-              Ask about a <span className="text-[var(--k-red)]">specific centre</span>
+              {copy['cta.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['cta.titleAccent']}</span>
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)]">
-              A counsellor can tell you what your nearest centre has actually achieved — not a sitewide average.
+              {copy['cta.body']}
             </p>
             <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
               {CTA_FEATURES.map((feature) => (
-                <li key={feature.label} className="flex items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+                <li key={feature.labelKey} className="flex items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
                   <IconGlyph src={feature.icon} className="h-4 w-4" />
-                  {feature.label}
+                  {copy[feature.labelKey]}
                 </li>
               ))}
             </ul>
@@ -318,7 +334,7 @@ export function PlacementsLanding() {
               source="placements-cta"
               className="group/cta inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-7 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
             >
-              Talk to a counsellor
+              {copy['cta.primary.label']}
               <span
                 aria-hidden="true"
                 className="grid h-9 w-9 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/cta:translate-x-0.5"

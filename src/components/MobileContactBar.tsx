@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, MessageCircle, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
-import { siteConfig, whatsappHref } from '@/lib/site';
+import { whatsappHref } from '@/lib/site';
+import { useSiteCopy } from '@/components/providers/site-copy';
 
 /**
  * Routes with their own conversion path: the enquiry form itself, course pages
@@ -20,6 +21,7 @@ const EXCLUDED = [/^\/enquiry/, /^\/courses\/[^/]+/, /^\/centres\/[^/]+/, /^\/fr
  */
 export function MobileContactBar() {
   const pathname = usePathname();
+  const copy = useSiteCopy();
   const [scrolled, setScrolled] = useState(false);
   const [obscuring, setObscuring] = useState(false);
   const excluded = EXCLUDED.some((re) => re.test(pathname));
@@ -57,7 +59,7 @@ export function MobileContactBar() {
 
   if (excluded) return null;
   const shown = scrolled && !obscuring;
-  const phone = siteConfig.phone || siteConfig.helpline;
+  const phone = copy['contact.phone'];
 
   return (
     <div
@@ -73,14 +75,14 @@ export function MobileContactBar() {
           className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--theme-hairline-strong)] px-4 text-[14px] font-bold text-[var(--theme-ink)] transition-colors hover:bg-[var(--theme-surface)]"
         >
           <Phone className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          Call us
+          {copy['mobileBar.call.label']}
         </a>
         {whatsappHref ? (
           <a
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Chat on WhatsApp"
+            aria-label={copy['mobileBar.whatsapp.ariaLabel']}
             onClick={() => track('whatsapp_clicked', { surface: 'mobile-contact-bar', path: pathname })}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--theme-hairline-strong)] text-[var(--theme-parent-ink)] transition-colors hover:bg-[var(--theme-surface)]"
           >
@@ -92,7 +94,7 @@ export function MobileContactBar() {
           onClick={() => track('enquiry_started', { surface: 'mobile-contact-bar', path: pathname })}
           className="inline-flex h-11 flex-[1.4] items-center justify-center gap-1.5 rounded-full bg-[var(--theme-accent)] px-4 text-[14px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
         >
-          Enquire now
+          {copy['mobileBar.enquire.label']}
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
         </EnquiryLink>
       </div>

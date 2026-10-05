@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { LEGAL_LINKS, type LegalBlock, type LegalDoc } from '@/lib/legal';
+import type { legalCopy } from '@/lib/content/copy/pages/legal';
 
 const slugify = (s: string) =>
   s
@@ -43,7 +44,16 @@ function Inline({ text }: { text: string }) {
   );
 }
 
-function Block({ block, id }: { block: LegalBlock; id?: string }) {
+function Block({
+  block,
+  id,
+  tableFallback,
+}: {
+  block: LegalBlock;
+  id?: string;
+  /** Accessible name of a table that has no caption. */
+  tableFallback: string;
+}) {
   switch (block.t) {
     case 'h2':
       return (
@@ -98,7 +108,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       return (
         <div
           role="region"
-          aria-label={block.caption || 'Table'}
+          aria-label={block.caption || tableFallback}
           tabIndex={0}
           className="mt-5 overflow-x-auto rounded-[12px] border border-[var(--dc-hairline-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
@@ -160,11 +170,13 @@ export function LegalDocument({
   trail,
   intro,
   path,
+  copy,
 }: {
   doc: LegalDoc;
   trail: Crumb[];
   intro: string;
   path: string;
+  copy: typeof legalCopy.defaults;
 }) {
   const seen = new Map<string, number>();
   const idFor = (text: string) => {
@@ -181,7 +193,7 @@ export function LegalDocument({
       <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
         <Breadcrumbs trail={trail} />
         <div className="mt-6 sm:mt-8">
-          <p className="k-hero-eyebrow">Legal</p>
+          <p className="k-hero-eyebrow">{copy['labels.eyebrow']}</p>
           <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
             {doc.title}
           </h1>
@@ -192,19 +204,19 @@ export function LegalDocument({
       <div className="shell relative mt-8 space-y-6 sm:mt-10">
         <article className="dc-panel rounded-[24px] px-5 py-8 xs:rounded-[28px] sm:px-10 sm:py-11">
           {doc.blocks.map((block, i) => (
-            <Block key={i} block={block} id={ids[i]} />
+            <Block key={i} block={block} id={ids[i]} tableFallback={copy['labels.tableFallback']} />
           ))}
         </article>
 
-        <nav aria-label="Other legal pages" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
-          <span className="dc-eyebrow label-mono">Also read</span>
+        <nav aria-label={copy['labels.otherPagesNav']} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
+          <span className="dc-eyebrow label-mono">{copy['labels.alsoRead']}</span>
           {others.map((l) => (
             <Link key={l.href} href={l.href as Route} className="tap font-semibold text-[var(--dc-accent-soft)] hover:underline">
               {l.label}
             </Link>
           ))}
           <Link href={'/enquiry' as Route} className="tap font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
-            Questions? Talk to a counsellor
+            {copy['labels.talkToCounsellor']}
           </Link>
         </nav>
       </div>

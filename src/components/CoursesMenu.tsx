@@ -12,6 +12,8 @@ import {
   COURSE_TECHNOLOGIES,
   type CourseCategoryId,
 } from '@/lib/course-categories';
+import { fill } from '@/lib/content/copy/define';
+import { useSiteCopy } from '@/components/providers/site-copy';
 import { cx } from './ui';
 
 export interface MenuCourse {
@@ -25,9 +27,10 @@ export interface MenuCourse {
 
 interface MenuItem {
   key: string;
+  kind: 'level' | 'tech';
   label: string;
-  /** Closing link text, e.g. "View all degree courses". */
-  viewAll: string;
+  /** Named in the closing link, e.g. "degree" in "View all degree courses". */
+  viewAllName: string;
   href: string;
   params: Record<string, string>;
   has: (course: MenuCourse) => boolean;
@@ -36,8 +39,9 @@ interface MenuItem {
 /** Level and technology are different questions, so the menu keeps them in two groups named as in the /courses filter ("Level", "Technology"), with the same labels. */
 const LEVEL_ITEMS: MenuItem[] = COURSE_LEVELS.map((l) => ({
   key: `level:${l.id}`,
+  kind: 'level',
   label: l.label,
-  viewAll: `View all ${l.id === 'short' ? 'short courses' : `${l.label.toLowerCase()} courses`}`,
+  viewAllName: l.id === 'short' ? 'short' : l.label.toLowerCase(),
   href: `/courses?level=${l.id}`,
   params: { level: l.id },
   has: (course) => course.level === l.id,
@@ -45,8 +49,9 @@ const LEVEL_ITEMS: MenuItem[] = COURSE_LEVELS.map((l) => ({
 
 const TECH_ITEMS: MenuItem[] = COURSE_TECHNOLOGIES.map((t) => ({
   key: `tech:${t.id}`,
+  kind: 'tech',
   label: t.label,
-  viewAll: `View all ${t.label} courses`,
+  viewAllName: t.label,
   href: `/courses?tech=${t.id}`,
   params: { tech: t.id },
   has: (course) => course.categories.includes(t.id),
@@ -60,14 +65,15 @@ const TECH_ITEMS: MenuItem[] = COURSE_TECHNOLOGIES.map((t) => ({
  * marked current when the URL is /courses with exactly that filter, and a course when
  * its own page is open.
  */
-function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCourse[] }) {
+function Inner({ label, href, onDarkLead, courses }: { label: string; href: string; onDarkLead: boolean; courses: MenuCourse[] }) {
+  const copy = useSiteCopy();
   const pathname = usePathname();
   const search = useSearchParams();
   const onCourses = pathname === '/courses' || pathname.startsWith('/courses/');
 
   const groups = [
-    { title: 'Level', items: LEVEL_ITEMS.filter((i) => courses.some(i.has)) },
-    { title: 'Technology', items: TECH_ITEMS.filter((i) => courses.some(i.has)) },
+    { title: copy['header.coursesMenu.levelHeading'], items: LEVEL_ITEMS.filter((i) => courses.some(i.has)) },
+    { title: copy['header.coursesMenu.technologyHeading'], items: TECH_ITEMS.filter((i) => courses.some(i.has)) },
   ].filter((g) => g.items.length > 0);
   const all = groups.flatMap((g) => g.items);
   const [activeKey, setActiveKey] = useState(all[0]?.key ?? '');
@@ -80,7 +86,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
   return (
     <div className="group">
       <Link
-        href={'/courses' as Route}
+        href={href as Route}
         aria-current={pathname === '/courses' ? 'page' : undefined}
         aria-haspopup="true"
         className={cx(
@@ -94,7 +100,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
               : 'text-foreground-secondary hover:bg-surface hover:text-foreground',
         )}
       >
-        Courses
+        {label}
         <ChevronDown
           className="h-3.5 w-3.5 transition-transform duration-200 group-focus-within:rotate-180 group-hover:rotate-180"
           strokeWidth={2.5}
@@ -105,7 +111,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
       {/* Positioned against the (sticky) header, so it is centred on the page, not on the trigger. */}
       <div className="invisible absolute top-full left-1/2 z-[60] w-[min(960px,calc(100vw-48px))] -translate-x-1/2 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
         <div className="grid overflow-hidden rounded-2xl border border-border bg-background shadow-xl lg:grid-cols-[260px_minmax(0,1fr)]">
-          <ul className="border-r border-border bg-surface p-3" aria-label="Course groups">
+          <ul className="border-r border-border bg-surface p-3" aria-label={copy['header.coursesMenu.groupsAriaLabel']}>
             {groups.map((group, gi) => (
               <li key={group.title} className={gi > 0 ? 'mt-3 border-t border-border pt-3' : undefined}>
                 <p className="label-mono px-3 pb-1.5 text-[11px] text-foreground-muted">{group.title}</p>
@@ -148,7 +154,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
                 aria-current={pathname === '/courses' && !search.get('tech') && !search.get('level') ? 'page' : undefined}
                 className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-[var(--accent-ink)] hover:bg-background"
               >
-                All courses
+                {copy['header.coursesMenu.allCourses']}
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
               </Link>
             </li>
@@ -158,7 +164,7 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
             {active ? (
               <>
                 <p className="label-mono text-[12px] text-foreground-muted">{active.label}</p>
-                <ul className="mt-3 grid gap-x-6 sm:grid-cols-2" aria-label={`${active.label} courses`}>
+                <ul className="mt-3 grid gap-x-6 sm:grid-cols-2" aria-label={fill(copy['header.coursesMenu.listAriaLabel'], { group: active.label })}>
                   {list.map((course) => {
                     const here = pathname === `/courses/${course.slug}`;
                     return (
@@ -191,7 +197,9 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
                   href={active.href as Route}
                   className="mt-3 inline-flex items-center gap-1.5 px-3 text-sm font-bold text-[var(--accent-ink)]"
                 >
-                  {active.viewAll}
+                  {active.kind === 'level'
+                    ? fill(copy['header.coursesMenu.viewAllLevel'], { level: active.viewAllName })
+                    : fill(copy['header.coursesMenu.viewAllTechnology'], { technology: active.viewAllName })}
                   <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
                 </Link>
               </>
@@ -203,19 +211,19 @@ function Inner({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCour
   );
 }
 
-export function CoursesMenu({ onDarkLead, courses }: { onDarkLead: boolean; courses: MenuCourse[] }) {
+export function CoursesMenu({ label, href, onDarkLead, courses }: { label: string; href: string; onDarkLead: boolean; courses: MenuCourse[] }) {
   return (
     <Suspense
       fallback={
         <Link
-          href={'/courses' as Route}
+          href={href as Route}
           className="rounded-full px-4 py-2.5 text-sm font-bold tracking-[-0.01em] text-foreground-secondary"
         >
-          Courses
+          {label}
         </Link>
       }
     >
-      <Inner onDarkLead={onDarkLead} courses={courses} />
+      <Inner label={label} href={href} onDarkLead={onDarkLead} courses={courses} />
     </Suspense>
   );
 }

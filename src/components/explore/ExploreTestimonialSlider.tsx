@@ -4,12 +4,9 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { Play, X } from 'lucide-react';
 import { Carousel } from '@/components/Carousel';
-import {
-  TESTIMONIALS as PLACEMENT_TESTIMONIALS,
-  VIDEO_TESTIMONIALS,
-  type Testimonial,
-  type VideoTestimonial,
-} from '@/components/placements/data';
+import type { PlacementTestimonial as Testimonial, VideoTestimonial } from '@/lib/content/types';
+import { fill } from '@/lib/content/copy/define';
+import type { exploreCopy } from '@/lib/content/copy/pages/explore';
 
 const AVATARS = [
   '/student/avatar-1.webp',
@@ -22,18 +19,13 @@ type Slide =
   | { kind: 'quote'; key: string; data: Testimonial }
   | { kind: 'video'; key: string; data: VideoTestimonial };
 
-const SLIDES: Slide[] = [
-  ...PLACEMENT_TESTIMONIALS.map((t): Slide => ({ kind: 'quote', key: t.name, data: t })),
-  ...VIDEO_TESTIMONIALS.map((v): Slide => ({ kind: 'video', key: v.name, data: v })),
-];
-
 function embedSrc(video: VideoTestimonial): string {
   return video.provider === 'youtube'
     ? `https://www.youtube.com/embed/${video.videoId}?autoplay=1`
     : `https://player.vimeo.com/video/${video.videoId}?autoplay=1`;
 }
 
-function VideoSlide({ video }: { video: VideoTestimonial }) {
+function VideoSlide({ video, copy }: { video: VideoTestimonial; copy: typeof exploreCopy.defaults }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -49,7 +41,7 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`Play video: ${video.title}, ${video.name}`}
+        aria-label={fill(copy['slider.play'], { title: video.title, name: video.name })}
         className="group/play relative flex h-full min-h-[220px] w-full cursor-pointer items-end sm:min-h-[240px]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube/Vimeo thumbnail */}
@@ -89,7 +81,7 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
           <button
             type="button"
             onClick={() => setOpen(false)}
-            aria-label="Close video"
+            aria-label={copy['slider.close']}
             className="absolute top-3 right-3 z-10 grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
           >
             <X className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
@@ -109,13 +101,27 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
   );
 }
 
-export function ExploreTestimonialSlider() {
+export function ExploreTestimonialSlider({
+  testimonials,
+  videos,
+  copy,
+}: {
+  testimonials: Testimonial[];
+  videos: VideoTestimonial[];
+  copy: typeof exploreCopy.defaults;
+}) {
+  const slides: Slide[] = [
+    ...testimonials.map((t): Slide => ({ kind: 'quote', key: t.name, data: t })),
+    ...videos.map((v): Slide => ({ kind: 'video', key: v.name, data: v })),
+  ];
+  if (slides.length === 0) return null;
+
   return (
     <Carousel
-      items={SLIDES}
-      label="Placement stories"
+      items={slides}
+      label={copy['slider.label']}
       itemKey={(slide) => slide.key}
-      itemLabel={(slide) => (slide.kind === 'video' ? `${slide.data.name}, video` : `${slide.data.name}, ${slide.data.role}`)}
+      itemLabel={(slide) => (slide.kind === 'video' ? fill(copy['slider.videoLabel'], { name: slide.data.name }) : `${slide.data.name}, ${slide.data.role}`)}
       classNames={{
         viewport: 'rounded-[24px]',
         dotActive: 'bg-[var(--dc-accent-soft)]',
@@ -126,7 +132,7 @@ export function ExploreTestimonialSlider() {
     >
       {(slide, i) =>
         slide.kind === 'video' ? (
-          <VideoSlide video={slide.data} />
+          <VideoSlide video={slide.data} copy={copy} />
         ) : (
           <blockquote className="kit kit-card flex h-full min-h-[220px] flex-col p-6 sm:min-h-[240px] sm:p-7">
             <span

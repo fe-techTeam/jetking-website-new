@@ -13,30 +13,32 @@ import {
 } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
-import {
-  ABOUT_HERO,
-  ACHIEVEMENTS,
-  DIRECTORS,
-  MANAGEMENT_TEAM,
-  PARTNERSHIPS,
-  PURPOSE,
-  type Leader,
-} from './data';
+import type { AboutPageContent, Leader } from '@/lib/content/types';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
+import type { aboutCopy } from '@/lib/content/copy/pages/about';
 import { AboutTimeline } from './AboutTimeline';
 import { LeaderAvatar } from './LeaderAvatar';
 import { LeaderDetailModal } from './LeaderDetailModal';
 
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'About Us', path: '/about-us' },
-];
-
+const STAT_LABEL_KEYS = [
+  'legacy.stats.0.label',
+  'legacy.stats.1.label',
+  'legacy.stats.2.label',
+  'legacy.stats.3.label',
+] as const;
 const STAT_ICONS = [Landmark, Building2, MapPin, BookOpen] as const;
 const PURPOSE_ICONS = [Eye, Target, Heart] as const;
 
 /** `compact` (no-bio team members): two per row on phones with a smaller avatar, full size from `sm`. */
-function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boolean }) {
+function LeaderCard({
+  leader,
+  compact = false,
+  copy,
+}: {
+  leader: Leader;
+  compact?: boolean;
+  copy: typeof aboutCopy.defaults;
+}) {
   return (
     <li
       data-reveal
@@ -54,7 +56,7 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
             {leader.role ? (
               <p className={`mt-1 font-bold text-[var(--k-red)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
             ) : null}
-            {leader.bio ? <LeaderDetailModal leader={leader} /> : null}
+            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} /> : null}
           </div>
         </div>
       </article>
@@ -62,7 +64,21 @@ function LeaderCard({ leader, compact = false }: { leader: Leader; compact?: boo
   );
 }
 
-export function AboutLanding({ counts }: { counts: NetworkCounts }) {
+export function AboutLanding({
+  counts,
+  about,
+  copy,
+}: {
+  counts: NetworkCounts;
+  about: AboutPageContent;
+  copy: typeof aboutCopy.defaults;
+}) {
+  const trail: Crumb[] = [
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.about'], path: '/about-us' },
+  ];
+  const { hero: ABOUT_HERO, purpose: PURPOSE, directors: DIRECTORS, managementTeam: MANAGEMENT_TEAM } = about;
+  const { achievements: ACHIEVEMENTS, partnerships: PARTNERSHIPS } = about;
   return (
     <div className="dark-canvas">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -72,7 +88,7 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
         <div className="relative mt-5 sm:mt-6">
           <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
             <Image
-              src="/home/journey-explore-v2.jpg"
+              src={copy['hero.image']}
               alt=""
               fill
               priority
@@ -103,13 +119,13 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       {/* ── Legacy stats ─────────────────────────────────────────────────── */}
       <Section tone="plain" labelledBy="about-legacy">
         <h2 id="about-legacy" className="sr-only">
-          Legacy at a glance
+          {copy['legacy.heading']}
         </h2>
         <Reveal>
           <StatBadges
             stats={legacyStats(counts).map((stat, index) => ({
               value: stat.value,
-              label: stat.label,
+              label: copy[STAT_LABEL_KEYS[index] ?? STAT_LABEL_KEYS[0]],
               icon: STAT_ICONS[index] ?? Landmark,
             }))}
           />
@@ -120,18 +136,19 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       <Section tone="tint" deco="grid" labelledBy="about-purpose">
         <SectionHeader
           id="about-purpose"
-          eyebrow="Purpose"
+          eyebrow={copy['purpose.eyebrow']}
           title={
             <>
-              Our purpose &amp; <span className="text-[var(--k-red)]">values</span>
+              {copy['purpose.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['purpose.titleAccent']}</span>
             </>
           }
-          lede="What we aim for, how we work, and the standards we hold ourselves to."
+          lede={copy['purpose.lede']}
         />
         <Reveal>
-          <CardRail label="Our purpose and values" cols={3}>
+          <CardRail label={copy['purpose.railLabel']} cols={3}>
             {PURPOSE.map((item, index) => (
-              <FeatureCard key={item.title} icon={PURPOSE_ICONS[index]} title={item.title} badge={String(index + 1).padStart(2, '0')}>
+              <FeatureCard key={item.title} icon={PURPOSE_ICONS[index % PURPOSE_ICONS.length]} title={item.title} badge={String(index + 1).padStart(2, '0')}>
                 {item.body}
               </FeatureCard>
             ))}
@@ -143,28 +160,29 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       <Section tone="plain" labelledBy="about-leaders">
         <SectionHeader
           id="about-leaders"
-          eyebrow="Leadership"
+          eyebrow={copy['leaders.eyebrow']}
           title={
             <>
-              The leaders who drive our <span className="text-[var(--k-red)]">growth</span>
+              {copy['leaders.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['leaders.titleAccent']}</span>
             </>
           }
-          lede="Learn from passionate instructors with expertise who believe in practical teaching methodologies."
+          lede={copy['leaders.lede']}
         />
 
         {/* Cards set their own widths (LeaderCard); a short last row centres instead of hugging the left. */}
         <ul className="flex flex-wrap justify-center gap-3 sm:gap-5 lg:gap-6">
           {DIRECTORS.filter((leader) => leader.name).map((leader) => (
-            <LeaderCard key={leader.name} leader={leader} />
+            <LeaderCard key={leader.name} leader={leader} copy={copy} />
           ))}
         </ul>
 
         <h3 className="mt-14 text-[20px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mt-16 sm:text-[22px]">
-          Management team
+          {copy['leaders.managementHeading']}
         </h3>
         <ul className="mt-8 flex flex-wrap justify-center gap-3 sm:mt-9 sm:gap-5 lg:gap-6">
           {MANAGEMENT_TEAM.map((leader) => (
-            <LeaderCard key={leader.name} leader={leader} compact />
+            <LeaderCard key={leader.name} leader={leader} compact copy={copy} />
           ))}
         </ul>
       </Section>
@@ -173,32 +191,34 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       <Section tone="tint" labelledBy="about-timeline">
         <SectionHeader
           id="about-timeline"
-          eyebrow="History"
+          eyebrow={copy['timeline.eyebrow']}
           title={
             <>
-              A legacy that we take <span className="text-[var(--k-red)]">pride in</span>
+              {copy['timeline.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['timeline.titleAccent']}</span>
             </>
           }
-          lede="Over the course of decades, we have achieved some glorious feats. Check out the timeline of how our journey unfolded."
+          lede={copy['timeline.lede']}
         />
         {/* Decade tabs — click a range to see that era's milestones (AboutTimeline.tsx). */}
-        <AboutTimeline />
+        <AboutTimeline timeline={about.timeline} copy={copy} />
       </Section>
 
       {/* ── Achievements ─────────────────────────────────────────────────── */}
       <Section tone="plain" labelledBy="about-awards">
         <SectionHeader
           id="about-awards"
-          eyebrow="Recognition"
+          eyebrow={copy['achievements.eyebrow']}
           title={
             <>
-              Our <span className="text-[var(--k-red)]">achievements</span>
+              {copy['achievements.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['achievements.titleAccent']}</span>
             </>
           }
-          lede="Over the decades, we’ve accomplished remarkable milestones. Explore the timeline that showcases how our journey has evolved."
+          lede={copy['achievements.lede']}
         />
         <Reveal>
-          <CardRail label="Awards and achievements" cols={4} colsMd={2}>
+          <CardRail label={copy['achievements.railLabel']} cols={4} colsMd={2}>
             {ACHIEVEMENTS.map((item) => (
               <article key={item.title} className="kit kit-card kit-card-lift flex h-full flex-col p-5 sm:p-6">
                 <div className="relative flex h-36 w-full items-center justify-center sm:h-40 lg:h-44">
@@ -223,15 +243,16 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
       <Section tone="tint" labelledBy="about-partnerships">
         <SectionHeader
           id="about-partnerships"
-          eyebrow="Alliances"
+          eyebrow={copy['partnerships.eyebrow']}
           title={
             <>
-              Our <span className="text-[var(--k-red)]">partnerships</span>
+              {copy['partnerships.titleLead']}{' '}
+              <span className="text-[var(--k-red)]">{copy['partnerships.titleAccent']}</span>
             </>
           }
         />
         <Reveal>
-          <CardRail label="Our partnerships" cols={3}>
+          <CardRail label={copy['partnerships.railLabel']} cols={3}>
             {PARTNERSHIPS.map((partner) => (
               <article key={partner.name} className="kit kit-card flex h-full flex-col p-5 sm:p-6">
                 <div className="relative flex h-28 w-full items-center justify-center sm:h-32">
@@ -258,22 +279,21 @@ export function AboutLanding({ counts }: { counts: NetworkCounts }) {
          story above rather than being folded into it. */}
       <Section tone="plain" labelledBy="about-future">
         <a
-          href="https://www.jetking.org"
+          href={copy['future.href']}
           target="_blank"
           rel="noopener noreferrer"
           className="kit kit-card kit-card-lift group flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
         >
           <div>
             <p id="about-future" className="text-[18px] font-extrabold text-[var(--k-ink)] sm:text-[20px]">
-              First Bitcoin Company in India Listed on the Bombay Stock Exchange
+              {copy['future.title']}
             </p>
             <p className="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">
-              Secure your company&rsquo;s future with Bitcoin. Unparalleled transparency, unmatched
-              security, and proven value retention. Join the movement!
+              {copy['future.body']}
             </p>
           </div>
           <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--k-red)]">
-            jetking.org
+            {copy['future.linkLabel']}
             <ArrowUpRight
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               aria-hidden="true"

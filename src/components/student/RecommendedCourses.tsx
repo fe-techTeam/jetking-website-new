@@ -15,6 +15,10 @@ export function RecommendedCourses({
   title = 'Recommended for You',
   description = 'Popular courses for students — tap a card to explore details.',
   headingId = 'stu-recommended',
+  viewAllLabel = 'View all',
+  viewAllHref = '/courses',
+  badgeLabel = 'Best match',
+  trackLabel = 'recommended courses',
   tone = 'plain',
   id,
   className,
@@ -24,6 +28,12 @@ export function RecommendedCourses({
   title?: string;
   description?: string;
   headingId?: string;
+  viewAllLabel?: string;
+  viewAllHref?: string;
+  /** Badge on the first card. */
+  badgeLabel?: string;
+  /** Accessible name of the slider. */
+  trackLabel?: string;
   /** Pick the tone that alternates with the sections around it. */
   tone?: 'plain' | 'tint' | 'wash';
   id?: string;
@@ -41,16 +51,16 @@ export function RecommendedCourses({
         lede={description}
         action={
           <Link
-            href={'/courses' as Route}
+            href={viewAllHref as Route}
             className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
           >
-            View all
+            {viewAllLabel}
             <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
           </Link>
         }
       />
       {children}
-      <CardTrack label="recommended courses">
+      <CardTrack label={trackLabel}>
         {items.map((course, i) => (
           <li
             key={course.slug}
@@ -60,7 +70,7 @@ export function RecommendedCourses({
               course={course}
               surface="student-recommended"
               layout="stack"
-              badge={i === 0 ? 'Best match' : undefined}
+              badge={i === 0 ? badgeLabel : undefined}
             />
           </li>
         ))}

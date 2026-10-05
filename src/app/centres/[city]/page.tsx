@@ -1,6 +1,8 @@
 import { notFound, permanentRedirect } from 'next/navigation';
 import type { Metadata, Route } from 'next';
 import { content } from '@/lib/content';
+import { centresCopy } from '@/lib/content/copy/pages/centres';
+import { loadCopy } from '@/lib/content/copy/load';
 import { centrePath } from '@/lib/centre-path';
 import { buildMetadata } from '@/lib/seo';
 import { CentreDetail } from '@/components/CentreDetail';
@@ -51,6 +53,7 @@ export default async function CentrePage({ params }: { params: Promise<{ city: s
     notFound();
   }
 
+  const copy = await loadCopy(centresCopy);
   const [parentCity, courses, allCentres, cities] = await Promise.all([
     content.getCity(centre.citySlug),
     content.listCourses(),
@@ -62,6 +65,7 @@ export default async function CentrePage({ params }: { params: Promise<{ city: s
 
   return (
     <CentreDetail
+      copy={copy}
       centre={centre}
       city={parentCity}
       courses={courses}

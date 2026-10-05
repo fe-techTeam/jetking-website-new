@@ -6,18 +6,24 @@ import { JsonLd, type Crumb } from '@/components/ui';
 import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
 import { toEnquiryCentres } from '@/lib/enquiry-centres';
+import { exploreCopy } from '@/lib/content/copy/pages/explore';
+import { fill } from '@/lib/content/copy/define';
+import { loadCopy } from '@/lib/content/copy/load';
 import { ExploreLanding } from '@/components/explore/ExploreLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Explore ${siteConfig.name} — Courses, Centres & Placements`,
-    description:
-      'Browse Jetking courses, placement stories and centres across India — no commitment needed, just explore at your own pace.',
-  },
-  '/explore',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(exploreCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { brand: siteConfig.name }),
+      description: fill(copy['seo.description'], { brand: siteConfig.name }),
+    },
+    '/explore',
+  );
+}
 
 export default async function ExplorePage() {
+  const copy = await loadCopy(exploreCopy);
   const [courses, home, posts, centres, cities] = await Promise.all([
     content.listCourses(),
     loadHomeData(),
@@ -28,7 +34,7 @@ export default async function ExplorePage() {
 
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
-    { name: 'Explore', path: '/explore' },
+    { name: copy['breadcrumb.label'], path: '/explore' },
   ];
 
   return (
@@ -38,8 +44,11 @@ export default async function ExplorePage() {
       <ExploreLanding
         courses={courses}
         counts={home.counts}
+        about={home.about}
+        placements={home.placements}
         posts={posts}
         enquiryCentres={toEnquiryCentres(centres, cities)}
+        copy={copy}
       />
     </>
   );
