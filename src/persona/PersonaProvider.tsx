@@ -35,6 +35,8 @@ import {
   type UserProfile,
 } from './profile';
 import { track } from '@/lib/analytics';
+import { ADAPTIVE_PERSONALISATION } from './mode';
+import { clearPersonaChoice, readPersonaChoice, writePersonaChoice } from './choice';
 
 /**
  * Client persona engine — hydration-safe.
@@ -91,6 +93,29 @@ function readCookieValue(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const match = document.cookie.split('; ').find((row) => row.startsWith(`${name}=`));
   return match?.slice(name.length + 1);
+}
+
+/** A classification that exists only because the visitor chose it. */
+function manualClassification(
+  persona: Classification['persona'],
+  channel: AcquisitionChannel | undefined,
+): Classification {
+  return {
+    persona,
+    confidence: 1,
+    signals: [
+      {
+        id: 'manual:override',
+        persona: persona === 'unknown' ? 'student' : persona,
+        weight: 1,
+        detail: 'Manually selected — engine inference bypassed',
+        source: 'first-touch',
+      },
+    ],
+    version: 'override',
+    classifiedAt: new Date().toISOString(),
+    acquisitionChannel: channel ?? 'direct',
+  };
 }
 
 function rebuildProfile(
@@ -156,6 +181,20 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
         minted: visitorProfile.minted,
       });
 
+      // Explicit mode (the default): nothing about the visitor is inferred. The only thing restored
+      // is an audience the visitor picked themselves on an earlier visit.
+      if (!ADAPTIVE_PERSONALISATION) {
+        const choice = readPersonaChoice();
+        if (choice && !cancelled) {
+          const picked = manualClassification(choice, undefined);
+          setOverridden(true);
+          setClassification(picked);
+          publishProfile(visitorProfile.id, visitorProfile.state === 'known', picked);
+        }
+        if (!cancelled) setHydrated(true);
+        return;
+      }
+
       const payload = decodePersonaCookieUnverified(readCookieValue(PERSONA_COOKIE));
       if (cancelled) return;
 
@@ -195,6 +234,8 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
 
   const record = useCallback(
     (event: BehaviourEvent) => {
+      // Explicit mode: no behaviour is collected or learned from until the visitor has picked an audience.
+      if (!ADAPTIVE_PERSONALISATION && !overridden) return;
       recordBehaviour(event);
       const v = visitorRef.current;
       if (overridden) {
@@ -258,37 +299,26 @@ export function PersonaProvider({ children }: { children: ReactNode }) {
   const override = useCallback(
     (persona: Classification['persona'] | null) => {
       const v = visitorRef.current;
-      if (persona === null) {
+      if (persona === null || (persona === 'unknown' && !ADAPTIVE_PERSONALISATION)) {
         setOverridden(false);
         inferredLockRef.current = false;
-        const behaviour = readBehaviour();
-        const next = classify({
-          priorSignals: priorSignalsRef.current,
-          priorChannel: priorChannelRef.current,
-          behaviour,
-        });
+        clearPersonaChoice();
+        // Adaptive mode goes back to inferring; explicit mode goes back to the neutral site.
+        const next = ADAPTIVE_PERSONALISATION
+          ? classify({
+              priorSignals: priorSignalsRef.current,
+              priorChannel: priorChannelRef.current,
+              behaviour: readBehaviour(),
+            })
+          : UNKNOWN_CLASSIFICATION;
         setClassification(next);
         publishProfile(v.id, v.state === 'known', next);
         return;
       }
       setOverridden(true);
       inferredLockRef.current = false;
-      const next: Classification = {
-        persona,
-        confidence: 1,
-        signals: [
-          {
-            id: 'manual:override',
-            persona: persona === 'unknown' ? 'student' : persona,
-            weight: 1,
-            detail: 'Manually selected — engine inference bypassed',
-            source: 'first-touch',
-          },
-        ],
-        version: 'override',
-        classifiedAt: new Date().toISOString(),
-        acquisitionChannel: priorChannelRef.current ?? 'direct',
-      };
+      if (persona !== 'unknown') writePersonaChoice(persona);
+      const next = manualClassification(persona, priorChannelRef.current);
       setClassification(next);
       publishProfile(v.id, v.state === 'known', next);
     },

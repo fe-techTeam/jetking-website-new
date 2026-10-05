@@ -5,6 +5,7 @@ import { usePersona } from './PersonaProvider';
 import { readBehaviour } from './behaviour';
 import { classificationToInferPayload } from './infer';
 import { track } from '@/lib/analytics';
+import { ADAPTIVE_PERSONALISATION } from './mode';
 
 /**
  * Quietly infers persona from browsing signals + optional model.
@@ -22,6 +23,8 @@ export function SilentPersonaInfer({
   const lastKeyRef = useRef('');
 
   useEffect(() => {
+    // Off unless adaptive mode is explicitly enabled: no browsing signals are sent anywhere.
+    if (!ADAPTIVE_PERSONALISATION) return;
     if (!hydrated || overridden) return;
     if (classification.persona !== 'unknown' && classification.confidence >= minConfidence) {
       return;

@@ -23,6 +23,8 @@ declare namespace NodeJS {
     NEXT_PUBLIC_SUPABASE_URL?: string;
     /** Shows the debug/dev inspector UI when set. */
     NEXT_PUBLIC_SHOW_INSPECTOR?: string;
+    /** 'adaptive' turns on silent persona inference; unset (default) = audiences apply only when a visitor picks one. */
+    NEXT_PUBLIC_PERSONA_MODE?: string;
     /** Allows search-engine indexing when set (off by default on non-prod deploys). */
     NEXT_PUBLIC_ALLOW_INDEXING?: string;
 

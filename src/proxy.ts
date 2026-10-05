@@ -9,6 +9,7 @@ import {
   payloadToSignals,
 } from '@/persona/cookie';
 import { VISITOR_COOKIE, VISITOR_MAX_AGE, resolveVisitorId } from '@/persona/visitor';
+import { ADAPTIVE_PERSONALISATION } from '@/persona/mode';
 import { RULES_VERSION, type FirstTouchInput } from '@/persona/types';
 
 /**
@@ -107,6 +108,15 @@ export async function proxy(req: NextRequest) {
       path: '/',
       maxAge: UTM_MAX_AGE,
     });
+  }
+
+  // Explicit personalisation (the default): no first-touch classification and no persona cookie. A cookie
+  // left by an earlier adaptive deploy is removed so it can't keep steering anyone.
+  if (!ADAPTIVE_PERSONALISATION) {
+    if (req.cookies.get(PERSONA_COOKIE)) {
+      response.cookies.set(PERSONA_COOKIE, '', { path: '/', maxAge: 0 });
+    }
+    return response;
   }
 
   const firstTouch: FirstTouchInput = {

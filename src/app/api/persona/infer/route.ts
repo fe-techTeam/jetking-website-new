@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { inferPersonaWithModel } from '@/persona/infer';
 import { PERSONA_IDS } from '@/persona/types';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
+import { ADAPTIVE_PERSONALISATION } from '@/persona/mode';
 
 const BodySchema = z.object({
   signals: z
@@ -38,6 +39,10 @@ const limiter = createRateLimiter({ windowMs: 60_000, max: 20 });
  * Silent persona inference — no PII. Called from the client after browsing signals accumulate.
  */
 export async function POST(req: Request) {
+  // Inference is off unless adaptive mode is enabled — answer neutrally without reading the body or calling a model.
+  if (!ADAPTIVE_PERSONALISATION) {
+    return NextResponse.json({ persona: 'unknown', confidence: 0, reason: 'Adaptive personalisation is off.' });
+  }
   const limit = await limiter.check(clientKey(req));
   if (!limit.allowed) {
     return NextResponse.json(
