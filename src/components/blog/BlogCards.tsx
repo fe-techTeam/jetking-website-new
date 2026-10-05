@@ -58,7 +58,7 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
       ) : null}
       <Link
         href={`/blog/${post.slug}` as Route}
-        className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[16px] sm:rounded-[24px]"
+        className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[var(--dc-cut)]"
       >
         <div
           className={`blog-card-media relative aspect-[840/300] overflow-hidden ${cover ? '' : 'max-sm:hidden'}`}
@@ -89,7 +89,7 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
 
         <div className="flex flex-1 flex-col p-4 xs:p-5 sm:p-7">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <span className="inline-flex rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
+            <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               {post.category}
             </span>
             <time
@@ -100,21 +100,23 @@ export function PostCard({ post, badge }: { post: Post; badge?: 'latest' }) {
             </time>
           </div>
 
-          <h3 className="mt-3 font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] transition-colors group-hover/post:text-[var(--dc-accent-soft)] xs:text-[18px] sm:text-[19px]">
+          <h3 className="mt-3 font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] transition-colors group-hover/post:text-[var(--dc-accent-soft)] xs:text-[18px]">
             {post.title}
           </h3>
           <p className="mt-2 line-clamp-2 flex-1 sm:line-clamp-3 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             {post.excerpt}
           </p>
 
-          <span className="mt-4 inline-flex items-center gap-2 text-[13.5px] sm:mt-5 font-bold text-[var(--dc-accent-soft)]">
-            Read article
-            <ArrowRight
-              className="h-4 w-4 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/post:translate-x-0.5"
-              strokeWidth={2.25}
-              aria-hidden="true"
-            />
-          </span>
+          {/* Same action row as the course card: the label, then the round red arrow. */}
+          <div className="mt-auto flex items-center justify-between gap-3 pt-4 sm:pt-5">
+            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">Read article</span>
+            <span aria-hidden="true" className="dc-cta grid h-10 w-10 shrink-0 place-items-center rounded-full">
+              <ArrowRight
+                className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/post:translate-x-0.5"
+                strokeWidth={2.25}
+              />
+            </span>
+          </div>
         </div>
       </Link>
     </article>

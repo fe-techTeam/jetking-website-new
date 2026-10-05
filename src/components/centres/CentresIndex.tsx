@@ -553,7 +553,7 @@ export function CentresIndex({
               return (
                 <div
                   key={state}
-                  className={`centres-accordion centres-card scroll-mt-28 rounded-[16px]${stateVisible ? '' : ' hidden'}`}
+                  className={`centres-accordion centres-card scroll-mt-28 rounded-[20px]${stateVisible ? '' : ' hidden'}`}
                   data-open={stateOpen}
                 >
                   <button

@@ -1153,3 +1153,25 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
     font-size: 1em;
   }
 }
+
+/*
+ * Blog and centre panels share the course card's light-theme surface.
+ * `.blog-card` / `.centres-card` were written against the dark canvas: a 1px --dc-hairline-strong outline (a heavy
+ * grey in light mode) plus a resting drop shadow. The course card (`.dc-card-shell`) is a flat, near-invisible
+ * hairline that turns red on hover, and the design system's rule is "no resting shadow". Same values as
+ * `.dc-card-shell` in light mode. Lives here, after every imported skin, so source order settles the specificity tie.
+ */
+:where(html:not(.dark)) :is(.blog-card, .centres-card) {
+  border-color: rgb(16 24 40 / 0.1);
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(html:not(.dark)) :is(.blog-card-interactive, .centres-card-interactive):hover {
+    border-color: rgb(199 20 28 / 0.45);
+    box-shadow: 0 8px 20px rgb(16 24 40 / 0.08);
+  }
+}
+:where(html:not(.dark)) :is(.blog-card-interactive, .centres-card-interactive):focus-within {
+  border-color: rgb(199 20 28 / 0.45);
+  box-shadow: 0 8px 20px rgb(16 24 40 / 0.08);
+}
