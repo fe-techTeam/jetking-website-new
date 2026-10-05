@@ -35,7 +35,7 @@ export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
           aria-label={paused ? 'Resume scrolling recruiter logos' : 'Pause scrolling recruiter logos'}
-          className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
+          className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           {paused ? (
             <Play className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />

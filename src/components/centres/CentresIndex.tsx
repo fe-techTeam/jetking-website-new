@@ -761,7 +761,7 @@ function CentreCard({
           <h3 className="font-display text-[17px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[18px] lg:text-[20px]">
             <Link
               href={centrePath(centre.slug) as Route}
-              className="transition-colors hover:text-[var(--dc-accent-soft)]"
+              className="tap transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               {centre.name}
             </Link>

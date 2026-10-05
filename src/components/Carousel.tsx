@@ -172,8 +172,8 @@ export function Carousel<T>({
                   aria-current={i === safeIndex ? 'true' : undefined}
                   aria-controls={viewportId}
                   onClick={() => setIndex(i)}
-                  /* The button is 24×24 for WCAG 2.5.8; the visible dot is the span. */
-                  className="grid h-6 w-6 cursor-pointer place-items-center rounded-full"
+                  /* The button is the touch target (44×44 on phones, 24×24 from sm); the visible dot is the span. */
+                  className="grid h-11 w-11 cursor-pointer place-items-center rounded-full sm:h-6 sm:w-6"
                 >
                   <span
                     aria-hidden="true"

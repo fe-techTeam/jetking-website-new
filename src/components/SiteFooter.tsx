@@ -167,7 +167,7 @@ export async function SiteFooter() {
 
             <FooterNav
               label="Company"
-              listClassName="grid grid-cols-2 gap-x-6 gap-y-3 sm:block sm:space-y-3"
+              listClassName="grid grid-cols-2 gap-x-6 gap-y-0 sm:block sm:space-y-3"
             >
               {company.map((item) => (
                 <FooterLink key={item.href} href={item.href}>
@@ -216,7 +216,8 @@ function FooterNav({
   children: React.ReactNode;
   listClassName?: string;
 }) {
-  const list = listClassName ?? 'space-y-3';
+  // Phones: the links carry their own 44px of padding (FooterLink), so the list needs no gap; sm+ spaces them out.
+  const list = listClassName ?? 'space-y-0 sm:space-y-3';
   return (
     <nav aria-label={label}>
       <details className="group border-b border-border sm:hidden">
@@ -228,7 +229,7 @@ function FooterNav({
             aria-hidden="true"
           />
         </summary>
-        <ul className={`pt-1 pb-5 ${list}`}>{children}</ul>
+        <ul className={`pb-3 ${list}`}>{children}</ul>
       </details>
       <div className="hidden sm:block">
         <h2 className="label-mono">{label}</h2>
@@ -247,14 +248,18 @@ function FooterLink({
   children: React.ReactNode;
   emphasis?: boolean;
 }) {
+  // Phones: 12px above/below the 20px line makes a 44px row, and 12px each side (pulled back with a negative
+  // margin so the text stays aligned) keeps short words like "FAQ" 44px wide. The underline is pinned to the
+  // text (background-origin) rather than the padding box so it still sits under the words.
+  const touch = 'max-sm:-mx-3 max-sm:inline-block max-sm:px-3 max-sm:py-3 max-sm:[background-origin:content-box]';
   return (
     <li>
       <Link
         href={href as never}
         className={
           emphasis
-            ? 'link-underline text-sm font-bold text-foreground transition-colors hover:text-[var(--accent-ink)]'
-            : 'link-underline text-sm text-foreground-secondary transition-colors hover:text-foreground'
+            ? `link-underline ${touch} text-sm font-bold text-foreground transition-colors hover:text-[var(--accent-ink)]`
+            : `link-underline ${touch} text-sm text-foreground-secondary transition-colors hover:text-foreground`
         }
       >
         {children}
