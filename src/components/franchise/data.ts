@@ -1,21 +1,11 @@
 /**
- * Franchise page content for scripts/export-site-corpus.mts (a plain Node/tsx script,
- * run under `--conditions=react-server`) — so it must not pull in lucide-react icon
- * components (they use React context internals unavailable under that condition) or
- * the component's next/image, next/link etc. imports, which only resolve inside the
- * Next.js runtime.
+ * Franchise page structures (why-stats, jump-start, launch steps, market stats, courses, investment bands) built
+ * from the franchise page text DEFAULTS in `lib/content/copy/pages/franchise.ts`. They are plain data — no icon
+ * components or Next.js imports — so they stay usable from non-Next code.
  *
- * The wording itself now lives in `lib/content/copy/pages/franchise.ts` (the page's
- * editable "page text" defaults); these arrays are rebuilt from those defaults so the
- * chatbot's knowledge index and the rendered page share one source. The page reads the
- * live (CMS-merged) copy; this file reads the shipped defaults.
- *
- * Deliberately no `icon` fields here: icons are purely decorative and irrelevant to the
- * chatbot's text index. FranchiseLandingLight pairs each entry with its icon by index
- * when rendering — see the *_ICONS arrays there.
- *
- * Also lets the chatbot's knowledge index draw on this real franchise-operations copy —
- * previously invisible to it entirely, same gap the About/Placements pages had.
+ * The chatbot corpus no longer reads this file: `lib/content/site-corpus.ts` merges the page's published CMS
+ * edits over the same defaults, so an admin edit reaches the chatbot. The rendered page does the same through
+ * `loadCopy`. This file reads the shipped defaults only.
  */
 
 import { franchiseCopy } from '../../lib/content/copy/pages/franchise';
