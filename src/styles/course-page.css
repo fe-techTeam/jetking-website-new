@@ -214,12 +214,9 @@ html.dark .cp {
   font-variant-numeric: normal;
 }
 
-/* Two plain (un-banded) sections in a row would double their padding; keep one standard gap. */
-.cp-section:not([class*='cp-band']) + .cp-section:not([class*='cp-band']) {
-  padding-top: 0;
-}
-
-/* Two plain sections in a row would read as one block: a hairline between them (bands already separate themselves). */
+/* Two plain sections in a row would read as one block: a hairline between them (bands already separate themselves).
+   Each keeps its full padding on both sides of that hairline — zeroing the follower's padding-top (as this once did,
+   before the hairline existed) leaves its eyebrow jammed ~10px under the rule. */
 .cp > section:not([class*='cp-band-']) + section:not([class*='cp-band-']) {
   border-top: 1px solid var(--cp-line);
 }

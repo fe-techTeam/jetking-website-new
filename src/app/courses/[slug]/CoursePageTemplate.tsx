@@ -382,7 +382,7 @@ export function CoursePageTemplate({
       <JumpNav items={jumpItems} />
 
       {/* ── 2. Key programme highlights ─────────────────────────────────── */}
-      <section className="shell pt-10" aria-label="Programme at a glance">
+      <section className="shell pt-10 pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label="Course at a glance">
         <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {quickFacts.map((fact, i) => {
             const Icon = fact.icon;
@@ -452,7 +452,7 @@ export function CoursePageTemplate({
 
       {/* Phones/tablets: the enquiry form sits mid-page, after the reader has seen what the course is (the hero offers the
           main action first). From lg up the same form is the banner card above. */}
-      <section aria-labelledby="cp-form-title-m" className="shell pb-[clamp(2.25rem,5vw,3.5rem)] lg:hidden">
+      <section aria-labelledby="cp-form-title-m" className="shell py-[clamp(2.25rem,5vw,3.5rem)] lg:hidden">
         <div id="cp-enquiry-m" className="cp-card scroll-mt-36 p-5 sm:p-6">
           <h2 id="cp-form-title-m" className="mb-4 text-[1.0625rem] leading-snug font-bold text-[var(--cp-red)]">
             Sign up for a free career counselling session!
@@ -462,7 +462,7 @@ export function CoursePageTemplate({
       </section>
 
       {/* Breathing-space photo (slide 3: images between content blocks). */}
-      <section className="shell pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label="Learn by doing">
+      <section className="shell py-[clamp(2.25rem,5vw,3.5rem)]" aria-label="Learn by doing">
         <div className="relative min-h-[240px] overflow-hidden rounded-[28px] sm:min-h-[280px]">
           <Image src="/home/journey-student-v2.jpg" alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_25%]" />
           <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#0f1115]/95 via-[#0f1115]/80 to-[#0f1115]/10" />
@@ -771,7 +771,7 @@ export function CoursePageTemplate({
 
       {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
       {ownFaqs.length + feeFaqs.length ? (
-        <section id="cp-faqs" className="shell scroll-mt-36 pb-[clamp(2.25rem,5vw,3.5rem)] lg:scroll-mt-24">
+        <section id="cp-faqs" className="shell scroll-mt-36 py-[clamp(2.25rem,5vw,3.5rem)] lg:scroll-mt-24">
           <Heading kicker="FAQs">Frequently asked questions</Heading>
           <div className="mt-8 border-t border-[var(--cp-line)]">
             {ownFaqs.map((faq) => (

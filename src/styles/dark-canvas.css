@@ -99,6 +99,20 @@
   }
 }
 
+/* Same radii as a root-level default. `.dc-card-shell` / `.dc-card` are shared (CourseCard), but the variables only
+   existed on the page scopes above — so on pages built from the newer `.kit` / `.cp` layouts (centre detail, course
+   detail) the cards silently fell back to square corners. A scope's own value still wins inside its subtree. */
+:root {
+  --dc-cut: 20px;
+  --dc-cut-inner: 18px;
+}
+@media (min-width: 640px) {
+  :root {
+    --dc-cut: 24px;
+    --dc-cut-inner: 22px;
+  }
+}
+
 .dark-canvas {
   background: var(--dc-canvas);
   color: var(--dc-ink);
@@ -255,6 +269,25 @@
    inside `.dc-card-shell`; add `.dc-card-interactive` to the shell for
    hover/focus lift. */
 .dc-card-shell {
+  /* Self-contained colour tokens, the same `--dc-* → --theme-*` mapping the page scopes use. The course card is
+     shared across every page, but those tokens only existed on the dark-canvas-style page wrappers — so on the
+     newer `.kit` (centre pages) and `.cp` (course detail, which aliases `--dc-*` to its own palette) layouts the
+     same card came out with a transparent body, different badge/ink/link colours, etc. Declared on the card
+     itself so it looks identical on every page, and `--theme-*` still flips with the light/dark toggle. */
+  --dc-card: var(--theme-card);
+  --dc-ink: var(--theme-ink);
+  --dc-ink-secondary: var(--theme-ink-secondary);
+  --dc-ink-muted: var(--theme-ink-muted);
+  --dc-accent: var(--theme-accent);
+  --dc-accent-hover: var(--theme-accent-hover);
+  --dc-accent-soft: var(--theme-accent-soft);
+  --dc-accent-tint: var(--theme-accent-tint);
+  --dc-eyebrow: var(--theme-eyebrow);
+  --dc-hairline: var(--theme-hairline);
+  --dc-hairline-strong: var(--theme-hairline-strong);
+  --dc-shadow: var(--theme-shadow);
+  --dc-shadow-hover: var(--theme-shadow-hover);
+  --dc-glow-red: var(--theme-glow);
   display: block;
   height: 100%;
   padding: 1.5px;
@@ -275,6 +308,14 @@
   box-shadow: none;
   border-radius: var(--dc-cut-inner);
   overflow: hidden;
+}
+
+/* Light theme: the same AA fix every page scope applies (see the `:where(html:not(.dark)) :is(.dark-canvas, …)` block
+   above) — the raw `--theme-accent-soft` / `--theme-eyebrow` salmon tints are tuned for a near-black canvas and fail
+   text contrast (~2.5:1) on a light card. Must sit after `.dc-card-shell`'s own token block so it wins the tie. */
+:where(html:not(.dark)) .dc-card-shell {
+  --dc-accent-soft: #a50d13;
+  --dc-eyebrow: #a50d13;
 }
 
 @media (hover: hover) and (pointer: fine) {
