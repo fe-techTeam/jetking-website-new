@@ -31,7 +31,7 @@ export const homeCopy = definePageCopy({
 
     // ── Logo marquee ──────────────────────────────────────────────────────
     'marquee.eyebrow': 'Trusted by industry',
-    'marquee.heading': '12,000+ recruiters trust us, 12 lakh+ students placed till now',
+    'marquee.heading': '12,000+ recruiters trust us, 12 lakh+ students trained till now',
     'marquee.certs.label': 'Certification tracks',
     'marquee.alumni.label': 'Where alumni work',
     'marquee.pause.label': 'Pause',
