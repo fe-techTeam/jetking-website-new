@@ -52,7 +52,7 @@ export function RecommendedCourses({
         action={
           <Link
             href={viewAllHref as Route}
-            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
           >
             {viewAllLabel}
             <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

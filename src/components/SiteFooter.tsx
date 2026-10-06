@@ -93,7 +93,7 @@ export async function SiteFooter() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
-                <a href={`tel:${phone}`} className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground">
+                <a href={`tel:${phone}`} className="link-underline tap inline-flex min-h-11 items-center sm:min-h-6 hover:text-foreground">
                   {phone}
                 </a>
               </li>
@@ -101,7 +101,7 @@ export async function SiteFooter() {
                 <Mail className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
                 <a
                   href={`mailto:${copy['contact.email']}`}
-                  className="link-underline tap inline-flex min-h-6 items-center hover:text-foreground"
+                  className="link-underline tap inline-flex min-h-11 items-center sm:min-h-6 hover:text-foreground"
                 >
                   {copy['contact.email']}
                 </a>

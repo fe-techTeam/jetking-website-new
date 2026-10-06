@@ -229,9 +229,9 @@ function DocumentRow({ label, href, copy }: { label: string; href: string; copy:
     <div className="flex flex-wrap items-center gap-3 rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-3.5 py-3 sm:flex-nowrap sm:px-4">
       <span
         aria-hidden="true"
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+        className="kit-iconwell !h-10 !w-10"
       >
-        <FileText className="h-[18px] w-[18px]" strokeWidth={1.75} />
+        <FileText className="h-5 w-5" strokeWidth={1.9} />
       </span>
       <span className="min-w-0 flex-1 text-[14px] leading-snug font-semibold text-[var(--dc-ink)] sm:text-[14.5px]">
         {label}

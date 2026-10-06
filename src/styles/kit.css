@@ -74,10 +74,9 @@
   mask-image: linear-gradient(to bottom, #000, transparent 70%);
   -webkit-mask-image: linear-gradient(to bottom, #000, transparent 70%);
 }
+/* 'glow' used to paint faint pink radial gradients; it is now a flat section on purpose. */
 .kit-section[data-deco='glow']::before {
-  background:
-    radial-gradient(60% 55% at 100% 0%, color-mix(in srgb, var(--k-red-fill) 13%, transparent), transparent 70%),
-    radial-gradient(45% 40% at 0% 100%, color-mix(in srgb, var(--k-red-fill) 7%, transparent), transparent 70%);
+  content: none;
 }
 .kit-section[data-deco='grid']::before {
   background-image:
@@ -85,6 +84,35 @@
   background-size: 44px 44px;
   mask-image: radial-gradient(70% 70% at 50% 0%, #000, transparent 75%);
   -webkit-mask-image: radial-gradient(70% 70% at 50% 0%, #000, transparent 75%);
+}
+
+/* A section that sits on a photo: always dark, in both themes. Re-points the kit tokens so headings, cards
+   and icons inside it read on the photo; the section's own fill goes transparent so the photo shows. */
+.kit-section.kit-photo {
+  --k-tint: transparent;
+  --k-card: rgb(14 14 22 / 0.72);
+  --k-ink: #f5f5f7;
+  --k-ink-2: #cfd0d8;
+  --k-ink-3: #a3a5b2;
+  --k-line: rgb(255 255 255 / 0.1);
+  --k-line-strong: rgb(255 255 255 / 0.2);
+  --k-red: #ff8a90;
+  --k-red-wash: rgb(232 36 43 / 0.16);
+  --k-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 14px 32px -14px rgb(0 0 0 / 0.7);
+  --k-shadow-up: 0 2px 4px rgb(0 0 0 / 0.45), 0 20px 40px -14px rgb(0 0 0 / 0.8);
+  border-block-color: transparent;
+}
+/* Cards on the photo are plain white (dark text) in both themes. */
+.kit-photo .kit-card {
+  --k-card: #fff;
+  --k-ink: #14141c;
+  --k-ink-2: #4a4b57;
+  --k-ink-3: #6b6c78;
+  --k-line: rgb(16 24 40 / 0.08);
+  --k-line-strong: rgb(16 24 40 / 0.16);
+  --k-red: #a50d13;
+  --k-red-wash: #fdf3f3;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.2), 0 18px 36px -14px rgb(0 0 0 / 0.55);
 }
 
 /* ── Surfaces ──────────────────────────────────────────────────────────────── */
@@ -109,8 +137,9 @@
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--k-red-fill) 10%, transparent);
+  border-radius: 1rem;
+  background: var(--k-red-wash);
+  box-shadow: inset 0 0 0 1px var(--k-line);
   color: var(--k-red);
   flex-shrink: 0;
 }

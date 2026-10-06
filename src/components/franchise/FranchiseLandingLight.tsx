@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Reveal, Section, StepPath } from '@/components/kit';
+import { FaqList, Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 import Link from 'next/link';
 import type { Route } from 'next';
 import {
@@ -32,7 +32,6 @@ import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 import { FranchiseTestimonialSliderLight } from './FranchiseTestimonialSliderLight';
 import { FranchiseEnquiryFormLight } from './FranchiseEnquiryFormLight';
 import { HeroOrbit } from '@/components/HeroOrbit';
-import { Disclosure } from '@/components/Disclosure';
 
 // Icons paired with ./data's arrays by index — kept here, not in the shared
 // data file, since lucide-react's icon components use React context
@@ -165,7 +164,7 @@ export function FranchiseLandingLight({
 
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="tap mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] transition-colors hover:text-[var(--dc-accent-soft)]"
+              className="tap mt-3 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               {copy['hero.call']}
@@ -181,19 +180,20 @@ export function FranchiseLandingLight({
       </section>
 
       {/* ── Why Franchise (student Why panel) ──────────────────────────── */}
-      <Section tone="plain" deco="glow" labelledBy="fra-why">
+      <Section tone="plain" labelledBy="fra-why">
           <div>
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
+                <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['why.eyebrow']}</p>
                 <h2
                   id="fra-why"
-                  className="section-title font-display text-[var(--dc-ink)]"
+                  className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
                 >
                   {copy['why.title.prefix']}{' '}
                   <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
-                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+                <p className="mt-3 max-w-md text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
                   {copy['why.lede']}
                 </p>
 
@@ -210,9 +210,9 @@ export function FranchiseLandingLight({
                       <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
                         <span
                           aria-hidden="true"
-                          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+                          className="kit-iconwell !h-10 !w-10"
                         >
-                          <Icon className="h-5 w-5" strokeWidth={1.75} />
+                          <Icon className="h-5 w-5" strokeWidth={1.9} />
                         </span>
                         <span className="min-w-0">
                           <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--dc-ink)] sm:text-[22px]">
@@ -252,10 +252,11 @@ export function FranchiseLandingLight({
             </div>
 
             <div className="lg:col-span-7">
-              <h2 className="section-title font-display text-[var(--dc-ink)]">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['market.eyebrow']}</p>
+              <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
                 {copy['market.title']}
               </h2>
-              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+              <p className="mt-3 max-w-[54ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
                 {copy['market.lede']}
               </p>
 
@@ -279,13 +280,14 @@ export function FranchiseLandingLight({
       <Section tone="plain" labelledBy="fra-benefits">
           <div className="grid gap-6 xs:gap-7 sm:gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10">
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['jump.eyebrow']}</p>
               <h2
                 id="fra-benefits"
-                className="section-title font-display text-[var(--dc-ink)]"
+                className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
               >
                 {copy['jump.title']}
               </h2>
-              <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
                 {copy['jump.lede']}
               </p>
             </div>
@@ -298,9 +300,9 @@ export function FranchiseLandingLight({
                   <article className="kit kit-card flex h-full gap-3.5 p-4 xs:gap-4 xs:p-5 sm:flex-col sm:gap-0">
                     <span
                       aria-hidden="true"
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
+                      className="kit-iconwell"
                     >
-                      <Icon className="h-5 w-5" strokeWidth={1.75} />
+                      <Icon className="h-5 w-5" strokeWidth={1.9} />
                     </span>
                     <div className="min-w-0 sm:mt-4">
                       <h3 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
@@ -317,35 +319,35 @@ export function FranchiseLandingLight({
             </ul>
 
             <div className="min-w-0 lg:col-span-5 lg:row-start-2 lg:self-stretch xl:col-span-4">
-              <div className="kit kit-card relative flex h-full flex-col justify-center overflow-hidden bg-[var(--k-red-wash)] p-6 xs:p-7 sm:p-8 lg:p-7 xl:p-8">
+              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[var(--k-r)] bg-jk-600 p-6 text-white xs:p-7 sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
-                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] shadow-brand xs:h-12 xs:w-12"
+                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-white/15 text-white xs:h-12 xs:w-12"
                 >
-                  <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} />
+                  <CheckCircle2 className="h-5 w-5" strokeWidth={1.9} />
                 </span>
 
-                <h2 className="subsection-title relative mt-4 font-display text-[var(--dc-ink)] xs:mt-5">
+                <h2 className="subsection-title relative mt-4 font-display !text-white xs:mt-5">
                   {copy['cta.title']}
                 </h2>
-                <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] xs:mt-3 xs:text-[15px]">
+                <p className="relative mt-2.5 text-[14px] leading-relaxed text-white/85 xs:mt-3 xs:text-[15px]">
                   {copy['cta.body']}
                 </p>
 
                 <a
                   href={copy['cta.button.href']}
-                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
+                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-white py-3 pr-3 pl-5 text-[14.5px] font-bold text-jk-700 transition-colors hover:bg-white/90 xs:mt-7 xs:text-[15px]"
                 >
                   <span>{copy['cta.button.label']}</span>
                   <span
                     aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-jk-600 text-white transition-transform duration-200 group-hover/book:translate-x-0.5"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                   </span>
                 </a>
 
-                <p className="relative mt-4 text-[14px] text-[var(--dc-ink-muted)]">
+                <p className="relative mt-4 text-[14px] text-white/75">
                   {fill(copy['cta.bands'], { bands: bands.join(' · ') })}
                 </p>
               </div>
@@ -354,12 +356,13 @@ export function FranchiseLandingLight({
         </Section>
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
-      <Section tone="tint" deco="grid" id="journey">
+      <Section tone="tint" id="journey">
           <div className="max-w-xl">
-            <h2 className="section-title font-display text-[var(--dc-ink)]">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['launch.eyebrow']}</p>
+            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
               {copy['launch.title']}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
               {copy['launch.lede']}
             </p>
           </div>
@@ -381,59 +384,53 @@ export function FranchiseLandingLight({
       {/* ── Courses ────────────────────────────────────────────────────── */}
       <Section tone="plain" id="courses">
           <div className="max-w-xl">
-            <h2 className="section-title font-display text-[var(--dc-ink)]">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['courses.eyebrow']}</p>
+            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
               {copy['courses.title']}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
               {copy['courses.lede']}
             </p>
           </div>
 
-          <ul className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
+          <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div className="relative isolate min-h-[200px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] sm:min-h-[260px] lg:min-h-full">
+            <Image src="/home/campus-lab.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="-z-10 object-cover" />
+          </div>
+          <ul className="grid gap-3 sm:gap-4">
             {COURSES_ICONS.map((Icon, i) => {
               const course = { title: k(`courses.${i}.title`), body: k(`courses.${i}.body`) };
               return (
               <li key={i}>
-                <article className="kit kit-card flex h-full flex-col p-5 sm:p-6">
+                <article className="kit kit-card flex h-full items-start gap-4 p-5">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--dc-accent-soft)]/40 bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+                    className="kit-iconwell"
                   >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                    <Icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--dc-ink)]">
-                    {course.title}
-                  </h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
-                    {course.body}
-                  </p>
+                  <div className="min-w-0">
+                    <h3 className="text-[16px] font-extrabold text-[var(--dc-ink)]">{course.title}</h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">{course.body}</p>
+                  </div>
                 </article>
               </li>
               );
             })}
           </ul>
+          </div>
         </Section>
 
       {/* ── FAQs ───────────────────────────────────────────────────────── */}
       {faqs?.length ? (
-        <Section tone="tint" id="faqs">
-            <h2 className="section-title font-display text-[var(--dc-ink)]">
-              {copy['faq.title']}
-            </h2>
-            <div className="fra-faq mt-8 space-y-3">
-              {faqs.map((faq) => (
-                <Disclosure key={faq.id} summary={faq.question}>
-                  <p className="text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                    {faq.answer}
-                  </p>
-                </Disclosure>
-              ))}
-            </div>
-          </Section>
+        <Section tone="tint" labelledBy="fra-faq">
+          <SectionHeader id="fra-faq" eyebrow={copy['faq.eyebrow']} title={copy['faq.title']} />
+          <FaqList items={faqs} />
+        </Section>
       ) : null}
 
       {/* ── Enquire ────────────────────────────────────────────────────── */}
-      <Section tone="wash" deco="glow" id="enquire">
+      <Section tone="tint" id="enquire">
           <div className="kit kit-card overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">

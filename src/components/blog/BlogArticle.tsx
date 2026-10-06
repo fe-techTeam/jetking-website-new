@@ -126,7 +126,7 @@ export function BlogArticle({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <Link
               href={categoryHref(post.category)}
-              className="tap inline-flex rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase transition-colors hover:border-[var(--dc-accent-soft)]/60"
+              className="tap inline-flex min-h-11 rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase transition-colors hover:border-[var(--dc-accent-soft)]/60"
             >
               {post.category}
             </Link>
@@ -207,7 +207,7 @@ export function BlogArticle({
             action={
               <Link
                 href={'/blog' as Route}
-                className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+                className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
               >
                 {copy['related.allLabel']}
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

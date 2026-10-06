@@ -45,6 +45,7 @@ export const franchiseCopy = definePageCopy({
     'orbit.3.label': 'Returns',
     'orbit.3.detail': 'Attractive ROI path',
 
+    'why.eyebrow': 'The Jetking advantage',
     'why.title.prefix': 'Why Partners Choose',
     'why.lede': 'The numbers behind a franchise model built on decades of trust.',
     'why.0.value': 'Proven',
@@ -72,6 +73,7 @@ export const franchiseCopy = definePageCopy({
     'stories.2.name': 'Amit Desai',
     'stories.2.role': 'Franchise Partner · Ahmedabad',
 
+    'jump.eyebrow': 'Partner benefits',
     'jump.title': 'Jump-start your centre',
     'jump.lede': 'What you get when you partner with Jetking.',
     'jump.0.title': 'Manpower Support',
@@ -90,6 +92,7 @@ export const franchiseCopy = definePageCopy({
     'cta.button.href': '#enquire',
     'cta.bands': 'Capacity bands: {bands}',
 
+    'launch.eyebrow': 'How it works',
     'launch.title': 'Launch Plan',
     'launch.lede': 'A clear path from territory selection to day-to-day operations.',
     'launch.0.step': '01',
@@ -107,6 +110,7 @@ export const franchiseCopy = definePageCopy({
 
     'market.image': '/franchise/centre-interior.webp',
     'market.image.alt': 'Students learning in a modern Jetking-style IT training classroom',
+    'market.eyebrow': 'The opportunity',
     'market.title': 'The opportunity is real',
     'market.lede':
       'Skill gaps in cloud, cyber and emerging tech create lasting demand for job-ready training centres in every city.',
@@ -119,6 +123,7 @@ export const franchiseCopy = definePageCopy({
     'market.3.value': '70%',
     'market.3.label': 'Of students say vocational training helps get jobs',
 
+    'courses.eyebrow': 'What you teach',
     'courses.title': 'Courses your centre will deliver',
     'courses.lede': 'Proven courses parents trust and employers recognise.',
     'courses.0.title': 'Career Courses',
@@ -128,6 +133,7 @@ export const franchiseCopy = definePageCopy({
     'courses.2.title': 'Certifications',
     'courses.2.body': 'Ethical Hacking, CCNA, Linux and other in-demand credentials.',
 
+    'faq.eyebrow': 'Questions answered',
     'faq.title': 'Frequently Asked Questions',
 
     'enquire.image.alt': 'Modern Jetking franchise centre exterior',

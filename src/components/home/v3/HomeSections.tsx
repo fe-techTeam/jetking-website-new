@@ -7,7 +7,6 @@ import { Recognitions } from './Recognitions';
 import { CentreNetwork } from './CentreNetwork';
 import { CredibilityMarquee } from './CredibilityMarquee';
 import { PlacementProof } from './PlacementProof';
-import { HowItWorks } from './HowItWorks';
 import { BlogTeaser } from './BlogTeaser';
 import { FranchiseBand } from './FranchiseBand';
 import { FinalCta } from './FinalCta';
@@ -19,15 +18,14 @@ import { HomeFaq } from './HomeFaq';
  *   1. programmes        what you can study: courses lead, as on every comparable site
  *   2. partner logos     proof straight after the product (certifications, hiring partners)
  *   3. why Jetking       the reasons to choose us over the alternatives
- *   4. how it works      the path from first class to first job
- *   5. placements        outcomes and student voices, at the peak of interest
- *   6. counsellor band   a low-pressure ask while intent is highest
- *   7. centre network    "is there one near me?": the offline answer
- *   8. recognitions      accreditations, as reassurance before committing
- *   9. blog              for those still reading
- *  10. FAQ               the last objections (eligibility, fees and EMI, placement)
- *  11. lead form         the closing ask
- *  12. franchise         a different audience, kept clear of the student journey
+ *   4. placements        outcomes and student voices, at the peak of interest
+ *   5. recognitions      accreditations and awards, completing the trust run
+ *   6. centre network    "is there one near me?": the offline answer
+ *   7. counsellor band   a low-pressure ask for anyone still unsure
+ *   8. blog              for those still reading
+ *   9. FAQ               the last objections (eligibility, fees and EMI, placement)
+ *  10. lead form         the closing ask
+ *  11. franchise         a different audience, kept clear of the student journey
  * then the site's normal footer (see `FooterChrome`). Backgrounds alternate plain / tint section by
  * section (the light theme's `--theme-surface`), with the placements on the blush wash.
  *
@@ -47,15 +45,15 @@ export function HomeSections({
       <ProgramShowcase courses={data.courses} copy={copy} />
       <CredibilityMarquee copy={copy} />
       <WhyJetking copy={copy} />
-      <HowItWorks copy={copy} />
       <PlacementProof
         testimonials={data.placements.testimonials}
+        videos={data.placements.videoTestimonials}
         disclaimer={data.placements.disclaimer}
         copy={copy}
       />
-      <CounsellorBand copy={copy} />
-      <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
       <Recognitions copy={copy} />
+      <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
+      <CounsellorBand copy={copy} />
       <BlogTeaser posts={data.posts} copy={copy} />
       <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} />
       <FinalCta centres={enquiryCentres} copy={copy} />

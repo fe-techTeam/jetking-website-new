@@ -28,7 +28,7 @@ import { siteConfig } from '@/lib/site';
 import { breadcrumbSchema, centreSchema, faqSchema } from '@/lib/seo';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { JumpNav, type JumpItem } from '@/components/JumpNav';
-import { CardRail, Section, SectionHeader, StatBadges, StepPath, StoryCard } from '@/components/kit';
+import { CardRail, FaqList, Section, SectionHeader, StatBadges, StepPath, StoryCard } from '@/components/kit';
 import { CentreViewTracker } from '@/app/centres/[city]/[slug]/CentreViewTracker';
 import { CentreCourseGroups } from '@/components/centres/CentreFeaturedProgrammes';
 import { CentreHeroForm } from '@/components/centres/CentreHeroForm';
@@ -692,24 +692,7 @@ export function CentreDetail({
       {faqs.length ? (
         <Section tone={nextTone()} id="centre-faq-section" labelledBy="centre-faq" className="scroll-mt-36">
           <SectionHeader id="centre-faq" eyebrow={copy['centreFaq.eyebrow']} title={copy['centreFaq.title']} />
-          <div className="kit kit-card divide-y divide-[var(--k-line)] px-5 sm:px-7">
-            {faqs.map((faq) => (
-              <details key={faq.question} className="group">
-                <summary className="cursor-pointer list-none py-4 text-[16px] font-bold text-[var(--k-ink)] marker:content-none sm:py-5 [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-start justify-between gap-4">
-                    {faq.question}
-                    <span
-                      aria-hidden="true"
-                      className="centres-faq-toggle mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] text-[var(--k-red)]"
-                    >
-                      <span className="centres-faq-toggle-icon" />
-                    </span>
-                  </span>
-                </summary>
-                <p className="-mt-1 max-w-[70ch] pb-4 text-[15px] leading-relaxed text-[var(--k-ink-2)] sm:pb-5">{faq.answer}</p>
-              </details>
-            ))}
-          </div>
+          <FaqList items={faqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} />
         </Section>
       ) : null}
 

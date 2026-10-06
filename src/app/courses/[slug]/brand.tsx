@@ -3,9 +3,9 @@ import { brandMark } from '@/lib/course-logos';
 /** Logo above label — used for the tools / certifications grids. */
 export function BrandTile({ name }: { name: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <BrandMark name={name} />
-      <span className="max-w-[8.5rem] text-[13px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
+    <div className="cp-card flex h-full flex-col items-center gap-2 p-3 sm:gap-3 text-center sm:p-5">
+      <BrandMark name={name} fluid />
+      <span className="max-w-[8.5rem] text-[12px] leading-snug font-semibold sm:text-[13px] text-[var(--cp-ink-2)]">
         {name}
       </span>
     </div>
@@ -13,7 +13,7 @@ export function BrandTile({ name }: { name: string }) {
 }
 
 /** The logo square alone; `small` is the masthead's certification strip. */
-export function BrandMark({ name, small = false }: { name: string; small?: boolean }) {
+export function BrandMark({ name, small = false, fluid = false }: { name: string; small?: boolean; fluid?: boolean }) {
   const mark = brandMark(name);
   const lightMark = mark ? isLightBrandColor(mark.color) : false;
   const initials = name
@@ -30,7 +30,7 @@ export function BrandMark({ name, small = false }: { name: string; small?: boole
       <span
         aria-hidden="true"
         className={`grid shrink-0 place-items-center overflow-hidden border border-[var(--dc-hairline)] ${
-          small ? 'h-10 w-10 rounded-xl' : 'h-16 w-16 rounded-2xl sm:h-[4.5rem] sm:w-[4.5rem]'
+          small ? 'h-10 w-10 rounded-xl' : fluid ? 'h-11 w-11 rounded-xl sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-2xl' : 'h-16 w-16 rounded-2xl sm:h-[4.5rem] sm:w-[4.5rem]'
         } ${
           mark?.painted
             ? 'bg-transparent p-0'

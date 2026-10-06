@@ -112,10 +112,10 @@ export function PostCard({
             </time>
           </div>
 
-          <h3 className="mt-3 font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] transition-colors group-hover/post:text-[var(--dc-accent-soft)] xs:text-[18px]">
+          <h3 className="mt-3 line-clamp-2 min-h-[2.75em] font-display text-[17px] sm:mt-3.5 leading-snug font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] transition-colors group-hover/post:text-[var(--dc-accent-soft)] xs:text-[18px]">
             {post.title}
           </h3>
-          <p className="mt-2 line-clamp-2 flex-1 sm:line-clamp-3 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
+          <p className="mt-2 line-clamp-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
             {post.excerpt}
           </p>
 

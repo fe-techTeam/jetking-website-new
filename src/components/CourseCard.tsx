@@ -44,7 +44,7 @@ export function CourseCard({
   /** Replaces the eligibility line. */
   description?: string;
   cta?: string;
-  /** A shorter card from tablet up: a flatter photo, tighter padding and a one-line description. For long lists of cards. */
+  /** A shorter card: a flatter photo (also in the swipe-row `stack` layout), tighter padding and a one-line description. For long lists of cards. */
   compact?: boolean;
 }) {
   const text = description ?? course.eligibility;
@@ -60,7 +60,9 @@ export function CourseCard({
         <div
           className={`dc-card-media relative shrink-0 overflow-hidden ${
             stack
-              ? 'aspect-[16/10] w-full'
+              ? compact
+                ? 'aspect-[16/6] w-full'
+                : 'aspect-[16/10] w-full'
               : `min-h-[112px] w-[104px] min-[400px]:w-[120px] sm:min-h-0 sm:w-auto ${compact ? 'sm:aspect-[16/6]' : 'sm:aspect-[16/10]'}`
           }`}
         >
@@ -84,7 +86,7 @@ export function CourseCard({
           ) : null}
         </div>
 
-        <div className={`flex min-w-0 flex-1 flex-col ${stack ? 'p-5 sm:p-7' : compact ? 'p-4 sm:p-5' : 'p-4 sm:p-7'}`}>
+        <div className={`flex min-w-0 flex-1 flex-col ${compact ? 'p-4 sm:p-5' : stack ? 'p-5 sm:p-7' : 'p-4 sm:p-7'}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
             <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
               {tag ?? COURSE_LEVEL_LABEL[course.level]}
@@ -100,7 +102,7 @@ export function CourseCard({
             {text}
           </p>
 
-          <div className={`mt-auto flex items-center justify-between gap-3 ${stack ? 'pt-5' : compact ? 'pt-2.5 sm:pt-4' : 'pt-2.5 sm:pt-6'}`}>
+          <div className={`mt-auto flex items-center justify-between gap-3 ${compact ? (stack ? 'pt-3' : 'pt-2.5 sm:pt-4') : stack ? 'pt-5' : 'pt-2.5 sm:pt-6'}`}>
             <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">{cta}</span>
             <span
               aria-hidden="true"

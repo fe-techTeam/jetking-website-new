@@ -30,7 +30,8 @@ export const homeCopy = definePageCopy({
     'hero.enquire.label': 'Enquire Now',
 
     // ── Logo marquee ──────────────────────────────────────────────────────
-    'marquee.heading': 'Trusted by top companies. Our learners work at',
+    'marquee.eyebrow': 'Trusted by industry',
+    'marquee.heading': '12,000+ recruiters trust us, 12 lakh+ students placed till now',
     'marquee.certs.label': 'Certification tracks',
     'marquee.alumni.label': 'Where alumni work',
     'marquee.pause.label': 'Pause',
@@ -51,6 +52,7 @@ export const homeCopy = definePageCopy({
     'programs.tab.career': 'Career Courses',
 
     // ── How it works ──────────────────────────────────────────────────────
+    'how.eyebrow': 'How it works',
     'how.title': 'Build your career, step by step',
     'how.lede': 'From beginner to job-ready professional — we guide you at every stage.',
     'how.steps.0.title': 'Learn',
@@ -71,12 +73,22 @@ export const homeCopy = definePageCopy({
     'how.steps.3.points.2': 'Appointment letter',
 
     // ── Placement stories ─────────────────────────────────────────────────
+    'proof.eyebrow': 'Success stories',
     'proof.title': 'Our learners, our pride',
     'proof.lede':
       'Real stories from students who trained at Jetking and now work at organisations across industries.',
-    'proof.cta.label': 'Watch success stories',
+    'proof.cta.label': 'More success stories',
     'proof.cta.href': '/placements',
     'proof.rail.aria': 'Placement stories',
+    'proof.record.eyebrow': 'Limca Book of World Records',
+    'proof.record.year': '2011–2012',
+    'proof.record.value': '11,451',
+    'proof.record.label': 'Students placed: a record-setting milestone',
+    'proof.record.detail':
+      'Jetking is a record holder in the Limca Book of World Records (2011-2012) for the placement of 11,451 students.',
+    'proof.video.list.aria': 'Placement videos',
+    'proof.video.play': 'Play video: {title}, {name}',
+    'proof.video.close': 'Close video',
 
     // ── Recognition ───────────────────────────────────────────────────────
     'recognition.eyebrow': 'Recognition',
@@ -111,9 +123,23 @@ export const homeCopy = definePageCopy({
     'network.title': '{centres} centres across {cities} cities',
     'network.lede':
       'In-person classes and labs, not a remote-only course. Find a Jetking centre near you and start your journey today.',
+    'network.campus.title': 'A mini campus near your home',
+    'network.campus.image': '/home/campus-lab.jpg',
+    'network.campus.imageAlt': 'An instructor guiding two learners through a networking lab exercise',
+    'network.campus.0.title': 'Instructor-led physical labs',
+    'network.campus.0.body': 'Practise on real hardware, networks and cloud set-ups with an instructor beside you.',
+    'network.campus.1.title': 'Faculty access 7 days a week',
+    'network.campus.1.body': 'Walk in or book a slot any day to clear doubts before they pile up.',
+    'network.campus.2.title': 'Career guidance from your Centre Manager',
+    'network.campus.2.body': 'One-on-one planning for electives, certifications, internships and interview readiness.',
+    'network.campus.3.title': 'In-person master sessions',
+    'network.campus.3.body': 'Sessions at the centre with industry practitioners and university faculty.',
+    'network.campus.4.title': 'Meet and learn with peers',
+    'network.campus.4.body': 'Study groups, project teams and hackathons with batchmates from your own city.',
     'network.cta.label': 'Find your centre',
     'network.cta.href': '/centres',
-    'network.map.aria': 'Map of India with pins for {centres} Jetking centres in {cities} cities',
+    'network.building': '/home/centre-exterior.jpg',
+    'network.building.alt': 'Students walking into a modern Jetking training centre',
     'network.finder.title': 'Find a centre near you',
     'network.finder.placeholder': 'Search city, e.g. Mumbai',
     'network.finder.select.aria': 'Choose a city',
@@ -162,7 +188,7 @@ export const homeCopy = definePageCopy({
     'franchise.srHeading': 'Franchise opportunities',
     'franchise.title': 'Run a Jetking centre in your city',
     'franchise.body':
-      'Partner with India’s most trusted brand — 78 years of brand equity, a countrywide network and end-to-end support.',
+      'Partner with India’s most trusted brand — 79 years of brand equity, a countrywide network and end-to-end support.',
     'franchise.cta.label': 'Explore franchise',
     'franchise.cta.href': '/franchise',
 

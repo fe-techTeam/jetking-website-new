@@ -1175,3 +1175,17 @@ html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
   border-color: rgb(199 20 28 / 0.45);
   box-shadow: 0 8px 20px rgb(16 24 40 / 0.08);
 }
+
+/* No decorative pink/red glow orbs behind pages: the section backgrounds stay flat. */
+html .centres-page::before,
+html .centres-page::after,
+html .blog-page::before,
+html .blog-page::after,
+html .student-page::before,
+html .student-page::after,
+html .professional-page::before,
+html .professional-page::after,
+html .dark-canvas::before,
+html .dark-canvas::after {
+  background: none !important;
+}

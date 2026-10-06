@@ -51,7 +51,7 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
           action={
             <Link
               href={copy['programs.cta.href'] as Route}
-              className="tap inline-flex shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+              className="tap inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
               {copy['programs.cta.label']}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
@@ -87,7 +87,7 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
                 key={course.slug}
                 className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
               >
-                <CourseCard course={course} surface="home-showcase" layout="stack" />
+                <CourseCard course={course} surface="home-showcase" layout="stack" compact />
               </li>
             ))}
           </CardTrack>

@@ -1,6 +1,7 @@
 'use client';
 
-import { Section } from '@/components/kit';
+import { LogoStrip, Section, SectionHeader } from '@/components/kit';
+import { UNIVERSITY_PARTNERS } from '@/components/explore/content';
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { HIRING_PARTNERS } from '@/components/professional/data';
@@ -25,14 +26,11 @@ export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
 
   return (
     <Section tone="tint" labelledBy="home-credibility-heading">
-        <div className="max-w-2xl">
-          <h2
-            id="home-credibility-heading"
-            className="section-title font-display text-[var(--dc-ink)]"
-          >
-            {copy['marquee.heading']}
-          </h2>
-        </div>
+        <SectionHeader
+          id="home-credibility-heading"
+          eyebrow={copy['marquee.eyebrow']}
+          title={copy['marquee.heading']}
+        />
 
         <div className="mt-8 sm:mt-10">
           <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.certs.label']}</p>
@@ -51,6 +49,18 @@ export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
               <LogoList items={EMPLOYER_LOGOS} />
               <LogoList items={EMPLOYER_LOGOS} clone />
             </div>
+          </div>
+        </div>
+
+        <div className="mt-8 sm:mt-10">
+          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['recognition.universities.label']}</p>
+          <div className="mt-3">
+            <LogoStrip
+              size="lg"
+              showNames
+              label={copy['recognition.universities.aria']}
+              logos={UNIVERSITY_PARTNERS.map((p) => ({ name: p.name, src: p.src }))}
+            />
           </div>
         </div>
 

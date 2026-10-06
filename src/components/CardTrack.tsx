@@ -46,7 +46,7 @@ export function CardTrack({ label, children }: { label: string; children: ReactN
 
   return (
     <div role="region" aria-roledescription="carousel" aria-label={label}>
-      <div className="flex justify-end gap-3">
+      <div className={`flex justify-end gap-3 ${edge.start && edge.end ? 'hidden' : ''}`}>
         <button
           type="button"
           onClick={() => scrollByCard(-1)}

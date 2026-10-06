@@ -9,10 +9,12 @@ import {
   Heart,
   Landmark,
   MapPin,
+  Rocket,
   Target,
 } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
-import { CardRail, FeatureCard, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
+import { IconSlot } from '@/components/kit/IconSlot';
+import { CardRail, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
 import type { AboutPageContent, Leader } from '@/lib/content/types';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 import type { aboutCopy } from '@/lib/content/copy/pages/about';
@@ -42,31 +44,44 @@ function LeaderCard({
   compact?: boolean;
   copy: typeof aboutCopy.defaults;
 }) {
-  return (
-    <li
-      data-reveal
-      className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]"
-    >
-      <article className="kit kit-card h-full">
-        <div className={`flex h-full flex-col sm:p-6 ${compact ? 'p-3.5' : 'p-4'}`}>
-          <div className={`relative mx-auto shrink-0 overflow-hidden rounded-full bg-[var(--dc-surface)] ring-1 ring-[var(--dc-hairline)] sm:h-32 sm:w-32 ${compact ? 'h-16 w-16' : 'h-20 w-20'}`}>
+  if (compact) {
+    return (
+      <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]">
+        <article className="kit kit-card flex h-full items-center gap-2.5 p-2.5 sm:gap-4 sm:p-4">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-1 ring-[var(--k-line)] sm:h-14 sm:w-14">
             <LeaderAvatar leader={leader} />
           </div>
-          <div className={`flex flex-1 flex-col text-center sm:mt-5 ${compact ? 'mt-3' : 'mt-4'}`}>
-            <h3 className={`font-display font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[20px] ${compact ? 'text-[15px]' : 'text-[16px]'}`}>
+          <div className="min-w-0">
+            <h3 className="font-display text-[14px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[16px]">{leader.name}</h3>
+            {leader.role ? <p className="mt-0.5 text-[12.5px] leading-snug font-bold text-[var(--k-red)]">{leader.role}</p> : null}
+            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} /> : null}
+          </div>
+        </article>
+      </li>
+    );
+  }
+
+  return (
+    <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]">
+      <article className="kit kit-card kit-card-lift h-full">
+        <div className="flex h-full flex-col items-center gap-3 p-5 text-center xs:flex-row xs:gap-4 xs:p-4 xs:text-left sm:gap-6 sm:p-6 lg:gap-4 lg:p-5">
+          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-1 ring-[var(--k-line)] sm:h-32 sm:w-32 lg:h-20 lg:w-20 xl:h-24 xl:w-24">
+            <LeaderAvatar leader={leader} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-[18px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[22px] lg:text-[17px] xl:text-[19px]">
               {leader.name}
             </h3>
             {leader.role ? (
-              <p className={`mt-1 font-bold text-[var(--k-red)] sm:text-[13px] ${compact ? 'text-[12px] leading-snug' : 'text-[13px]'}`}>{leader.role}</p>
+              <p className="mt-1 text-[13px] font-bold text-[var(--k-red)] sm:text-[14px]">{leader.role}</p>
             ) : null}
-            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} /> : null}
+            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} align="start" /> : null}
           </div>
         </div>
       </article>
     </li>
   );
 }
-
 export function AboutLanding({
   counts,
   about,
@@ -153,13 +168,33 @@ export function AboutLanding({
           lede={copy['purpose.lede']}
         />
         <Reveal>
-          <CardRail label={copy['purpose.railLabel']} cols={3}>
-            {PURPOSE.map((item, index) => (
-              <FeatureCard key={item.title} icon={PURPOSE_ICONS[index % PURPOSE_ICONS.length]} title={item.title} badge={String(index + 1).padStart(2, '0')}>
-                {item.body}
-              </FeatureCard>
-            ))}
-          </CardRail>
+          <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div className="relative isolate min-h-[260px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[340px] lg:min-h-full">
+              <Image
+                src="/home/about-purpose.jpg"
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="-z-10 object-cover object-center"
+              />
+            </div>
+            <ul aria-label={copy['purpose.railLabel']} className="grid gap-4 sm:gap-5">
+              {PURPOSE.map((item, index) => {
+                const Icon = PURPOSE_ICONS[index % PURPOSE_ICONS.length];
+                return (
+                  <li key={item.title} className="kit kit-card kit-card-lift flex items-start gap-4 p-5 sm:gap-5 sm:p-6">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[var(--k-red-fill)] to-jk-700 text-white shadow-brand">
+                      <IconSlot icon={Icon} className="h-6 w-6" strokeWidth={1.8} />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="font-display text-[18px] leading-snug font-extrabold text-[var(--k-ink)]">{item.title}</h3>
+                      <p className="mt-1.5 text-[14.5px] leading-relaxed text-[var(--k-ink-2)]">{item.body}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </Reveal>
       </Section>
 
@@ -190,7 +225,7 @@ export function AboutLanding({
         <h3 className="mt-14 text-[20px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mt-16 sm:text-[22px]">
           {copy['leaders.managementHeading']}
         </h3>
-        <ul className="mt-8 flex flex-wrap justify-center gap-3 sm:mt-9 sm:gap-5 lg:gap-6">
+        <ul className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-7 sm:gap-5 lg:gap-6">
           {MANAGEMENT_TEAM.map((leader) => (
             <LeaderCard key={leader.name} leader={leader} compact copy={copy} />
           ))}
@@ -290,30 +325,39 @@ export function AboutLanding({
          New venture announcement — deliberately its own section, closing the
          page, so it reads as a forward-looking postscript to the legacy
          story above rather than being folded into it. */}
-      <Section tone="tint" labelledBy="about-future">
-        <a
-          href={copy['future.href']}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="kit kit-card kit-card-lift group flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
-        >
-          <div>
-            <p id="about-future" className="text-[18px] font-extrabold text-[var(--k-ink)] sm:text-[20px]">
-              {copy['future.title']}
-            </p>
-            <p className="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-[var(--k-ink-2)]">
-              {copy['future.body']}
-            </p>
-          </div>
-          <span className="flex shrink-0 items-center gap-1.5 text-[14px] font-semibold text-[var(--k-red)]">
-            {copy['future.linkLabel']}
-            <ArrowUpRight
-              className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              aria-hidden="true"
-            />
-          </span>
-        </a>
-      </Section>
+      <section aria-labelledby="about-future" className="kit bg-[var(--k-bg)]">
+        <div className="shell py-10 sm:py-14">
+          <a
+            href={copy['future.href']}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative flex flex-col items-start gap-5 overflow-hidden rounded-[28px] bg-jk-600 p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-10"
+          >
+            <span aria-hidden="true" className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full border border-white/15" />
+            <span aria-hidden="true" className="pointer-events-none absolute -top-12 -right-4 h-48 w-48 rounded-full border border-white/20" />
+            <div className="relative flex items-start gap-4 sm:items-center sm:gap-5">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/15 text-white ring-1 ring-white/25">
+                <Rocket className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
+              </span>
+              <div>
+                <p id="about-future" className="font-display text-[22px] leading-tight font-extrabold tracking-[-0.02em] sm:text-[28px]">
+                  {copy['future.title']}
+                </p>
+                <p className="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-white/85">
+                  {copy['future.body']}
+                </p>
+              </div>
+            </div>
+            <span className="relative inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-white px-5 text-[14px] font-bold text-jk-700">
+              {copy['future.linkLabel']}
+              <ArrowUpRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden="true"
+              />
+            </span>
+          </a>
+        </div>
+      </section>
     </div>
   );
 }

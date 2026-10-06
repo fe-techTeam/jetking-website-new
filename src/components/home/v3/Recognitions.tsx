@@ -1,5 +1,4 @@
-import { UNIVERSITY_PARTNERS } from '@/components/explore/content';
-import { CardRail, FeatureCard, LogoStrip, Reveal, Section, SectionHeader } from '@/components/kit';
+import { CardRail, FeatureCard, Reveal, Section, SectionHeader } from '@/components/kit';
 import { RECOGNITIONS } from './data';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
@@ -26,17 +25,7 @@ export function Recognitions({ copy }: { copy: HomeCopy }) {
         </CardRail>
       </Reveal>
 
-      <div className="mt-10 sm:mt-12">
-        <p className="mb-4 text-[13px] font-bold tracking-[0.1em] text-[var(--k-ink-3)] uppercase">
-          {copy['recognition.universities.label']}
-        </p>
-        <LogoStrip
-          size="lg"
-          showNames
-          label={copy['recognition.universities.aria']}
-          logos={UNIVERSITY_PARTNERS.map((p) => ({ name: p.name, src: p.src }))}
-        />
-      </div>
+
     </Section>
   );
 }

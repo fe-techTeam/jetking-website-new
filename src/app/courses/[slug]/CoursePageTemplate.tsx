@@ -25,6 +25,7 @@ import { fill } from '@/lib/content/copy/define';
 import type { coursesCopy } from '@/lib/content/copy/pages/courses';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { Disclosure } from '@/components/Disclosure';
+import { FaqList } from '@/components/kit';
 import { QuickEnquiryForm } from '@/components/QuickEnquiryForm';
 import { RecruiterMarquee } from '@/components/placements/RecruiterMarquee';
 import { BrandTile } from './brand';
@@ -80,7 +81,7 @@ function Heading({ children, kicker }: { children: React.ReactNode; kicker?: str
   return (
     <div>
       {kicker ? <span className="cp-eyebrow">{kicker}</span> : null}
-      <h2 className="cp-h2 mt-1.5 text-balance">{children}</h2>
+      <h2 className="cp-h2 mt-2.5 text-balance">{children}</h2>
     </div>
   );
 }
@@ -208,7 +209,7 @@ export function CoursePageTemplate({
   const projectCount = course.curriculum?.reduce((n, t) => n + t.items.filter((i) => /^project/i.test(i)).length, 0) ?? 0;
   const curriculumStats = [
     course.curriculum?.length
-      ? { value: String(course.curriculum.length), label: course.curriculum.length === 1 ? copy['courseCurriculum.statTerm'] : copy['courseCurriculum.statTerms'] }
+      ? { value: String(course.curriculum.length), label: !isDegree ? copy['courseCurriculum.statModules'] : course.curriculum.length === 1 ? copy['courseCurriculum.statTerm'] : copy['courseCurriculum.statTerms'] }
       : { value: String(course.modules.length), label: copy['courseCurriculum.statModules'] },
     course.curriculum?.length ? { value: String(topicCount), label: copy['courseCurriculum.statTopics'] } : { value: course.duration, label: copy['courseCurriculum.statDuration'] },
     projectCount ? { value: String(projectCount), label: copy['courseCurriculum.statProjects'] } : { value: String(course.tools?.length ?? 0), label: copy['courseCurriculum.statTools'] },
@@ -220,52 +221,40 @@ export function CoursePageTemplate({
   // Phone/tablet "on this page" strip: only the sections this course actually has, in page order.
   const jumpItems: JumpItem[] = [
     { id: 'cp-why', label: copy['courseJump.overview'] },
-    ...(!isDegree && offeringCentres.length ? [{ id: 'cp-centres', label: copy['courseJump.centres'] }] : []),
     { id: 'cp-curriculum', label: copy['courseJump.curriculum'] },
     ...(course.tools?.length ? [{ id: 'cp-tools', label: copy['courseJump.tools'] }] : []),
     ...(course.certifications.length ? [{ id: 'cp-certs', label: copy['courseJump.certifications'] }] : []),
     { id: isDegree ? 'cp-placement' : 'cp-records', label: copy['courseJump.placement'] },
-    ...(isDegree && offeringCentres.length ? [{ id: 'cp-centres', label: copy['courseJump.centres'] }] : []),
+    ...(offeringCentres.length ? [{ id: 'cp-centres', label: copy['courseJump.centres'] }] : []),
     ...(ownFaqs.length + feeFaqs.length ? [{ id: 'cp-faqs', label: copy['courseJump.faqs'] }] : []),
   ];
 
   const centreSection = (
       <section id="cp-centres" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
         <div className="shell">
-          <Heading kicker={copy['courseCentres.kicker']}>{isDegree ? copy['courseCentres.degreeTitle'] : copy['courseCentres.shortTitle']}</Heading>
-          {!isDegree && course.phases?.length ? (
-            <ol className="mt-8 grid gap-4 lg:grid-cols-3">
-              {course.phases.map((phase, i) => (
-                <li key={phase.title} className={`cp-card border-t-4 p-6 ${ACCENT_TOPS[i % 3]}`}>
-                  <span className={`grid h-10 w-10 place-items-center rounded-full text-[15px] font-bold ${ACCENT_DOTS[i % 3]}`}>{i + 1}</span>
-                  <h3 className="cp-h3 mt-4">{phase.title}</h3>
-                  <p className="mt-2 text-[14.5px] leading-relaxed text-[var(--cp-ink-2)]">{phase.description}</p>
-                </li>
-              ))}
-            </ol>
-          ) : null}
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,26rem)_1fr] lg:items-center lg:gap-12">
-            <div className="relative aspect-[412/280] overflow-hidden rounded-[24px] border-4 border-[var(--cp-red)]">
-              <Image src={copy['courseCentres.image']} alt={copy['courseCentres.imageAlt']} fill sizes="(min-width: 1024px) 26rem, 100vw" className="object-cover" />
+          <Heading kicker={copy['courseCentres.kicker']}>{copy['courseCentres.degreeTitle']}</Heading>
+
+          <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div className="relative min-h-[200px] overflow-hidden rounded-[20px] border border-[var(--cp-line)] lg:max-h-[24rem] shadow-[0_1px_2px_rgb(16_24_40/0.04),0_8px_24px_-12px_rgb(16_24_40/0.14)] sm:min-h-[320px] lg:min-h-full">
+              <Image src={copy['courseCentres.image']} alt={copy['courseCentres.imageAlt']} fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
             </div>
-            <ul className="grid gap-3">
+            <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5">
               {centreAdvantages.map((a) => {
                 const Icon = a.icon;
                 return (
-                  <li key={a.title} className="cp-card flex items-center gap-4 p-4">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
+                  <li key={a.title} className="cp-card flex items-start gap-3.5 p-4 sm:p-5 sm:last:odd:col-span-2">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                      <Icon className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="cp-h3">{a.title}</h3>
-                      <p className="mt-1 text-[14px] leading-snug text-[var(--cp-muted)]">{a.body}</p>
+                      <p className="mt-1 text-[14px] leading-snug text-[var(--cp-ink-2)]">{a.body}</p>
                     </div>
                   </li>
                 );
               })}
             </ul>
           </div>
-
           {offeringCentres.length ? (
             <CentrePicker
               copy={copy}
@@ -321,7 +310,7 @@ export function CoursePageTemplate({
                 {offeringCentres.length ? (
                   <a
                     href="#cp-centres"
-                    className="tap inline-flex items-center gap-1 rounded-full bg-[var(--cp-bg)] px-3 py-1 text-[12px] font-bold tracking-[0.08em] text-[var(--cp-ink)] uppercase"
+                    className="tap inline-flex min-h-11 items-center gap-1 rounded-full bg-[var(--cp-bg)] px-3 py-1 text-[12px] font-bold tracking-[0.08em] text-[var(--cp-ink)] uppercase"
                   >
                     <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
                     {fill(offeringCentres.length === 1 ? copy['courseBanner.centresOne'] : copy['courseBanner.centresMany'], { count: offeringCentres.length })}
@@ -395,53 +384,69 @@ export function CoursePageTemplate({
 
       {/* ── 3. Why this degree & why now (job roles) ────────────────────── */}
       <section id="cp-why" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
-        <Heading kicker={isDegree ? copy['courseWhy.degreeKicker'] : copy['courseWhy.shortKicker']}>
-          {isDegree ? fill(copy['courseWhy.degreeTitle'], { degree }) : fill(copy['courseWhy.shortTitle'], { label })}
-        </Heading>
-        {isDegree ? (
-          <p className="mt-5 text-[1.125rem] font-bold text-[var(--cp-ink)]">
-            {fill(copy['courseWhy.degreeLead'], { degree })}
-          </p>
-        ) : null}
-        {summaryRest ? <p className={`cp-lede max-w-[70ch] ${isDegree ? 'mt-3' : 'mt-5'}`}>{summaryRest}</p> : null}
-        <ul className="mt-6 grid gap-3">
-          {course.outcomes.map((o) => (
-            <li key={o} className="flex gap-3 text-[15px] leading-relaxed text-[var(--cp-ink-2)]">
-              <span aria-hidden="true" className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--cp-red)]" />
-              {o}
-            </li>
-          ))}
-        </ul>
-
-        {course.careerRoles?.length ? (
-          <div className="mt-12">
-            <Heading kicker={copy['courseCareers.kicker']}>{copy['courseCareers.title']}</Heading>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {course.careerRoles.map((role) => (
-                <li
-                  key={role}
-                  className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-grey)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--cp-ink)]"
-                >
-                  {role}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-14">
+          <div>
+            <Heading kicker={isDegree ? copy['courseWhy.degreeKicker'] : copy['courseWhy.shortKicker']}>
+              {isDegree ? fill(copy['courseWhy.degreeTitle'], { degree }) : fill(copy['courseWhy.shortTitle'], { label })}
+            </Heading>
+            {isDegree ? (
+              <p className="mt-5 text-[1.125rem] leading-snug font-bold text-[var(--cp-ink)]">
+                {fill(copy['courseWhy.degreeLead'], { degree })}
+              </p>
+            ) : null}
+            {summaryRest ? <p className={`cp-lede max-w-[62ch] ${isDegree ? 'mt-3' : 'mt-5'}`}>{summaryRest}</p> : null}
+            <ul className="mt-7 grid gap-3">
+              {course.outcomes.map((o) => (
+                <li key={o} className="cp-card flex items-start gap-3.5 p-3.5 sm:gap-4 sm:p-5">
+                  <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                    <BadgeCheck className="h-5 w-5" strokeWidth={1.9} />
+                  </span>
+                  <span className="pt-1.5 text-[15.5px] leading-relaxed text-[var(--cp-ink-2)]">{o}</span>
                 </li>
               ))}
             </ul>
           </div>
-        ) : null}
 
-        {/* Slide 2: the "how does placement work" prompt, answered on this page rather than a new one. */}
-        <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-grey)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-          <div>
-            <p className="cp-eyebrow">{copy['coursePlacementPrompt.kicker']}</p>
-            <p className="mt-1 text-[17px] font-bold text-[var(--cp-ink)]">{copy['coursePlacementPrompt.title']}</p>
-          </div>
-          <a href={isDegree ? '#cp-placement' : '#cp-records'} className="cp-btn shrink-0">
-            {copy['coursePlacementPrompt.cta']}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </a>
+          <aside className="flex flex-col gap-4 lg:sticky lg:top-28">
+            {course.careerRoles?.length ? (
+              <div className="cp-card p-6 sm:p-7">
+                <span aria-hidden="true" className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                  <Briefcase className="h-6 w-6" strokeWidth={1.8} />
+                </span>
+                <p className="cp-eyebrow mt-5">{copy['courseCareers.kicker']}</p>
+                <h3 className="cp-h2 mt-2 !text-[1.375rem] !leading-snug">{copy['courseCareers.title']}</h3>
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {course.careerRoles.map((role) => (
+                    <li
+                      key={role}
+                      className="rounded-full border border-[var(--cp-line)] bg-[var(--cp-grey)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--cp-ink)]"
+                    >
+                      {role}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {/* Slide 2: the "how does placement work" prompt, answered on this page rather than a new one. */}
+            <div className="flex flex-col gap-4 rounded-[20px] bg-[var(--cp-red-fill)] p-6 text-white sm:p-7">
+              <div>
+                <p className="text-[13px] font-bold tracking-[0.12em] text-white/80 uppercase">{copy['coursePlacementPrompt.kicker']}</p>
+                <p className="mt-2 text-[1.25rem] leading-snug font-bold">{copy['coursePlacementPrompt.title']}</p>
+              </div>
+              <a
+                href={isDegree ? '#cp-placement' : '#cp-records'}
+                className="tap inline-flex min-h-12 items-center justify-between gap-3 self-start rounded-full bg-white py-2 pr-2 pl-5 text-[15px] font-bold text-[var(--cp-red)]"
+              >
+                {copy['coursePlacementPrompt.cta']}
+                <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-full bg-[var(--cp-red-tint)]">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </a>
+            </div>
+          </aside>
         </div>
       </section>
-
       {/* Phones/tablets: the enquiry form sits mid-page, after the reader has seen what the course is (the hero offers the
           main action first). From lg up the same form is the banner card above. */}
       <section aria-labelledby="cp-form-title-m" className="shell py-[clamp(2.25rem,5vw,3.5rem)] lg:hidden">
@@ -479,9 +484,9 @@ export function CoursePageTemplate({
           <div className="shell">
             <Heading kicker={copy['courseHighlights.kicker']}>{copy['courseHighlights.title']}</Heading>
             {course.highlights.some((h) => !internshipPoints.includes(h)) ? (
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className={`mt-8 grid gap-4 sm:grid-cols-2 ${course.highlights.filter((h) => !internshipPoints.includes(h)).length % 3 === 0 ? 'lg:grid-cols-3' : ''}`}>
                 {course.highlights.filter((h) => !internshipPoints.includes(h)).map((item, i) => (
-                  <li key={item} className="cp-card flex gap-4 p-5">
+                  <li key={item} className="cp-card flex gap-3.5 p-4 sm:gap-4 sm:p-5">
                     <span
                       aria-hidden="true"
                       className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-[14px] font-bold ${HIGHLIGHT_ACCENTS[i % 3]}`}
@@ -498,8 +503,10 @@ export function CoursePageTemplate({
                 <h3 className="cp-h3 mt-10">{copy['courseHighlights.internshipTitle']}</h3>
                 <ul className="mt-4 grid gap-4 md:grid-cols-2">
                   {internshipPoints.map((item) => (
-                    <li key={item} className={`flex gap-4 rounded-2xl p-5 bg-[var(--cp-grey)]`}>
-                      <Briefcase className="mt-0.5 h-6 w-6 shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
+                    <li key={item} className="cp-card flex items-center gap-3.5 p-4 sm:gap-4 sm:p-5">
+                      <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                        <Briefcase className="h-5 w-5" strokeWidth={1.9} />
+                      </span>
                       <span className="text-[15px] leading-snug font-bold text-[var(--cp-ink)]">{item}</span>
                     </li>
                   ))}
@@ -572,8 +579,6 @@ export function CoursePageTemplate({
         </>
       ) : null}
 
-      {!isDegree ? centreSection : null}
-
       {/* ── 7. Curriculum ───────────────────────────────────────────────── */}
       <section id="cp-curriculum" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         <div className="flex items-baseline justify-between gap-4">
@@ -621,7 +626,7 @@ export function CoursePageTemplate({
         <section id="cp-tools" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
           <div className="shell">
             <Heading kicker={copy['courseTools.kicker']}>{copy['courseTools.title']}</Heading>
-            <ul className="cp-two-lines mt-8">
+            <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
               {course.tools.map((tool) => (
                 <li key={tool}>
                   <BrandTile name={tool} />
@@ -636,7 +641,7 @@ export function CoursePageTemplate({
       {course.certifications.length ? (
         <section id="cp-certs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker={copy['courseCerts.kicker']}>{copy['courseCerts.title']}</Heading>
-          <ul className="mt-8 grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-4 lg:grid-cols-6">
+          <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
             {course.certifications.map((cert) => (
               <li key={cert}>
                 <BrandTile name={cert} />
@@ -644,7 +649,7 @@ export function CoursePageTemplate({
             ))}
           </ul>
           {course.certificateImage ? (
-            <figure className="mt-10 grid items-center gap-6 rounded-[20px] bg-[var(--cp-grey)] p-5 sm:grid-cols-[minmax(0,22rem)_1fr] sm:gap-10 sm:p-8">
+            <figure className="cp-card mt-10 grid items-center gap-6 overflow-hidden p-5 sm:grid-cols-[minmax(0,22rem)_1fr] sm:gap-10 sm:p-8 lg:gap-14">
               <ZoomImage
                 src={course.certificateImage.url}
                 alt={course.certificateImage.alt}
@@ -652,13 +657,17 @@ export function CoursePageTemplate({
                 labels={{ enlarge: copy['courseCerts.enlarge'], enlargeLabel: copy['courseCerts.enlargeLabel'], close: copy['courseCerts.close'] }}
               />
               <figcaption>
-                <p className="cp-h2 flex items-center gap-3">
-                  <Award className="h-7 w-7 shrink-0 text-[var(--cp-red)]" aria-hidden="true" />
-                  {copy['courseCerts.cardTitle']}
-                </p>
-                <p className="mt-3 max-w-[44ch] text-[1.0625rem] leading-relaxed text-[var(--cp-ink-2)]">
+                <span aria-hidden="true" className="grid h-14 w-14 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                  <Award className="h-7 w-7" strokeWidth={1.8} />
+                </span>
+                <p className="cp-h2 mt-5">{copy['courseCerts.cardTitle']}</p>
+                <p className="mt-3 max-w-[48ch] text-[1.0625rem] leading-relaxed text-[var(--cp-ink-2)]">
                   {copy['courseCerts.cardBody']}
                 </p>
+                <EnquireCta source={`course-${course.slug}-certificate`} className="cp-btn mt-7">
+                  {copy['courseBanner.counsellorCta']}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </EnquireCta>
               </figcaption>
             </figure>
           ) : null}
@@ -698,9 +707,9 @@ export function CoursePageTemplate({
         <SnapSlider
           label={copy['courseRecords.carouselLabel']}
           aside={
-            <div className="flex flex-row items-center gap-4 rounded-2xl bg-[var(--cp-red-tint)] p-5 lg:flex-col lg:items-start lg:justify-center lg:gap-5">
-              <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[var(--cp-red-fill)] text-white">
-                <Users className="h-6 w-6" />
+            <div className="cp-card flex flex-row items-center gap-4 p-5 lg:flex-col lg:items-start lg:justify-center lg:gap-5">
+              <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
+                <Users className="h-5 w-5" strokeWidth={1.9} />
               </span>
               <p>
                 <span className="block text-4xl leading-none font-bold text-[var(--cp-red)]">{LEARNERS_PLACED.value}</span>
@@ -717,15 +726,15 @@ export function CoursePageTemplate({
           {placedLearners.map((c) => (
             <li
               key={c.name}
-              className="flex flex-col items-center rounded-2xl bg-gradient-to-br from-[#a50d13] to-[#7a0d12] p-4 text-center text-white sm:p-5"
+              className="cp-card flex flex-col items-center p-4 text-center sm:p-5"
             >
-              <span className="relative block h-20 w-20 overflow-hidden rounded-full bg-white ring-4 ring-white/30">
+              <span className="relative block h-20 w-20 overflow-hidden rounded-full bg-[var(--cp-grey)] ring-4 ring-[var(--cp-red-tint)]">
                 <Image src={c.photoUrl} alt={fill(copy['courseRecords.imageAlt'], { name: c.name, company: c.company })} fill sizes="80px" className="object-cover" />
               </span>
-              <p className="mt-4 text-[17px] font-bold">{c.name}</p>
-              <span aria-hidden="true" className="my-3 h-px w-10 bg-white/40" />
-              <p className="text-[12px] font-bold tracking-[0.1em] text-white/80 uppercase">{copy['courseRecords.placedAt']}</p>
-              <p className="mt-1 text-[15px] font-bold text-white">{c.company}</p>
+              <p className="mt-4 text-[17px] font-bold text-[var(--cp-ink)]">{c.name}</p>
+              <span aria-hidden="true" className="my-3 h-px w-10 bg-[var(--cp-line)]" />
+              <p className="text-[12px] font-bold tracking-[0.1em] text-[var(--cp-muted)] uppercase">{copy['courseRecords.placedAt']}</p>
+              <p className="mt-1 text-[15px] font-bold text-[var(--cp-red)]">{c.company}</p>
             </li>
           ))}
         </SnapSlider>
@@ -737,14 +746,25 @@ export function CoursePageTemplate({
         </div>
       </section>
 
-      {isDegree ? centreSection : null}
+      {centreSection}
+
+      {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
+      {ownFaqs.length + feeFaqs.length ? (
+        <section id="cp-faqs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
+          <Heading kicker={copy['courseFaq.kicker']}>{copy['courseFaq.title']}</Heading>
+          <div className="mt-8">
+            {ownFaqs.length ? <FaqList items={ownFaqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} /> : null}
+            {/* The fees / placement answers: reading this block is the `fee-depth` signal. */}
+            <div id="course-fee-faqs">{feeFaqs.length ? <FaqList continued startAt={ownFaqs.length + 1} items={feeFaqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} /> : null}</div>
+          </div>
+          {feeFaqs.length ? <FeeDepthTracker targetId="course-fee-faqs" courseSlug={course.slug} /> : null}
+        </section>
+      ) : null}
 
       {/* ── 13. Call to action ──────────────────────────────────────────── */}
       <section className="cp-section shell">
-        <div className="relative overflow-hidden rounded-[28px] border border-[var(--cp-line)] bg-[var(--cp-bg)] p-6 shadow-[0_20px_50px_-30px_rgba(17,24,39,0.4)] sm:p-10">
-          <span aria-hidden="true" className="absolute -right-10 -bottom-16 hidden h-56 w-56 rounded-full bg-[var(--cp-red-fill)] sm:block" />
-          <span aria-hidden="true" className="absolute right-24 -bottom-24 hidden h-48 w-48 rounded-full bg-[var(--cp-grey)] sm:block" />
-          <div className="relative max-w-xl">
+        <div className="cp-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="p-6 sm:p-10">
             <h2 className="cp-h2">{copy['courseClosing.title']}</h2>
             <p className="cp-lede mt-3">{copy['courseClosing.body']}</p>
             <EnquireCta source={`course-${course.slug}-closing`} className="cp-btn mt-6">
@@ -757,44 +777,24 @@ export function CoursePageTemplate({
                 {siteConfig.helpline}
               </a>{' '}
               {copy['courseClosing.orEmail']}{' '}
-              <a href={`mailto:${copy['courseClosing.email']}`} className="tap inline-flex items-center gap-1 font-bold underline">
+              <a href={`mailto:${copy['courseClosing.email']}`} className="tap inline-flex min-h-11 items-center gap-1 font-bold underline">
                 <Mail className="h-3.5 w-3.5" aria-hidden="true" />
                 {copy['courseClosing.email']}
               </a>
             </p>
           </div>
+          <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
+            <Image src="/home/counsellor.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+          </div>
         </div>
       </section>
-
-      {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
-      {ownFaqs.length + feeFaqs.length ? (
-        <section id="cp-faqs" className="shell scroll-mt-36 py-[clamp(2.25rem,5vw,3.5rem)] lg:scroll-mt-24">
-          <Heading kicker={copy['courseFaq.kicker']}>{copy['courseFaq.title']}</Heading>
-          <div className="mt-8 border-t border-[var(--cp-line)]">
-            {ownFaqs.map((faq) => (
-              <Disclosure key={faq.question} tone="flush" summary={faq.question}>
-                <p className="measure text-[15px]">{faq.answer}</p>
-              </Disclosure>
-            ))}
-            {/* The fees / placement answers: reading this block is the `fee-depth` signal. */}
-            <div id="course-fee-faqs">
-              {feeFaqs.map((faq) => (
-                <Disclosure key={faq.question} tone="flush" summary={faq.question}>
-                  <p className="measure text-[15px]">{faq.answer}</p>
-                </Disclosure>
-              ))}
-            </div>
-          </div>
-          {feeFaqs.length ? <FeeDepthTracker targetId="course-fee-faqs" courseSlug={course.slug} /> : null}
-        </section>
-      ) : null}
 
       {related.length ? (
         <section className="cp-band-grey cp-section">
           <div className="shell">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <Heading kicker={copy['courseRelated.kicker']}>{copy['courseRelated.title']}</Heading>
-              <Link href="/courses" className="tap inline-flex min-h-6 items-center gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
+              <Link href="/courses" className="tap inline-flex min-h-11 items-center sm:min-h-6 gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
                 {copy['courseRelated.catalogueLink']}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>

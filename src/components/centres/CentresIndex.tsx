@@ -772,7 +772,7 @@ function CentreCard({
           <h3 className="font-display text-[17px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[18px] lg:text-[20px]">
             <Link
               href={centrePath(centre.slug) as Route}
-              className="tap transition-colors hover:text-[var(--dc-accent-soft)]"
+              className="tap -my-2.5 inline-block py-2.5 transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               {centre.name}
             </Link>
@@ -818,7 +818,7 @@ function CentreCard({
           {telHref ? (
             <a
               href={telHref}
-              className="tap numeral font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
+              className="tap numeral inline-flex min-h-11 items-center font-semibold text-[var(--dc-ink)] transition-colors hover:text-[var(--dc-accent-soft)]"
               onClick={() =>
                 track('phone_clicked', { centre_slug: centre.slug })
               }

@@ -109,7 +109,7 @@ export function AboutTimeline({ timeline, copy }: { timeline: Milestone[]; copy:
                 href={item.link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="tap mt-3 inline-flex min-h-6 items-center text-[13px] font-bold text-[var(--dc-accent-soft)] hover:underline"
+                className="tap mt-3 inline-flex min-h-11 items-center sm:min-h-6 text-[13px] font-bold text-[var(--dc-accent-soft)] hover:underline"
               >
                 {item.link.label}
               </a>

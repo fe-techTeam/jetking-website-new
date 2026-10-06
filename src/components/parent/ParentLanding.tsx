@@ -280,9 +280,9 @@ export function ParentLanding({
                     >
                       <span
                         aria-hidden="true"
-                        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+                        className="kit-iconwell !h-9 !w-9 !rounded-xl"
                       >
-                        <item.icon className="h-4 w-4" strokeWidth={1.85} />
+                        <item.icon className="h-5 w-5" strokeWidth={1.9} />
                       </span>
                       <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--dc-ink)]">
                         {item.label}
@@ -388,9 +388,9 @@ export function ParentLanding({
                 <article className="kit kit-card flex h-full flex-col items-start gap-3 p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
+                    className="kit-iconwell"
                   >
-                    <item.icon className="h-5 w-5" strokeWidth={1.75} />
+                    <item.icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
                   <span className="text-[13px] leading-snug font-bold text-[var(--dc-ink-secondary)] sm:text-[13.5px]">
                     {item.label}

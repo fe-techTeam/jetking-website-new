@@ -26,8 +26,10 @@ import { LeaderAvatar } from './LeaderAvatar';
 export function LeaderDetailModal({
   leader,
   copy,
+  align = 'center',
 }: {
   leader: Leader;
+  align?: 'center' | 'start';
   copy: Pick<typeof aboutCopy.defaults, 'leaders.readMore' | 'leaders.closeLabel'>;
 }) {
   const [open, setOpen] = useState(false);
@@ -107,7 +109,7 @@ export function LeaderDetailModal({
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className="tap mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
+        className={`tap mt-1 flex min-h-11 w-full cursor-pointer items-center ${align === 'start' ? 'justify-center xs:justify-start' : 'justify-center'} gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]`}
       >
         {copy['leaders.readMore']}
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />

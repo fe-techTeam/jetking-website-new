@@ -29,7 +29,7 @@ export function FlexibleLearning({ copy }: { copy: typeof professionalCopy.defau
         ))}
       </ul>
       <p className="mt-6">
-        <Link href="/enquiry" className="tap inline-flex items-center gap-1.5 text-[15px] font-bold text-[var(--k-red)]">
+        <Link href="/enquiry" className="tap inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-[var(--k-red)]">
           Ask a counsellor which batch suits you
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
         </Link>

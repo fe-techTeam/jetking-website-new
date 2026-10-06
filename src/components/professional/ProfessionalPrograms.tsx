@@ -34,7 +34,7 @@ export function ProfessionalPrograms({ copy, courses }: { copy: typeof professio
         <div className="flex items-center gap-3">
           <Link
             href={copy['programs.viewAll.href'] as Route}
-            className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
           >
             {copy['programs.viewAll.label']}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />

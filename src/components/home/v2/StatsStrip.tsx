@@ -24,7 +24,7 @@ export function StatsStrip({ counts }: { counts: NetworkCounts }) {
               aria-hidden="true"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--v2-accent)]/10 text-[var(--v2-accent-soft)]"
             >
-              <Icon className="h-5 w-5" strokeWidth={1.9} />
+              <Icon className="h-5 w-5" strokeWidth={1.8} />
             </span>
             <div className="min-w-0">
               <dd className="numeral order-1 text-[22px] leading-none font-extrabold sm:text-[26px]">{stat.value}</dd>

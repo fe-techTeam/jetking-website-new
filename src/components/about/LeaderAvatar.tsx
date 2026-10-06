@@ -9,7 +9,7 @@ export function LeaderAvatar({ leader }: { leader: Leader }) {
         src={leader.photoUrl}
         alt={leader.name}
         fill
-        sizes="128px"
+        sizes="160px"
         className="object-cover object-top"
       />
     );

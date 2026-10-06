@@ -74,7 +74,7 @@ export function ProfessionalHero({ copy }: { copy: typeof professionalCopy.defau
 
         <EnquiryLink
           source="professional-hero"
-          className="tap mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-6"
+          className="tap mt-3 inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-4"
         >
           {copy['hero.link.label']}
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

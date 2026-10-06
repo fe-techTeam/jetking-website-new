@@ -170,24 +170,30 @@ export default async function CoursesPage() {
         <FlexibleLearning copy={professional} />
 
         {/* ── Closing CTA: the page's one consolidated enquiry prompt ───── */}
-        <Section tone="wash" labelledBy="courses-cta">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-            <div className="max-w-2xl">
-              <p className="k-eyebrow">{copy['cta.eyebrow']}</p>
+        <Section tone="plain" labelledBy="courses-cta">
+          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[17rem]">
+              <Image src="/home/campus-lab.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+            </div>
+            <div className="p-6 sm:p-10">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
               <h2 id="courses-cta" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
                 {copy['cta.title']}
               </h2>
-              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
-                {copy['cta.body']}
-              </p>
+              <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">{copy['cta.body']}</p>
+              <EnquiryLink
+                source="courses-index"
+                className="group/enq mt-6 inline-flex min-h-12 w-full items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)] sm:w-auto sm:min-w-[16rem]"
+              >
+                <span>{copy['cta.button']}</span>
+                <span
+                  aria-hidden="true"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/enq:translate-x-0.5"
+                >
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                </span>
+              </EnquiryLink>
             </div>
-            <EnquiryLink
-              source="courses-index"
-              className="dc-cta inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
-            >
-              {copy['cta.button']}
-              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-            </EnquiryLink>
           </div>
         </Section>
       </div>

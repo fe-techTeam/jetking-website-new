@@ -36,7 +36,7 @@ export function LogoStrip({
               alt={showNames ? '' : l.name}
               width={160}
               height={64}
-              className={`w-auto max-w-full object-contain ${lg ? 'max-h-14 sm:max-h-16' : 'max-h-8 sm:max-h-10'}`}
+              className={`h-auto w-auto max-w-full object-contain ${lg ? 'max-h-14 sm:max-h-16' : 'max-h-8 sm:max-h-10'}`}
             />
           ) : null}
           {!l.src || showNames ? <span className="text-[12.5px] leading-snug font-semibold text-[#374151]">{l.name}</span> : null}

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { Section } from '@/components/kit';
@@ -24,81 +25,72 @@ type CentreSummary = {
 
 function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
   return (
-    <Section tone="wash" deco="glow" labelledBy="centres-cta">
-        <div>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
-            <div>
-              <p className="k-eyebrow">
-                {copy['directoryCta.eyebrow']}
-              </p>
-              <h2
-                id="centres-cta"
-                className="section-title mt-3 font-display text-[var(--dc-ink)]"
-              >
-                {copy['directoryCta.title']}
-              </h2>
-              <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
-                {fill(copy['directoryCta.body'], { brand: siteConfig.name })}
-              </p>
-              <ul className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3">
-                <li>
-                  <a
-                    href={copy['directoryCta.phoneHref']}
-                    className="flex min-h-11 items-center gap-2 text-[13px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-ink)]"
-                  >
-                    <Phone
-                      className="h-4 w-4 text-[var(--dc-accent-soft)]"
-                      strokeWidth={2}
-                      aria-hidden="true"
-                    />
-                    {copy['directoryCta.phoneLabel']}
-                  </a>
-                </li>
-                <li className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
-                  <MessageCircle
-                    className="h-4 w-4 text-[var(--dc-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  {copy['directoryCta.point1']}
-                </li>
-                <li className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
-                  <Building2
-                    className="h-4 w-4 text-[var(--dc-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  {copy['directoryCta.point2']}
-                </li>
-              </ul>
-            </div>
+    <Section tone="plain" labelledBy="centres-cta">
+      <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[22rem]">
+          <Image
+            src="/home/centre-exterior.jpg"
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="object-cover object-center"
+          />
+        </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-              <EnquiryLink
-                source="centres-cta"
-                className="group/enq inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:text-[15px]"
+        <div className="p-6 sm:p-10">
+          <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['directoryCta.eyebrow']}</p>
+          <h2 id="centres-cta" className="section-title mt-2.5 text-[var(--k-ink)]">
+            {copy['directoryCta.title']}
+          </h2>
+          <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+            {fill(copy['directoryCta.body'], { brand: siteConfig.name })}
+          </p>
+
+          <ul className="mt-5 flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:gap-x-6">
+            <li>
+              <a
+                href={copy['directoryCta.phoneHref']}
+                className="tap flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-ink)]"
               >
-                <span>{copy['directoryCta.enquire']}</span>
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/enq:translate-x-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
-              </EnquiryLink>
-              <Link
-                href={copy['directoryCta.browseHref'] as Route}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 py-3 text-[14.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]/60 hover:bg-[var(--dc-accent-tint)] xs:text-[15px]"
+                <Phone className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                {copy['directoryCta.phoneLabel']}
+              </a>
+            </li>
+            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+              <MessageCircle className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+              {copy['directoryCta.point1']}
+            </li>
+            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+              <Building2 className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+              {copy['directoryCta.point2']}
+            </li>
+          </ul>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <EnquiryLink
+              source="centres-cta"
+              className="group/enq inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
+            >
+              <span>{copy['directoryCta.enquire']}</span>
+              <span
+                aria-hidden="true"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/enq:translate-x-0.5"
               >
-                {copy['directoryCta.browse']}
-              </Link>
-            </div>
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+              </span>
+            </EnquiryLink>
+            <Link
+              href={copy['directoryCta.browseHref'] as Route}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--k-line-strong)] px-6 py-3 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]"
+            >
+              {copy['directoryCta.browse']}
+            </Link>
           </div>
         </div>
-      </Section>
+      </div>
+    </Section>
   );
 }
-
 export function CentresLanding({
   cities,
   centres,
