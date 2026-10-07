@@ -53,7 +53,7 @@ export const VALUES = [
 export const DIRECTORS: Leader[] = [
   {
     name: 'Mr. Suresh G. Bharwani',
-    role: 'Chairman Emeritus',
+    role: 'Founder & Chairman Emeritus',
   },
   {
     name: 'Mr. Avinash Bharwani',
