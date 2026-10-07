@@ -19,7 +19,7 @@ export const homeCopy = definePageCopy({
       'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
 
     // ── Hero ──────────────────────────────────────────────────────────────
-    'hero.image': '/home/journey-explore-v2.jpg',
+    'hero.image': '/home/hero-learner.jpg',
     'hero.eyebrow': 'India’s No.1 Technology Training Institute',
     'hero.title.line1': 'The Power of Three',
     'hero.title.line2': 'with',

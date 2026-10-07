@@ -36,16 +36,8 @@ export function HomeV2({
     <section
       className={[
         'home-v2 home-v2-themeable relative flex flex-col overflow-hidden',
-        /*
-         * The header is sticky and transparent until scrolled, so this section is pulled up behind it
-         * (negative margin) and the banner pads its content down by the same amount: the photo runs
-         * edge to edge up to the top of the page while the copy starts below the header.
-         * Offsets must match SiteHeader's own height breakpoints (72/80/88/96).
-         */
-        '-mt-[72px]',
-        'xs:-mt-[80px]',
-        'sm:-mt-[88px]',
-        '2xl:-mt-[96px]',
+        /* A little air between the header and the banner photo. */
+        'pt-3 sm:pt-5',
       ].join(' ')}
     >
       {/* ── Banner: full-width photo, copy left, enquiry card right, numbers strip along the bottom ── */}
@@ -56,11 +48,11 @@ export function HomeV2({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_22%]"
+          className="object-cover object-[60%_30%] lg:object-[center_30%]"
         />
         <div aria-hidden="true" className="centres-detail-wash pointer-events-none absolute inset-0" />
 
-        <div className="shell relative z-[1] flex flex-col pt-[72px] xs:pt-[80px] sm:pt-[88px] 2xl:pt-[96px]">
+        <div className="shell relative z-[1] flex flex-col">
           <div className="flex min-h-[min(110vw,560px)] flex-col lg:min-h-[540px] lg:flex-row lg:items-center lg:justify-between lg:gap-8">
             <div className="flex flex-1 flex-col justify-center py-9 xs:py-11 sm:py-12 lg:max-w-[58%] lg:py-12">
               <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
