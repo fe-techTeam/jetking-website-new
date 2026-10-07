@@ -85,9 +85,6 @@ export function PlacementProof({
                 className="object-contain p-3"
               />
             </span>
-            <span className="numeral rounded-full bg-white px-4 py-1.5 text-[14px] font-extrabold tracking-[0.08em] text-jk-700 shadow-md">
-              {copy['proof.record.year']}
-            </span>
           </div>
         </div>
       </Reveal>

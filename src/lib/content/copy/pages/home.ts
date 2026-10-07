@@ -19,7 +19,7 @@ export const homeCopy = definePageCopy({
       'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
 
     // ── Hero ──────────────────────────────────────────────────────────────
-    'hero.image': '/home/hero-learner.jpg',
+    'hero.image': '/home/hero-student.jpg',
     'hero.eyebrow': 'India’s No.1 Technology Training Institute',
     'hero.title.line1': 'The Power of Three',
     'hero.title.line2': 'with',
@@ -81,11 +81,10 @@ export const homeCopy = definePageCopy({
     'proof.cta.href': '/placements',
     'proof.rail.aria': 'Placement stories',
     'proof.record.eyebrow': 'Limca Book of World Records',
-    'proof.record.year': '2011–2012',
     'proof.record.value': '11,451',
-    'proof.record.label': 'Students placed: a record-setting milestone',
+    'proof.record.label': 'Students placed in 1 year: a record-setting milestone',
     'proof.record.detail':
-      'Jetking is a record holder in the Limca Book of World Records (2011-2012) for the placement of 11,451 students.',
+      'Jetking is a record holder in the Limca Book of World Records for placing 11,451 students in just one year.',
     'proof.video.list.aria': 'Placement videos',
     'proof.video.play': 'Play video: {title}, {name}',
     'proof.video.close': 'Close video',

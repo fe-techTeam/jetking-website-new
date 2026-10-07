@@ -37,12 +37,22 @@ function VideoCard({ video, copy }: { video: VideoTestimonial; copy: HomeCopy })
         aria-label={fill(copy['proof.video.play'], { title: video.title, name: video.name })}
         className="group/play relative block h-full min-h-[260px] w-full cursor-pointer overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] bg-scrim text-left shadow-[var(--k-shadow)] transition-shadow duration-200 hover:shadow-[var(--k-shadow-up)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--k-red)]"
       >
+        {/* The poster frames come in different shapes (portrait phone clips, a 4:3 YouTube frame), so the whole frame is shown
+            centred over a blurred copy of itself instead of being cropped to the card. */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- local poster frame of a Jetking-published video */}
+        <img
+          src={video.thumbnail}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-2xl"
+        />
         {/* eslint-disable-next-line @next/next/no-img-element -- local poster frame of a Jetking-published video */}
         <img
           src={video.thumbnail}
           alt=""
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/play:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover/play:scale-[1.03]"
         />
         <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-scrim/80 via-scrim/10 to-transparent" />
         <span
@@ -51,7 +61,7 @@ function VideoCard({ video, copy }: { video: VideoTestimonial; copy: HomeCopy })
         >
           <Play className="h-6 w-6 translate-x-0.5 fill-current" strokeWidth={0} />
         </span>
-        <span className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+        <span className="absolute inset-x-0 bottom-0 bg-scrim/85 p-4 sm:p-5">
           <span className="block text-[15px] font-bold text-white">{video.name}</span>
           <span className="mt-0.5 block text-[13px] leading-snug text-white/80">{video.title}</span>
         </span>
