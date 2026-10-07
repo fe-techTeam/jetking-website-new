@@ -215,9 +215,9 @@ export function EnquiryForm({
      * so letting the browser do it restores per-field, per-locale, assistive-tech
      * -aware errors for free (WCAG 3.3.1, 3.3.3).
      */
-    <form onSubmit={handleSubmit} className="space-y-7">
+    <form onSubmit={handleSubmit} className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:items-start">
 <BotTrap />
-      <p className="text-base text-[var(--dc-ink-secondary)]">
+      <p className="text-base text-[var(--dc-ink-secondary)] sm:col-span-2">
         {classification.persona === 'franchise' ? (
           <>
             {copy['form.intro.franchise.lead']}{' '}
@@ -233,11 +233,11 @@ export function EnquiryForm({
 
       {account.ready ? (
         accountUser ? (
-          <p className="text-sm text-[var(--dc-ink-muted)]">
+          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
             {fill(copy['form.signedIn'], { name: accountUser.name })}
           </p>
         ) : (
-          <p className="text-sm text-[var(--dc-ink-muted)]">
+          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
             {copy['form.login.lead']}{' '}
             <button
               type="button"
@@ -269,7 +269,6 @@ export function EnquiryForm({
         label={copy['form.phone.label']}
         htmlFor="phone"
         required
-        hint={copy['form.phone.hint']}
       >
         <Input
           id="phone"
@@ -280,12 +279,13 @@ export function EnquiryForm({
           required
           inputMode="tel"
           autoComplete="tel"
+          placeholder={copy['form.phone.hint']}
           pattern="[\d\s+\(\)\-]{10,20}"
           className={fieldClass}
         />
       </Field>
 
-      <Field label={copy['form.email.label']} htmlFor="email" hint={copy['form.email.hint']}>
+      <Field label={copy['form.email.label']} htmlFor="email">
         <Input
           id="email"
           name="email"
@@ -294,11 +294,28 @@ export function EnquiryForm({
           type="email"
           maxLength={200}
           autoComplete="email"
+          placeholder={copy['form.email.hint']}
           className={fieldClass}
         />
       </Field>
 
-      <div className="grid gap-7 sm:grid-cols-2">
+      <Field label={copy['form.course.label']} htmlFor="courseSlug">
+        <Select
+          id="courseSlug"
+          name="courseSlug"
+          defaultValue={prefill.course}
+          className={fieldClass}
+        >
+          <option value="">{copy['form.course.none']}</option>
+          {courses.map((course) => (
+            <option key={course.slug} value={course.slug}>
+              {course.title}
+            </option>
+          ))}
+        </Select>
+      </Field>
+
+      <>
         <Field label={copy['form.state.label']} htmlFor="state" required>
           <Select
             id="state"
@@ -335,9 +352,9 @@ export function EnquiryForm({
             ))}
           </Select>
         </Field>
-      </div>
+      </>
 
-      <div className="grid gap-7 sm:grid-cols-2">
+      <>
         <Field label={copy['form.centre.label']} htmlFor="centre" required>
           <Select
             id="centre"
@@ -373,40 +390,26 @@ export function EnquiryForm({
             ))}
           </Select>
         </Field>
+      </>
+
+      <div className="sm:col-span-2">
+        <Field label={copy['form.message.label']} htmlFor="message">
+          <Textarea
+            id="message"
+            name="message"
+            rows={3}
+            maxLength={2000}
+            className={fieldClass}
+          />
+        </Field>
       </div>
-
-      <Field label={copy['form.course.label']} htmlFor="courseSlug">
-        <Select
-          id="courseSlug"
-          name="courseSlug"
-          defaultValue={prefill.course}
-          className={fieldClass}
-        >
-          <option value="">{copy['form.course.none']}</option>
-          {courses.map((course) => (
-            <option key={course.slug} value={course.slug}>
-              {course.title}
-            </option>
-          ))}
-        </Select>
-      </Field>
-
-      <Field label={copy['form.message.label']} htmlFor="message">
-        <Textarea
-          id="message"
-          name="message"
-          rows={4}
-          maxLength={2000}
-          className={fieldClass}
-        />
-      </Field>
 
       {error ? (
         <p
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-[var(--radius-input)] border border-jk-200 bg-jk-50 px-4 py-3 text-sm font-medium text-jk-700 focus:outline-none"
+          className="rounded-[var(--radius-input)] border border-jk-200 bg-jk-50 px-4 py-3 text-sm font-medium text-jk-700 focus:outline-none sm:col-span-2"
         >
           {error}
         </p>
@@ -416,12 +419,12 @@ export function EnquiryForm({
         type="submit"
         size="lg"
         disabled={status === 'submitting'}
-        className="w-full bg-[var(--dc-accent)] hover:bg-jk-700"
+        className="w-full bg-[var(--dc-accent)] hover:bg-jk-700 sm:col-span-2"
       >
         {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
       </Button>
 
-      <p className="text-sm text-[var(--dc-ink-muted)]">
+      <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
         {copy['form.privacy']}
       </p>
     </form>

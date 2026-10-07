@@ -799,10 +799,10 @@ export function CoursePageTemplate({
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {related.map((item) => (
                 <li key={item.slug}>
-                  <CourseCard course={item} surface="course-related" cta={copy['courseRelated.viewCourse']} />
+                  <CourseCard course={item} surface="course-related" compact cta={copy['courseRelated.viewCourse']} />
                 </li>
               ))}
             </ul>

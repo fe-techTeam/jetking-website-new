@@ -64,7 +64,7 @@ export function RecommendedCourses({
         {items.map((course, i) => (
           <li
             key={course.slug}
-            className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+            className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]"
           >
             <CourseCard
               course={course}

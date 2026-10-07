@@ -131,7 +131,7 @@ export function StorySlider({
         {slides.map((slide) => (
           <li
             key={slide.key}
-            className="flex w-[84%] min-w-0 shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
+            className="flex w-[84%] min-w-0 shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)] xl:w-[calc((100%-3.75rem)/4)]"
           >
             {slide.kind === 'video' ? (
               <VideoCard video={slide.video} copy={copy} />

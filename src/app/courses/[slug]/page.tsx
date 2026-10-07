@@ -50,9 +50,9 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
     .map((f) => ({ question: f.question, answer: f.answer }));
 
   const offeringCentres = centres.filter((c) => c.coursesOffered.includes(course.slug));
-  const related = allCourses
-    .filter((c) => c.slug !== course.slug && c.level === course.level)
-    .slice(0, 3);
+  // Same level first, then the rest of the catalogue, so the row is full (four across on a laptop).
+  const others = allCourses.filter((c) => c.slug !== course.slug);
+  const related = [...others.filter((c) => c.level === course.level), ...others.filter((c) => c.level !== course.level)].slice(0, 4);
 
   const trail: Crumb[] = [
     { name: copy['breadcrumb.home'], path: '/' },

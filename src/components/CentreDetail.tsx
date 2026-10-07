@@ -433,7 +433,7 @@ export function CentreDetail({
       {testimonials.length ? (
         <Section tone={nextTone()} id="centre-stories-section" labelledBy="centre-stories" className="scroll-mt-36">
           <SectionHeader id="centre-stories" eyebrow={copy['centreStories.eyebrow']} title={copy['centreStories.title']} />
-          <CardSlider label={copy['centreStories.label']} cols={3}>
+          <CardSlider label={copy['centreStories.label']} cols={4}>
             {testimonials.map((t) => (
               <StoryCard key={`${t.name}-${t.quote.slice(0, 24)}`} name={t.name} outcome={t.role ?? ''} quote={t.quote} />
             ))}

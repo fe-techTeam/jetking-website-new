@@ -129,7 +129,7 @@ export function Carousel<T>({
       onFocusCapture={() => setHoverPaused(true)}
       onBlurCapture={() => setHoverPaused(false)}
     >
-      <div id={viewportId} className={cx('overflow-hidden', classNames?.viewport)}>
+      <div id={viewportId} className={cx('overflow-x-clip', classNames?.viewport)}>
         <div
           className={cx(
             'flex items-stretch',

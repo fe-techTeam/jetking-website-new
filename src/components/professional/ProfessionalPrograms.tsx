@@ -45,7 +45,7 @@ export function ProfessionalPrograms({ copy, courses }: { copy: typeof professio
       <div className="mt-4">
         <CardTrack label={copy['programs.track.label']}>
           {items.map((course, i) => (
-            <li key={course.slug} className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]">
+            <li key={course.slug} className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]">
               <CourseCard
                 course={course}
                 surface="professional-programs"

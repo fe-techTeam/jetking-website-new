@@ -48,7 +48,6 @@ export function PlacementsTestimonialSlider({
       itemKey={(item) => item.id}
       itemLabel={(item) => `${item.name}, ${item.role}`}
       classNames={{
-        viewport: 'rounded-[24px]',
         controls: 'text-[var(--dc-ink)]',
         button:
           'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] hover:border-[var(--dc-accent-soft)]',

@@ -125,7 +125,7 @@ export function OfferLetterSlider({
             key={item.src}
             aria-roledescription="slide"
             aria-label={fill(copy['offers.slideLabel'], { n: index + 1, total: items.length, title: item.title })}
-            className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
+            className="w-[82%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)] xl:w-[calc((100%-3.75rem)/4)]"
           >
             <figure className="kit kit-card flex h-full flex-col overflow-hidden p-3 sm:p-4">
               <button

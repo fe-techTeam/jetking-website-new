@@ -123,7 +123,6 @@ export function ExploreTestimonialSlider({
       itemKey={(slide) => slide.key}
       itemLabel={(slide) => (slide.kind === 'video' ? fill(copy['slider.videoLabel'], { name: slide.data.name }) : `${slide.data.name}, ${slide.data.role}`)}
       classNames={{
-        viewport: 'rounded-[24px]',
         dotActive: 'bg-[var(--dc-accent-soft)]',
         dotIdle: 'bg-[var(--dc-ink-muted)]/40',
         button:

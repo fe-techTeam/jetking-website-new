@@ -53,6 +53,11 @@ export const sitemapCopy = definePageCopy({
     'groups.2.links.2.label': 'Log in / My account',
     'groups.2.links.2.href': '/account',
 
+    // Jump bar and section titles
+    'jump.label': 'Sitemap sections',
+    'jump.blog': 'Blog',
+    'pages.title': 'Main pages',
+
     // Generated sections
     'courses.title': 'Courses',
     'courses.cta.label': 'All courses →',

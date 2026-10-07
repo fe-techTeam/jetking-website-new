@@ -57,7 +57,7 @@ export function BlogTeaser({ posts, copy }: { posts: Post[]; copy: HomeCopy }) {
         {posts.map((post) => (
           <li
             key={post.slug}
-            className="min-w-0 w-[80%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
+            className="min-w-0 w-[80%] shrink-0 snap-start sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)] xl:w-[calc((100%-3.75rem)/4)]"
           >
             <PostCard post={post} />
           </li>

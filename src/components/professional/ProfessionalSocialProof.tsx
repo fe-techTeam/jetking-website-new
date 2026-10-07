@@ -37,7 +37,6 @@ export function ProfessionalSocialProof({ copy }: { copy: typeof professionalCop
                 itemKey={(story) => story.id}
                 itemLabel={(story) => fill(copy['stories.slideLabel'], { name: story.name, from: story.from, to: story.to })}
                 classNames={{
-                  viewport: 'rounded-[24px]',
                   dotActive: 'bg-[var(--dc-accent-soft)]',
                   dotIdle: 'bg-[var(--dc-ink-muted)]/40',
                   button:

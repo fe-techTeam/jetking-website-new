@@ -33,7 +33,7 @@ export default async function EnquiryPage() {
         <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">{copy['hero.body']}</p>
       </Section>
 
-      <Section tone="plain" labelledBy="enq-form-title">
+      <Section tone="plain" labelledBy="enq-form-title" className="!border-t-0">
         <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[1.1fr_0.9fr]">
           <div className="p-6 sm:p-8 lg:p-10">
             <Suspense fallback={<p className="text-sm text-[var(--k-ink-2)]">{copy['form.loading']}</p>}>

@@ -37,7 +37,6 @@ export function TestimonialSlider({
       itemKey={(item) => item.id}
       itemLabel={(item) => `${item.name}, ${item.role}`}
       classNames={{
-        viewport: 'rounded-[var(--k-r)]',
         dotActive: 'bg-[var(--dc-accent-soft)]',
         dotIdle: 'bg-[var(--dc-ink-muted)]/40',
         button:

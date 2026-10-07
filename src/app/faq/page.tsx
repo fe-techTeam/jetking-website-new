@@ -136,30 +136,33 @@ export default async function FaqPage() {
         </div>
 
         {/* ── Still have a question ─────────────────────────────────────── */}
-        <Section tone="wash" labelledBy="faq-more">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-            <div className="max-w-2xl">
+        <Section tone="plain" labelledBy="faq-more">
+          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <div className="p-6 sm:p-10 lg:p-12">
               <p className="k-eyebrow">{copy['more.eyebrow']}</p>
               <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
                 {copy['more.title']}
               </h2>
-              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+              <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
                 {copy['more.body']}
               </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <EnquiryLink
+                  source="faq"
+                  className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
+                >
+                  {copy['more.cta.label']}
+                </EnquiryLink>
+                <Link
+                  href={copy['more.chat.href'] as Route}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
+                >
+                  {copy['more.chat.label']}
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <EnquiryLink
-                source="faq"
-                className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
-              >
-                {copy['more.cta.label']}
-              </EnquiryLink>
-              <Link
-                href={copy['more.chat.href'] as Route}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
-              >
-                {copy['more.chat.label']}
-              </Link>
+            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
+              <Image src="/home/counsellor.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
             </div>
           </div>
         </Section>
