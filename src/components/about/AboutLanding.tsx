@@ -47,11 +47,11 @@ function LeaderCard({
   if (compact) {
     return (
       <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]">
-        <article className="kit kit-card flex h-full items-center gap-2.5 p-2.5 sm:gap-4 sm:p-4">
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-1 ring-[var(--k-line)] sm:h-14 sm:w-14">
+        <article className="kit kit-card flex h-full items-stretch overflow-hidden">
+          <div className="relative min-h-20 w-20 shrink-0 self-stretch bg-[var(--k-red-wash)] sm:min-h-28 sm:w-28">
             <LeaderAvatar leader={leader} />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 self-center p-3 sm:p-4">
             <h3 className="font-display text-[14px] leading-snug font-extrabold text-[var(--dc-ink)] sm:text-[16px]">{leader.name}</h3>
             {leader.role ? <p className="mt-0.5 text-[12.5px] leading-snug font-bold text-[var(--k-red)]">{leader.role}</p> : null}
             {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} /> : null}
@@ -195,6 +195,27 @@ export function AboutLanding({
               })}
             </ul>
           </div>
+        </Reveal>
+
+        <Reveal>
+          <h3 className="mt-12 text-[20px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:mt-14 sm:text-[22px]">
+            {copy['essence.title']}
+          </h3>
+          <ol aria-label={copy['essence.railLabel']} className="mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => (
+              <li key={i} className="kit kit-card p-5 sm:p-6">
+                <span className="numeral text-[13px] font-extrabold tracking-[0.12em] text-[var(--k-red)]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h4 className="mt-2 font-display text-[18px] leading-snug font-extrabold text-[var(--k-ink)]">
+                  {copy[`essence.${i}.title` as keyof typeof copy]}
+                </h4>
+                <p className="mt-1.5 text-[14.5px] leading-relaxed text-[var(--k-ink-2)]">
+                  {copy[`essence.${i}.body` as keyof typeof copy]}
+                </p>
+              </li>
+            ))}
+          </ol>
         </Reveal>
       </Section>
 

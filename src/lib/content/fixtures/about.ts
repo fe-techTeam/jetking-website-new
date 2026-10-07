@@ -91,15 +91,17 @@ export const DIRECTORS: Leader[] = [
   },
 ];
 
-/** Names only — add each `role` once job titles are supplied. */
+/** Names and titles from Jetking's new-joinee induction deck ("Life at Jetking"). */
 export const MANAGEMENT_TEAM: Leader[] = [
-  { name: 'Meghna' },
-  { name: 'Keyur' },
-  { name: 'Rajashree' },
-  { name: 'Akhilesh' },
-  { name: 'Shabnam' },
-  { name: 'Anand' },
-  { name: 'Dhruti' },
+  { name: 'Anand Dhruv', role: 'President – People & Workforce Transformation', photoUrl: '/about/leaders/team/anand-dhruv.jpg' },
+  { name: 'Dhruti Shah', role: 'Director – Learning Transformation Outcomes & Strategic Partnership', photoUrl: '/about/leaders/team/dhruti-shah.jpg' },
+  { name: 'Meghana Bhatt', role: 'General Manager, Sales Head', photoUrl: '/about/leaders/team/meghana-bhatt.jpg' },
+  { name: 'Keyur Raval', role: 'Associate Vice President – Finance & Treasury', photoUrl: '/about/leaders/team/keyur-raval.jpg' },
+  { name: 'Bheemeswara Sastry', role: 'Head – Learning & Delivery', photoUrl: '/about/leaders/team/bheemeswara-sastry.jpg' },
+  { name: 'Sujeet Kumar', role: 'General Manager, Systems and IT', photoUrl: '/about/leaders/team/sujeet-kumar.jpg' },
+  { name: 'Varun Sukhrani', role: 'Corporate Legal Advisor', photoUrl: '/about/leaders/team/varun-sukhrani.jpg' },
+  { name: 'Pradnya Pawar', role: 'Manager, Placements', photoUrl: '/about/leaders/team/pradnya-pawar.jpg' },
+  { name: 'Shiv Hansraj Pal', role: 'Assistant Manager, Digital Marketing', photoUrl: '/about/leaders/team/shiv-hansraj-pal.jpg' },
 ];
 
 

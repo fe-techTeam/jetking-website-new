@@ -44578,7 +44578,7 @@
       "directors": [
         {
           "name": "Mr. Suresh G. Bharwani",
-          "role": "Chairman Emeritus"
+          "role": "Founder & Chairman Emeritus"
         },
         {
           "name": "Mr. Avinash Bharwani",
@@ -44616,25 +44616,49 @@
       ],
       "managementTeam": [
         {
-          "name": "Meghna"
+          "name": "Anand Dhruv",
+          "role": "President – People & Workforce Transformation",
+          "photoUrl": "/about/leaders/team/anand-dhruv.jpg"
         },
         {
-          "name": "Keyur"
+          "name": "Dhruti Shah",
+          "role": "Director – Learning Transformation Outcomes & Strategic Partnership",
+          "photoUrl": "/about/leaders/team/dhruti-shah.jpg"
         },
         {
-          "name": "Rajashree"
+          "name": "Meghana Bhatt",
+          "role": "General Manager, Sales Head",
+          "photoUrl": "/about/leaders/team/meghana-bhatt.jpg"
         },
         {
-          "name": "Akhilesh"
+          "name": "Keyur Raval",
+          "role": "Associate Vice President – Finance & Treasury",
+          "photoUrl": "/about/leaders/team/keyur-raval.jpg"
         },
         {
-          "name": "Shabnam"
+          "name": "Bheemeswara Sastry",
+          "role": "Head – Learning & Delivery",
+          "photoUrl": "/about/leaders/team/bheemeswara-sastry.jpg"
         },
         {
-          "name": "Anand"
+          "name": "Sujeet Kumar",
+          "role": "General Manager, Systems and IT",
+          "photoUrl": "/about/leaders/team/sujeet-kumar.jpg"
         },
         {
-          "name": "Dhruti"
+          "name": "Varun Sukhrani",
+          "role": "Corporate Legal Advisor",
+          "photoUrl": "/about/leaders/team/varun-sukhrani.jpg"
+        },
+        {
+          "name": "Pradnya Pawar",
+          "role": "Manager, Placements",
+          "photoUrl": "/about/leaders/team/pradnya-pawar.jpg"
+        },
+        {
+          "name": "Shiv Hansraj Pal",
+          "role": "Assistant Manager, Digital Marketing",
+          "photoUrl": "/about/leaders/team/shiv-hansraj-pal.jpg"
         }
       ],
       "timeline": [
