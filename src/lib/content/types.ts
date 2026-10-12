@@ -127,6 +127,21 @@ export interface Course {
   hiringPartners?: string[];
   /** @grounded Specimen of the certificate / credential awarded. */
   certificateImage?: ImageRef;
+  /** Degree pages: sample of the Jetking industry certificate awarded alongside the degree. */
+  jetkingCertificateImage?: ImageRef;
+  /** Degree pages: the "why now" block — intro, headline, points and one demand statistic. */
+  whyNow?: CourseWhyNow;
+}
+
+export interface CourseWhyNow {
+  intro: string;
+  headline: string;
+  points: string[];
+  /** The big number, e.g. "40,000+". */
+  demandValue: string;
+  demandLabel: string;
+  /** Small footer line, e.g. "Source: CareerNet outlook 2026". */
+  demandSource: string;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -146,6 +161,18 @@ interface CentreEligibilityBlock {
 }
 
 /** The four "About the centre" facts shown as a strip on the centre page. Each is optional; an empty one is hidden. */
+export interface CentreGalleryImage {
+  url: string;
+  caption?: string;
+}
+
+export interface CentreExperiencePhotos {
+  lab?: string;
+  classroom?: string;
+  counselling?: string;
+  mockInterview?: string;
+}
+
 interface CentreHighlights {
   /** What is taught, e.g. "Degree & Short Term Courses". Falls back to the course levels on offer. */
   programs?: string;
@@ -243,6 +270,10 @@ export interface Centre {
   highlights?: CentreHighlights;
   /** Multi-year transformation journey when published. */
   journey?: CentreJourneyStep[];
+  /** Photos of the centre (up to four are shown); empty slots show a labelled placeholder until real pictures are added. */
+  gallery?: CentreGalleryImage[];
+  /** Optional centre-specific photos for the "reasons to visit" tiles; the shared defaults are used when a slot is empty. */
+  experiencePhotos?: CentreExperiencePhotos;
   /** Recent activities and upcoming events at the centre; the page shows the newest four. */
   updates?: CentreUpdate[];
   /** Centre faculty when published on the live page. */

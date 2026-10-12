@@ -222,3 +222,66 @@ html.dark .cp {
 .cp > section:not([class*='cp-band-']) + section:not([class*='cp-band-']) {
   border-top: 1px solid var(--cp-line);
 }
+
+/* ── Template B ("studio"): roomier rhythm, display type, glass + mesh hero ───────────────────── */
+.cpb-section {
+  padding-block: clamp(4rem, 9vw, 8rem);
+}
+.cpb-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.75rem);
+  line-height: 1.04;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.cpb-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 1.2rem + 2.4vw, 3.25rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--cp-ink);
+}
+.cpb-index {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cp-red);
+}
+.cpb-index::before {
+  content: '';
+  width: 2rem;
+  height: 2px;
+  background: currentColor;
+}
+.cpb-mesh {
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgb(199 20 28 / 0.45), transparent 60%),
+    radial-gradient(40rem 28rem at -10% 110%, rgb(234 28 36 / 0.22), transparent 60%),
+    var(--cp-black);
+}
+.cpb-glass {
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  backdrop-filter: blur(14px);
+}
+.cpb-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.cpb-lift:hover {
+  transform: translateY(-3px);
+  border-color: var(--cp-red);
+  box-shadow: 0 24px 48px -24px rgb(199 20 28 / 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cpb-lift {
+    transition: none;
+  }
+  .cpb-lift:hover {
+    transform: none;
+  }
+}

@@ -1,4 +1,4 @@
-import type { Course, CourseFaq, CoursePhase, CourseTerm, ImageRef } from '../types';
+import type { Course, CourseFaq, CoursePhase, CourseTerm, CourseWhyNow, ImageRef } from '../types';
 
 /**
  * Per-programme enrichment sections, grounded in the live Jetking course pages
@@ -20,6 +20,8 @@ interface CourseSections {
   hiringPartners?: string[];
   faqs?: CourseFaq[];
   certificateImage?: ImageRef;
+  jetkingCertificateImage?: ImageRef;
+  whyNow?: CourseWhyNow;
 }
 
 const courseSections: Record<string, CourseSections> = {
@@ -134,7 +136,20 @@ const courseSections: Record<string, CourseSections> = {
       { question: 'What is the duration and format of the course?', answer: 'The BCA is a 3-year, 6-semester full-time degree course, UGC-approved, delivered through offline or hybrid mode.' },
       { question: 'Are there flexible payment options for the course fees?', answer: 'Yes. Jetking offers flexible fee structures including one-time payments and easy installment modes.' },
     ],
-    certificateImage: { url: '/courses/bca-cloud-cyber-security-certificate.jpg', alt: 'Certificate specimen awarded on completion' },
+    certificateImage: { url: '/courses/bca-cloud-cyber-security-certificate.jpg', alt: 'Sample BCA degree awarded by the university' },
+    jetkingCertificateImage: { url: '/courses/cloud-computing-engineer-ai-certificate.jpg', alt: 'Sample Jetking certificate of completion' },
+    whyNow: {
+      intro:
+        'IT industry is entering a new phase in which building software is no longer enough. Enterprises need professionals who can deploy applications on the cloud, manage digital infrastructure, protect sensitive information, and secure increasingly AI-driven systems.',
+      headline: 'One Degree. Two High-Demand Specializations. Multiple Career Opportunities.',
+      points: [
+        'Opportunities with Banks, FinTech, IT companies, GCC, Telecom, Pharma etc.',
+        'BCA degree with hands on learning is highly preferred by multiple companies.',
+      ],
+      demandValue: '40,000+',
+      demandLabel: 'demand for cloud & cybersecurity professionals each year',
+      demandSource: 'Source: CareerNet outlook 2026',
+    },
   },
   'mca-cloud-cyber-security': {
     highlights: [

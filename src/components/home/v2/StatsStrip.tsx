@@ -1,15 +1,17 @@
-import { Award, Building2, MapPin, ShieldCheck } from 'lucide-react';
+import { Award, Building2, ShieldCheck } from 'lucide-react';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 
-const ICONS = [Award, Building2, MapPin, ShieldCheck] as const;
+const ICONS = [Award, Building2, ShieldCheck] as const;
 
 /**
- * The proof strip along the foot of the home banner: the founding year and the size of the network, all
- * from `brand-facts` (the year is fixed, the counts come from the content source). Student, placement
+ * The proof strip along the foot of the home banner: the founding year, the size of the network (centres and cities
+ * read together as "39 Centres in 28 cities") and the course count, all from `brand-facts` (the year is fixed, the
+ * counts come from the content source). Student, placement
  * and recruiter figures are not shown until Jetking confirms them.
  */
 export function StatsStrip({ counts }: { counts: NetworkCounts }) {
-  const stats = legacyStats(counts);
+  const [year, , , courses] = legacyStats(counts);
+  const stats = [year, { value: String(counts.centres), label: `Centres in ${counts.cities} cities` }, courses];
 
   return (
     <dl className="grid grid-cols-2 overflow-hidden rounded-[16px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] text-[var(--v2-ink)] shadow-[0_8px_24px_-16px_rgb(16_16_24/0.25)] lg:flex lg:flex-row lg:items-stretch">
@@ -18,7 +20,7 @@ export function StatsStrip({ counts }: { counts: NetworkCounts }) {
         return (
           <div
             key={stat.label}
-            className="flex min-h-[72px] flex-1 items-center gap-3.5 border-[var(--v2-hairline)] px-4 py-3.5 max-lg:[&:nth-child(n+3)]:border-t max-lg:[&:nth-child(2n)]:border-l lg:justify-center lg:border-l lg:px-5 lg:py-0 lg:first:border-l-0 xl:px-6"
+            className="flex min-h-[72px] flex-1 items-center gap-3.5 border-[var(--v2-hairline)] px-4 py-3.5 max-lg:[&:nth-child(n+3)]:border-t max-lg:[&:nth-child(2n)]:border-l max-lg:last:odd:col-span-2 lg:justify-center lg:border-l lg:px-5 lg:py-0 lg:first:border-l-0 xl:px-6"
           >
             <span
               aria-hidden="true"

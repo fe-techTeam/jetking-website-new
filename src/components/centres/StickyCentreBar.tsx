@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import type { Route } from 'next';
 import { ArrowRight, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
@@ -61,13 +59,13 @@ export function StickyCentreBar({
             <span className="max-xs:sr-only">{copy['centreBar.call']}</span>
           </a>
         ) : null}
-        <Link
-          href={`/enquiry?centre=${centreSlug}` as Route}
+        <a
+          href={`#${anchorId}`}
           className="dc-cta inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-[14px] font-bold"
         >
           {copy['centreBar.enquire']}
           <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
+        </a>
       </div>
     </div>
   );

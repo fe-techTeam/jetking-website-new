@@ -280,17 +280,20 @@ export function CentreNetwork({
               aria-hidden="true"
               className="absolute inset-0 -z-10 bg-gradient-to-t from-scrim/85 via-scrim/0 via-45% to-transparent"
             />
-            <div className="p-6 sm:p-8">
-              <span className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-[var(--k-red-fill)] to-jk-700 text-white shadow-brand">
+            <div className="flex items-center gap-4 p-6 sm:p-8">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[var(--k-red-fill)] to-jk-700 text-white shadow-brand">
                 <Building2
-                  className="h-6 w-6"
+                  className="h-7 w-7"
                   strokeWidth={1.8}
                   aria-hidden="true"
                 />
               </span>
-              <h3 className="font-display text-[26px] leading-tight font-extrabold tracking-[-0.02em] text-white sm:text-[30px]">
-                {copy["network.campus.title"]}
-              </h3>
+              <div>
+                <p className="text-[12.5px] font-bold tracking-[0.12em] text-white/85 uppercase">{copy["network.campus.eyebrow"]}</p>
+                <h3 className="mt-1 font-display text-[24px] leading-tight font-extrabold tracking-[-0.02em] text-white sm:text-[28px]">
+                  {copy["network.campus.title"]}
+                </h3>
+              </div>
             </div>
           </div>
 

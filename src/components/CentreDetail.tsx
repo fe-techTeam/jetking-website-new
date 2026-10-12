@@ -10,6 +10,7 @@ import {
   Building2,
   Clock,
   ChevronRight,
+  Compass,
   Cpu,
   GraduationCap,
   Headphones,
@@ -20,6 +21,7 @@ import {
   ShieldCheck,
   Trophy,
   Users,
+  Video,
 } from 'lucide-react';
 import type { Centre, City, Course } from '@/lib/content/types';
 import { centrePath } from '@/lib/centre-path';
@@ -33,6 +35,7 @@ import { CentreViewTracker } from '@/app/centres/[city]/[slug]/CentreViewTracker
 import { CentreCourseGroups } from '@/components/centres/CentreFeaturedProgrammes';
 import { CentreHeroForm } from '@/components/centres/CentreHeroForm';
 import { CentreUpdateCard } from '@/components/centres/CentreUpdateCard';
+import { CentreGallery, CentreReasons, type GallerySlot, type ReasonTile } from '@/components/centres/CentreExperience';
 import { CardSlider } from '@/components/centres/CardSlider';
 import { PlacementSlider } from '@/components/centres/PlacementSlider';
 import { StickyCentreBar } from '@/components/centres/StickyCentreBar';
@@ -110,6 +113,16 @@ export function CentreDetail({
     .sort((a, b) => lpa(b.package) - lpa(a.package))
     .slice(0, 15);
   const faqs = centre.faqs ?? [];
+  // Stand-in content so a reviewer sees what each section will hold until the centre's own data is entered.
+  const placeholderPlacements = showPlaceholders
+    ? Array.from({ length: 4 }, () => ({
+        name: copy['centrePlaceholder.studentName'],
+        company: copy['centrePlaceholder.studentCompany'],
+        package: copy['centrePlaceholder.package'],
+        placeholder: true,
+        placeholderBadge: copy['centrePlaceholder.badge'],
+      }))
+    : [];
   const realUpdates = [...(centre.updates ?? [])].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
   const testimonials = centre.testimonials ?? [];
   const newest = realUpdates.length || !showPlaceholders
@@ -181,13 +194,61 @@ export function CentreDetail({
   let toneIndex = 0;
   const nextTone = (): 'tint' | 'plain' => (toneIndex++ % 2 === 0 ? 'tint' : 'plain');
 
+  // Reasons to visit: the same four for every centre; a centre may supply its own pictures.
+  const reasonPhotos = centre.experiencePhotos ?? {};
+  const reasonTiles: ReasonTile[] = [
+    {
+      title: copy['centreReasons.lab.title'],
+      body: copy['centreReasons.lab.body'],
+      icon: Cpu,
+      photoUrl: reasonPhotos.lab || copy['centreReasons.lab.photo'],
+      photoAlt: copy['centreReasons.lab.photoAlt'],
+      photoLabel: copy['centreReasons.lab.photoLabel'],
+    },
+    {
+      title: copy['centreReasons.expert.title'],
+      body: copy['centreReasons.expert.body'],
+      icon: Video,
+      photoUrl: reasonPhotos.classroom || copy['centreReasons.classroom.photo'],
+      photoAlt: copy['centreReasons.classroom.photoAlt'],
+      photoLabel: copy['centreReasons.classroom.photoLabel'],
+    },
+    {
+      title: copy['centreReasons.career.title'],
+      body: copy['centreReasons.career.body'],
+      icon: Compass,
+      photoUrl: reasonPhotos.counselling || copy['centreReasons.counselling.photo'],
+      photoAlt: copy['centreReasons.counselling.photoAlt'],
+      photoLabel: copy['centreReasons.counselling.photoLabel'],
+    },
+    {
+      title: copy['centreReasons.placement.title'],
+      body: copy['centreReasons.placement.body'],
+      icon: Briefcase,
+      photoUrl: reasonPhotos.mockInterview || copy['centreReasons.mock.photo'],
+      photoAlt: copy['centreReasons.mock.photoAlt'],
+      photoLabel: copy['centreReasons.mock.photoLabel'],
+    },
+  ];
+
+  // Gallery: the centre's own pictures first, then labelled placeholders up to four (placeholders hidden when switched off).
+  const realGallery = (centre.gallery ?? []).filter((g) => g.url).slice(0, 4);
+  const gallerySlots: GallerySlot[] = showPlaceholders
+    ? Array.from({ length: 4 }, (_, i) => ({
+        label: realGallery[i]?.caption || copy[`centreGallery.slot.${i}` as 'centreGallery.slot.0'],
+        url: realGallery[i]?.url,
+      }))
+    : realGallery.map((g, i) => ({ label: g.caption || copy[`centreGallery.slot.${i}` as 'centreGallery.slot.0'], url: g.url }));
+  const hasStoriesSection = testimonials.length > 0 || gallerySlots.length > 0 || showPlaceholders;
+
   const hasCourses = featured.length > 0 || offered.length > 0;
+  const showCoursePlaceholders = !hasCourses && showPlaceholders;
   const hasAdmissions = eligibility.length > 0 || journey.length > 0;
   const jumpItems: JumpItem[] = [
-    ...(hasCourses ? [{ id: 'centre-courses', label: copy['centreJump.courses'] }] : []),
+    ...(hasCourses || showCoursePlaceholders ? [{ id: 'centre-courses', label: copy['centreJump.courses'] }] : []),
     ...(hasAdmissions ? [{ id: 'centre-admissions', label: copy['centreJump.admissions'] }] : []),
-    ...(placements.length ? [{ id: 'centre-placements-section', label: copy['centreJump.placements'] }] : []),
-    ...(testimonials.length ? [{ id: 'centre-stories-section', label: copy['centreJump.stories'] }] : []),
+    ...(placements.length || placeholderPlacements.length ? [{ id: 'centre-placements-section', label: copy['centreJump.placements'] }] : []),
+    ...(hasStoriesSection ? [{ id: 'centre-stories-section', label: copy['centreJump.stories'] }] : []),
     ...(people.length ? [{ id: 'centre-faculty-section', label: copy['centreJump.faculty'] }] : []),
     ...(newest.length ? [{ id: 'centre-news-section', label: copy['centreJump.news'] }] : []),
     { id: 'centre-visit-section', label: copy['centreJump.visit'] },
@@ -195,7 +256,8 @@ export function CentreDetail({
   ];
 
 
-  // The closing headline keeps the live locality in an accent span, so its template is split around the token.
+
+  // The visit heading keeps the live locality in an accent span, so its template is split around the token.
   const [closingBefore = '', closingAfter = ''] = copy['centreClosing.title'].split('{locality}');
 
   const primaryBtn =
@@ -312,50 +374,56 @@ export function CentreDetail({
         </div>
         <div className="mt-8 sm:mt-10">
           <StatBadges
-            stats={legacyStats(network).map((stat, index) => ({
-              value: stat.value,
-              label: stat.label,
-              icon: STAT_ICONS[index] ?? Award,
-            }))}
+            stats={(() => {
+              // As the client laid it out: year founded, "39 centres in 28 cities", enrolled learners, courses on offer.
+              const [year, , , courses] = legacyStats(network);
+              return [
+                { value: year.value, label: year.label, icon: STAT_ICONS[0] },
+                { value: String(network.centres), label: fill(copy['centreStats.centresLabel'], { cities: network.cities }), icon: STAT_ICONS[1] },
+                { value: copy['centreStats.enrolled.value'] || copy['centrePlaceholder.text'], label: copy['centreStats.enrolled.label'], icon: STAT_ICONS[2] },
+                { value: courses.value, label: courses.label, icon: STAT_ICONS[3] },
+              ];
+            })()}
           />
         </div>
       </Section>
 
-      {/* About the centre: programmes, placements, facilities, timings */}
-      {aboutCells.length ? (
-        <Section tone={nextTone()} labelledBy="centre-about-heading">
-          <div className="kit kit-card grid gap-6 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] lg:items-center lg:gap-10">
-            <div>
-              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['centreAbout.eyebrow']}</p>
-              <h2 id="centre-about-heading" className="section-title mt-2 text-[var(--k-ink)]">
-                {fill(copy['centreAbout.title'], { locality: centre.locality })}
-              </h2>
-            </div>
-            <dl className="grid grid-cols-2 gap-x-5 gap-y-6 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))]" style={{ '--n': aboutCells.length } as React.CSSProperties}>
-              {aboutCells.map(({ label, value, placeholder, icon: Icon }) => (
-                <div key={label} className="flex flex-col gap-1">
-                  <span className="kit-iconwell mb-2" aria-hidden="true">
-                    <Icon className="h-5 w-5" strokeWidth={1.9} />
-                  </span>
-                  <dt className="order-2 text-[13.5px] font-semibold text-[var(--k-ink-3)]">{label}</dt>
+      {/* Why walk into this centre: four reasons (the same for every centre), then this centre's own facts */}
+      <Section tone={nextTone()} labelledBy="centre-about-heading">
+        <SectionHeader
+          id="centre-about-heading"
+          eyebrow={copy['centreAbout.eyebrow']}
+          title={fill(copy['centreAbout.title'], { locality: centre.locality })}
+          lede={copy['centreAbout.lede']}
+        />
+        <CentreReasons tiles={reasonTiles} showPlaceholders={showPlaceholders} placeholderNote={copy['centreReasons.photoPlaceholder']} />
+        {aboutCells.length ? (
+          <dl className="kit-card mt-4 grid grid-cols-2 gap-x-5 gap-y-5 p-5 sm:mt-5 sm:p-6 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))]" style={{ '--n': aboutCells.length } as React.CSSProperties}>
+            {aboutCells.map(({ label, value, placeholder, icon: Icon }) => (
+              <div key={label} className="flex items-start gap-3">
+                <span className="kit-iconwell shrink-0" aria-hidden="true">
+                  <Icon className="h-5 w-5" strokeWidth={1.9} />
+                </span>
+                <div>
+                  <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{label}</dt>
                   <dd
                     className={
                       placeholder
-                        ? 'order-1 text-[16px] leading-snug font-semibold text-[var(--k-ink-3)] italic'
-                        : 'order-1 text-[17px] leading-snug font-extrabold text-[var(--k-ink)]'
+                        ? 'mt-0.5 text-[15px] leading-snug font-semibold text-[var(--k-ink-3)] italic'
+                        : 'mt-0.5 text-[16px] leading-snug font-extrabold text-[var(--k-ink)]'
                     }
                   >
                     {value}
                   </dd>
                 </div>
-              ))}
-            </dl>
-          </div>
-        </Section>
-      ) : null}
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </Section>
 
       {/* Courses at this centre */}
-      {hasCourses ? (
+      {hasCourses || showCoursePlaceholders ? (
         <Section tone={nextTone()} id="centre-courses" labelledBy="centre-courses-heading" className="scroll-mt-36">
           <SectionHeader
             id="centre-courses-heading"
@@ -364,7 +432,19 @@ export function CentreDetail({
             lede={copy['centreCourses.lede']}
           />
           <div className="space-y-10 sm:space-y-12">
-            <CentreCourseGroups centre={centre} courses={courses} offered={offered} copy={copy} />
+            {showCoursePlaceholders ? (
+              <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <li key={i} className="kit-card flex min-h-[200px] flex-col gap-3 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-5">
+                    <span className="w-fit text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['centrePlaceholder.badge']}</span>
+                    <h3 className="text-[17px] font-extrabold text-[var(--k-ink)]">{copy['centrePlaceholder.courseTitle']}</h3>
+                    <p className="text-[14px] leading-snug text-[var(--k-ink-2)]">{copy['centrePlaceholder.courseBody']}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <CentreCourseGroups centre={centre} courses={courses} offered={offered} copy={copy} />
+            )}
           </div>
         </Section>
       ) : null}
@@ -422,22 +502,39 @@ export function CentreDetail({
       ) : null}
 
       {/* Placements */}
-      {placements.length ? (
+      {placements.length || placeholderPlacements.length ? (
         <Section tone={nextTone()} id="centre-placements-section" labelledBy="centre-placements" className="scroll-mt-36">
           <SectionHeader id="centre-placements" eyebrow={copy['centrePlacements.eyebrow']} title={copy['centrePlacements.title']} />
-          <PlacementSlider items={topPlacements} label={copy['centrePlacements.label']} />
+          <PlacementSlider items={placements.length ? topPlacements : placeholderPlacements} label={copy['centrePlacements.label']} />
         </Section>
       ) : null}
 
-      {/* Student stories */}
-      {testimonials.length ? (
+      {/* Learner experience: pictures of the centre, then student stories */}
+      {hasStoriesSection ? (
         <Section tone={nextTone()} id="centre-stories-section" labelledBy="centre-stories" className="scroll-mt-36">
           <SectionHeader id="centre-stories" eyebrow={copy['centreStories.eyebrow']} title={copy['centreStories.title']} />
-          <CardSlider label={copy['centreStories.label']} cols={4}>
-            {testimonials.map((t) => (
-              <StoryCard key={`${t.name}-${t.quote.slice(0, 24)}`} name={t.name} outcome={t.role ?? ''} quote={t.quote} />
-            ))}
-          </CardSlider>
+          {gallerySlots.length ? (
+            <CentreGallery slots={gallerySlots} label={copy['centreGallery.label']} note={copy['centreGallery.placeholder']} />
+          ) : null}
+          {testimonials.length ? (
+            <div className={gallerySlots.length ? 'mt-8 sm:mt-10' : ''}>
+              <CardSlider label={copy['centreStories.label']} cols={4}>
+                {testimonials.map((t) => (
+                  <StoryCard key={`${t.name}-${t.quote.slice(0, 24)}`} name={t.name} outcome={t.role ?? ''} quote={t.quote} />
+                ))}
+              </CardSlider>
+            </div>
+          ) : showPlaceholders ? (
+            <div className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${gallerySlots.length ? 'mt-8 sm:mt-10' : ''}`}>
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="kit-card flex flex-col gap-3 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-5 sm:p-6">
+                  <span className="w-fit text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['centrePlaceholder.badge']}</span>
+                  <p className="text-[15px] leading-relaxed text-[var(--k-ink-2)] italic">{copy['centrePlaceholder.story']}</p>
+                  <p className="mt-auto text-[14px] font-bold text-[var(--k-ink-3)]">{copy['centrePlaceholder.studentName']}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </Section>
       ) : null}
 
@@ -518,9 +615,21 @@ export function CentreDetail({
 
       {/* Visit this centre, and the other centres in the city */}
       <Section tone={nextTone()} id="centre-visit-section" labelledBy="centre-visit" className="scroll-mt-36">
-        <SectionHeader id="centre-visit" eyebrow={copy['centreVisit.eyebrow']} title={fill(copy['centreVisit.title'], { locality: centre.locality })} />
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-6">
-          <div className="kit kit-card p-5 sm:p-7">
+        {/* The old "Ready to visit" band is folded in here: one heading, one set of details, one enquire button. */}
+        <SectionHeader
+          id="centre-visit"
+          eyebrow={copy['centreVisit.eyebrow']}
+          title={
+            <>
+              {closingBefore}
+              <span className="text-[var(--k-red)]">{centre.locality}</span>
+              {closingAfter}
+            </>
+          }
+          lede={copy['centreClosing.body']}
+        />
+        <div className="kit kit-card grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+          <div className="p-5 sm:p-7">
             <address className="flex gap-3 text-[15px] leading-relaxed text-[var(--k-ink-2)] not-italic">
               <MapPin className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
               <span>
@@ -608,17 +717,17 @@ export function CentreDetail({
             </dl>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
+              <a href="#centre-hero-cta" className={primaryBtn}>
                 {copy['centreVisit.enquire']}
                 <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              </Link>
+              </a>
               <Link href={copy['centreVisit.backHref'] as Route} className={outlineBtn}>
                 {copy['centreVisit.back']}
               </Link>
             </div>
           </div>
 
-          <div className="kit kit-card p-5 sm:p-7">
+          <div className="border-t border-[var(--k-line)] p-5 sm:p-7 lg:border-t-0 lg:border-l">
             <h3 className="text-[20px] font-extrabold text-[var(--k-ink)]">
               {fill(siblings.length ? copy['centreVisit.siblingsTitle'] : copy['centreVisit.onlyTitle'], { city: city.name })}
             </h3>
@@ -651,39 +760,6 @@ export function CentreDetail({
               {fill(copy['centreVisit.viewAll'], { city: city.name })}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
             </Link>
-          </div>
-        </div>
-      </Section>
-
-      {/* Closing band */}
-      <Section tone="wash" labelledBy="centre-cta-heading">
-        <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-          <div className="max-w-2xl">
-            <h2 id="centre-cta-heading" className="section-title text-[var(--k-ink)]">
-              {closingBefore}
-              <span className="text-[var(--k-red)]">{centre.locality}</span>
-              {closingAfter}
-            </h2>
-            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
-              {copy['centreClosing.body']}
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link href={`/enquiry?centre=${centre.slug}` as Route} className={primaryBtn}>
-              {copy['centreClosing.cta']}
-              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-            </Link>
-            {phoneHref ? (
-              <TrackedAnchor
-                href={phoneHref}
-                event="phone_clicked"
-                props={{ centre_slug: centre.slug, type: 'footer' }}
-                className={outlineBtn}
-              >
-                <Phone className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
-                {centre.phone}
-              </TrackedAnchor>
-            ) : null}
           </div>
         </div>
       </Section>

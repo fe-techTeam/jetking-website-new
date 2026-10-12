@@ -27,7 +27,7 @@ export const courses: Course[] = [
     eligibility:
       'Pass in 10+2 from any recognised board (State / CBSE / ICSE / NIOS / IB / IGCSE). Students appearing for 10+2 may also apply. No entrance test.',
     summary:
-      'A UGC-approved bachelor degree specialising in cloud architecture and cyber security, with hands-on labs and paid internships. Students build expertise in cloud platforms, information security, cryptography and digital forensics.',
+      'A UGC-approved bachelor degree specialising in cloud architecture and cyber security, with hands-on labs and placement support. Students build expertise in cloud platforms, information security, cryptography and digital forensics.',
     outcomes: [
       'Enter roles such as Cloud Administrator, SOC Analyst or Network Security Specialist',
       'Design and secure cloud infrastructure on AWS, Azure and Google Cloud',

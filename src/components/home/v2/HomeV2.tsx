@@ -3,10 +3,10 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
 import type { NetworkCounts } from '@/lib/brand-facts';
 import { AskAiLink } from '@/components/AskAiLink';
-import { StatsStrip } from './StatsStrip';
 import { HeroEnquireCta } from './HeroEnquireCta';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import type { EnquiryCentre } from '@/components/EnquiryModal';
@@ -24,12 +24,15 @@ import type { EnquiryCentre } from '@/components/EnquiryModal';
 export function HomeV2({
   enquiryCentres,
   counts,
+  placed,
   copy,
 }: {
   /** Centres offered in the hero's quick-enquiry modal (state → centre). */
   enquiryCentres: EnquiryCentre[];
   /** Live network size for the numbers strip — computed, never a hand-typed claim. */
   counts: NetworkCounts;
+  /** The headline outcome ("3586 / Learners placed in 2025"), from the placements content. */
+  placed: { value: string; label: string };
   copy: HomeCopy;
 }) {
   return (
@@ -94,8 +97,14 @@ export function HomeV2({
             />
           </div>
 
+          {/* The outcome we deliver, along the foot of the banner: students placed, and where to go and see for yourself. */}
           <div className="pb-6 sm:pb-8">
-            <StatsStrip counts={counts} />
+            <div className="flex flex-col gap-4 rounded-[16px] bg-[var(--v2-accent)] px-5 py-5 text-white shadow-[0_14px_30px_-16px_rgb(199_20_28/0.7)] sm:px-8 sm:py-6 lg:flex-row lg:items-center lg:justify-center lg:gap-12 lg:px-12 lg:py-5">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-center sm:gap-6 lg:gap-10">
+                <p className="numeral font-display text-[56px] leading-none font-extrabold tracking-[-0.04em] sm:text-[72px] lg:text-[92px]">{placed.value}</p>
+                <p className="text-[22px] leading-[1.1] font-extrabold sm:text-[28px] lg:text-[40px]">{placed.label}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

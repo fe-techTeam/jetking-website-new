@@ -14,12 +14,15 @@ export function ZoomImage({
   alt,
   caption,
   labels,
+  aspect = 'aspect-[3/4]',
 }: {
   src: string;
   alt: string;
   caption: string;
   /** Button wording; `enlargeLabel` may use an `{alt}` token. */
   labels: { enlarge: string; enlargeLabel: string; close: string };
+  /** Tailwind aspect class for the thumbnail frame. */
+  aspect?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -32,7 +35,7 @@ export function ZoomImage({
         aria-label={fill(labels.enlargeLabel, { alt })}
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- local specimen, shown contained at full resolution */}
-        <img src={src} alt={alt} loading="lazy" decoding="async" className="aspect-[3/4] w-full object-contain" />
+        <img src={src} alt={alt} loading="lazy" decoding="async" className={`${aspect} w-full object-contain`} />
         <span className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-[#111827] px-3 py-1.5 text-[12.5px] font-bold text-white shadow-md">
           <ZoomIn className="h-4 w-4" aria-hidden="true" />
           {labels.enlarge}

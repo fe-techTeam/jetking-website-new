@@ -1,38 +1,25 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import type { Route } from 'next';
-import { ArrowRight, Trophy } from 'lucide-react';
-import type { PlacementTestimonial, VideoTestimonial } from '@/lib/content/types';
+import { Camera } from 'lucide-react';
 import { Reveal, Section, SectionHeader } from '@/components/kit';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
-import { StorySlider } from './VideoStories';
 
-/** The three written stories shown on the jetking.com homepage, by name. Falls back to the first three published. */
-const HOME_STORIES = ['Preeti Madan', 'Nikhil Pathare', 'Abhishek'];
+const SLOTS = [0, 1, 2, 3, 4] as const;
 
 /**
- * "Our learners, our pride": Jetking's own published, named placement stories and videos
- * (`placements/data.ts`), the same ones shown on jetking.com, no invented ratings. Starts with the
- * Limca Book of Records placement milestone. The placement disclaimer stays underneath and the rest
- * live on /placements.
+ * "Our learners, our pride": one statement about the outcomes Jetking delivers, then four or five alumni who hold
+ * senior positions (photo, name, designation, organisation). The alumni are page copy (`proof.alumni.N.*`), so the
+ * client can fill them in from the admin; until a slot has a name it shows a labelled placeholder. No videos and no
+ * testimonials: they were generic and made the section long on a phone. The placement disclaimer stays underneath.
  */
-export function PlacementProof({
-  testimonials,
-  videos,
-  disclaimer,
-  copy,
-}: {
-  testimonials: PlacementTestimonial[];
-  videos: VideoTestimonial[];
-  disclaimer: string;
-  copy: HomeCopy;
-}) {
-  const named = HOME_STORIES.map((n) => testimonials.find((t) => t.name === n)).filter(
-    (t): t is PlacementTestimonial => Boolean(t),
-  );
-  const stories = named.length === HOME_STORIES.length ? named : testimonials.slice(0, 3);
-  const vimeo = videos.filter((v) => v.provider === 'vimeo');
-  const shownVideos = (vimeo.length >= 3 ? vimeo : videos).slice(0, 3);
+export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy: HomeCopy }) {
+  const showPlaceholders = process.env.NEXT_PUBLIC_SHOW_PLACEHOLDERS !== 'false';
+  const alumni = SLOTS.map((i) => ({
+    name: copy[`proof.alumni.${i}.name` as keyof HomeCopy] as string,
+    role: copy[`proof.alumni.${i}.role` as keyof HomeCopy] as string,
+    org: copy[`proof.alumni.${i}.org` as keyof HomeCopy] as string,
+    photo: copy[`proof.alumni.${i}.photo` as keyof HomeCopy] as string,
+  }));
+  const shown = alumni.filter((a) => a.name || showPlaceholders);
 
   return (
     <Section tone="tint" labelledBy="home-proof-heading">
@@ -41,59 +28,50 @@ export function PlacementProof({
         eyebrow={copy['proof.eyebrow']}
         title={copy['proof.title']}
         lede={copy['proof.lede']}
-        action={
-          <Link
-            href={copy['proof.cta.href'] as Route}
-            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
-          >
-            {copy['proof.cta.label']}
-            <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-          </Link>
-        }
       />
 
-      {/* The record: the milestone Jetking is known for, ahead of the individual stories */}
       <Reveal>
-        <div className="relative isolate grid items-center gap-8 overflow-hidden rounded-[28px] border border-jk-700 bg-jk-600 p-6 shadow-[var(--k-shadow-up)] sm:p-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14 lg:px-14 lg:py-12">
-          {/* Concentric rings behind the seal */}
+        <div className="relative isolate overflow-hidden rounded-[28px] border border-jk-700 bg-jk-600 p-6 shadow-[var(--k-shadow-up)] sm:p-10 lg:px-14 lg:py-12">
           <span aria-hidden="true" className="pointer-events-none absolute -right-24 -bottom-32 -z-10 hidden h-[520px] w-[520px] rounded-full border border-white/15 lg:block" />
           <span aria-hidden="true" className="pointer-events-none absolute -right-8 -bottom-16 -z-10 hidden h-[360px] w-[360px] rounded-full border border-white/20 lg:block" />
-
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-3.5 py-1.5 text-[12px] font-bold tracking-[0.14em] text-white uppercase">
-              <Trophy className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
-              {copy['proof.record.eyebrow']}
-            </p>
-            <p className="mt-5 font-display text-[64px] leading-[0.9] font-extrabold tracking-[-0.04em] text-white sm:text-[88px] lg:text-[104px]">
-              {copy['proof.record.value']}
-            </p>
-            <p className="mt-3 text-[20px] leading-snug font-extrabold text-white sm:text-[24px]">
-              {copy['proof.record.label']}
-            </p>
-            <p className="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-white/90 sm:text-[16px]">
-              {copy['proof.record.detail']}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-5 lg:flex-col lg:gap-4">
-            <span className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full bg-white ring-8 ring-white/10 sm:h-36 sm:w-36 lg:h-44 lg:w-44">
-              <Image
-                src="/about/achievements/limca.png"
-                alt=""
-                fill
-                sizes="176px"
-                className="object-contain p-3"
-              />
-            </span>
-          </div>
+          <p className="max-w-[28ch] font-display text-[28px] leading-[1.1] font-extrabold tracking-[-0.02em] text-balance text-white sm:text-[40px] lg:text-[52px]">
+            {copy['proof.statement']}
+          </p>
         </div>
       </Reveal>
 
-      <Reveal>
-        <div className="mt-8 sm:mt-10">
-          <StorySlider videos={shownVideos} stories={stories} copy={copy} />
-        </div>
-      </Reveal>
+      {shown.length ? (
+        <Reveal>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+            {shown.map((a, i) =>
+              a.name ? (
+                <li key={`${a.name}-${i}`} className="kit-card flex flex-col items-center gap-1 p-4 text-center max-sm:last:odd:col-span-2 sm:p-5">
+                  <span className="relative h-24 w-24 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-4 ring-[var(--k-red)] sm:h-28 sm:w-28">
+                    {a.photo ? <Image src={a.photo} alt={a.name} fill sizes="112px" className="object-cover object-top" /> : null}
+                  </span>
+                  <h3 className="mt-3 text-[16px] leading-snug font-extrabold text-[var(--k-ink)]">{a.name}</h3>
+                  {a.role ? <p className="text-[13.5px] leading-snug font-bold text-[var(--k-red)]">{a.role}</p> : null}
+                  {a.org ? <p className="text-[13.5px] leading-snug text-[var(--k-ink-3)]">{a.org}</p> : null}
+                </li>
+              ) : (
+                <li
+                  key={`placeholder-${i}`}
+                  className="kit-card flex flex-col items-center gap-1 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-4 text-center max-sm:last:odd:col-span-2 sm:p-5"
+                >
+                  <span className="text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['proof.placeholder.badge']}</span>
+                  <span className="mt-1 grid h-24 w-24 place-items-center rounded-full border-2 border-dashed border-[var(--k-line-strong)] bg-white/60 text-[var(--k-red)] sm:h-28 sm:w-28">
+                    <Camera className="h-7 w-7" strokeWidth={1.7} aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-3 text-[16px] leading-snug font-extrabold text-[var(--k-ink)]">{copy['proof.placeholder.name']}</h3>
+                  <p className="text-[13.5px] leading-snug font-bold text-[var(--k-red)]">{copy['proof.placeholder.role']}</p>
+                  <p className="text-[13.5px] leading-snug text-[var(--k-ink-3)]">{copy['proof.placeholder.org']}</p>
+                </li>
+              ),
+            )}
+          </ul>
+        </Reveal>
+      ) : null}
+
       <p className="mt-5 text-[14px] leading-relaxed text-[var(--k-ink-3)]">{disclaimer}</p>
     </Section>
   );

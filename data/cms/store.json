@@ -7,7 +7,7 @@
       "level": "degree",
       "duration": "3 years",
       "eligibility": "Pass in 10+2 from any recognised board (State / CBSE / ICSE / NIOS / IB / IGCSE). Students appearing for 10+2 may also apply. No entrance test.",
-      "summary": "A UGC-approved bachelor degree specialising in cloud architecture and cyber security, with hands-on labs and paid internships. Students build expertise in cloud platforms, information security, cryptography and digital forensics.",
+      "summary": "A UGC-approved bachelor degree specialising in cloud architecture and cyber security, with hands-on labs and placement support. Students build expertise in cloud platforms, information security, cryptography and digital forensics.",
       "outcomes": [
         "Enter roles such as Cloud Administrator, SOC Analyst or Network Security Specialist",
         "Design and secure cloud infrastructure on AWS, Azure and Google Cloud",
@@ -189,9 +189,24 @@
       "hiringPartners": [],
       "certificateImage": {
         "url": "/courses/bca-cloud-cyber-security-certificate.jpg",
-        "alt": "Certificate specimen awarded on completion"
+        "alt": "Sample BCA degree awarded by the university"
       },
-      "status": "published"
+      "status": "published",
+      "jetkingCertificateImage": {
+        "url": "/courses/cloud-computing-engineer-ai-certificate.jpg",
+        "alt": "Sample Jetking certificate of completion"
+      },
+      "whyNow": {
+        "intro": "IT industry is entering a new phase in which building software is no longer enough. Enterprises need professionals who can deploy applications on the cloud, manage digital infrastructure, protect sensitive information, and secure increasingly AI-driven systems.",
+        "headline": "One Degree. Two High-Demand Specializations. Multiple Career Opportunities.",
+        "points": [
+          "Opportunities with Banks, FinTech, IT companies, GCC, Telecom, Pharma etc.",
+          "BCA degree with hands on learning is highly preferred by multiple companies."
+        ],
+        "demandValue": "40,000+",
+        "demandLabel": "demand for cloud & cybersecurity professionals each year",
+        "demandSource": "Source: CareerNet outlook 2026"
+      }
     },
     {
       "slug": "mca-cloud-cyber-security",

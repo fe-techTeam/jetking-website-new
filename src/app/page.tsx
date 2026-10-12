@@ -44,6 +44,7 @@ export default async function HomePage() {
         <HomeV2
           enquiryCentres={enquiryCentres}
           counts={data.counts}
+          placed={data.placements.stats.learnersPlaced}
           copy={copy}
         />
       </div>

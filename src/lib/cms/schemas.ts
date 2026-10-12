@@ -81,6 +81,17 @@ const courseSchema = withStatus({
   university: z.string().optional(),
   hiringPartners: z.array(z.string()).optional(),
   certificateImage: imageRefSchema.optional(),
+  jetkingCertificateImage: imageRefSchema.optional(),
+  whyNow: z
+    .object({
+      intro: z.string(),
+      headline: z.string(),
+      points: z.array(z.string()),
+      demandValue: z.string(),
+      demandLabel: z.string(),
+      demandSource: z.string(),
+    })
+    .optional(),
 });
 
 const citySchema = withStatus({
@@ -122,6 +133,15 @@ const centreSchema = withStatus({
       placement: z.string().optional(),
       facility: z.string().optional(),
       timing: z.string().optional(),
+    })
+    .optional(),
+  gallery: z.array(z.object({ url: z.string(), caption: z.string().optional() })).optional(),
+  experiencePhotos: z
+    .object({
+      lab: z.string().optional(),
+      classroom: z.string().optional(),
+      counselling: z.string().optional(),
+      mockInterview: z.string().optional(),
     })
     .optional(),
   eligibility: z.array(z.object({ title: z.string(), items: z.array(z.string()) })).optional(),

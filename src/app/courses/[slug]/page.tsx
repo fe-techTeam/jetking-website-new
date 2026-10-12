@@ -45,8 +45,12 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   // course already answers itself.
   const ownQuestions = new Set((course.faqs ?? []).map((f) => f.question.trim().toLowerCase()));
   const ownFaqs = course.faqs ?? [];
+  const paymentTopic = /instal+ment|emi|payment|pay\b/i;
+  const ownCoversPayment = ownFaqs.some((f) => paymentTopic.test(f.question));
   const feeFaqs = siteFaqs
     .filter((f) => (f.topic === 'fees' || f.topic === 'placement') && !ownQuestions.has(f.question.trim().toLowerCase()))
+    // The course already answers "payment options"; the site-wide EMI question would repeat it.
+    .filter((f) => !(ownCoversPayment && paymentTopic.test(f.question)))
     .map((f) => ({ question: f.question, answer: f.answer }));
 
   const offeringCentres = centres.filter((c) => c.coursesOffered.includes(course.slug));

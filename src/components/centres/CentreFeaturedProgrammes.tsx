@@ -108,7 +108,7 @@ export function CentreCourseGroups({
       kind,
       tag: kind === 'degree' ? copy['centreCourses.degreeTag'] : copy['centreCourses.careerTag'],
       duration: joinMeta(readableDuration(prog.duration ?? course?.duration), prog.mode),
-      href: course ? `/courses/${course.slug}` : `/enquiry?centre=${centre.slug}`,
+      href: course ? `/courses/${course.slug}` : '#centre-hero-cta',
       slug: course?.slug ?? '',
       level: course?.level ?? (kind === 'degree' ? 'degree' : 'certification'),
       heroImage: course?.heroImage,

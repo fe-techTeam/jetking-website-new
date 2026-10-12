@@ -71,6 +71,8 @@ const courses: AdminFormConfig = {
     university: '',
     hiringPartners: [],
     certificateImage: imageBlank(),
+    jetkingCertificateImage: imageBlank(),
+    whyNow: { intro: '', headline: '', points: [], demandValue: '', demandLabel: '', demandSource: '' },
     status: 'draft',
   }),
   itemTemplates: {
@@ -103,6 +105,7 @@ const courses: AdminFormConfig = {
         'highlights',
         'tools',
         'careerRoles',
+        'whyNow',
         'phases',
         'curriculum',
         'faqs',
@@ -110,7 +113,7 @@ const courses: AdminFormConfig = {
       ],
     },
     { title: 'Fees & audience', fields: ['fees', 'personaRelevance'] },
-    { title: 'Media & SEO', fields: ['heroImage', 'certificateImage', 'seo', 'updatedAt'] },
+    { title: 'Media & SEO', fields: ['heroImage', 'certificateImage', 'jetkingCertificateImage', 'seo', 'updatedAt'] },
   ],
 };
 
@@ -145,6 +148,8 @@ const centres: AdminFormConfig = {
     highlights: { programs: '', placement: '', facility: '', timing: '' },
     eligibility: [],
     journey: [],
+    gallery: [],
+    experiencePhotos: { lab: '', classroom: '', counselling: '', mockInterview: '' },
     faculty: [],
     updates: [],
     placements: [],
@@ -160,6 +165,7 @@ const centres: AdminFormConfig = {
     featuredProgrammes: { title: '', subtitle: '', duration: '', mode: '' },
     eligibility: { title: '', items: [] },
     journey: { title: '', items: [] },
+    gallery: { url: '', caption: '' },
     faculty: { name: '', title: '', qualification: '', experience: '', specialisation: '', bio: '', photoUrl: '' },
     updates: { title: '', summary: '', date: today(), category: '', image: '', link: '' },
     placements: { name: '', company: '', package: '', photoUrl: '' },
@@ -185,9 +191,9 @@ const centres: AdminFormConfig = {
     },
     {
       title: 'Content',
-      fields: ['headline', 'intro', 'body', 'highlights', 'featuredProgrammes', 'eligibility', 'journey', 'coursesOffered'],
+      fields: ['headline', 'intro', 'body', 'highlights', 'experiencePhotos', 'featuredProgrammes', 'eligibility', 'journey', 'coursesOffered'],
     },
-    { title: 'People & proof', fields: ['faculty', 'updates', 'placements', 'testimonials', 'faqs'] },
+    { title: 'People & proof', fields: ['gallery', 'faculty', 'updates', 'placements', 'testimonials', 'faqs'] },
     { title: 'Location & SEO', fields: ['geo', 'seo'] },
   ],
 };

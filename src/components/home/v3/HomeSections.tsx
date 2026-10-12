@@ -10,7 +10,6 @@ import { PlacementProof } from './PlacementProof';
 import { BlogTeaser } from './BlogTeaser';
 import { FranchiseBand } from './FranchiseBand';
 import { FinalCta } from './FinalCta';
-import { CounsellorBand } from './CounsellorBand';
 import { HomeFaq } from './HomeFaq';
 
 /**
@@ -45,18 +44,12 @@ export function HomeSections({
       <ProgramShowcase courses={data.courses} copy={copy} />
       <CredibilityMarquee copy={copy} />
       <WhyJetking copy={copy} />
-      <PlacementProof
-        testimonials={data.placements.testimonials}
-        videos={data.placements.videoTestimonials}
-        disclaimer={data.placements.disclaimer}
-        copy={copy}
-      />
+      <PlacementProof disclaimer={data.placements.disclaimer} copy={copy} />
       <Recognitions copy={copy} />
       <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
-      <CounsellorBand copy={copy} />
       <BlogTeaser posts={data.posts} copy={copy} />
-      <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} />
       <FinalCta centres={enquiryCentres} copy={copy} />
+      <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} />
       <FranchiseBand copy={copy} />
     </div>
   );

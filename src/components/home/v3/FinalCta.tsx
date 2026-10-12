@@ -17,11 +17,11 @@ export function FinalCta({ centres, copy }: { centres: EnquiryCentre[]; copy: Ho
         {/* Photo side: the promise, in white over the picture */}
         <div className="relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden p-6 sm:p-10 lg:min-h-[560px] lg:p-12">
           <Image
-            src="/home/why-labs.jpg"
+            src="/home/counsellor.jpg"
             alt=""
             fill
             sizes="(min-width: 1024px) 55vw, 100vw"
-            className="-z-10 object-cover object-[center_30%]"
+            className="-z-10 object-cover object-[center_20%]"
           />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-scrim/95 via-scrim/65 to-scrim/25" />
 
