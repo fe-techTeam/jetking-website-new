@@ -11,15 +11,15 @@ import type { HomeCopy } from '@/lib/content/copy/pages/home';
  */
 export function FranchiseBand({ copy }: { copy: HomeCopy }) {
   return (
-    <section aria-labelledby="home-franchise-heading" className="kit relative grid bg-scrim lg:grid-cols-2">
+    <section aria-labelledby="home-franchise-heading" className="kit relative grid bg-scrim md:grid-cols-2">
       <div className="relative flex items-center bg-jk-600">
-        <div className="w-full px-[var(--gutter)] py-12 sm:py-16 lg:ml-auto lg:max-w-[calc(var(--container-xl)/2)] lg:py-20 lg:pr-12 2xl:max-w-[calc(var(--container-2xl)/2)]">
+        <div className="w-full px-[var(--gutter)] py-12 sm:py-16 md:pr-8 lg:ml-auto lg:max-w-[calc(var(--container-xl)/2)] lg:py-20 lg:pr-12 2xl:max-w-[calc(var(--container-2xl)/2)]">
           <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15 text-white ring-1 ring-white/30">
             <Handshake className="h-7 w-7" strokeWidth={1.8} aria-hidden="true" />
           </span>
           <h2
             id="home-franchise-heading"
-            className="mt-6 max-w-[20ch] font-display text-[30px] leading-[1.08] font-extrabold tracking-[-0.025em] text-white sm:text-[38px] lg:text-[44px]"
+            className="mt-6 max-w-[20ch] font-display text-[30px] leading-[1.08] font-extrabold tracking-[-0.025em] text-white sm:text-[38px] md:text-[34px] lg:text-[44px]"
           >
             {copy['franchise.title']}
           </h2>
@@ -40,12 +40,12 @@ export function FranchiseBand({ copy }: { copy: HomeCopy }) {
         </div>
       </div>
 
-      <div className="relative min-h-[280px] bg-white sm:min-h-[360px] lg:min-h-[460px]">
+      <div className="relative min-h-[280px] bg-white sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px]">
         <Image
           src="/franchise/hero-building.webp"
           alt=""
           fill
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          sizes="(min-width: 768px) 50vw, 100vw"
           className="object-contain object-center p-6 sm:p-10"
         />
       </div>

@@ -29,10 +29,16 @@ export const homeCopy = definePageCopy({
     'hero.cta.label': 'Explore Courses',
     'hero.cta.href': '/courses',
     'hero.enquire.label': 'Enquire Now',
+    'hero.headline.lead': 'Get Success with',
+    'hero.headline.accent': 'Power of Three',
+    'hero.headline.tail': 'at',
+    'hero.pillar1': 'Industry aligned courses in‑demand skills',
+    'hero.pillar2': 'Work on real projects in our Adv Labs',
+    'hero.pillar3': 'Placement support that delivers',
 
     // ── Logo marquee ──────────────────────────────────────────────────────
     'marquee.eyebrow': 'Trusted by industry',
-    'marquee.heading': '12,000+ recruiters trust us, 15 lakh+ students trained till now',
+    'marquee.heading': '5,000+ recruiters trust us, 12 Lakh+ students placed till now',
     'marquee.certs.label': 'Certification tracks',
     'marquee.alumni.label': 'Where alumni work',
     'marquee.pause.label': 'Pause',
@@ -199,6 +205,7 @@ export const homeCopy = definePageCopy({
     'blog.cta.label': 'Visit the blog',
     'blog.cta.href': '/blog',
     'blog.nav.label': 'articles',
+    'proof.nav.label': 'alumni',
     'blog.list.aria': 'Latest articles',
 
     // ── Franchise band ────────────────────────────────────────────────────

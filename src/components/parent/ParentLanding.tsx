@@ -112,8 +112,8 @@ export function ParentLanding({
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-8 pb-10 xs:pt-10 sm:pt-12 sm:pb-12 lg:pt-14 lg:pb-14">
 
-        <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
-          <div className="lg:col-span-7 xl:col-span-7">
+        <div className="grid items-start gap-8 min-[880px]:grid-cols-12 min-[880px]:gap-8 xl:gap-10">
+          <div className="min-[880px]:col-span-7 xl:col-span-7">
             <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
               {copy['hero.eyebrow']}
             </p>
@@ -169,7 +169,7 @@ export function ParentLanding({
             </div>
           </div>
 
-          <div className="relative lg:col-span-5 xl:col-span-5">
+          <div className="relative min-[880px]:col-span-5 xl:col-span-5">
             {/* Extra bottom/side room so the trust card can hang off the photo */}
             <div className="relative pb-6 sm:pb-8 lg:pb-10 lg:pr-4 xl:pr-6">
               <div className="relative overflow-hidden rounded-[28px] border border-[var(--dc-hairline-strong)] shadow-[var(--dc-shadow)]">

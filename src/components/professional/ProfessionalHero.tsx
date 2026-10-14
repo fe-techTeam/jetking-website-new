@@ -16,7 +16,7 @@ export function ProfessionalHero({ copy }: { copy: typeof professionalCopy.defau
       className={[
         'grid items-start gap-8',
         'xs:gap-9 sm:gap-10 md:gap-12',
-        'lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-8',
+        'min-[880px]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] min-[880px]:gap-8',
         'xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] xl:gap-8',
         '2xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] 2xl:gap-10',
         '3xl:grid-cols-[minmax(0,1.4fr)_minmax(0,0.6fr)] 3xl:gap-12',

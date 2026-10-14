@@ -28,7 +28,7 @@ export function BlogTeaser({ posts, copy }: { posts: Post[]; copy: HomeCopy }) {
           <div className="flex items-center justify-between gap-3 sm:justify-end">
             <Link
               href={copy['blog.cta.href'] as Route}
-              className="tap inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+              className="hidden tap min-h-11 shrink-0 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
             >
               {copy['blog.cta.label']}
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />

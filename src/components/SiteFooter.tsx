@@ -238,7 +238,8 @@ function FooterLink({
   // Phones: 12px above/below the 20px line makes a 44px row, and 12px each side (pulled back with a negative
   // margin so the text stays aligned) keeps short words like "FAQ" 44px wide. The underline is pinned to the
   // text (background-origin) rather than the padding box so it still sits under the words.
-  const touch = 'max-sm:-mx-3 max-sm:inline-block max-sm:px-3 max-sm:py-3 max-sm:[background-origin:content-box]';
+  const touch =
+    'max-sm:-mx-3 max-sm:inline-block max-sm:px-3 max-sm:py-3 max-sm:[background-origin:content-box] sm:max-lg:inline-block sm:max-lg:py-1.5';
   return (
     <li>
       <Link

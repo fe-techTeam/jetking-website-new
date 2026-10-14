@@ -41,7 +41,7 @@ export function WhyJetking({ copy }: { copy: HomeCopy }) {
         action={
           <Link
             href={copy["why.cta.href"] as Route}
-            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
+            className="hidden tap min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
           >
             {copy["why.cta.label"]}
             <ArrowRight

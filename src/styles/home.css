@@ -207,3 +207,18 @@ html:not(.dark) .home-v2-themeable {
     }
   }
 }
+
+/* Homepage banner: only the navy outcome card has a slanted leading edge, overlapping the photo (side-by-side layouts). */
+.hero-slant {
+  position: relative;
+}
+@media (min-width: 640px) {
+  .hero-slant {
+    clip-path: polygon(36px 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+@media (min-width: 1024px) {
+  .hero-slant {
+    clip-path: polygon(56px 0, 100% 0, 100% 100%, 0 100%);
+  }
+}

@@ -46,7 +46,7 @@ function LeaderCard({
 }) {
   if (compact) {
     return (
-      <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]">
+      <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-16px)]">
         <article className="kit kit-card flex h-full items-stretch overflow-hidden">
           <div className="relative min-h-20 w-20 shrink-0 self-stretch bg-[var(--k-red-wash)] sm:min-h-28 sm:w-28">
             <LeaderAvatar leader={leader} />

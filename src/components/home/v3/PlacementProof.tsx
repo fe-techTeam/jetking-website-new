@@ -1,6 +1,9 @@
+'use client';
+
 import Image from 'next/image';
 import { Camera } from 'lucide-react';
 import { Reveal, Section, SectionHeader } from '@/components/kit';
+import { ScrollNavButtons, useScrollTrack } from '@/components/ScrollNav';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 const SLOTS = [0, 1, 2, 3, 4] as const;
@@ -12,6 +15,8 @@ const SLOTS = [0, 1, 2, 3, 4] as const;
  * testimonials: they were generic and made the section long on a phone. The placement disclaimer stays underneath.
  */
 export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy: HomeCopy }) {
+  const { ref, edge, scrollByItem } = useScrollTrack<HTMLUListElement>();
+  const canSlide = !(edge.start && edge.end);
   const showPlaceholders = process.env.NEXT_PUBLIC_SHOW_PLACEHOLDERS !== 'false';
   const alumni = SLOTS.map((i) => ({
     name: copy[`proof.alumni.${i}.name` as keyof HomeCopy] as string,
@@ -28,6 +33,18 @@ export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy:
         eyebrow={copy['proof.eyebrow']}
         title={copy['proof.title']}
         lede={copy['proof.lede']}
+        action={
+          canSlide ? (
+            <ScrollNavButtons
+              alwaysVisible
+              edge={edge}
+              onPrev={() => scrollByItem(-1)}
+              onNext={() => scrollByItem(1)}
+              label={copy['proof.nav.label']}
+              className="shrink-0"
+            />
+          ) : null
+        }
       />
 
       <Reveal>
@@ -42,10 +59,15 @@ export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy:
 
       {shown.length ? (
         <Reveal>
-          <ul className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+          <ul
+            ref={ref}
+            tabIndex={0}
+            aria-label={copy['proof.title']}
+            className="mt-6 -mx-[var(--gutter)] flex snap-x snap-mandatory gap-3 overflow-x-auto px-[var(--gutter)] pb-3 scroll-px-[var(--gutter)] [scrollbar-width:none] sm:mx-0 sm:mt-8 sm:gap-4 sm:px-0 sm:scroll-px-0 [&::-webkit-scrollbar]:hidden"
+          >
             {shown.map((a, i) =>
               a.name ? (
-                <li key={`${a.name}-${i}`} className="kit-card flex flex-col items-center gap-1 p-4 text-center max-sm:last:odd:col-span-2 sm:p-5">
+                <li key={`${a.name}-${i}`} className="kit-card flex w-[68%] flex-col items-center gap-1 shrink-0 snap-start p-4 text-center sm:w-[calc((100%-2rem)/3)] sm:p-5 lg:w-[calc((100%-3rem)/4)]">
                   <span className="relative h-24 w-24 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-4 ring-[var(--k-red)] sm:h-28 sm:w-28">
                     {a.photo ? <Image src={a.photo} alt={a.name} fill sizes="112px" className="object-cover object-top" /> : null}
                   </span>
@@ -56,7 +78,7 @@ export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy:
               ) : (
                 <li
                   key={`placeholder-${i}`}
-                  className="kit-card flex flex-col items-center gap-1 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-4 text-center max-sm:last:odd:col-span-2 sm:p-5"
+                  className="kit-card flex flex-col items-center gap-1 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] w-[68%] shrink-0 snap-start p-4 text-center sm:w-[calc((100%-2rem)/3)] sm:p-5 lg:w-[calc((100%-3rem)/4)]"
                 >
                   <span className="text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['proof.placeholder.badge']}</span>
                   <span className="mt-1 grid h-24 w-24 place-items-center rounded-full border-2 border-dashed border-[var(--k-line-strong)] bg-white/60 text-[var(--k-red)] sm:h-28 sm:w-28">

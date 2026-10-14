@@ -18,19 +18,19 @@ export interface PathStep {
 export function StepPath({ steps }: { steps: PathStep[] }) {
   return (
     <ol
-      className="kit grid gap-9 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))] lg:gap-x-14"
-      style={{ '--n': steps.length } as React.CSSProperties}
+      className="kit grid gap-9 sm:[grid-template-columns:repeat(var(--m),minmax(0,1fr))] sm:gap-x-8 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))] lg:gap-x-14"
+      style={{ '--n': steps.length, '--m': steps.length === 4 ? 2 : Math.min(steps.length, 3) } as React.CSSProperties}
     >
       {steps.map(({ icon, title, body, label }, i) => {
         const last = i === steps.length - 1;
         return (
-          <li key={title} className="relative flex gap-5 lg:flex-col lg:items-center lg:gap-6 lg:text-center">
+          <li key={title} className="relative flex gap-5 sm:flex-col sm:items-center sm:gap-6 sm:text-center">
             <div className="relative shrink-0">
               <span
                 aria-hidden="true"
-                className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-[color-mix(in_srgb,var(--k-red-fill)_22%,transparent)] bg-[var(--k-red-wash)] text-[var(--k-red)] shadow-[0_8px_20px_-10px_color-mix(in_srgb,var(--k-red-fill)_55%,transparent)] lg:h-24 lg:w-24"
+                className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-[color-mix(in_srgb,var(--k-red-fill)_22%,transparent)] bg-[var(--k-red-wash)] text-[var(--k-red)] shadow-[0_8px_20px_-10px_color-mix(in_srgb,var(--k-red-fill)_55%,transparent)] sm:h-24 sm:w-24"
               >
-                <IconSlot icon={icon} className="h-8 w-8 lg:h-10 lg:w-10" strokeWidth={1.6} />
+                <IconSlot icon={icon} className="h-8 w-8 sm:h-10 sm:w-10" strokeWidth={1.6} />
               </span>
               <span
                 aria-hidden="true"
@@ -40,17 +40,17 @@ export function StepPath({ steps }: { steps: PathStep[] }) {
               </span>
             </div>
 
-            <div className="min-w-0 pt-1 lg:pt-0">
-              <h3 className="text-[16px] font-extrabold tracking-[0.06em] text-[var(--k-ink)] uppercase lg:text-[17px]">{title}</h3>
-              <div className="mt-2 text-[15px] leading-relaxed text-[var(--k-ink-2)] lg:mx-auto lg:w-fit lg:text-center">{body}</div>
+            <div className="min-w-0 pt-1 sm:pt-0">
+              <h3 className="text-[16px] font-extrabold tracking-[0.06em] text-[var(--k-ink)] uppercase sm:text-[17px]">{title}</h3>
+              <div className="mt-2 text-[15px] leading-relaxed text-[var(--k-ink-2)] sm:mx-auto sm:w-fit sm:text-center">{body}</div>
             </div>
 
             {!last ? (
               <>
-                {/* phone: rail down to the next disc */}
+                {/* phone: rail down to the next disc (sm+ stacks each step in a grid cell) */}
                 <span
                   aria-hidden="true"
-                  className="absolute top-[4.9rem] bottom-[-2.3rem] left-9 w-px -translate-x-1/2 bg-[var(--k-line-strong)] lg:hidden"
+                  className="absolute top-[4.9rem] bottom-[-2.3rem] left-9 w-px -translate-x-1/2 bg-[var(--k-line-strong)] sm:hidden"
                 />
                 {/* desktop: arrow in the gap */}
                 <span
