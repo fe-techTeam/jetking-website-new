@@ -86,6 +86,16 @@ function SamplePlaceholder({ label, badge, className }: { label: string; badge: 
   );
 }
 
+/** A dashed "To be updated" tile for a small piece of content (a tool, a certification, a question) that has not been supplied yet. */
+function PlaceholderTile({ label, badge }: { label: string; badge: string }) {
+  return (
+    <div className="flex h-full min-h-[84px] flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-[var(--cp-red)] bg-[var(--cp-red-tint)] p-3 text-center">
+      <span className="text-[10px] font-bold tracking-[0.08em] text-[var(--cp-red)] uppercase">{badge}</span>
+      <span className="text-[12.5px] leading-snug font-bold text-[var(--cp-ink)]">{label}</span>
+    </div>
+  );
+}
+
 function degreeName(title: string) {
   return (title.split(/\s+in\s+/i)[0] ?? title).trim();
 }
@@ -241,18 +251,18 @@ export function CoursePageTemplate({
   ].filter((st) => st.value !== '0');
 
   const internshipPoints0 = (course.highlights ?? []).filter((h) => /intern|placement|offer/i.test(h));
-  const internshipPoints = internshipPoints0.length ? internshipPoints0 : isDegree && showPlaceholders ? [copy['coursePlaceholder.internship'], copy['coursePlaceholder.internship']] : [];
+  const internshipPoints = internshipPoints0.length ? internshipPoints0 : showPlaceholders ? [copy['coursePlaceholder.internship'], copy['coursePlaceholder.internship']] : [];
   const internshipIsPlaceholder = internshipPoints0.length === 0 && internshipPoints.length > 0;
 
   // Phone/tablet "on this page" strip: only the sections this course actually has, in page order.
   const jumpItems: JumpItem[] = [
     { id: 'cp-why', label: copy['courseJump.overview'] },
     { id: 'cp-curriculum', label: copy['courseJump.curriculum'] },
-    ...(toolsOnly.length ? [{ id: 'cp-tools', label: copy['courseJump.tools'] }] : []),
-    ...(course.certifications.length ? [{ id: 'cp-certs', label: copy['courseJump.certifications'] }] : []),
+    ...(toolsOnly.length || showPlaceholders ? [{ id: 'cp-tools', label: copy['courseJump.tools'] }] : []),
+    ...(course.certifications.length || showPlaceholders ? [{ id: 'cp-certs', label: copy['courseJump.certifications'] }] : []),
     { id: 'cp-records', label: copy['courseJump.placement'] },
-    ...(offeringCentres.length ? [{ id: 'cp-centres', label: copy['courseJump.centres'] }] : []),
-    ...(ownFaqs.length + feeFaqs.length ? [{ id: 'cp-faqs', label: copy['courseJump.faqs'] }] : []),
+    { id: 'cp-centres', label: copy['courseJump.centres'] },
+    ...(ownFaqs.length + feeFaqs.length || showPlaceholders ? [{ id: 'cp-faqs', label: copy['courseJump.faqs'] }] : []),
   ];
 
   const centreSection = (
@@ -305,6 +315,10 @@ export function CoursePageTemplate({
                 })),
               }))}
             />
+          ) : showPlaceholders ? (
+            <div className="mt-8">
+              <PlaceholderTile label={copy['coursePlaceholder.centres']} badge={copy['coursePlaceholder.badge']} />
+            </div>
           ) : null}
         </div>
       </section>
@@ -486,6 +500,14 @@ export function CoursePageTemplate({
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-28">
+            {showPlaceholders ? (
+              <div className="flex flex-col justify-center rounded-[24px] bg-[var(--cp-red-fill)] p-7 text-white outline-2 -outline-offset-8 outline-dashed outline-white/40 sm:p-8">
+                <p className="text-[13px] font-bold tracking-[0.12em] text-white/80 uppercase">{copy['courseWhy.demandKicker']}</p>
+                <p className="mt-4 text-[2.5rem] leading-none font-extrabold tracking-[-0.03em] sm:text-[3.25rem]">{copy['coursePlaceholder.demandValue']}</p>
+                <p className="mt-4 text-[1.125rem] leading-snug font-bold sm:text-[1.25rem]">{copy['coursePlaceholder.demandLabel']}</p>
+                <p className="mt-6 border-t border-white/25 pt-4 text-[12px] text-white/75">{copy['coursePlaceholder.demandSource']}</p>
+              </div>
+            ) : null}
             {course.careerRoles?.length ? (
               <div className="cp-card p-6 sm:p-7">
                 <span aria-hidden="true" className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--cp-red-tint)] text-[var(--cp-red)]">
@@ -504,6 +526,8 @@ export function CoursePageTemplate({
                   ))}
                 </ul>
               </div>
+            ) : showPlaceholders ? (
+              <PlaceholderTile label={copy['coursePlaceholder.careerRoles']} badge={copy['coursePlaceholder.badge']} />
             ) : null}
 
             {/* Slide 2: the "how does placement work" prompt, answered on this page rather than a new one. */}
@@ -537,8 +561,8 @@ export function CoursePageTemplate({
         </div>
       </section>
 
-      {/* Degree pages: the internship and placement points, in one prominent box (replaces the repeated photo banner). */}
-      {isDegree && internshipPoints.length ? (
+      {/* Every course: the internship and placement points, in one prominent box (a placeholder until the programme's own points are entered). */}
+      {internshipPoints.length ? (
         <section className="shell py-[clamp(2.25rem,5vw,3.5rem)]" aria-labelledby="cp-intern-title">
           <div className="relative overflow-hidden rounded-[28px]">
             <Image src={copy['coursePhoto.image']} alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_25%]" />
@@ -651,27 +675,31 @@ export function CoursePageTemplate({
         </div>
       </section>
 
-      {/* ── 6. Your learning journey ────────────────────────────────────── */}
-      {course.phases?.length ? (
+
+        </>
+      ) : null}
+
+      {/* ── 6. Your learning journey (every course; placeholder phases until the programme's own are entered) ── */}
+      {course.phases?.length || showPlaceholders ? (
         <section className="cp-section">
           <div className="shell">
             <Heading kicker={copy['courseJourney.kicker']}>{copy['courseJourney.title']}</Heading>
             <ol className="mt-8 grid gap-4 lg:grid-cols-3">
-              {course.phases.map((phase, i) => (
-                <li key={phase.title} className={`cp-card relative border-t-4 p-6 ${ACCENT_TOPS[i % 3]}`}>
+              {(course.phases?.length ? course.phases : [null, null, null]).map((phase, i) => (
+                <li key={phase ? phase.title : `ph-${i}`} className={`cp-card relative border-t-4 p-6 ${ACCENT_TOPS[i % 3]} ${phase ? '' : 'border-dashed'}`}>
                   <span className={`grid h-10 w-10 place-items-center rounded-full text-[15px] font-bold ${ACCENT_DOTS[i % 3]}`}>
                     {i + 1}
                   </span>
-                  <h3 className="cp-h3 mt-4">{phase.title}</h3>
-                  <p className="mt-2 text-[14.5px] leading-relaxed text-[var(--cp-ink-2)]">{phase.description}</p>
+                  {phase ? null : (
+                    <span className="mt-3 inline-flex rounded-full border border-dashed border-[var(--cp-red)] bg-[var(--cp-red-tint)] px-2.5 py-0.5 text-[11px] font-bold tracking-[0.08em] text-[var(--cp-red)] uppercase">{copy['coursePlaceholder.badge']}</span>
+                  )}
+                  <h3 className="cp-h3 mt-4">{phase ? phase.title : copy['coursePlaceholder.phaseTitle']}</h3>
+                  <p className={`mt-2 text-[14.5px] leading-relaxed text-[var(--cp-ink-2)] ${phase ? '' : 'italic'}`}>{phase ? phase.description : copy['coursePlaceholder.phaseBody']}</p>
                 </li>
               ))}
             </ol>
           </div>
         </section>
-      ) : null}
-
-        </>
       ) : null}
 
       {/* ── 7. Curriculum ───────────────────────────────────────────────── */}
@@ -717,31 +745,43 @@ export function CoursePageTemplate({
       </section>
 
       {/* ── 8. Tools & technologies — all logos in two lines on a light band ─ */}
-      {toolsOnly.length ? (
+      {toolsOnly.length || showPlaceholders ? (
         <section id="cp-tools" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
           <div className="shell">
             <Heading kicker={copy['courseTools.kicker']}>{copy['courseTools.title']}</Heading>
             <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
-              {toolsOnly.map((tool) => (
-                <li key={tool}>
-                  <BrandTile name={tool} />
-                </li>
-              ))}
+              {toolsOnly.length
+                ? toolsOnly.map((tool) => (
+                    <li key={tool}>
+                      <BrandTile name={tool} />
+                    </li>
+                  ))
+                : Array.from({ length: 6 }, (_, i) => (
+                    <li key={`tool-ph-${i}`}>
+                      <PlaceholderTile label={copy['coursePlaceholder.tool']} badge={copy['coursePlaceholder.badge']} />
+                    </li>
+                  ))}
             </ul>
           </div>
         </section>
       ) : null}
 
       {/* ── 9. Industry certifications ──────────────────────────────────── */}
-      {course.certifications.length ? (
+      {course.certifications.length || showPlaceholders ? (
         <section id="cp-certs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker={copy['courseCerts.kicker']}>{copy['courseCerts.title']}</Heading>
           <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
-            {course.certifications.map((cert) => (
-              <li key={cert}>
-                <BrandTile name={cert} />
-              </li>
-            ))}
+            {course.certifications.length
+              ? course.certifications.map((cert) => (
+                  <li key={cert}>
+                    <BrandTile name={cert} />
+                  </li>
+                ))
+              : Array.from({ length: 6 }, (_, i) => (
+                  <li key={`cert-ph-${i}`}>
+                    <PlaceholderTile label={copy['coursePlaceholder.cert']} badge={copy['coursePlaceholder.badge']} />
+                  </li>
+                ))}
           </ul>
           {course.certificateImage && !isDegree ? (
             <figure className="cp-card mt-10 grid items-center gap-6 overflow-hidden p-5 sm:grid-cols-[minmax(0,22rem)_1fr] sm:gap-10 sm:p-8 lg:gap-14">
@@ -861,10 +901,16 @@ export function CoursePageTemplate({
       </section>
 
       {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
-      {ownFaqs.length + feeFaqs.length ? (
+      {ownFaqs.length + feeFaqs.length || showPlaceholders ? (
         <section id="cp-faqs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker={copy['courseFaq.kicker']}>{copy['courseFaq.title']}</Heading>
           <div className="mt-8">
+            {!ownFaqs.length && !feeFaqs.length ? (
+              <ul className="grid gap-3 sm:grid-cols-2">
+                <li><PlaceholderTile label={copy['coursePlaceholder.faqQuestion']} badge={copy['coursePlaceholder.badge']} /></li>
+                <li><PlaceholderTile label={copy['coursePlaceholder.faqAnswer']} badge={copy['coursePlaceholder.badge']} /></li>
+              </ul>
+            ) : null}
             {ownFaqs.length ? <FaqList items={ownFaqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} /> : null}
             {/* The fees / placement answers: reading this block is the `fee-depth` signal. */}
             <div id="course-fee-faqs">{feeFaqs.length ? <FaqList continued startAt={ownFaqs.length + 1} items={feeFaqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} /> : null}</div>

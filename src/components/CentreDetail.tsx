@@ -246,13 +246,13 @@ export function CentreDetail({
   const hasAdmissions = eligibility.length > 0 || journey.length > 0;
   const jumpItems: JumpItem[] = [
     ...(hasCourses || showCoursePlaceholders ? [{ id: 'centre-courses', label: copy['centreJump.courses'] }] : []),
-    ...(hasAdmissions ? [{ id: 'centre-admissions', label: copy['centreJump.admissions'] }] : []),
+    ...(hasAdmissions || showPlaceholders ? [{ id: 'centre-admissions', label: copy['centreJump.admissions'] }] : []),
     ...(placements.length || placeholderPlacements.length ? [{ id: 'centre-placements-section', label: copy['centreJump.placements'] }] : []),
     ...(hasStoriesSection ? [{ id: 'centre-stories-section', label: copy['centreJump.stories'] }] : []),
     ...(people.length ? [{ id: 'centre-faculty-section', label: copy['centreJump.faculty'] }] : []),
     ...(newest.length ? [{ id: 'centre-news-section', label: copy['centreJump.news'] }] : []),
     { id: 'centre-visit-section', label: copy['centreJump.visit'] },
-    ...(faqs.length ? [{ id: 'centre-faq-section', label: copy['centreJump.faqs'] }] : []),
+    ...(faqs.length || showPlaceholders ? [{ id: 'centre-faq-section', label: copy['centreJump.faqs'] }] : []),
   ];
 
 
@@ -499,6 +499,26 @@ export function CentreDetail({
             </div>
           ) : null}
         </Section>
+      ) : showPlaceholders ? (
+        <Section tone={nextTone()} id="centre-admissions" labelledBy="centre-admissions-heading" className="scroll-mt-36">
+          <SectionHeader
+            id="centre-admissions-heading"
+            eyebrow={copy['centreAdmissions.eyebrow']}
+            title={copy['centreAdmissions.eligibilityTitle']}
+          />
+          <ul className="grid gap-4 sm:gap-5 md:grid-cols-2">
+            {[
+              { title: copy['centrePlaceholder.admissionsTitle'], body: copy['centrePlaceholder.admissionsBody'] },
+              { title: copy['centrePlaceholder.stepsTitle'], body: copy['centrePlaceholder.stepsBody'] },
+            ].map((card) => (
+              <li key={card.title} className="kit-card flex flex-col gap-3 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-5 sm:p-6">
+                <span className="w-fit text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['centrePlaceholder.badge']}</span>
+                <h3 className="text-[17px] font-extrabold text-[var(--k-ink)]">{card.title}</h3>
+                <p className="text-[14px] leading-snug text-[var(--k-ink-2)]">{card.body}</p>
+              </li>
+            ))}
+          </ul>
+        </Section>
       ) : null}
 
       {/* Placements */}
@@ -675,6 +695,14 @@ export function CentreDetail({
                     </dd>
                   </div>
                 </div>
+              ) : showPlaceholders ? (
+                <div className="flex gap-3">
+                  <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.phone']}</dt>
+                    <dd className="mt-0.5 text-[16px] font-semibold text-[var(--k-red)] italic">{copy['centrePlaceholder.text']}</dd>
+                  </div>
+                </div>
               ) : null}
               {centre.helpline ? (
                 <div className="flex gap-3">
@@ -697,6 +725,14 @@ export function CentreDetail({
                     </dd>
                   </div>
                 </div>
+              ) : showPlaceholders ? (
+                <div className="flex gap-3">
+                  <Headphones className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.helpline']}</dt>
+                    <dd className="mt-0.5 text-[16px] font-semibold text-[var(--k-red)] italic">{copy['centrePlaceholder.text']}</dd>
+                  </div>
+                </div>
               ) : null}
               {centre.email ? (
                 <div className="flex gap-3">
@@ -711,6 +747,14 @@ export function CentreDetail({
                         {centre.email}
                       </a>
                     </dd>
+                  </div>
+                </div>
+              ) : showPlaceholders ? (
+                <div className="flex gap-3">
+                  <Mail className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                  <div>
+                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.email']}</dt>
+                    <dd className="mt-0.5 text-[16px] font-semibold text-[var(--k-red)] italic">{copy['centrePlaceholder.text']}</dd>
                   </div>
                 </div>
               ) : null}
@@ -765,10 +809,21 @@ export function CentreDetail({
       </Section>
 
       {/* FAQ */}
-      {faqs.length ? (
+      {faqs.length || showPlaceholders ? (
         <Section tone={nextTone()} id="centre-faq-section" labelledBy="centre-faq" className="scroll-mt-36">
           <SectionHeader id="centre-faq" eyebrow={copy['centreFaq.eyebrow']} title={copy['centreFaq.title']} />
-          <FaqList items={faqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} />
+          {faqs.length ? (
+            <FaqList items={faqs.map((f) => ({ id: f.question, question: f.question, answer: f.answer }))} />
+          ) : (
+            <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+              {[copy['centrePlaceholder.faqQuestion'], copy['centrePlaceholder.faqAnswer']].map((text) => (
+                <li key={text} className="kit-card flex flex-col gap-2 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-5">
+                  <span className="w-fit text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['centrePlaceholder.badge']}</span>
+                  <p className="text-[15px] font-bold text-[var(--k-ink)]">{text}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </Section>
       ) : null}
 

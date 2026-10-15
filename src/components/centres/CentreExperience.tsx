@@ -49,8 +49,8 @@ export function CentreReasons({ tiles, showPlaceholders, placeholderNote }: { ti
               <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-2xl bg-white/15">
                 <Icon className="h-6 w-6" strokeWidth={1.9} />
               </span>
-              <h3 className="text-[18px] leading-snug font-extrabold sm:text-[20px]">{tile.title}</h3>
-              <p className="text-[14px] leading-snug text-white/95 sm:text-[14.5px]">{tile.body}</p>
+              <h3 className="text-[18px] leading-snug font-extrabold !text-white sm:text-[20px]">{tile.title}</h3>
+              <p className="text-[14px] leading-snug !text-white/95 sm:text-[14.5px]">{tile.body}</p>
             </div>
           </li>
         );

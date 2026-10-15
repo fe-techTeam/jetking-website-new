@@ -36,10 +36,8 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
     ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree').map((c) => ({ id: c.id, label: c.label })),
   ];
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
-  if (tabs.length === 0) return null;
-
-  const activeTab = tabs.find((t) => t.id === tab) ?? tabs[0]!;
-  const visible = courses.filter((c) => inTab(c, activeTab));
+  const activeTab = tabs.find((t) => t.id === tab) ?? tabs[0];
+  const visible = activeTab ? courses.filter((c) => inTab(c, activeTab)) : [];
 
   return (
     <Section tone="plain" labelledBy="home-programs-heading">
@@ -59,6 +57,10 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
           }
         />
 
+        {!activeTab ? (
+          <p className="mt-6 rounded-2xl border-2 border-dashed border-[var(--k-line-strong)] bg-[var(--k-red-wash)] p-6 text-center text-[15px] text-[var(--k-ink-2)]">{copy['programs.empty']}</p>
+        ) : (
+          <>
         <div
           className="-mx-[var(--gutter)] flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [mask-image:linear-gradient(to_right,black_85%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:[mask-image:none]"
           role="group"
@@ -92,6 +94,8 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
             ))}
           </CardTrack>
         </div>
+          </>
+        )}
       </Section>
   );
 }

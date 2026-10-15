@@ -116,7 +116,11 @@ export function StorySlider({
     if (v) slides.push({ kind: 'video', key: `v-${v.provider}-${v.videoId}`, video: v });
     if (s) slides.push({ kind: 'quote', key: `q-${s.name}`, story: s });
   }
-  if (slides.length === 0) return null;
+  if (slides.length === 0) {
+    return (
+      <p className="mt-6 rounded-2xl border-2 border-dashed border-[var(--k-line-strong)] bg-[var(--k-red-wash)] p-6 text-center text-[15px] text-[var(--k-ink-2)]">{copy['proof.stories.empty']}</p>
+    );
+  }
 
   return (
     <div>

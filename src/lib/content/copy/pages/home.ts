@@ -206,6 +206,9 @@ export const homeCopy = definePageCopy({
     'blog.cta.href': '/blog',
     'blog.nav.label': 'articles',
     'proof.nav.label': 'alumni',
+    'blog.empty': 'Articles are on the way — check back soon.',
+    'programs.empty': 'Courses are being updated — check back soon.',
+    'proof.stories.empty': 'Student stories are on the way — check back soon.',
     'blog.list.aria': 'Latest articles',
 
     // ── Franchise band ────────────────────────────────────────────────────

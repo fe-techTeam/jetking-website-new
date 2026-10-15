@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
@@ -49,6 +50,9 @@ export function CourseCard({
 }) {
   const text = description ?? course.eligibility;
   const stack = layout === 'stack';
+  // No photo, or one that fails to load: the Jetking wordmark stands in, so a card never shows an empty box.
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const showPhoto = Boolean(course.heroImage) && !photoFailed;
 
   return (
     <TransitionLink
@@ -66,19 +70,26 @@ export function CourseCard({
               : `min-h-[112px] w-[104px] min-[400px]:w-[120px] sm:min-h-0 sm:w-auto ${compact ? 'sm:aspect-[16/6]' : 'sm:aspect-[16/10]'}`
           }`}
         >
-          {course.heroImage ? (
+          {showPhoto && course.heroImage ? (
             <Image
               src={course.heroImage.url}
               alt=""
               fill
               sizes="(min-width: 1280px) 22vw, (min-width: 640px) 42vw, 120px"
+              onError={() => setPhotoFailed(true)}
               className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
             />
+          ) : (
+            <div className="absolute inset-0 bg-[var(--k-red-wash,#fdf1f1)]">
+              <Image src="/brand/jetking-wordmark.png" alt="" fill sizes="200px" className="object-contain p-[18%]" />
+            </div>
+          )}
+          {showPhoto ? (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
+            />
           ) : null}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/65 via-transparent to-transparent"
-          />
           {badge ? (
             <span className="dc-cta absolute top-2 left-2 rounded-full px-2.5 py-1 text-[12px] font-bold sm:top-3 sm:left-3">
               {badge}

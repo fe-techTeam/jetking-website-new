@@ -16,7 +16,6 @@ import type { HomeCopy } from '@/lib/content/copy/pages/home';
 export function BlogTeaser({ posts, copy }: { posts: Post[]; copy: HomeCopy }) {
   const { ref, edge, scrollByItem } = useScrollTrack<HTMLUListElement>();
   const canSlide = !(edge.start && edge.end);
-  if (posts.length === 0) return null;
 
   return (
     <Section tone="tint" labelledBy="home-blog-heading">
@@ -47,6 +46,12 @@ export function BlogTeaser({ posts, copy }: { posts: Post[]; copy: HomeCopy }) {
           </div>
         }
       />
+
+      {posts.length === 0 ? (
+
+        <p className="mt-6 rounded-2xl border-2 border-dashed border-[var(--k-line-strong)] bg-[var(--k-red-wash)] p-6 text-center text-[15px] text-[var(--k-ink-2)]">{copy['blog.empty']}</p>
+
+      ) : null}
 
       <ul
         ref={ref}

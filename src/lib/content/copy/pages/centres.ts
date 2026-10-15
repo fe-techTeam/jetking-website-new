@@ -130,6 +130,12 @@ export const centresCopy = definePageCopy({
     'centrePlaceholder.roleHead': 'Centre Head',
     'centrePlaceholder.rolePd': 'Personality Development Trainer',
     'centrePlaceholder.roleCounsellor': 'Career Counsellor',
+    'centrePlaceholder.admissionsTitle': 'Eligibility to be added',
+    'centrePlaceholder.admissionsBody': 'Who can join, the documents needed and the admission steps at this centre will be listed here.',
+    'centrePlaceholder.stepsTitle': 'Admission steps to be added',
+    'centrePlaceholder.stepsBody': 'The steps from enquiry to joining this centre will be listed here.',
+    'centrePlaceholder.faqQuestion': 'Frequently asked question to be added',
+    'centrePlaceholder.faqAnswer': 'The answer to this question about the centre will appear here.',
 
     'centreStats.centresLabel': 'Centres in {cities} cities',
     'centreStats.enrolled.value': '17,000+',
