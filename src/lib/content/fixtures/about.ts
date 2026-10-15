@@ -66,7 +66,7 @@ export const DIRECTORS: Leader[] = [
   },
   {
     name: 'Mr. Harsh Bharwani',
-    role: 'Managing Director and CEO',
+    role: 'CEO and Managing Director',
     photoUrl: '/about/leaders/harsh.jpg',
     bio: [
       'Harsh Bharwani is the CEO and Managing Director of Jetking Infotrain Limited, bringing over two decades of experience in education, technology, and business innovation. He has been a driving force behind Jetking’s global expansion—launching two of the company’s largest owned centers and opening more than a dozen international locations.',
@@ -77,7 +77,7 @@ export const DIRECTORS: Leader[] = [
   },
   {
     name: 'Mr. Siddarth Bharwani',
-    role: 'Joint Managing Director and CFO',
+    role: 'CFO and Joint Managing Director',
     photoUrl: '/about/leaders/siddarth.jpg',
     bio: [
       'Ambitious about taking his family business to new heights and continue to expand overseas, Siddarth Bharwani is a third-generation entrepreneur. He was previously responsible for rejigging Jetking’s brand image and is now leading the charge to triple the business turnover within the next few years.',
@@ -95,13 +95,13 @@ export const DIRECTORS: Leader[] = [
 export const MANAGEMENT_TEAM: Leader[] = [
   { name: 'Anand Dhruv', role: 'President – People & Workforce Transformation', photoUrl: '/about/leaders/team/anand-dhruv.jpg' },
   { name: 'Dhruti Shah', role: 'Director – Learning Transformation Outcomes & Strategic Partnership', photoUrl: '/about/leaders/team/dhruti-shah.jpg' },
-  { name: 'Meghana Bhatt', role: 'General Manager, Sales Head', photoUrl: '/about/leaders/team/meghana-bhatt.jpg' },
+  { name: 'Meghna Bhatt', role: 'Head – Growth and Partnership', photoUrl: '/about/leaders/team/meghana-bhatt.jpg' },
   { name: 'Keyur Raval', role: 'Associate Vice President – Finance & Treasury', photoUrl: '/about/leaders/team/keyur-raval.jpg' },
   { name: 'Bheemeswara Sastry', role: 'Head – Learning & Delivery', photoUrl: '/about/leaders/team/bheemeswara-sastry.jpg' },
   { name: 'Sujeet Kumar', role: 'General Manager, Systems and IT', photoUrl: '/about/leaders/team/sujeet-kumar.jpg' },
-  { name: 'Varun Sukhrani', role: 'Corporate Legal Advisor', photoUrl: '/about/leaders/team/varun-sukhrani.jpg' },
-  { name: 'Pradnya Pawar', role: 'Manager, Placements', photoUrl: '/about/leaders/team/pradnya-pawar.jpg' },
-  { name: 'Shiv Hansraj Pal', role: 'Assistant Manager, Digital Marketing', photoUrl: '/about/leaders/team/shiv-hansraj-pal.jpg' },
+  { name: 'Rajashree' },
+  { name: 'Akhilesh' },
+  { name: 'Shabnam' },
 ];
 
 
