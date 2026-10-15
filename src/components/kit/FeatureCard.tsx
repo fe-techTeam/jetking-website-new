@@ -19,11 +19,11 @@ export function FeatureCard({
 }) {
   return (
     <article
-      className={`kit kit-card kit-card-lift flex h-full gap-3 p-5 sm:p-6 ${
-        compact ? 'max-sm:flex-row max-sm:items-start max-sm:gap-4 max-sm:p-4 sm:flex-col' : 'flex-col'
+      className={`kit kit-card kit-card-lift flex h-full ${
+        compact ? 'flex-row items-start gap-4 p-4 sm:flex-col sm:items-stretch sm:gap-3 sm:p-6' : 'flex-col gap-3 p-5 sm:p-6'
       }`}
     >
-      <div className={`flex items-center justify-between gap-3 ${compact ? 'max-sm:shrink-0' : ''}`}>
+      <div className={`flex items-center justify-between gap-3 ${compact ? 'shrink-0 sm:shrink' : ''}`}>
         {icon ? (
           <span className="kit-iconwell" aria-hidden="true">
             <IconSlot icon={icon} className="h-5 w-5" strokeWidth={1.9} />
@@ -37,7 +37,7 @@ export function FeatureCard({
           </span>
         ) : null}
       </div>
-      <div className="flex min-w-0 flex-col gap-3 max-sm:gap-1.5 sm:gap-3">
+      <div className={`flex min-w-0 flex-col ${compact ? 'gap-1.5 sm:gap-3' : 'gap-3'}`}>
         <h3 className="text-[17px] leading-snug font-bold text-[var(--k-ink)]">{title}</h3>
         <div className="text-[15px] leading-relaxed text-[var(--k-ink-2)]">{children}</div>
       </div>

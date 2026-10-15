@@ -404,8 +404,8 @@ export function ParentLanding({
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
       <Section tone="wash" labelledBy="par-cta">
           <div className="kit kit-card">
-            <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 lg:grid-cols-12 lg:gap-8 lg:p-10 xl:gap-12">
-              <div className="flex min-w-0 flex-col items-start lg:col-span-7">
+            <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 min-[880px]:grid-cols-12 min-[880px]:gap-8 lg:p-10 xl:gap-12">
+              <div className="flex min-w-0 flex-col items-start min-[880px]:col-span-7">
                 <h2
                   id="par-cta"
                   className="section-title max-w-[22ch] font-display text-[var(--dc-ink)]"
@@ -439,7 +439,7 @@ export function ParentLanding({
                 </p>
               </div>
 
-              <div className="relative mx-auto w-full max-w-[340px] lg:col-span-5 lg:mx-0 lg:ml-auto lg:max-w-[360px]">
+              <div className="relative mx-auto w-full max-w-[340px] min-[880px]:col-span-5 min-[880px]:mx-0 min-[880px]:ml-auto lg:max-w-[360px]">
                 <div className="relative aspect-square w-full">
                   <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--dc-hairline-strong)] bg-[linear-gradient(160deg,var(--dc-card),var(--dc-surface),var(--dc-card))] shadow-media">
                     <Image

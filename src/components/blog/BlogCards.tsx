@@ -73,7 +73,7 @@ export function PostCard({
         className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[var(--dc-cut)]"
       >
         <div
-          className={`blog-card-media relative aspect-[840/300] overflow-hidden ${cover ? '' : 'max-sm:hidden'}`}
+          className={`blog-card-media relative aspect-[840/300] overflow-hidden ${cover ? '' : 'hidden sm:block'}`}
         >
           {cover ? (
             <Image

@@ -164,7 +164,7 @@ function CollapsibleLogoGrid<T>({
     <>
       <ul className={`mt-7 ${LOGO_GRID}`}>
         {items.map((item, i) => (
-          <li key={itemKey(item)} className={`min-w-0 ${i >= PHONE_PREVIEW ? 'max-sm:hidden' : ''}`}>
+          <li key={itemKey(item)} className={`min-w-0 ${i >= PHONE_PREVIEW ? 'hidden sm:list-item' : ''}`}>
             {render(item)}
           </li>
         ))}
@@ -315,7 +315,7 @@ export function ExploreLanding({
       </section>
 
       {/* ── Quick enquiry (optional — no pressure) ───────────────────────── */}
-      <Section tone="tint" deco="glow" id="enquire" className="max-lg:order-last">
+      <Section tone="tint" deco="glow" id="enquire" className="order-last lg:order-none">
         <div className="kit kit-card overflow-hidden ">
           <div className="grid lg:grid-cols-2">
             <div className="relative min-h-[200px] overflow-hidden lg:min-h-full">
