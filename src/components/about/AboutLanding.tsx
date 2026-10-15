@@ -64,18 +64,18 @@ function LeaderCard({
   return (
     <li data-reveal className="w-[calc(50%-6px)] sm:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]">
       <article className="kit kit-card kit-card-lift h-full">
-        <div className="flex h-full flex-col items-center gap-3 p-5 text-center xs:flex-row xs:gap-4 xs:p-4 xs:text-left sm:gap-6 sm:p-6 lg:gap-4 lg:p-5">
-          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-1 ring-[var(--k-line)] sm:h-32 sm:w-32 lg:h-20 lg:w-20 xl:h-24 xl:w-24">
+        <div className="flex h-full flex-col items-center gap-4 p-6 text-center sm:gap-5 sm:p-7 lg:p-6">
+          <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full bg-[var(--k-red-wash)] ring-1 ring-[var(--k-line)] sm:h-32 sm:w-32 lg:h-28 lg:w-28 xl:h-32 xl:w-32">
             <LeaderAvatar leader={leader} />
           </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-display text-[18px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[22px] lg:text-[17px] xl:text-[19px]">
+          <div className="flex min-w-0 flex-1 flex-col items-center">
+            <h3 className="font-display text-[18px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[20px] lg:text-[18px] xl:text-[20px]">
               {leader.name}
             </h3>
             {leader.role ? (
               <p className="mt-1 text-[13px] font-bold text-[var(--k-red)] sm:text-[14px]">{leader.role}</p>
             ) : null}
-            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} align="start" /> : null}
+            {leader.bio ? <LeaderDetailModal leader={leader} copy={copy} /> : null}
           </div>
         </div>
       </article>

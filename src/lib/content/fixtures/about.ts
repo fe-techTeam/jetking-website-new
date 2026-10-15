@@ -46,7 +46,7 @@ export const VALUES = [
  *
  * `photoUrl: undefined` renders an initials placeholder (see `LeaderAvatar` in
  * AboutLanding.tsx) instead of a broken image — real photos for the Directors
- * (new ones, replacing the current three), SGB, the Management Team and the
+ * (new ones, replacing the current three), the Management Team and the
  * Independent Director are not yet supplied.
  */
 
@@ -54,6 +54,7 @@ export const DIRECTORS: Leader[] = [
   {
     name: 'Mr. Suresh G. Bharwani',
     role: 'Founder & Chairman Emeritus',
+    photoUrl: '/about/leaders/suresh.jpg',
   },
   {
     name: 'Mr. Avinash Bharwani',
