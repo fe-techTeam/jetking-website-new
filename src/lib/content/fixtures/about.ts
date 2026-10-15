@@ -101,7 +101,7 @@ export const MANAGEMENT_TEAM: Leader[] = [
   { name: 'Bheemeswara Sastry', role: 'Head – Learning & Delivery', photoUrl: '/about/leaders/team/bheemeswara-sastry.jpg' },
   { name: 'Sujeet Kumar', role: 'General Manager, Systems and IT', photoUrl: '/about/leaders/team/sujeet-kumar.jpg' },
   { name: 'Rajashree' },
-  { name: 'Akhilesh' },
+  { name: 'Akhilesh Verma', role: 'Centre Manager – Laxminagar', photoUrl: '/about/leaders/team/akhilesh-verma.jpg' },
   { name: 'Shabnam Mulla', role: 'Centre Manager – Vashi', photoUrl: '/about/leaders/team/shabnam-mulla.jpg' },
 ];
 
