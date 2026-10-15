@@ -199,7 +199,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
       {/* ── Honest disclaimer — load-bearing, not decorative ─────────────── */}
       <section className="shell relative mt-8 pb-12 sm:mt-10 sm:pb-14 lg:pb-16">
         <div className="kit kit-card px-5 py-5 sm:px-6 sm:py-6">
-          <p className="text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">{PLACEMENT_DISCLAIMER}</p>
+          <p className="max-w-[110ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">{PLACEMENT_DISCLAIMER}</p>
         </div>
       </section>
 

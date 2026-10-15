@@ -90,7 +90,7 @@ function SamplePlaceholder({ label, badge, className }: { label: string; badge: 
 function PlaceholderTile({ label, badge }: { label: string; badge: string }) {
   return (
     <div className="flex h-full min-h-[84px] flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed border-[var(--cp-red)] bg-[var(--cp-red-tint)] p-3 text-center">
-      <span className="text-[10px] font-bold tracking-[0.08em] text-[var(--cp-red)] uppercase">{badge}</span>
+      <span className="text-[11px] font-bold tracking-[0.08em] text-[var(--cp-red)] uppercase">{badge}</span>
       <span className="text-[12.5px] leading-snug font-bold text-[var(--cp-ink)]">{label}</span>
     </div>
   );

@@ -72,13 +72,13 @@ function Block({
       );
     case 'p':
       return (
-        <p className="mt-4 text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <p className="mt-4 max-w-[85ch] text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           <Inline text={block.text} />
         </p>
       );
     case 'ul':
       return (
-        <ul className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ul className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="relative pl-5">
               <span aria-hidden="true" className="absolute top-[0.72em] left-0.5 h-1.5 w-1.5 rounded-full bg-[var(--dc-accent-soft)]" />
@@ -91,7 +91,7 @@ function Block({
       // The source's own numbering ("a.", "3.") is kept as text, so cross-references
       // such as "clause 3.1(b)" still read the way the document says.
       return (
-        <ol role="list" className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ol role="list" className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-1">
               <span aria-hidden="true" className="font-semibold text-[var(--dc-ink-muted)] tabular-nums">

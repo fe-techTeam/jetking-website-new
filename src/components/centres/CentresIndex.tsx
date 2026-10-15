@@ -759,6 +759,16 @@ function CentreCard({
     centre.locality.trim().toLowerCase() === city.name.trim().toLowerCase()
       ? city.name
       : `${centre.locality}, ${city.name}`;
+  // The stored address usually already ends in "…, Locality, City, State PIN"; only print the parts it lacks.
+  const addressLower = centre.addressLine.toLowerCase();
+  const inAddress = (part: string) => !part.trim() || addressLower.includes(part.trim().toLowerCase());
+  const addressExtra = [centre.locality, city.name]
+    .filter((part, i, all) => all.findIndex((x) => x.trim().toLowerCase() === part.trim().toLowerCase()) === i)
+    .filter((part) => !inAddress(part))
+    .join(', ');
+  const addressTail = [inAddress(centre.state) ? '' : centre.state, inAddress(centre.pincode) ? '' : centre.pincode]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <li
@@ -799,10 +809,18 @@ function CentreCard({
 
       <address className="mt-4 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)] not-italic sm:text-[14px]">
         {centre.addressLine}
-        <br />
-        {localityCityLabel}
-        <br />
-        {centre.state} {centre.pincode}
+        {addressExtra ? (
+          <>
+            <br />
+            {addressExtra}
+          </>
+        ) : null}
+        {addressTail ? (
+          <>
+            <br />
+            {addressTail}
+          </>
+        ) : null}
       </address>
 
       {centre.phone ? (

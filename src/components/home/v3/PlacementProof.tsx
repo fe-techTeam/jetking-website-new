@@ -94,7 +94,7 @@ export function PlacementProof({ disclaimer, copy }: { disclaimer: string; copy:
         </Reveal>
       ) : null}
 
-      <p className="mt-5 text-[14px] leading-relaxed text-[var(--k-ink-3)]">{disclaimer}</p>
+      <p className="mt-5 max-w-[100ch] text-[14px] leading-relaxed text-[var(--k-ink-3)]">{disclaimer}</p>
     </Section>
   );
 }

@@ -149,7 +149,7 @@ export function BlogArticle({
 
       <div className="shell pt-8 pb-12 sm:pt-10 sm:pb-14 lg:pb-16">
         <article className="w-full min-w-0">
-          <p className="text-[16px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[17.5px]">
+          <p className="max-w-[75ch] text-[16px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[17.5px]">
             {decodeEntities(post.excerpt)}
           </p>
 

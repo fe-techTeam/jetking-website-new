@@ -217,7 +217,7 @@ export function EnquiryForm({
      */
     <form onSubmit={handleSubmit} className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:items-start">
 <BotTrap />
-      <p className="text-base text-[var(--dc-ink-secondary)] sm:col-span-2">
+      <p className="max-w-[70ch] text-base text-[var(--dc-ink-secondary)] sm:col-span-2">
         {classification.persona === 'franchise' ? (
           <>
             {copy['form.intro.franchise.lead']}{' '}
