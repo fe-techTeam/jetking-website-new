@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { ArrowRight, CalendarDays, MonitorPlay, RefreshCw, Sunset, type LucideIcon } from 'lucide-react';
+import { CalendarDays, MonitorPlay, RefreshCw, Sunset, type LucideIcon } from 'lucide-react';
 import { Section, SectionHeader } from '@/components/kit';
 import type { professionalCopy } from '@/lib/content/copy/pages/professional';
 
@@ -28,12 +27,6 @@ export function FlexibleLearning({ copy }: { copy: typeof professionalCopy.defau
           </li>
         ))}
       </ul>
-      <p className="mt-6">
-        <Link href="/enquiry" className="tap inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-[var(--k-red)]">
-          Ask a counsellor which batch suits you
-          <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
-      </p>
     </Section>
   );
 }

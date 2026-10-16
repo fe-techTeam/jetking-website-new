@@ -315,15 +315,6 @@ export function CentreDetail({
               <p className="centres-reveal centres-reveal-delay-2 mt-3 max-w-[40ch] text-[15px] leading-[1.6] text-[var(--dc-ink-secondary)] sm:text-[16.5px]">
                 {copy['centreHero.sub']}
               </p>
-
-              <ul className="centres-reveal centres-reveal-delay-3 mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] sm:mt-8 sm:text-[15px]">
-                {[copy['centreHero.point1'], copy['centreHero.point2'], copy['centreHero.point3']].map((point) => (
-                  <li key={point} className="inline-flex items-center gap-2">
-                    <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--dc-accent)]" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
             </div>
 
             <CentreHeroForm

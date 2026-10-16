@@ -23,6 +23,8 @@ import { fill } from "@/lib/content/copy/define";
 import type { HomeCopy } from "@/lib/content/copy/pages/home";
 
 const CAMPUS_ICONS = [Monitor, CalendarDays, Compass, Mic, Users];
+/** The labs (0) and master sessions (3) cards repeat "Why Jetking" above, so only the three that are new are shown. */
+const CAMPUS_SHOWN = [1, 2, 4];
 
 interface MapCentre {
   slug: string;
@@ -298,12 +300,12 @@ export function CentreNetwork({
           </div>
 
           <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-            {CAMPUS_ICONS.map((Icon, i) => (
+            {CAMPUS_SHOWN.map((i, pos) => ({ Icon: CAMPUS_ICONS[i]!, i, last: pos === CAMPUS_SHOWN.length - 1 })).map(({ Icon, i, last }) => (
               <li
                 key={i}
                 className={[
                   "kit kit-card kit-card-lift group relative flex items-start gap-4 overflow-hidden p-5 sm:flex-col sm:gap-0 sm:p-6",
-                  i === CAMPUS_ICONS.length - 1 ? "sm:col-span-2" : "",
+                  last ? "sm:col-span-2" : "",
                 ].join(" ")}
               >
                 <span

@@ -88,7 +88,7 @@ export async function loadHomeData(): Promise<HomeData> {
     content.listCentres(),
     content.listTrustSignals(),
     content.listHomepageVariants(),
-    content.listPosts({ limit: 3 }),
+    content.listPosts({ limit: 4 }),
     content.getAboutPage(),
     content.getPlacementsPage(),
     content.listFaqs(),

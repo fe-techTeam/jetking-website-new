@@ -60,10 +60,6 @@ export const PROCESS_STEPS: ProcessStep[] = [
 export const STUDENT_BENEFITS: StudentBenefit[] = [
   { title: 'Learn practically', description: 'Hands-on training with real-world tools.' },
   { title: 'English speaking', description: 'Improve communication for the workplace.' },
-  {
-    title: 'Interview skills',
-    description: 'Build confidence and learn interview techniques.',
-  },
   { title: 'Get jobs', description: 'Explore opportunities through our hiring network.' },
   { title: 'Mock Interviews', description: 'Practice with structured feedback.' },
   { title: 'AI Bot Interviews', description: 'Experience realistic interview scenarios with AI.' },

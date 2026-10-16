@@ -23,8 +23,9 @@ export function HomeFaq({
   copy: HomeCopy;
 }) {
   // Families ask this one before anything else, and it used to be answered on the Parent page.
+  // The eligibility answer already says there is no entrance test (so does the form section above), so that separate question is left out here.
   const faqs: Faq[] = [
-    ...stored,
+    ...stored.filter((f) => f.id !== 'faq-entrance-test'),
     {
       id: 'faq-parent-trust',
       question: copy['faq.parent.question'],
