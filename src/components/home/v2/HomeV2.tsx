@@ -91,26 +91,26 @@ export function HomeV2({
           </div>
 
           {/* The Power of Three, as a dark strip along the foot of the banner. */}
-          <div className="pb-6 sm:pb-8">
+          <div className="pb-5 sm:pb-6">
           <div
-            className="relative isolate overflow-hidden rounded-[20px] px-4 py-4 text-white shadow-[0_24px_50px_-28px_rgb(11_31_74/0.7)] sm:px-5 sm:py-5 lg:px-6 lg:py-6"
+            className="relative isolate overflow-hidden rounded-2xl p-2  text-white shadow-[0_24px_50px_-28px_rgb(11_31_74/0.7)]"
             style={{ background: 'linear-gradient(135deg, #0b1f4a 0%, #0f2b63 60%, #12326f 100%)' }}
           >
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
               <div className="absolute -top-24 -right-16 h-72 w-72 rounded-full" style={{ background: 'radial-gradient(circle, rgb(216 31 38 / 0.3) 0%, transparent 70%)' }} />
               <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(rgb(255 255 255 / 0.1) 1.2px, transparent 1.4px)', backgroundSize: '22px 22px', maskImage: 'linear-gradient(to bottom left, #000, transparent 60%)', WebkitMaskImage: 'linear-gradient(to bottom left, #000, transparent 60%)' }} />
             </div>
-            <ul aria-label={copy['hero.headline.accent']} className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+            <ul aria-label={copy['hero.headline.accent']} className="grid gap-2 sm:grid-cols-3">
               {[
                 { text: copy['hero.pillar1'], Icon: GraduationCap },
                 { text: copy['hero.pillar2'], Icon: FlaskConical },
                 { text: copy['hero.pillar3'], Icon: Briefcase },
               ].map(({ text, Icon }) => (
-                <li key={text} className="flex items-center gap-3.5 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm sm:p-5">
-                  <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--v2-accent)] text-white">
-                    <Icon className="h-5 w-5" strokeWidth={2} />
+                <li key={text} className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
+                  <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--v2-accent)] text-white">
+                    <Icon className="h-4 w-4" strokeWidth={2} />
                   </span>
-                  <span className="text-[15px] leading-snug font-semibold sm:text-[16px]">{text}</span>
+                  <span className="text-[14px] leading-snug font-semibold sm:text-[15px]">{text}</span>
                 </li>
               ))}
             </ul>
