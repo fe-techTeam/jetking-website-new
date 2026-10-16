@@ -37,6 +37,12 @@ import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { CmsCollection, PublishStatus } from '@/lib/cms/types';
 import { CMS_COLLECTIONS } from '@/lib/cms/schemas';
+import {
+  deleteLocationRow,
+  isLocationCollection,
+  listLocationRows,
+  upsertLocationRow,
+} from '@/lib/cms/locations-db';
 
 export type { CmsCollection } from '@/lib/cms/types';
 
@@ -178,6 +184,11 @@ export async function listCollection<K extends CmsCollection>(
   collection: K,
   opts?: { publishedOnly?: boolean },
 ): Promise<CmsStore[K]> {
+  // Cities and centres live in Postgres when DATABASE_URL is set (empty/unreachable => file store).
+  if (isLocationCollection(collection)) {
+    const dbRows = await listLocationRows(collection, opts);
+    if (dbRows) return dbRows as unknown as CmsStore[K];
+  }
   const store = await readCmsStore();
   const rows = store[collection];
   if (opts?.publishedOnly) {
@@ -208,7 +219,9 @@ export async function upsertRecord(
 ): Promise<void> {
   return serialized(async () => {
     const store = await readCmsStore();
-    const rows = [...(store[collection] as unknown as Record<string, unknown>[])];
+    // For DB-backed collections the database is the truth for duplicate/rename checks (the file copy may lag it).
+    const dbRows = isLocationCollection(collection) ? await listLocationRows(collection) : null;
+    const rows = [...(dbRows ?? (store[collection] as unknown as Record<string, unknown>[]))];
     const id = record[idKey];
 
     // Renaming: the old row still carries `previousId`, not `id`, so it can
@@ -223,6 +236,8 @@ export async function upsertRecord(
     if (targetIdx >= 0) rows[targetIdx] = record;
     else rows.push(record);
     (store as unknown as Record<string, unknown>)[collection] = rows;
+
+    if (isLocationCollection(collection)) await upsertLocationRow(collection, record, previousId);
 
     const supabase = getSupabase();
     if (supabase) {
@@ -247,6 +262,8 @@ export async function deleteRecord(
       (r) => r[idKey] !== id,
     );
     (store as unknown as Record<string, unknown>)[collection] = rows;
+
+    if (isLocationCollection(collection)) await deleteLocationRow(collection, id);
 
     const supabase = getSupabase();
     if (supabase) {

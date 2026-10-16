@@ -7383,3 +7383,131 @@ export const centres: Centre[] = [
     "updatedAt": "2026-08-06"
   }
 ];
+
+/**
+ * Active branches from the legacy branch export (branch (1).csv, flag 1) that were missing above —
+ * see docs/centres-csv-reconciliation.md. The export carries a name and a free-text address only, so
+ * these records have no phone, email or page copy yet: add them in Admin → Centres.
+ * The Vietnam centres list no courses until the business confirms the programmes offered there.
+ */
+const indiaCourses = [
+  'bca-cloud-cyber-security',
+  'cloud-computing-engineer-ai',
+  'cloud-computing-professional-ai',
+  'cloud-cyber-security-engineer',
+  'routing-switching-administrator',
+  'pc-hardware-support',
+];
+
+const addedAt = '2026-10-16';
+
+const abroad = (slug: string, name: string): City => ({
+  slug,
+  name,
+  state: 'Vietnam',
+  intro: `Jetking has a learning centre in ${name}, Vietnam.`,
+  seo: {
+    title: `Jetking ${name} — IT Training Centre in Vietnam`,
+    description: `Jetking learning centre in ${name}, Vietnam. Find the address and contact the centre.`,
+  },
+  updatedAt: addedAt,
+});
+
+cities.push(
+  {
+    slug: 'ghaziabad',
+    name: 'Ghaziabad',
+    state: 'Uttar Pradesh',
+    intro:
+      'Jetking centres in Ghaziabad offer cloud, cyber security and networking courses with placement support in the Delhi NCR.',
+    seo: {
+      title: 'IT Courses in Ghaziabad — Cloud & Cyber Security | Jetking',
+      description:
+        'Jetking centre in Ghaziabad offering BCA, cyber security, cloud and networking courses with placement support. Find your nearest centre.',
+    },
+    updatedAt: addedAt,
+  },
+  abroad('ho-chi-minh', 'Ho Chi Minh City'),
+  abroad('hanoi', 'Hanoi'),
+  abroad('da-nang', 'Da Nang'),
+  abroad('can-tho', 'Can Tho'),
+);
+
+centres.push(
+  {
+    slug: 'ghaziabad',
+    name: 'Jetking Ghaziabad',
+    citySlug: 'ghaziabad',
+    addressLine: 'C 53, 3rd Floor, Sharnam Plaza, RDC Raj Nagar, Near Indian Oil Petrol Pump, Ghaziabad, Uttar Pradesh (NCR).',
+    locality: 'Raj Nagar',
+    state: 'Uttar Pradesh',
+    pincode: '201002',
+    coursesOffered: indiaCourses,
+    seo: {
+      title: 'Jetking Ghaziabad — Cloud Computing & Cyber Security Courses',
+      description:
+        'Jetking Ghaziabad learning centre at Sharnam Plaza, RDC Raj Nagar. BCA, cloud computing, cyber security and networking courses with placement support.',
+    },
+    updatedAt: addedAt,
+  },
+  {
+    slug: 'ho-chi-minh',
+    name: 'Jetking Ho Chi Minh',
+    citySlug: 'ho-chi-minh',
+    addressLine: 'Building 5 floors GenPacific, No. 391A Nam Ky Khoi Nghia Avenue, District 3, Ho Chi Minh City, Vietnam.',
+    locality: 'District 3',
+    state: 'Vietnam',
+    pincode: '',
+    coursesOffered: [],
+    seo: {
+      title: 'Jetking Ho Chi Minh — IT Training Centre in Vietnam',
+      description: 'Jetking learning centre in District 3, Ho Chi Minh City, Vietnam.',
+    },
+    updatedAt: addedAt,
+  },
+  {
+    slug: 'hanoi',
+    name: 'Jetking Hanoi',
+    citySlug: 'hanoi',
+    addressLine: 'Detech Building, No. 8 Ton That Thuyet Street, My Dinh, Tu Liem District, Hanoi, Vietnam.',
+    locality: 'Tu Liem',
+    state: 'Vietnam',
+    pincode: '',
+    coursesOffered: [],
+    seo: {
+      title: 'Jetking Hanoi — IT Training Centre in Vietnam',
+      description: 'Jetking learning centre in Tu Liem District, Hanoi, Vietnam.',
+    },
+    updatedAt: addedAt,
+  },
+  {
+    slug: 'da-nang',
+    name: 'Jetking Da Nang',
+    citySlug: 'da-nang',
+    addressLine: 'Zone K, FU, FPT Technology Urban Zone, Ngu Hanh Son Ward, Da Nang City, Vietnam.',
+    locality: 'Ngu Hanh Son',
+    state: 'Vietnam',
+    pincode: '',
+    coursesOffered: [],
+    seo: {
+      title: 'Jetking Da Nang — IT Training Centre in Vietnam',
+      description: 'Jetking learning centre in Ngu Hanh Son Ward, Da Nang, Vietnam.',
+    },
+    updatedAt: addedAt,
+  },
+  {
+    slug: 'can-tho',
+    name: 'Jetking Can Tho',
+    citySlug: 'can-tho',
+    addressLine: '600 Nguyen Van Cu, An Binh Ward, Can Tho City, Vietnam.',
+    locality: 'An Binh',
+    state: 'Vietnam',
+    pincode: '',
+    coursesOffered: [],
+    seo: {
+      title: 'Jetking Can Tho — IT Training Centre in Vietnam',
+      description: 'Jetking learning centre in An Binh Ward, Can Tho, Vietnam.',
+    },
+    updatedAt: addedAt,
+  },
+);

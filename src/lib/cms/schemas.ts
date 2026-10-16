@@ -110,7 +110,8 @@ const centreSchema = withStatus({
   addressLine: z.string().min(1),
   locality: z.string().min(1),
   state: z.string().min(1),
-  pincode: z.string().min(1),
+  // May be empty: not every country the centres span (e.g. Vietnam) uses a postal-code-style pincode.
+  pincode: z.string(),
   phone: z.string().optional(),
   email: z.string().optional(),
   helpline: z.string().optional(),

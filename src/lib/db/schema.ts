@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, index, jsonb, doublePrecision } from 'drizzle-orm/pg-core';
 import type { StoredMessage } from '@/lib/chatbot/types';
 
 /**
@@ -143,3 +143,50 @@ export const chatConversations = pgTable(
 
 export type ChatUserRow = typeof chatUsers.$inferSelect;
 export type ChatConversationRow = typeof chatConversations.$inferSelect;
+
+/**
+ * Cities and centres — the location catalogue behind /centres and /centres/{slug}.
+ *
+ * Fields the directory filters, sorts and searches on are real columns; every richer
+ * section of a centre page (programmes, gallery, faculty, FAQs, updates…) lives in one
+ * `details` jsonb blob, since a centre page is always read and written whole and those
+ * sections evolve with the page design. `status` mirrors the CMS publish flag, so only
+ * 'published' rows reach the public site. See `src/lib/cms/locations-db.ts`.
+ */
+export const cities = pgTable('cities', {
+  slug: text('slug').primaryKey(),
+  name: text('name').notNull(),
+  state: text('state').notNull(),
+  intro: text('intro').notNull(),
+  seo: jsonb('seo').$type<Record<string, unknown>>().notNull(),
+  status: text('status').notNull().default('published'), // 'published' | 'draft'
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const centres = pgTable(
+  'centres',
+  {
+    slug: text('slug').primaryKey(),
+    citySlug: text('city_slug').notNull(),
+    name: text('name').notNull(),
+    addressLine: text('address_line').notNull(),
+    locality: text('locality').notNull(),
+    state: text('state').notNull(),
+    pincode: text('pincode').notNull(),
+    phone: text('phone'),
+    email: text('email'),
+    helpline: text('helpline'),
+    lat: doublePrecision('lat'),
+    lng: doublePrecision('lng'),
+    coursesOffered: jsonb('courses_offered').$type<string[]>().notNull().default([]),
+    seo: jsonb('seo').$type<Record<string, unknown>>().notNull(),
+    /** Everything else on the Centre record (headline, intro, body, gallery, faculty, faqs, updates…). */
+    details: jsonb('details').$type<Record<string, unknown>>().notNull().default({}),
+    status: text('status').notNull().default('published'), // 'published' | 'draft'
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('centres_city_slug_idx').on(table.citySlug), index('centres_status_idx').on(table.status)],
+);
+
+export type CityRow = typeof cities.$inferSelect;
+export type CentreRow = typeof centres.$inferSelect;

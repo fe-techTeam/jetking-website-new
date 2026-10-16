@@ -29,6 +29,7 @@ export function getDb(): NodePgDatabase<typeof schema> | null {
     // the connection string itself is the secret that gates access.
     ssl: process.env.DATABASE_SSL === 'false' ? false : { rejectUnauthorized: false },
     max: 5,
+    connectionTimeoutMillis: 5000,
   });
   cached = drizzle(pool, { schema });
   return cached;

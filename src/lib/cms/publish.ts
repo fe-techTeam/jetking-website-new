@@ -35,6 +35,12 @@ export async function publishContent(opts?: { paths?: string[] }): Promise<void>
   } catch {
     // ignore outside request context
   }
+  // Centre pages (/centres/{slug}) are a dynamic route too: refresh them when a centre or city changes.
+  try {
+    revalidatePath('/centres/[city]', 'page');
+  } catch {
+    // ignore outside request context
+  }
   // Every course page shows the placement figures, process and recruiter logos, so a Placements-page
   // save has to refresh them too (a dynamic route needs its pattern, not a concrete path).
   try {
