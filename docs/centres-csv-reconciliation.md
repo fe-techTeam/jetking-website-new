@@ -200,3 +200,5 @@ So the 8 "site centres with no CSV match" are mostly legacy renames ("New …"),
 - Pincode disagreements with the site: Bhopal (CSV 462011, site 462001) and Shivajinagar (CSV 560001, site 560051).
 - Genuinely new active branches: Ghaziabad, plus the four Vietnam centres if the site should list them.
 - 31 of the 111 non-test branches have no pincode in the address, and none has a phone, so addresses can fill gaps but not replace the site's contact data.
+
+**Decision (India-only site):** only active (flag 1) Indian branches are shown on the site. Ghaziabad was added; the four Vietnam branches (Ho Chi Minh, Hanoi, Da Nang, Can Tho) are deliberately not on the site. Bhopal, Noida and Dadar already carry their active branches' addresses, so they needed no change.
