@@ -12,7 +12,7 @@ export * from './types';
  * the client bundle. Pages and RSC import this; client components must not.
  */
 function resolveSource(): ContentSource {
-  const configured = process.env.CONTENT_SOURCE ?? 'local';
+  const configured = process.env.CONTENT_SOURCE ?? 'admin';
 
   switch (configured) {
     case 'local':

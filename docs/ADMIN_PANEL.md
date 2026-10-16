@@ -386,7 +386,7 @@ token overrides.
 | `DATABASE_SSL` | No | Set to `false` for a local Postgres without TLS |
 | `ADMIN_SESSION_SECRET` | With `DATABASE_URL` | Signs multi-user session cookies, independent of any one user's password |
 | `ADMIN_PASSWORD` | Without `DATABASE_URL` | Legacy shared-password gate; defaults to `changeme` outside production |
-| `CONTENT_SOURCE` | No | `admin` makes the **public site** read from this CMS store instead of repo fixtures |
+| `CONTENT_SOURCE` | No (defaults to `admin`) | `admin` makes the **public site** read from this CMS store instead of repo fixtures |
 | `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | No | Optional — CMS content write-through to Supabase tables (unrelated to the Postgres/leads/auth path above) |
 
 See `.env.example` for the full annotated list.
