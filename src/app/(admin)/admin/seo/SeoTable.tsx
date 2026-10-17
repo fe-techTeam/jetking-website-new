@@ -157,7 +157,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
               </div>
 
               {isOpen && draft ? (
-                <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                <div className="mt-4 flex flex-col gap-4">
                   <div className="flex flex-col gap-3">
                     <label className="text-xs font-semibold text-foreground-secondary">
                       <span className="flex justify-between">Title <Counter value={draft.title} min={20} max={TITLE_MAX} /></span>

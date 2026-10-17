@@ -55,6 +55,13 @@ export function humanize(key: string): string {
 const LONG_TEXT_FIELDS =
   /summary|answer|bio|intro|note(s)?|description|excerpt|address|eligibility|lede|headline|question|quote|disclaimer|body/i;
 
+/** Whether a field needs the full row: nested data, long text, links and images — a half-width box hides what it is for. */
+export function isWideField(key: string, value: unknown): boolean {
+  if (key === 'bodyHtml' || Array.isArray(value) || (typeof value === 'object' && value !== null)) return true;
+  if (typeof value !== 'string') return false;
+  return value.length > 40 || LONG_TEXT_FIELDS.test(key) || IMAGE_FIELDS.test(key) || /^(url|href|link|linkHref|website|sourceUrl|ogImage|canonicalPath)$/i.test(key);
+}
+
 function ObjectListEditor({
   value,
   itemTemplate,
@@ -178,8 +185,7 @@ function ObjectFields({
     <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
       {Object.keys(value).map((key) => {
         const fieldValue = value[key];
-        const isWide =
-          Array.isArray(fieldValue) || (typeof fieldValue === 'object' && fieldValue !== null);
+        const isWide = isWideField(key, fieldValue);
         return (
           <div key={key} className={isWide ? 'sm:col-span-2' : ''}>
             <label className="mb-1.5 block text-xs font-medium text-foreground-muted">

@@ -53,6 +53,8 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmSave, setConfirmSave] = useState(false);
   const [pendingSwitch, setPendingSwitch] = useState<string | null>(null);
+  /** Opens on the list of pages; choosing one opens its own full-width page. */
+  const [view, setView] = useState<'list' | 'edit'>('list');
 
   const page = pages.find((p) => p.id === selectedId) ?? pages[0]!;
   const saved = overrides[page.id] ?? {};
@@ -86,6 +88,8 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   function openPage(id: string) {
     const next = pages.find((p) => p.id === id)!;
     setSelectedId(id);
+    setView('edit');
+    document.getElementById('admin-content')?.scrollTo({ top: 0 });
     setDraft({ ...next.defaults, ...(overrides[id] ?? {}) });
     setMessage(null);
     setError(null);
@@ -93,9 +97,19 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   }
 
   function requestSwitch(id: string) {
-    if (id === page.id) return;
+    if (id === page.id && view === 'edit') return;
     if (isDirty) setPendingSwitch(id);
     else openPage(id);
+  }
+
+  /** Back to the list of pages; unsaved edits ask first. */
+  function goList() {
+    if (isDirty) {
+      setPendingSwitch('__list__');
+      return;
+    }
+    setView('list');
+    document.getElementById('admin-content')?.scrollTo({ top: 0 });
   }
 
   function save() {
@@ -156,67 +170,60 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   const editedCount = Object.keys(nextEntries).length;
 
   return (
-    <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] lg:items-start">
+    <div className="mt-6">
       {/* ── Page list ─────────────────────────────────────────────────── */}
-      <nav aria-label="Pages" className="min-w-0">
-        <div className="adm-card overflow-hidden">
-          <div className="border-b border-border p-2">
-            <input
-              value={pageQuery}
-              onChange={(e) => setPageQuery(e.target.value)}
-              placeholder="Search pages and wording…"
-              aria-label="Search pages"
-              className="admin-input h-10 text-sm"
-            />
-          </div>
-          {listedPages.length === 0 ? <p className="px-4 py-6 text-center text-sm text-foreground-muted">No page has that wording.</p> : null}
+      {view === 'list' ? (
+        <div>
+          <input
+            value={pageQuery}
+            onChange={(e) => setPageQuery(e.target.value)}
+            placeholder="Search pages and wording…"
+            aria-label="Search pages"
+            className="admin-input h-11 w-full text-sm sm:max-w-sm"
+          />
+          {listedPages.length === 0 ? <p className="mt-8 text-center text-sm text-foreground-muted">No page has that wording.</p> : null}
           {groups.map((group) => (
-            <div key={group}>
-              <p className="border-b border-border bg-surface/70 px-4 py-3 text-xs font-bold tracking-wide text-foreground-muted uppercase">
-                {group}
-              </p>
-              <ul>
+            <section key={group} className="mt-6" aria-label={group}>
+              <h2 className="text-xs font-bold tracking-wide text-foreground-muted uppercase">{group}</h2>
+              <ul className="adm-card mt-2 divide-y divide-border overflow-hidden">
                 {listedPages
                   .filter((p) => p.group === group)
                   .map((p) => {
-                    const active = p.id === page.id;
                     const edits = Object.keys(overrides[p.id] ?? {}).length;
                     return (
-                      <li key={p.id} className="relative border-b border-border last:border-none">
-                        {active ? (
-                          <span
-                            aria-hidden="true"
-                            className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r-full bg-[var(--accent)]"
-                          />
+                      <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-surface/60">
+                        <button type="button" onClick={() => requestSwitch(p.id)} className="min-w-0 flex-1 cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]">
+                          <span className="block text-[15px] font-semibold text-foreground">{p.label}</span>
+                          <span className="block truncate text-xs text-foreground-muted">
+                            {p.description ?? `${Object.keys(p.defaults).length} fields`}
+                            {p.path ? ` · ${p.path}` : ''}
+                          </span>
+                        </button>
+                        {edits > 0 ? (
+                          <span className="numeral shrink-0 rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-bold text-[var(--accent-ink)]">{edits} edited</span>
                         ) : null}
                         <button
                           type="button"
-                          aria-current={active ? 'true' : undefined}
                           onClick={() => requestSwitch(p.id)}
-                          className={`flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] ${
-                            active ? 'bg-[var(--accent-soft)]' : 'hover:bg-surface/70'
-                          }`}
+                          className="min-h-10 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-xs font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                         >
-                          <span className={`text-sm ${active ? 'font-bold text-[var(--accent-ink)]' : 'font-medium text-foreground'}`}>
-                            {p.label}
-                          </span>
-                          {edits > 0 ? (
-                            <span className="numeral shrink-0 rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-xs font-bold text-[var(--accent-ink)]">
-                              {edits} edited
-                            </span>
-                          ) : null}
+                          Edit text
                         </button>
                       </li>
                     );
                   })}
               </ul>
-            </div>
+            </section>
           ))}
         </div>
-      </nav>
+      ) : null}
 
       {/* ── Fields ────────────────────────────────────────────────────── */}
+      {view === 'edit' ? (
       <div className="min-w-0">
+        <button type="button" onClick={goList} className="mb-3 inline-flex min-h-10 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]">
+          <span aria-hidden="true">←</span> All pages
+        </button>
         <div className="adm-card p-5 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
             <div className="min-w-0">
@@ -277,7 +284,8 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Find a field or some text…"
               aria-label="Find a field"
-              className="admin-input pl-10"
+              style={{ paddingLeft: 40 }}
+              className="admin-input"
             />
           </div>
 
@@ -294,9 +302,11 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                       const defaultValue = page.defaults[key] ?? '';
                       const changed = value.trim() !== '' && value !== defaultValue;
                       const long = defaultValue.length > 90 || value.length > 90 || LONG_KEY.test(key);
+                      // Anything longer than a short label gets the full width — a half-width box hides the text it is for.
+                      const wide = long || defaultValue.length > 26 || value.length > 26 || IMAGE_KEY.test(key);
                       const id = `copy-${page.id}-${key}`;
                       return (
-                        <div key={key} className={long ? 'sm:col-span-2' : ''}>
+                        <div key={key} className={wide ? 'sm:col-span-2' : ''}>
                           <div className="mb-1.5 flex items-center justify-between gap-2">
                             <label htmlFor={id} className="text-xs font-semibold text-foreground-secondary">
                               {label}
@@ -360,6 +370,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
           </div>
         </div>
       </div>
+      ) : null}
 
       <AdminConfirmDialog
         open={confirmSave}
@@ -392,7 +403,10 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
         description="You've edited this page without saving. Switching now discards those changes."
         confirmLabel="Discard"
         onConfirm={() => {
-          if (pendingSwitch) openPage(pendingSwitch);
+          if (pendingSwitch === '__list__') {
+            setDraft({ ...page.defaults, ...saved });
+            setView('list');
+          } else if (pendingSwitch) openPage(pendingSwitch);
           setPendingSwitch(null);
         }}
       />

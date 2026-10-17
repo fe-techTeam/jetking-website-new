@@ -9,7 +9,7 @@ import {
 import { HistoryPanel } from "./HistoryPanel";
 import type { CmsCollection } from "@/lib/cms/types";
 import { ADMIN_FORM_CONFIG } from "@/lib/cms/admin-form-config";
-import { ValueEditor, humanize } from "./ValueEditor";
+import { ValueEditor, humanize, isWideField } from "./ValueEditor";
 import { AdminConfirmDialog } from "./AdminConfirmDialog";
 import { RelationsContext, type Relations } from "./FieldInputs";
 import { AdminPageHeader } from "./AdminPageHeader";
@@ -723,10 +723,7 @@ export function RecordEditor({
                   <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
                     {section.fields.map((key) => {
                       const value = draft[key];
-                      const isWide =
-                        key === "bodyHtml" ||
-                        Array.isArray(value) ||
-                        (typeof value === "object" && value !== null);
+                      const isWide = isWideField(key, value);
                       return (
                         <div
                           key={key}

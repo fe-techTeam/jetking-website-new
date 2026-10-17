@@ -46,11 +46,11 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
   }
 
   return (
-    <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start">
+    <div className="mt-6 flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <section className="adm-card p-5">
           <h2 className="text-sm font-bold text-foreground">{form.id ? 'Edit redirect' : 'Add a redirect'}</h2>
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="text-xs font-semibold text-foreground-secondary">
               Old URL
               <input value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} placeholder="/old-page" className="admin-input mt-1.5" />
@@ -59,20 +59,20 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
               New URL
               <input value={form.destination} onChange={(e) => setForm({ ...form, destination: e.target.value })} placeholder="/courses or https://…" className="admin-input mt-1.5" />
             </label>
-            <label className="text-xs font-semibold text-foreground-secondary">
+            <label className="text-xs font-semibold text-foreground-secondary sm:col-span-2">
               Note (optional)
               <input value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="admin-input mt-1.5" />
             </label>
-            <label className="flex items-center gap-2 text-sm text-foreground-secondary">
+            <label className="flex items-center gap-2 text-sm text-foreground-secondary sm:col-span-2">
               <input type="checkbox" checked={form.permanent} onChange={(e) => setForm({ ...form, permanent: e.target.checked })} className="h-4 w-4 accent-[var(--accent)]" />
               Permanent (SEO-safe 301-style). Untick for a temporary redirect.
             </label>
             {error ? (
-              <p role="alert" className="text-sm font-medium text-[var(--color-error-600)]">
+              <p role="alert" className="text-sm font-medium text-[var(--color-error-600)] sm:col-span-2">
                 {error}
               </p>
             ) : null}
-            <div className="flex gap-2">
+            <div className="flex gap-2 sm:col-span-2">
               <button type="button" disabled={pending} onClick={() => setConfirmAdd('save')} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">
                 {pending ? 'Saving…' : form.id ? 'Save changes' : 'Add redirect'}
               </button>
@@ -85,15 +85,15 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
           </div>
         </section>
 
-        <section className="adm-card p-5">
-          <h2 className="text-sm font-bold text-foreground">Bulk import</h2>
+        <details className="adm-card p-5">
+          <summary className="cursor-pointer text-sm font-bold text-foreground">Bulk import</summary>
           <p className="mt-1 text-xs text-foreground-muted">One per line: /old-url , /new-url</p>
           <textarea value={bulk} onChange={(e) => setBulk(e.target.value)} rows={5} className="admin-input mt-3 font-mono text-xs" aria-label="Redirects to import" />
           <button type="button" disabled={pending || !bulk.trim()} onClick={() => setConfirmAdd('import')} className="mt-3 min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] disabled:opacity-45">
             Import
           </button>
           {bulkResult ? <pre className="mt-3 max-h-40 overflow-auto text-xs whitespace-pre-wrap text-foreground-secondary">{bulkResult}</pre> : null}
-        </section>
+        </details>
       </div>
 
       <section className="adm-card overflow-hidden">
