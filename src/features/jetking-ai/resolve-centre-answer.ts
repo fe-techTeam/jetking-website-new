@@ -119,8 +119,9 @@ interface BranchRecord {
   locality: string;
   pincode: string;
   addressLine: string;
-  phone: string;
-  intro: string;
+  /** Absent when the centre's page has none — the answer then simply leaves the line out. */
+  phone?: string;
+  intro?: string;
   programmes: string[];
 }
 
@@ -172,10 +173,9 @@ function formatBranchAnswer(branch: BranchRecord): string {
   const lines: string[] = [
     `## ${branch.name}, ${branch.cityName}`,
     '',
-    branch.intro,
-    '',
+    ...(branch.intro ? [branch.intro, ''] : []),
     `Address: ${branch.addressLine}`,
-    `Phone: ${branch.phone}`,
+    ...(branch.phone ? [`Phone: ${branch.phone}`] : []),
     '',
     `[📍 Open ${branch.name} in Google Maps](${mapsSearchUrl(`${branch.name}, ${branch.addressLine}`)})`,
     '',

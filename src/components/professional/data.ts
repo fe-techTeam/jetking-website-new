@@ -31,25 +31,7 @@ export const FLEXIBLE_OPTION_ICONS = [CalendarDays, Moon, MonitorPlay, HeartHand
 
 export const BOTTOM_CTA_FEATURE_ICONS = [Users, Sparkles, GraduationCap] as const;
 
-/**
- * Recruiters Jetking itself publishes on jetking.com. Logos are the site's own
- * (vector logos in /public/logos/employers; Tikona is a raster in /public/placements/recruiters); a company that is not listed there is not
- * shown here, rather than being drawn from a generic "top IT employers" list.
- */
-export const HIRING_PARTNERS = [
-  { name: 'Accenture', logo: '/logos/employers/accenture.svg' },
-  { name: 'Amazon', logo: '/logos/employers/amazon.svg' },
-  { name: 'Capgemini', logo: '/logos/employers/capgemini.svg' },
-  { name: 'IBM', logo: '/logos/employers/ibm.svg' },
-  { name: 'Infosys', logo: '/logos/employers/infosys.svg' },
-  { name: 'Microsoft', logo: '/logos/employers/microsoft.svg' },
-  { name: 'Samsung', logo: '/logos/employers/samsung.svg' },
-  { name: 'SAP', logo: '/logos/employers/sap.svg' },
-  { name: 'Tech Mahindra', logo: '/logos/employers/tech-mahindra.svg' },
-  { name: 'Tikona', logo: '/placements/recruiters/tikona.png' },
-  { name: 'Vodafone', logo: '/logos/employers/vodafone.svg' },
-  { name: 'Wipro', logo: '/placements/partners/wipro.svg' },
-] as const;
+export { HIRING_PARTNERS } from '@/lib/content/fixtures/logo-sources';
 
 /** Story ids; the story text and portraits (`stories.N.*`, `stories.N.avatar`) live in the page copy. */
 export const SUCCESS_STORIES = [

@@ -1,7 +1,6 @@
 import type { LogoList } from '../types';
-import { CERT_LOGOS, MORE_EMPLOYER_LOGOS } from '@/components/home/sections/data';
+import { CERT_LOGOS, HIRING_PARTNERS, MORE_EMPLOYER_LOGOS } from './logo-sources';
 import { PLACEMENT_PARTNERS } from '@/components/explore/partners';
-import { HIRING_PARTNERS } from '@/components/professional/data';
 
 /**
  * The in-repo DEFAULTS for the editable logo lists: they seed the CMS (`logo_lists`) and are what a

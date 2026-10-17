@@ -34,48 +34,9 @@ export const HUE_VARS: Record<Hue, { accent: string; tint: string }> = {
 };
 
 /** One of the site's four global category hues (`--theme-{hue}-ink` / `-tint` in globals.css) — the same set `PROGRAM_META` uses on the Professional page, reused here rather than inventing a fifth. */
-/** Real cert/vendor logos already in `public/logos/`, limited to certifications Jetking's own course fixtures actually cite. */
-export const CERT_LOGOS = [
-  { name: 'Cisco', file: '/logos/brands/cisco.svg' },
-  { name: 'AWS', file: '/logos/brands/aws.svg' },
-  { name: 'Microsoft Azure', file: '/logos/brands/azure.svg' },
-  { name: 'Red Hat', file: '/logos/brands/redhat.svg' },
-  { name: 'CompTIA', file: '/logos/brands/comptia.svg' },
-  { name: 'CEH', file: '/logos/ceh.svg' },
-  { name: 'CHFI', file: '/logos/chfi.svg' },
-  { name: 'Splunk', file: '/logos/brands/splunk.svg' },
-  { name: 'Python', file: '/logos/brands/python.svg' },
-  { name: 'Power BI', file: '/logos/brands/powerbi.svg' },
-  { name: 'Tableau', file: '/logos/tableau.svg' },
-  { name: 'Unity', file: '/logos/brands/unity.svg' },
-  { name: 'Unreal Engine', file: '/logos/brands/unreal.svg' },
-  { name: 'Windows Server', file: '/logos/brands/windowsserver.svg' },
-  { name: 'Google Cloud', file: '/logos/brands/googlecloud.svg' },
-  { name: 'Kubernetes', file: '/logos/brands/kubernetes.svg' },
-  { name: 'Docker', file: '/logos/brands/docker.svg' },
-  { name: 'Linux', file: '/logos/brands/linux.svg' },
-  { name: 'Kali Linux', file: '/logos/brands/kali.svg' },
-  { name: 'Wireshark', file: '/logos/brands/wireshark.svg' },
-  { name: 'Fortinet', file: '/logos/brands/fortinet.svg' },
-  { name: 'Check Point', file: '/logos/checkpoint.svg' },
-  { name: 'Citrix', file: '/logos/brands/citrix.svg' },
-  { name: 'MySQL', file: '/logos/brands/mysql.svg' },
-  { name: 'Grafana', file: '/logos/brands/grafana.svg' },
-  { name: 'Adobe', file: '/logos/brands/adobe.svg' },
-  { name: 'Figma', file: '/logos/brands/figma.svg' },
-  { name: 'C++', file: '/logos/brands/cpp.svg' },
-  { name: '.NET', file: '/logos/brands/dotnet.svg' },
-] as const;
+export { CERT_LOGOS } from '@/lib/content/fixtures/logo-sources';
 
-/** Employers beyond `HIRING_PARTNERS` — the rest of the logos in `public/placements/`. `dark` = light-on-dark artwork that needs a dark tile. */
-export const MORE_EMPLOYER_LOGOS: ReadonlyArray<{ name: string; file: string; dark?: boolean }> = [
-  { name: 'Times of India', file: '/logos/employers/times-of-india.svg' },
-  { name: 'Bharti Airtel', file: '/placements/partners/bharti-airtel.svg' },
-  { name: 'Birla Corp', file: '/placements/partners/birla-corp.jpg' },
-  { name: 'Futwork', file: '/placements/partners/futwork.svg' },
-  { name: 'Laundryheap', file: '/placements/partners/laundryheap.svg' },
-  { name: 'Reisnet', file: '/placements/partners/reisnet.png', dark: true },
-];
+export { MORE_EMPLOYER_LOGOS } from '@/lib/content/fixtures/logo-sources';
 
 export interface Recognition {
   icon: LucideIcon;

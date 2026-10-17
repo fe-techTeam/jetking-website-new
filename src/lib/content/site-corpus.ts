@@ -6,6 +6,7 @@ import { franchiseCopy } from './copy/pages/franchise';
 import { parentCopy } from './copy/pages/parent';
 import { professionalCopy } from './copy/pages/professional';
 import { studentCopy } from './copy/pages/student';
+import { siteCopy } from './copy/pages/site';
 import type { LegalBlock, LegalDoc } from './types';
 import { SINCE_FOUNDED, legacyStats } from '@/lib/brand-facts';
 
@@ -344,10 +345,89 @@ function legalItems(doc: LegalDoc): CorpusItem[] {
   return out;
 }
 
+/* ── Investors, contact and partners ───────────────────────────────────── */
+
+/** Honorific and initial dots ("Ms. A.", "L.B.S.") would be read as sentence ends and split a name or address in two. */
+const noAbbrevDots = (t: string) => t.replace(/\b(Mr|Ms|Mrs|Dr)\.\s/g, '$1 ').replace(/\b(?:[A-Z]\.){2,}/g, (m) => m.replace(/\./g, ''));
+
+/** The Investors page: company facts, the named contacts and the disclosure documents (titles only — the files are not read). */
+async function investorsItems(): Promise<CorpusItem[]> {
+  const inv = await content.getInvestorsPage();
+  const P = '/investors';
+  const out: CorpusItem[] = [
+    item(
+      'investors-company',
+      'info',
+      'Jetking Infotrain Limited — listing and registered office',
+      P,
+      `Registered office: ${inv.company.registeredOffice}. Listed on ${inv.company.listedAt}; scrip code ${inv.company.scripCode}; trading symbol ${inv.company.tradingSymbol}. Investor phone ${inv.company.phone}, email ${inv.company.email}.`,
+    ),
+    item(
+      'investors-grievance-registrar',
+      'info',
+      'Investor grievance officer and registrar',
+      P,
+      `Grievance officer: ${inv.grievanceOfficer.name}, ${inv.grievanceOfficer.phone}, ${inv.grievanceOfficer.email}. Registrar and share transfer agent: ${inv.registrar.name}, ${inv.registrar.address}, phone ${inv.registrar.phone}, email ${inv.registrar.email}, website ${inv.registrar.website}.`,
+    ),
+  ];
+  if (inv.kmp.length > 0) {
+    out.push(
+      item(
+        'investors-kmp',
+        'info',
+        'Key managerial personnel',
+        P,
+        inv.kmp.map((k) => `${k.name} — ${k.designation}${k.email ? `, ${k.email}` : ''}`).join('; ') + '.',
+      ),
+    );
+  }
+  for (const section of inv.sections) {
+    if (section.items.length === 0) continue;
+    out.push(
+      item(
+        `investors-docs-${slugify(section.id)}`,
+        'info',
+        `Investor disclosures — ${section.title}`,
+        P,
+        `Documents published on the investors page under ${section.title}: ${section.items.map((d) => d.label).join('; ')}.`,
+      ),
+    );
+  }
+  return out.map((i) => ({ ...i, text: noAbbrevDots(i.text) }));
+}
+
+/** The contact details and social profiles shown in the site header and footer. */
+async function contactItems(): Promise<CorpusItem[]> {
+  const c = await pageCopy(siteCopy);
+  const socials = indexed(c, 'footer.social', ['label', 'href']);
+  return [
+    item(
+      'site-contact',
+      'info',
+      'Contact Jetking',
+      '/centres',
+      `Head office: ${c['contact.address']}. National helpline: ${c['contact.phone']}. Email: ${c['contact.email']}. Each centre page lists its own address and phone. ${socials.length ? `Follow Jetking: ${socials.map((s) => `${s.label} (${s.href})`).join(', ')}.` : ''}`,
+    ),
+  ];
+}
+
+/** The recruiter and certification logos shown on the home page — company names only. */
+async function partnerItems(): Promise<CorpusItem[]> {
+  const [certs, employers] = await Promise.all([content.getLogoList('home-certifications'), content.getLogoList('home-employers')]);
+  const out: CorpusItem[] = [];
+  if (certs.items.length) {
+    out.push(item('home-certification-logos', 'info', 'Certification and technology tracks featured by Jetking', '/', `Tracks shown on the home page: ${certs.items.map((i) => i.name).join(', ')}.`));
+  }
+  if (employers.items.length) {
+    out.push(item('home-employer-logos', 'placement', 'Employers featured on the Jetking home page', '/placements', `Employers shown: ${employers.items.map((i) => i.name).join(', ')}.`));
+  }
+  return out;
+}
+
 /* ── Entry point ───────────────────────────────────────────────────────── */
 
 export async function buildSiteCorpusItems(counts: { courses: number; centres: number; cities: number }): Promise<CorpusItem[]> {
-  const [about, placements, franchise, professional, parent, student, explore, legalDocs] = await Promise.all([
+  const [about, placements, franchise, professional, parent, student, explore, legalDocs, investors, contact, partners] = await Promise.all([
     aboutItems(counts),
     placementItems(),
     franchiseItems(),
@@ -356,6 +436,9 @@ export async function buildSiteCorpusItems(counts: { courses: number; centres: n
     studentItems(),
     exploreItems(),
     content.listLegalDocuments(),
+    investorsItems(),
+    contactItems(),
+    partnerItems(),
   ]);
-  return [...about, ...placements, ...franchise, ...professional, ...parent, ...student, ...explore, ...legalDocs.flatMap(legalItems)];
+  return [...about, ...placements, ...franchise, ...professional, ...parent, ...student, ...explore, ...legalDocs.flatMap(legalItems), ...investors, ...contact, ...partners];
 }
