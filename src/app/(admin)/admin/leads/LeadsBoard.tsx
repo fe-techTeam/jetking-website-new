@@ -79,7 +79,7 @@ export function LeadsBoard({
     if (statusFilter !== 'all' && l.status !== statusFilter) return false;
     if (sourceFilter !== 'all' && l.source !== sourceFilter) return false;
     if (!query) return true;
-    return [l.name, l.courseInterest, l.city].some((f) => f?.toLowerCase().includes(query));
+    return [l.name, l.courseInterest, l.city, l.phone, l.email, l.centreName].some((f) => f?.toLowerCase().includes(query));
   });
   const filtersActive = statusFilter !== 'all' || sourceFilter !== 'all' || query.length > 0;
 
@@ -241,6 +241,7 @@ export function LeadsBoard({
               <option value="form">Form</option>
               <option value="chatbot">Chatbot</option>
               <option value="centre">Centre</option>
+              <option value="franchise">Franchise</option>
             </select>
           </label>
           <label className="flex flex-col gap-1.5 text-sm">

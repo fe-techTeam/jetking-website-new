@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const LEAD_SOURCES = ['chatbot', 'form', 'centre'] as const;
+const LEAD_SOURCES = ['chatbot', 'form', 'centre', 'franchise'] as const;
 const LEAD_PERSONAS = ['student', 'parent', 'professional', 'franchise'] as const;
 export const LEAD_STATUSES = ['new', 'contacted', 'enrolled', 'lost'] as const;
 

@@ -50,7 +50,8 @@ export function AdminTopbar({
             name="q"
             type="search"
             placeholder="Search content…"
-            className="admin-input h-10 w-56 pl-9 text-sm lg:w-72"
+            style={{ paddingLeft: 36 }}
+            className="admin-input h-10 w-56 text-sm lg:w-72"
           />
         </label>
       </form>
@@ -71,6 +72,14 @@ export function AdminTopbar({
           <span aria-hidden="true" className="adm-dot" />
           {liveContent ? 'Content is live' : 'Fixtures mode'}
         </span>
+
+        <a
+          href="/admin/search"
+          aria-label="Search content"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] border border-border text-foreground-secondary md:hidden"
+        >
+          <Search aria-hidden="true" className="h-5 w-5" />
+        </a>
 
         <a
           href="/"
