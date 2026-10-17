@@ -13,6 +13,7 @@ export const enquiryCopy = definePageCopy({
   group: 'Pages',
   description: 'The enquiry page and form text.',
   defaults: {
+    'next.image': '/home/counsellor.jpg',
     'seo.title': 'Enquire About a Jetking Course',
     'seo.description':
       'Send an enquiry and a Jetking counsellor will get in touch about courses, fees, centres and admissions.',

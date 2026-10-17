@@ -29,7 +29,7 @@ function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
       <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[22rem]">
           <Image
-            src="/home/centre-exterior.jpg"
+            src={copy['directoryCta.image']}
             alt=""
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"

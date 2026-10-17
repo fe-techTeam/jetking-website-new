@@ -49,7 +49,7 @@ export default async function EnquiryPage() {
             <div className="lg:sticky lg:top-28">
               <div className="relative mb-7 h-44 overflow-hidden rounded-[var(--k-r)] sm:h-56 lg:h-64">
                 <Image
-                  src="/home/counsellor.jpg"
+                  src={copy['next.image']}
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 40vw, 100vw"

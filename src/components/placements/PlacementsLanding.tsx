@@ -37,50 +37,50 @@ function IconGlyph({ src, className }: { src: string; className?: string }) {
   );
 }
 
-const ICONS = {
-  hiringPartners: '/placements/icons/01_hiring_partners.svg',
-  placementSupport: '/placements/icons/02_placement_support.svg',
-  realworldPreparation: '/placements/icons/03_realworld_preparation.svg',
-  completeTraining: '/placements/icons/04_complete_training.svg',
-  biodataPreparation: '/placements/icons/05_biodata_preparation.svg',
-  mockInterviews: '/placements/icons/06_mock_interviews.svg',
-  studentInterviews: '/placements/icons/07_student_interviews.svg',
-  appointmentLetter: '/placements/icons/08_appointment_letter.svg',
-  learnPractically: '/placements/icons/09_learn_practically.svg',
-  englishSpeaking: '/placements/icons/10_english_speaking.svg',
-  interviewSkills: '/placements/icons/11_interview_skills.svg',
-  getJobs: '/placements/icons/12_get_jobs.svg',
-  mockInterviewsFeature: '/placements/icons/13_mock_interviews_feature.svg',
-  aiBotInterviews: '/placements/icons/14_ai_bot_interviews.svg',
-  presentation: '/placements/icons/15_presentation.svg',
-  personalisedGuidance: '/placements/icons/16_personalised_guidance.svg',
-  centreInformation: '/placements/icons/17_centre_information.svg',
-  quickResponse: '/placements/icons/18_quick_response.svg',
-  processArrow: '/placements/icons/25_process_arrow.svg',
+const ICON_KEYS = {
+  hiringPartners: 'icons.0.image',
+  placementSupport: 'icons.1.image',
+  realworldPreparation: 'icons.2.image',
+  completeTraining: 'icons.3.image',
+  biodataPreparation: 'icons.4.image',
+  mockInterviews: 'icons.5.image',
+  studentInterviews: 'icons.6.image',
+  appointmentLetter: 'icons.7.image',
+  learnPractically: 'icons.8.image',
+  englishSpeaking: 'icons.9.image',
+  interviewSkills: 'icons.10.image',
+  getJobs: 'icons.11.image',
+  mockInterviewsFeature: 'icons.12.image',
+  aiBotInterviews: 'icons.13.image',
+  presentation: 'icons.14.image',
+  personalisedGuidance: 'icons.15.image',
+  centreInformation: 'icons.16.image',
+  quickResponse: 'icons.17.image',
+  processArrow: 'icons.18.image',
 } as const;
 
 const PROCESS_STEP_ICONS = [
-  ICONS.completeTraining,
-  ICONS.biodataPreparation,
-  ICONS.mockInterviews,
-  ICONS.studentInterviews,
-  ICONS.appointmentLetter,
+  ICON_KEYS.completeTraining,
+  ICON_KEYS.biodataPreparation,
+  ICON_KEYS.mockInterviews,
+  ICON_KEYS.studentInterviews,
+  ICON_KEYS.appointmentLetter,
 ];
 
 const BENEFIT_ICON_SRCS = [
-  ICONS.learnPractically,
-  ICONS.englishSpeaking,
-  ICONS.interviewSkills,
-  ICONS.getJobs,
-  ICONS.mockInterviewsFeature,
-  ICONS.aiBotInterviews,
-  ICONS.presentation,
+  ICON_KEYS.learnPractically,
+  ICON_KEYS.englishSpeaking,
+  ICON_KEYS.interviewSkills,
+  ICON_KEYS.getJobs,
+  ICON_KEYS.mockInterviewsFeature,
+  ICON_KEYS.aiBotInterviews,
+  ICON_KEYS.presentation,
 ];
 
 const CTA_FEATURES = [
-  { labelKey: 'cta.features.0', icon: ICONS.personalisedGuidance },
-  { labelKey: 'cta.features.1', icon: ICONS.centreInformation },
-  { labelKey: 'cta.features.2', icon: ICONS.quickResponse },
+  { labelKey: 'cta.features.0', iconKey: ICON_KEYS.personalisedGuidance },
+  { labelKey: 'cta.features.1', iconKey: ICON_KEYS.centreInformation },
+  { labelKey: 'cta.features.2', iconKey: ICON_KEYS.quickResponse },
 ] as const;
 
 /**
@@ -89,9 +89,9 @@ const CTA_FEATURES = [
  * codebase's content backs one, so these stay descriptive.
  */
 const HERO_HIGHLIGHTS = [
-  { labelKey: 'hero.highlights.0', icon: ICONS.hiringPartners },
-  { labelKey: 'hero.highlights.1', icon: ICONS.realworldPreparation },
-  { labelKey: 'hero.highlights.2', icon: ICONS.placementSupport },
+  { labelKey: 'hero.highlights.0', iconKey: ICON_KEYS.hiringPartners },
+  { labelKey: 'hero.highlights.1', iconKey: ICON_KEYS.realworldPreparation },
+  { labelKey: 'hero.highlights.2', iconKey: ICON_KEYS.placementSupport },
 ] as const;
 
 const HERO_CHECKLIST_KEYS = ['hero.checklist.0', 'hero.checklist.1', 'hero.checklist.2'] as const;
@@ -186,7 +186,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
                     aria-hidden="true"
                     className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
-                    <IconGlyph src={item.icon} className="h-5 w-5" />
+                    <IconGlyph src={copy[item.iconKey]} className="h-5 w-5" />
                   </span>
                   <span className="text-[13px] leading-tight font-bold text-[var(--dc-ink)]">{copy[item.labelKey]}</span>
                 </div>
@@ -247,7 +247,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
         <Reveal>
           <StepPath
             steps={PROCESS_STEPS.map((item, index) => ({
-              icon: <IconGlyph src={PROCESS_STEP_ICONS[index] ?? ICONS.completeTraining} className="h-8 w-8 lg:h-10 lg:w-10" />,
+              icon: <IconGlyph src={copy[PROCESS_STEP_ICONS[index] ?? ICON_KEYS.completeTraining]} className="h-8 w-8 lg:h-10 lg:w-10" />,
               title: item.title,
               label: String(item.step),
               body: <p className="lg:max-w-[12rem]">{item.description}</p>,
@@ -268,7 +268,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div className="relative isolate min-h-[240px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[300px] lg:min-h-full">
               <Image
-                src="/home/counsellor.jpg"
+                src={copy['benefits.image']}
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 40vw, 100vw"
@@ -282,7 +282,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
                   className="kit kit-card kit-card-lift flex items-start gap-3.5 p-4 sm:last:odd:col-span-2"
                 >
                   <span className="kit-iconwell">
-                    <IconGlyph src={BENEFIT_ICON_SRCS[index] ?? ICONS.learnPractically} className="h-5 w-5" />
+                    <IconGlyph src={copy[BENEFIT_ICON_SRCS[index] ?? ICON_KEYS.learnPractically]} className="h-5 w-5" />
                   </span>
                   <div className="min-w-0">
                     <h3 className="font-display text-[17px] leading-snug font-extrabold text-[var(--k-ink)]">{benefit.title}</h3>
@@ -362,7 +362,7 @@ export function PlacementsLanding({ placements, copy }: { placements: Placements
               </div>
             </div>
             <div className="relative order-1 min-h-[180px] lg:order-2 lg:min-h-full">
-              <Image src="/home/centre-exterior.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+              <Image src={copy['centre.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
               <span
                 aria-hidden="true"
                 className="absolute inset-0 bg-gradient-to-b from-transparent to-jk-600/60 lg:bg-gradient-to-r lg:from-jk-600 lg:to-transparent"

@@ -72,7 +72,7 @@ export async function SiteFooter() {
         <div className="grid gap-8 sm:gap-12 lg:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))] lg:gap-8">
           <div>
             <Image
-              src="/brand/jetking-wordmark.png"
+              src={copy['footer.logo.image']}
               alt={copy['footer.logo.alt']}
               width={360}
               height={113}

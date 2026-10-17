@@ -69,7 +69,7 @@ export function AboutExtras({
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
             <div className="relative isolate min-h-[220px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[280px] lg:min-h-full">
               <Image
-                src="/home/why-labs.jpg"
+                src={explore['reasons.image']}
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 33vw, 100vw"

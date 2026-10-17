@@ -32,6 +32,15 @@ export const exploreCopy = definePageCopy({
     'hero.citiesLine': 'Centres in {cities} cities',
     'hero.noForm': 'No form, no pressure',
     'hero.image': '/home/journey-explore-v2.jpg',
+    'hero.avatars.0.avatar': '/student/avatar-1.webp',
+    'hero.avatars.1.avatar': '/student/avatar-2.webp',
+    'hero.avatars.2.avatar': '/student/avatar-3.webp',
+    'hero.avatars.3.avatar': '/student/avatar-4.webp',
+    'slider.avatars.0.avatar': '/student/avatar-1.webp',
+    'slider.avatars.1.avatar': '/student/avatar-2.webp',
+    'slider.avatars.2.avatar': '/student/avatar-3.webp',
+    'slider.avatars.3.avatar': '/student/testimonial.webp',
+    'reasons.image': '/home/why-labs.jpg',
     'hero.imageAlt': 'Visitor exploring the Jetking campus',
 
     // Orbit chips around the hero image

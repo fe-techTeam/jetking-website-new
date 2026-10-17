@@ -24,6 +24,7 @@ export const siteCopy = definePageCopy({
     'a11y.skipToContent': 'Skip to content',
 
     // Header
+    'header.logo.image': '/brand/jetking-wordmark.png',
     'header.logo.alt': siteConfig.name,
     'header.logo.ariaLabel': `${siteConfig.name} home`,
     'header.nav.ariaLabel': 'Primary',
@@ -80,6 +81,7 @@ export const siteCopy = definePageCopy({
     'askAi.href': '/chatbot',
 
     // Footer
+    'footer.logo.image': '/brand/jetking-wordmark.png',
     'footer.logo.alt': siteConfig.name,
     'footer.description': siteConfig.description,
     'footer.social.heading': 'Follow us',

@@ -222,7 +222,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
         <Link href="/" className="group flex min-h-11 items-center" aria-label={copy['header.logo.ariaLabel']}>
           {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
           <img
-            src="/brand/jetking-wordmark.png"
+            src={copy['header.logo.image']}
             alt={copy['header.logo.alt']}
             draggable={false}
             className="block h-[28px] max-w-full select-none object-contain object-left xs:h-[32px] sm:h-[38px] 2xl:h-[42px]"

@@ -7,11 +7,11 @@ import type { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 /* Generic avatar placeholders — same set every persona testimonial slider
    uses, since no real headshots exist for these published quotes. */
-const AVATARS = [
-  '/student/testimonial.webp',
-  '/student/avatar-1.webp',
-  '/student/avatar-2.webp',
-  '/student/avatar-3.webp',
+const AVATAR_KEYS = [
+  'testimonials.avatars.0.avatar',
+  'testimonials.avatars.1.avatar',
+  'testimonials.avatars.2.avatar',
+  'testimonials.avatars.3.avatar',
 ] as const;
 
 type Slide = Testimonial & { id: string };
@@ -33,7 +33,7 @@ export function PlacementsTestimonialSlider({
   copy,
 }: {
   testimonials: Testimonial[];
-  copy: Pick<typeof placementsCopy.defaults, 'testimonials.carouselLabel'>;
+  copy: Pick<typeof placementsCopy.defaults, 'testimonials.carouselLabel' | (typeof AVATAR_KEYS)[number]>;
 }) {
   const items: Slide[] = testimonials.map((t, i) => ({
     ...t,
@@ -62,7 +62,7 @@ export function PlacementsTestimonialSlider({
             <footer className="flex shrink-0 flex-col items-center gap-2 text-center sm:w-[180px]">
               <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                 <Image
-                  src={AVATARS[i % AVATARS.length] ?? AVATARS[0]}
+                  src={copy[AVATAR_KEYS[i % AVATAR_KEYS.length] ?? AVATAR_KEYS[0]]}
                   alt=""
                   fill
                   sizes="64px"

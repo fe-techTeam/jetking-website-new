@@ -4,12 +4,6 @@ import type { Testimonial } from '@/lib/content/types';
 import { TestimonialSlider } from '@/components/TestimonialSlider';
 import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 
-const AVATARS = [
-  '/franchise/partner-avatar-2.webp',
-  '/franchise/partner-avatar-1.webp',
-  '/franchise/partner-avatar-3.webp',
-] as const;
-
 export function FranchiseTestimonialSliderLight({
   copy,
   testimonials,
@@ -29,7 +23,7 @@ export function FranchiseTestimonialSliderLight({
     <TestimonialSlider
       testimonials={testimonials}
       fallback={fallback}
-      avatars={AVATARS}
+      avatars={[copy['stories.avatars.0.avatar'], copy['stories.avatars.1.avatar'], copy['stories.avatars.2.avatar']]}
       label={copy['stories.label']}
       accept={(t) => !!t.quote?.trim() && !/placeholder/i.test(t.name)}
     />

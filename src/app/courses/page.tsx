@@ -173,7 +173,7 @@ export default async function CoursesPage() {
         <Section tone="plain" labelledBy="courses-cta">
           <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
             <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[17rem]">
-              <Image src="/home/campus-lab.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+              <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
             </div>
             <div className="p-6 sm:p-10">
               <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>

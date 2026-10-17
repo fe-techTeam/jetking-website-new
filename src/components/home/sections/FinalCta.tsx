@@ -17,7 +17,7 @@ export function FinalCta({ centres, copy }: { centres: EnquiryCentre[]; copy: Ho
         {/* Photo side: the promise, in white over the picture */}
         <div className="relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden p-6 sm:p-10 lg:min-h-[560px] lg:p-12">
           <Image
-            src="/home/counsellor.jpg"
+            src={copy['cta.image']}
             alt=""
             fill
             sizes="(min-width: 1024px) 55vw, 100vw"

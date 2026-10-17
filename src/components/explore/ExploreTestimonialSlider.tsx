@@ -8,11 +8,11 @@ import type { PlacementTestimonial as Testimonial, VideoTestimonial } from '@/li
 import { fill } from '@/lib/content/copy/define';
 import type { exploreCopy } from '@/lib/content/copy/pages/explore';
 
-const AVATARS = [
-  '/student/avatar-1.webp',
-  '/student/avatar-2.webp',
-  '/student/avatar-3.webp',
-  '/student/testimonial.webp',
+const AVATAR_KEYS = [
+  'slider.avatars.0.avatar',
+  'slider.avatars.1.avatar',
+  'slider.avatars.2.avatar',
+  'slider.avatars.3.avatar',
 ] as const;
 
 type Slide =
@@ -62,7 +62,7 @@ function VideoSlide({ video, copy }: { video: VideoTestimonial; copy: typeof exp
         </span>
         <footer className="relative z-10 flex items-center gap-3 p-6 text-left sm:p-7">
           <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
-            <Image src={AVATARS[3]} alt="" fill sizes="48px" className="object-cover" />
+            <Image src={copy[AVATAR_KEYS[3]]} alt="" fill sizes="48px" className="object-cover" />
           </span>
           <span>
             <span className="block text-[14.5px] font-bold text-white">{video.name}</span>
@@ -146,7 +146,7 @@ export function ExploreTestimonialSlider({
             <footer className="mt-6 flex items-center gap-3">
               <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                 <Image
-                  src={AVATARS[i % AVATARS.length] ?? AVATARS[0]}
+                  src={copy[AVATAR_KEYS[i % AVATAR_KEYS.length] ?? AVATAR_KEYS[0]]}
                   alt=""
                   fill
                   sizes="48px"

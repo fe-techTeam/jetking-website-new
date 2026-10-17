@@ -193,6 +193,7 @@ export const homeCopy = definePageCopy({
     'why.title': 'What makes Jetking different?',
     'why.cta.label': 'Our story',
     'why.cta.href': '/about-us',
+    'why.image': '/home/why-labs.jpg',
     'why.rail.aria': 'Reasons to choose Jetking',
     'why.items.0.title': 'Trained & Certified Faculty',
     'why.items.0.detail': 'Our certified faculty combine subject expertise with engaging, inspiring teaching that motivates students to excel.',
@@ -224,6 +225,7 @@ export const homeCopy = definePageCopy({
     'counsellor.body': 'Speak to a Jetking career counsellor about courses, fees and your nearest centre. It is free, with no obligation.',
     'counsellor.cta.label': 'Enquiry Now',
     'counsellor.cta.href': '/enquiry',
+    'counsellor.image': '/home/counsellor.jpg',
 
     'franchise.srHeading': 'Franchise opportunities',
     'franchise.title': 'Run a Jetking centre in your city',
@@ -231,6 +233,7 @@ export const homeCopy = definePageCopy({
       'Partner with India’s most trusted brand — 79 years of brand equity, a countrywide network and end-to-end support.',
     'franchise.cta.label': 'Explore franchise',
     'franchise.cta.href': '/franchise',
+    'franchise.image': '/franchise/hero-building.webp',
 
     // ── FAQ ───────────────────────────────────────────────────────────────
     'faq.eyebrow': 'Questions',
@@ -244,6 +247,7 @@ export const homeCopy = definePageCopy({
     // ── Closing call to action ────────────────────────────────────────────
     'cta.title': 'Ready to start? Talk to a counsellor today.',
     'cta.body': 'Tell us what you want to study and where. Leave your number and we will call you back.',
+    'cta.image': '/home/counsellor.jpg',
     'cta.points.0': 'A counsellor from your nearest centre calls you back',
     'cta.points.1': 'Eligibility, fees and batch options — no entrance test',
     'cta.points.2': 'No obligation to enrol on the call',

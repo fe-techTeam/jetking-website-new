@@ -51,9 +51,9 @@ export const HIRING_PARTNERS = [
   { name: 'Wipro', logo: '/placements/partners/wipro.svg' },
 ] as const;
 
-/** Story ids and portraits; the story text (`stories.N.*`) lives in the page copy. */
+/** Story ids; the story text and portraits (`stories.N.*`, `stories.N.avatar`) live in the page copy. */
 export const SUCCESS_STORIES = [
-  { id: 'pro-story-1', avatar: '/professional/avatar-rahul.webp' },
-  { id: 'pro-story-2', avatar: '/professional/avatar-priya.webp' },
-  { id: 'pro-story-3', avatar: '/professional/avatar-vikram.webp' },
+  { id: 'pro-story-1' },
+  { id: 'pro-story-2' },
+  { id: 'pro-story-3' },
 ] as const;

@@ -27,6 +27,7 @@ export const aboutCopy = definePageCopy({
     'legacy.stats.2.label': 'Cities across India',
     'legacy.stats.3.label': 'Courses on offer',
 
+    'purpose.image': '/home/about-purpose.jpg',
     'purpose.eyebrow': 'Purpose',
     'purpose.titleLead': 'Our purpose &',
     'purpose.titleAccent': 'values',

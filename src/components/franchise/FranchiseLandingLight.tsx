@@ -42,11 +42,11 @@ const JUMP_START_ICONS = [Users, Settings2, Megaphone, Rocket];
 const LAUNCH_STEPS_ICONS = [ClipboardList, Rocket, GraduationCap, HeartHandshake];
 const COURSES_ICONS = [Briefcase, GraduationCap, BadgeCheck];
 
-const PARTNER_AVATARS = [
-  '/franchise/partner-avatar-1.webp',
-  '/franchise/partner-avatar-2.webp',
-  '/franchise/partner-avatar-3.webp',
-  '/franchise/hero-partner.webp',
+const PARTNER_AVATAR_KEYS = [
+  'hero.avatars.0.avatar',
+  'hero.avatars.1.avatar',
+  'hero.avatars.2.avatar',
+  'hero.avatars.3.avatar',
 ] as const;
 
 // Orbit chips: icon + position are layout; their words come from the page copy (`orbit.N.*`).
@@ -135,12 +135,12 @@ export function FranchiseLandingLight({
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2.5 sm:mt-10">
               <div className="flex items-center gap-3">
                 <span aria-hidden="true" className="flex -space-x-2.5">
-                  {PARTNER_AVATARS.map((src) => (
+                  {PARTNER_AVATAR_KEYS.map((key) => (
                     <span
-                      key={src}
+                      key={key}
                       className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)] shadow-sm"
                     >
-                      <Image src={src} alt="" fill sizes="36px" className="object-cover" />
+                      <Image src={copy[key]} alt="" fill sizes="36px" className="object-cover" />
                     </span>
                   ))}
                 </span>
@@ -395,7 +395,7 @@ export function FranchiseLandingLight({
 
           <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <div className="relative isolate min-h-[200px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] sm:min-h-[260px] lg:min-h-full">
-            <Image src="/home/campus-lab.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="-z-10 object-cover" />
+            <Image src={copy['courses.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="-z-10 object-cover" />
           </div>
           <ul className="grid gap-3 sm:gap-4">
             {COURSES_ICONS.map((Icon, i) => {
@@ -435,7 +435,7 @@ export function FranchiseLandingLight({
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
-                  src="/franchise/hero-building.webp"
+                  src={copy['enquire.image']}
                   alt={copy['enquire.image.alt']}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"

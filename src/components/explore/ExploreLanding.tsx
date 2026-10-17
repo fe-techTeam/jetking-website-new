@@ -52,7 +52,7 @@ const PARTNER_LOGOS: Record<string, { src: string; dark?: boolean }> = {
   Reisnet: { src: '/placements/partners/reisnet.png', dark: true },
 };
 
-const AVATARS = ['/student/avatar-1.webp', '/student/avatar-2.webp', '/student/avatar-3.webp', '/student/avatar-4.webp'] as const;
+const AVATAR_KEYS = ['hero.avatars.0.avatar', 'hero.avatars.1.avatar', 'hero.avatars.2.avatar', 'hero.avatars.3.avatar'] as const;
 
 const ORBIT = [
   {
@@ -286,12 +286,12 @@ export function ExploreLanding({
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 sm:mt-10">
               <div className="flex items-center gap-3">
                 <span aria-hidden="true" className="flex -space-x-2.5">
-                  {AVATARS.map((src) => (
+                  {AVATAR_KEYS.map((key) => (
                     <span
-                      key={src}
+                      key={key}
                       className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)] shadow-sm"
                     >
-                      <Image src={src} alt="" fill sizes="36px" className="object-cover" />
+                      <Image src={copy[key]} alt="" fill sizes="36px" className="object-cover" />
                     </span>
                   ))}
                 </span>

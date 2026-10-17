@@ -17,7 +17,7 @@ export function ProfessionalSocialProof({
   partners: LogoItem[];
 }) {
   const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
-  // Story text comes from the page copy (`stories.N.*`); the id and portrait stay with the code.
+  // Story text comes from the page copy (`stories.N.*`); the id stays with the code.
   const stories = SUCCESS_STORIES.map((story, i) => ({
     ...story,
     from: k(`stories.${i}.from`),
@@ -25,6 +25,7 @@ export function ProfessionalSocialProof({
     quote: k(`stories.${i}.quote`),
     name: k(`stories.${i}.name`),
     hike: k(`stories.${i}.hike`),
+    avatar: k(`stories.${i}.avatar`),
   }));
   return (
     <Section tone="tint" labelledBy="pro-stories-heading">

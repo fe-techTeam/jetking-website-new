@@ -72,6 +72,7 @@ export const coursesCopy = definePageCopy({
     'guidance.franchise.ctaLabel': 'Go to franchise',
     'guidance.franchise.ctaHref': '/franchise',
 
+    'cta.image': '/home/campus-lab.jpg',
     'cta.eyebrow': 'Still deciding',
     'cta.title': 'Not sure which course fits?',
     'cta.body': 'Talk to a counsellor about your goals, eligibility and the right track — no commitment needed.',
@@ -181,6 +182,8 @@ export const coursesCopy = definePageCopy({
     'courseCentres.programmeTitle': 'Labs, master sessions and certification near you',
     'courseCentres.programmeNote': 'Your degree is awarded by the university. Jetking centres offer labs, master sessions and certification as additional support services; they are not a mandatory part of the degree.',
     'courseCentres.shortTitle': 'Your learning journey, with a mini campus near your home',
+    'courseUniversity.yenepoya.logo': '/university-partners/yenepoya.png',
+    'courseClosing.image': '/home/counsellor.jpg',
     'courseCentres.image': '/courses/centre-advantage.jpg',
     'courseCentres.imageAlt': 'Learners and a mentor working together in a Jetking lab',
     'courseCentres.advantages.0.title': 'Instructor-led physical labs',

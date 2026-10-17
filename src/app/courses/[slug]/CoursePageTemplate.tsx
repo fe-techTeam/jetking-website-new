@@ -51,8 +51,8 @@ import { CentrePicker } from './CentrePicker';
 /** Icons for the five centre advantages; their titles and text are `courseCentres.advantages.*` copy. */
 const CENTRE_ADVANTAGE_ICONS: LucideIcon[] = [Monitor, CalendarDays, Compass, Mic, Users];
 
-const UNIVERSITY_LOGOS: Array<{ match: RegExp; src: string }> = [
-  { match: /yenepoya/i, src: '/university-partners/yenepoya.png' },
+const UNIVERSITY_LOGOS: Array<{ match: RegExp; key: 'courseUniversity.yenepoya.logo' }> = [
+  { match: /yenepoya/i, key: 'courseUniversity.yenepoya.logo' },
 ];
 
 /** Cycled across journey / stat cards so the page carries red, yellow and blue, not red alone. */
@@ -174,9 +174,8 @@ export function CoursePageTemplate({
   const tagline = sentenceEnd > 0 ? course.summary.slice(0, sentenceEnd + 1) : course.summary;
   const summaryRest = sentenceEnd > 0 ? course.summary.slice(sentenceEnd + 1).trim() : '';
   const degree = degreeName(course.title);
-  const universityLogo = course.university
-    ? UNIVERSITY_LOGOS.find((u) => u.match.test(course.university!))?.src
-    : undefined;
+  const universityLogoHit = course.university ? UNIVERSITY_LOGOS.find((u) => u.match.test(course.university!)) : undefined;
+  const universityLogo = universityLogoHit ? copy[universityLogoHit.key] : undefined;
 
   // City → centre names, so the centre list is readable on this page without opening /centres.
   const cityName = new Map(cities.map((c) => [c.slug, c.name]));
@@ -895,7 +894,7 @@ export function CoursePageTemplate({
             </p>
           </div>
           <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
-            <Image src="/home/counsellor.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+            <Image src={copy['courseClosing.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
           </div>
         </div>
       </section>

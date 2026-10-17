@@ -29,7 +29,6 @@ const JOURNEY_ICONS = [BookOpen, Cpu, Trophy, BriefcaseBusiness];
 /** The lab reason leads: it gets the photo. The other four sit beside it as a 2 x 2. */
 const FEATURED = 1;
 const REST = [0, 2, 3, 4];
-const FEATURED_PHOTO = "/home/why-labs.jpg";
 
 export function WhyJetking({ copy }: { copy: HomeCopy }) {
   return (
@@ -61,7 +60,7 @@ export function WhyJetking({ copy }: { copy: HomeCopy }) {
           {/* Featured: photo card */}
           <li className="group relative isolate min-h-[340px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[400px] lg:min-h-full">
             <Image
-              src={FEATURED_PHOTO}
+              src={copy["why.image"]}
               alt=""
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"

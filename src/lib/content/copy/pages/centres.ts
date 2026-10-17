@@ -66,6 +66,7 @@ export const centresCopy = definePageCopy({
     'directoryIndex.phone': 'Phone',
 
     // ── Directory: closing band ─────────────────────────────────────────
+    'directoryCta.image': '/home/centre-exterior.jpg',
     'directoryCta.eyebrow': 'Need help choosing?',
     'directoryCta.title': 'Talk to a counsellor about your nearest centre',
     'directoryCta.body':

@@ -42,7 +42,7 @@ export function FranchiseBand({ copy }: { copy: HomeCopy }) {
 
       <div className="relative min-h-[280px] bg-white sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px]">
         <Image
-          src="/franchise/hero-building.webp"
+          src={copy['franchise.image']}
           alt=""
           fill
           sizes="(min-width: 768px) 50vw, 100vw"

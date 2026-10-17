@@ -171,7 +171,7 @@ export function AboutLanding({
           <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div className="relative isolate min-h-[260px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[340px] lg:min-h-full">
               <Image
-                src="/home/about-purpose.jpg"
+                src={copy['purpose.image']}
                 alt=""
                 fill
                 sizes="(min-width: 1024px) 40vw, 100vw"

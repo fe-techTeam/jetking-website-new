@@ -56,6 +56,7 @@ export const blogCopy = definePageCopy({
     'card.latestBadge': 'Latest',
     'card.readArticle': 'Read article',
 
+    'cta.image': '/home/counsellor.jpg',
     'cta.eyebrow': 'Still deciding',
     'cta.title': 'Talk it through with a counsellor',
     'cta.body':

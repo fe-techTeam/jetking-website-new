@@ -37,6 +37,7 @@ export const faqCopy = definePageCopy({
     'more.eyebrow': 'Need more help?',
     'more.title': 'Still have a question?',
     'more.body': 'A counsellor can answer what depends on your background and nearest centre.',
+    'more.image': '/home/counsellor.jpg',
     'more.cta.label': 'Talk to a counsellor',
     'more.chat.label': 'Ask Jetking AI',
     'more.chat.href': '/chatbot',

@@ -89,7 +89,7 @@ export function BlogLanding({
           </div>
 
           <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
-            <Image src="/home/counsellor.jpg" alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+            <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
           </div>
         </div>
       </Section>      </div>

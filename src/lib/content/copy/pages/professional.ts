@@ -108,6 +108,9 @@ export const professionalCopy = definePageCopy({
     'stories.slideLabel': '{name}, {from} to {to}',
     'stories.route': '{from} → {to}',
     'stories.hike.label': '{hike} Salary Hike',
+    'stories.0.avatar': '/professional/avatar-rahul.webp',
+    'stories.1.avatar': '/professional/avatar-priya.webp',
+    'stories.2.avatar': '/professional/avatar-vikram.webp',
     'stories.0.from': 'System Admin',
     'stories.0.to': 'Cloud Engineer',
     'stories.0.quote':

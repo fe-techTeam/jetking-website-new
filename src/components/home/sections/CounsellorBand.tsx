@@ -23,7 +23,7 @@ export function CounsellorBand({ copy }: { copy: HomeCopy }) {
       <div className="shell grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
         <div className="relative aspect-[4/3] w-full lg:aspect-auto lg:min-h-[440px] lg:self-stretch">
           <Image
-            src="/home/counsellor.jpg"
+            src={copy["counsellor.image"]}
             alt=""
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
