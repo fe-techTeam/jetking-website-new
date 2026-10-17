@@ -429,6 +429,8 @@ Without it the panel falls back to `data/cms/store.json`. Migrations: `npm run d
 | Logos & partners (home, explore, professional marquees) | `/admin/logo-lists` |
 | Investors page (company, contacts, KMP, disclosure documents) — admin only | `/admin/investors-page` |
 | Announcement bar with schedule window, tone, dismissible | `/admin/announcements` |
+| SEO overview — every page/record's title, description, share image, canonical and noindex with length/duplicate checks and a search preview; edit in place | `/admin/seo` |
+| SEO settings — indexing master switch, robots.txt extras, block AI crawlers, sitemap exclusions, default share image, Twitter handle, Google/Bing verification, Organization schema | `/admin/seo-settings` |
 | Redirects (301/302 looked up in the proxy, ~30 s to take effect, bulk import, loop check) | `/admin/redirects` |
 | Content search across all collections; `?open=<id>` deep links | `/admin/search` |
 | Dashboard recent edits and open drafts | `/admin` |

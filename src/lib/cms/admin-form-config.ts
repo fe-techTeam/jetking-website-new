@@ -525,6 +525,28 @@ const announcements: AdminFormConfig = {
   },
 };
 
+const seo_settings: AdminFormConfig = {
+  blank: () => ({
+    id: 'seo',
+    allowIndexing: true,
+    blockAiCrawlers: false,
+    extraDisallow: [],
+    sitemapExclude: [],
+    defaultOgImage: '/og-default.png',
+    twitterHandle: '',
+    googleVerification: '',
+    bingVerification: '',
+    organization: { description: '', logo: '', phone: '', sameAs: [] },
+    status: 'published',
+  }),
+  lockedFields: ['id'],
+  sections: [
+    { title: 'Search engines', fields: ['allowIndexing', 'blockAiCrawlers', 'extraDisallow', 'sitemapExclude'] },
+    { title: 'Sharing & verification', fields: ['defaultOgImage', 'twitterHandle', 'googleVerification', 'bingVerification'] },
+    { title: 'Organization (structured data)', fields: ['organization'] },
+  ],
+};
+
 export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   courses,
   cities,
@@ -544,4 +566,5 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   logo_lists,
   page_copy,
   announcements,
+  seo_settings,
 };

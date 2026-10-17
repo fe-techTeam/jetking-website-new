@@ -19,14 +19,16 @@ import {
   Timeline,
 } from '@/components/kit';
 
-export const metadata: Metadata = buildMetadata(
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
   {
     title: 'Design kit',
     description: 'Internal preview of the shared page components.',
     noindex: true,
   },
   '/design-kit',
-);
+  );
+}
 
 const BTN =
   'inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--theme-accent)] px-6 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]';

@@ -4,6 +4,7 @@ import type {
   City,
   ContentSource,
   Announcement,
+  SeoSettings,
   Course,
   Faculty,
   Faq,
@@ -17,6 +18,7 @@ import type {
   TrustSignal,
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
+import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import { legalDefaults } from '../fixtures/legal';
 import { logoListFallback } from '../fixtures/logo-lists';
 import { aboutFallback, investorsFallback, normalizeAbout, normalizeInvestors, normalizePlacements, placementsFallback } from '../page-content';
@@ -82,6 +84,11 @@ export const adminSource: ContentSource = {
 
   async listFaqs() {
     return published(await listCollection('faqs', { publishedOnly: true })) as Faq[];
+  },
+
+  async getSeoSettings() {
+    const [record] = await listCollection('seo_settings', { publishedOnly: true });
+    return record ? { ...seoSettingsDefaults, ...published([record])[0]!, organization: { ...seoSettingsDefaults.organization, ...(record as unknown as SeoSettings).organization } } : seoSettingsDefaults;
   },
 
   async listAnnouncements() {

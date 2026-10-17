@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import type { Centre, Course, Faq, Post, Seo } from '@/lib/content/types';
+import type { Centre, Course, Faq, Post, Seo, SeoSettings } from '@/lib/content/types';
+import { content } from '@/lib/content';
 import { absoluteUrl, siteConfig } from './site';
 import { centrePath } from './centre-path';
 import { SOCIAL_LINKS } from './social';
@@ -19,11 +20,12 @@ import { cleanBlogBody } from './content/cleanBlogBody';
 /** 1200×630 share card (public/og-default.png), used when a page has no image of its own. */
 const DEFAULT_OG_IMAGE = { url: '/og-default.png', width: 1200, height: 630 } as const;
 
-export function buildMetadata(seo: Seo, path: string): Metadata {
+export async function buildMetadata(seo: Seo, path: string): Promise<Metadata> {
+  const settings = await content.getSeoSettings();
   const canonical = absoluteUrl(seo.canonicalPath ?? path);
-  const image = seo.ogImage
-    ? { url: absoluteUrl(seo.ogImage) }
-    : { url: absoluteUrl(DEFAULT_OG_IMAGE.url), width: DEFAULT_OG_IMAGE.width, height: DEFAULT_OG_IMAGE.height };
+  // The page's own image, else the site default from SEO settings, else the shipped share card.
+  const fallback = settings.defaultOgImage && settings.defaultOgImage !== DEFAULT_OG_IMAGE.url ? { url: absoluteUrl(settings.defaultOgImage) } : { url: absoluteUrl(DEFAULT_OG_IMAGE.url), width: DEFAULT_OG_IMAGE.width, height: DEFAULT_OG_IMAGE.height };
+  const image = seo.ogImage ? { url: absoluteUrl(seo.ogImage) } : fallback;
 
   return {
     // `absolute` suppresses the root layout's "%s | Jetking" template. SEO titles
@@ -46,6 +48,7 @@ export function buildMetadata(seo: Seo, path: string): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
+      ...(settings.twitterHandle ? { site: settings.twitterHandle } : {}),
       title: seo.title,
       description: seo.description,
       images: [image.url],
@@ -65,7 +68,7 @@ export const WEBSITE_ID = `${siteConfig.url}/#website`;
 
 const organizationRef = { '@id': ORGANIZATION_ID } as const;
 
-export function organizationSchema(): JsonLd {
+export function organizationSchema(settings?: SeoSettings['organization']): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
@@ -76,12 +79,12 @@ export function organizationSchema(): JsonLd {
     url: siteConfig.url,
     logo: {
       '@type': 'ImageObject',
-      url: absoluteUrl('/brand/jetking-shield.png'),
+      url: absoluteUrl(settings?.logo || '/brand/jetking-shield.png'),
       width: 238,
       height: 266,
     },
     image: absoluteUrl('/og-default.png'),
-    description: siteConfig.description,
+    description: settings?.description || siteConfig.description,
     foundingDate: String(FOUNDED_YEAR),
     areaServed: { '@type': 'Country', name: 'India' },
     knowsAbout: [
@@ -96,11 +99,11 @@ export function organizationSchema(): JsonLd {
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: `+91-${siteConfig.helpline.replace(/^0/, '')}`,
+      telephone: settings?.phone || `+91-${siteConfig.helpline.replace(/^0/, '')}`,
       contactType: 'admissions',
       areaServed: 'IN',
     },
-    sameAs: SOCIAL_LINKS.map((social) => social.href),
+    sameAs: settings?.sameAs.length ? settings.sameAs : SOCIAL_LINKS.map((social) => social.href),
   };
 }
 

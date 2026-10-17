@@ -16,6 +16,8 @@ import { absoluteUrl } from '@/lib/site';
  * is a contradictory signal to crawlers.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const seo = await content.getSeoSettings();
+  const excluded = new Set(seo.sitemapExclude.map((p) => p.trim().replace(/\/+$/, '') || '/'));
   const [courses, centres, posts] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
@@ -55,26 +57,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  return [
+  const urls: MetadataRoute.Sitemap = [
     ...staticRoutes,
-    ...courses.map((course) => ({
+    // A page an editor marked noindex does not belong in the sitemap either.
+    ...courses.filter((c) => !c.seo.noindex).map((course) => ({
       url: absoluteUrl(`/courses/${course.slug}`),
       lastModified: new Date(course.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.9,
     })),
-    ...centres.map((centre) => ({
+    ...centres.filter((c) => !c.seo.noindex).map((centre) => ({
       url: absoluteUrl(centrePath(centre.slug)),
       lastModified: new Date(centre.updatedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
     // A post canonicalised to another URL is a duplicate; only the canonical belongs here.
-    ...posts.filter((post) => !post.seo.canonicalPath || post.seo.canonicalPath === `/blog/${post.slug}`).map((post) => ({
+    ...posts.filter((post) => !post.seo.noindex && (!post.seo.canonicalPath || post.seo.canonicalPath === `/blog/${post.slug}`)).map((post) => ({
       url: absoluteUrl(`/blog/${post.slug}`),
       lastModified: new Date(post.updatedAt),
       changeFrequency: 'yearly' as const,
       priority: 0.6,
     })),
   ];
+
+  // Paths the editors excluded in SEO settings.
+  return urls.filter((entry) => !excluded.has(new URL(entry.url).pathname.replace(/\/+$/, '') || '/'));
 }

@@ -1,3 +1,4 @@
+import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import type {
   Centre,
   City,
@@ -76,6 +77,10 @@ export const localSource: ContentSource = {
 
   async listFaqs(): Promise<Faq[]> {
     return [...faqs];
+  },
+
+  async getSeoSettings() {
+    return seoSettingsDefaults;
   },
 
   async listAnnouncements(): Promise<Announcement[]> {

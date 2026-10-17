@@ -350,6 +350,26 @@ export interface Announcement {
   dismissible: boolean;
 }
 
+/** Site-wide SEO controls — one document (id `seo`). */
+export interface SeoSettings {
+  id: 'seo';
+  /** Master switch. Off = robots.txt disallows everything (a production site should leave it on). */
+  allowIndexing: boolean;
+  /** Disallow the named AI crawlers (GPTBot, ClaudeBot, …) while search engines stay allowed. */
+  blockAiCrawlers: boolean;
+  /** Extra paths robots.txt should disallow, e.g. `/thank-you`. */
+  extraDisallow: string[];
+  /** Paths left out of sitemap.xml. */
+  sitemapExclude: string[];
+  /** Share image for any page that has none of its own. */
+  defaultOgImage: string;
+  twitterHandle: string;
+  googleVerification: string;
+  bingVerification: string;
+  /** Feeds the Organization structured data on every page. */
+  organization: { description: string; logo: string; phone: string; sameAs: string[] };
+}
+
 export interface Faq {
   id: string;
   /** @grounded */
@@ -725,6 +745,8 @@ export interface ContentSource {
 
   /** Published announcements (any window); the site shell picks the active one. */
   listAnnouncements(): Promise<Announcement[]>;
+  /** Site-wide SEO controls; the in-repo defaults when none is published. */
+  getSeoSettings(): Promise<SeoSettings>;
 
   /** Returns verified signals only. Unverified claims never reach a template. */
   listTrustSignals(): Promise<TrustSignal[]>;

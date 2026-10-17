@@ -18,6 +18,7 @@ import { themeScript } from '@/components/providers/theme-script';
 import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
 import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
+import { content } from '@/lib/content';
 import { loadCopy } from '@/lib/content/copy/load';
 import { siteCopy } from '@/lib/content/copy/pages/site';
 import { SiteCopyProvider } from '@/components/providers/site-copy';
@@ -25,7 +26,12 @@ import '@/styles/globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(siteCopy);
+  const seo = await content.getSeoSettings();
   return {
+    verification: {
+      ...(seo.googleVerification ? { google: seo.googleVerification } : {}),
+      ...(seo.bingVerification ? { other: { 'msvalidate.01': seo.bingVerification } } : {}),
+    },
     metadataBase: new URL(siteConfig.url),
     title: {
       default: copy['seo.title'],
@@ -61,6 +67,7 @@ const fira = Fira_Sans({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const copy = await loadCopy(siteCopy);
+  const seoSettings = await content.getSeoSettings();
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
 
@@ -84,7 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <AppProviders>
           <SiteCopyProvider copy={copy}>
-            <JsonLd data={[organizationSchema(), websiteSchema()]} />
+            <JsonLd data={[organizationSchema(seoSettings.organization), websiteSchema()]} />
             <a
               href="#main"
               className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"

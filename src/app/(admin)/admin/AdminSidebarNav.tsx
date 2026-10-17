@@ -33,6 +33,7 @@ import {
   MessageSquareQuote,
   Boxes,
   Inbox,
+  Search,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
@@ -69,6 +70,7 @@ const ICONS: Record<string, LucideIcon> = {
   MessageSquareQuote,
   Boxes,
   Inbox,
+  Search,
 };
 
 export function AdminSidebarNav({

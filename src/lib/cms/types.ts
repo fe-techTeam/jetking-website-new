@@ -18,4 +18,5 @@ export type CmsCollection =
   | 'legal_documents'
   | 'logo_lists'
   | 'page_copy'
-  | 'announcements';
+  | 'announcements'
+  | 'seo_settings';

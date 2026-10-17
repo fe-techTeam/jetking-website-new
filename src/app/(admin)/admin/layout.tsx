@@ -39,6 +39,7 @@ type NavItem = { href: Route; label: string; icon: string; group: string; roles?
 /** Extra Website-group screens that are not record collections, placed after the website's collections. */
 const WEBSITE_TOOLS: NavItem[] = [
   { href: '/admin/media' as Route, label: 'Media library', icon: 'Image', group: GROUP.website, roles: ['admin', 'editor'] },
+  { href: '/admin/seo' as Route, label: 'SEO overview', icon: 'Search', group: GROUP.website, roles: ['admin', 'editor'] },
   { href: '/admin/redirects' as Route, label: 'Redirects', icon: 'Link2', group: GROUP.website, roles: ['admin', 'editor'] },
 ];
 

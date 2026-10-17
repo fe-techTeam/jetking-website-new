@@ -4,6 +4,7 @@ import path from 'node:path';
 import type {
   AboutPageContent,
   Announcement,
+  SeoSettings,
   Centre,
   City,
   Course,
@@ -34,6 +35,7 @@ import {
   placements as seedPlacements,
   policies as seedPolicies,
 } from '@/lib/content/fixtures/kb';
+import { seoSettingsDefaults } from '@/lib/content/fixtures/seo-settings';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
 import { logoListDefaults } from '@/lib/content/fixtures/logo-lists';
@@ -81,6 +83,7 @@ export interface CmsStore {
   logo_lists: WithStatus<LogoList>[];
   page_copy: WithStatus<PageCopyRecord>[];
   announcements: WithStatus<Announcement>[];
+  seo_settings: WithStatus<SeoSettings>[];
 }
 
 const STORE_PATH = path.join(process.cwd(), 'data', 'cms', 'store.json');
@@ -109,6 +112,7 @@ function seedStore(): CmsStore {
     logo_lists: published(logoListDefaults),
     // No overrides until an editor changes something: every page starts on its shipped text.
     page_copy: [],
+    seo_settings: published([seoSettingsDefaults]),
     // One disabled example so the editor has something to copy; nothing shows on the site until published.
     announcements: [
       {

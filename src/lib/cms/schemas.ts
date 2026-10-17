@@ -492,6 +492,24 @@ const announcementSchema = withStatus({
   dismissible: z.boolean(),
 });
 
+const seoSettingsSchema = withStatus({
+  id: z.literal('seo'),
+  allowIndexing: z.boolean(),
+  blockAiCrawlers: z.boolean(),
+  extraDisallow: z.array(z.string()),
+  sitemapExclude: z.array(z.string()),
+  defaultOgImage: z.string(),
+  twitterHandle: z.string(),
+  googleVerification: z.string(),
+  bingVerification: z.string(),
+  organization: z.object({
+    description: z.string(),
+    logo: z.string(),
+    phone: z.string(),
+    sameAs: z.array(z.string()),
+  }),
+});
+
 const CMS_COLLECTION_SCHEMAS = {
   courses: courseSchema,
   cities: citySchema,
@@ -511,6 +529,7 @@ const CMS_COLLECTION_SCHEMAS = {
   logo_lists: logoListSchema,
   page_copy: pageCopySchema,
   announcements: announcementSchema,
+  seo_settings: seoSettingsSchema,
 } satisfies Record<CmsCollection, z.ZodTypeAny>;
 
 /** Runtime allowlist for `collection` — a compile-time-only `CmsCollection` union
