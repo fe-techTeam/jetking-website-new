@@ -133,7 +133,7 @@ function MenuItem({ icon: Icon, children, onClick, href, danger, external }: { i
 
 const ACTIVITY_ICON: Record<string, typeof StickyNote> = { call: PhoneCall, note: StickyNote, status_change: ArrowRightLeft, chatbot: Bot };
 
-export function LeadsBoard({ initialLeads, initialStatusFilter, me }: { initialLeads: Lead[]; initialStatusFilter?: LeadStatus; me: string }) {
+export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }: { initialLeads: Lead[]; initialStatusFilter?: LeadStatus; me: string; canImport: boolean }) {
   const [leads, setLeads] = useState(initialLeads);
   const stats = useMemo(() => statsFrom(leads), [leads]);
   // "Today / due" are measured from when the page was opened.
@@ -338,7 +338,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me }: { initialL
               <p className="adm-lede mt-3">Every enquiry from the website, the chatbot and your centres, in one list.</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={() => setImportOpen(true)} className={btn}><Upload aria-hidden="true" className="h-4 w-4" />Import</button>
+              {canImport ? <button type="button" onClick={() => setImportOpen(true)} className={btn}><Upload aria-hidden="true" className="h-4 w-4" />Import</button> : null}
               <button type="button" onClick={() => setExportOpen(true)} disabled={leads.length === 0} className={btn}><Download aria-hidden="true" className="h-4 w-4" />Export</button>
               <button type="button" onClick={() => setShowNew((v) => !v)} className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-5 text-sm font-bold">
                 {showNew ? <X aria-hidden="true" className="h-4 w-4" /> : <Plus aria-hidden="true" className="h-4 w-4" />}{showNew ? 'Cancel' : 'New lead'}

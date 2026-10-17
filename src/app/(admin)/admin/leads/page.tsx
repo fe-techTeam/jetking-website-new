@@ -39,5 +39,5 @@ export default async function AdminLeadsPage({
   // of "what can this role see," not a second copy that could drift from it.
   const leads = await getLeads();
 
-  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} me={user.name} />;
+  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} me={user.name} canImport={user.role !== 'centre_staff'} />;
 }
