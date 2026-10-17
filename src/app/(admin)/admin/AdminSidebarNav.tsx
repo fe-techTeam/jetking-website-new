@@ -108,16 +108,30 @@ export function AdminSidebarNav({
       /* storage blocked */
     }
   }, []);
+  // Arriving on a page opens the group it lives in — but only on arrival, so you can still fold that group afterwards.
+  const currentGroup = items.find((i) => (i.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(i.href)))?.group;
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (pathname !== seenPath) {
+    setSeenPath(pathname);
+    if (currentGroup && folded.includes(currentGroup)) setFolded(folded.filter((g) => g !== currentGroup));
+  }
+
+  // Save the folded set whenever it changes (not before the saved value has been read back).
+  const loaded = useRef(false);
+  useEffect(() => {
+    if (!loaded.current) {
+      loaded.current = true;
+      return;
+    }
+    try {
+      localStorage.setItem('jk-admin-nav-folded', JSON.stringify(folded));
+    } catch {
+      /* storage blocked */
+    }
+  }, [folded]);
+
   function toggleGroup(group: string) {
-    setFolded((prev) => {
-      const next = prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group];
-      try {
-        localStorage.setItem('jk-admin-nav-folded', JSON.stringify(next));
-      } catch {
-        /* storage blocked */
-      }
-      return next;
-    });
+    setFolded((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
   }
   const f = filter.trim().toLowerCase();
   const visible = f ? items.filter((i) => i.label.toLowerCase().includes(f)) : items;
@@ -162,9 +176,8 @@ export function AdminSidebarNav({
       >
         {visible.length === 0 ? <p className="px-3 py-4 text-sm text-white/55">Nothing matches.</p> : null}
         {groupsOf(visible).map(({ group, entries }) => {
-          const holdsCurrent = entries.some((item) => (item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href)));
-          // While filtering, or when the group holds the page you are on, it stays open.
-          const open = Boolean(f) || holdsCurrent || !folded.includes(group);
+          // While filtering, every group with a match stays open.
+          const open = Boolean(f) || !folded.includes(group);
           return (
             <Fragment key={group}>
               {group ? (
