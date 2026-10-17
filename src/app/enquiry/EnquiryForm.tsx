@@ -227,7 +227,7 @@ export function EnquiryForm({
             .
           </>
         ) : (
-          (INTRO[classification.persona] ?? INTRO.unknown)
+          INTRO.unknown
         )}
       </p>
 

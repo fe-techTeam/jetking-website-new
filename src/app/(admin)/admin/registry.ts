@@ -36,6 +36,8 @@ export interface AdminCollection {
   roles?: Role[];
   /** Public URL of one record, with `{field}` placeholders filled from the record (e.g. `/courses/{slug}`). */
   viewPath?: string;
+  /** Kept in the database but not offered anywhere in the panel (no menu entry, no page, no search hits). */
+  hidden?: boolean;
   /** Records the website never shows (their only page is unreachable), kept in the database but not offered for editing. */
   hiddenRecordIds?: string[];
   /** False for collections that have their own editor and aren't a record count worth charting. */
@@ -48,7 +50,7 @@ export const GROUP = {
   guide: 'Jetking Guide',
 } as const;
 
-export const COLLECTIONS: AdminCollection[] = [
+const ALL_COLLECTIONS: AdminCollection[] = [
   {
     key: 'page_copy',
     route: 'page-text',
@@ -250,12 +252,12 @@ export const COLLECTIONS: AdminCollection[] = [
     key: 'homepage_variants',
     route: 'variants',
     idKey: 'id',
-    label: 'Homepage variants',
-    icon: 'LayoutTemplate',
-    group: GROUP.personalisation,
-    description: 'The testimonials shown on the Franchise page (the default variant is the fallback).',
+    label: 'Franchise testimonials',
+    icon: 'MessageSquareQuote',
+    group: GROUP.website,
+    description: 'The partner testimonials shown on the Franchise page.',
     live: true,
-    note: 'Only a variant’s testimonials reach the website today (the Franchise page). Its banner, CTA, stories and video fields are not rendered by any page yet, and the home page does not use variants.',
+    note: 'The “franchise” entry is shown on the Franchise page; “default” is the fallback when it is empty or unpublished.',
     hiddenRecordIds: ['student', 'parent', 'professional', 'ai-mumbai'],
     appearsOn: [
       { label: 'Franchise', href: '/franchise' },
@@ -266,6 +268,7 @@ export const COLLECTIONS: AdminCollection[] = [
     route: 'rules',
     idKey: 'id',
     label: 'Persona rules',
+    hidden: true,
     icon: 'SlidersHorizontal',
     group: GROUP.personalisation,
     description: 'IF/THEN rules that pick a homepage variant for a visitor.',
@@ -317,8 +320,11 @@ export const COLLECTIONS: AdminCollection[] = [
  */
 export const UNLISTED_PAGE_IDS: readonly string[] = ['student', 'parent', 'professional', 'explore'];
 
+/** Every collection the panel offers (hidden ones are left out of the menu, dashboard, search and site map). */
+export const COLLECTIONS: AdminCollection[] = ALL_COLLECTIONS.filter((c) => !c.hidden);
+
 export function collectionByKey(key: CmsCollection): AdminCollection {
-  const found = COLLECTIONS.find((c) => c.key === key);
+  const found = ALL_COLLECTIONS.find((c) => c.key === key);
   if (!found) throw new Error(`No admin registry entry for collection "${key}".`);
   return found;
 }

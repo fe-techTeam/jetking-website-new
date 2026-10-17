@@ -321,6 +321,8 @@ const trust_signals: AdminFormConfig = {
 };
 
 const homepage_variants: AdminFormConfig = {
+  // Only the testimonials are shown on the site; the other fields belong to the retired personalisation feature.
+  hiddenFields: ['banner', 'cta', 'stories', 'video', 'courseBoost', 'centreBoost'],
   blank: () => ({
     id: '',
     label: '',

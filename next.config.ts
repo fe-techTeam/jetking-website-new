@@ -81,7 +81,11 @@ const nextConfig: NextConfig = {
       });
     }
 
-    return [...merged.values()];
+    // The audience landing pages (students / parents / professionals) are retired: visitors go to the home page.
+    // Temporary (not permanent) so they can be brought back without browsers having cached the move.
+    const retired = ['/student', '/parent', '/professional'].map((source) => ({ source, destination: '/', permanent: false }));
+
+    return [...retired, ...merged.values()];
   },
 
   async headers() {

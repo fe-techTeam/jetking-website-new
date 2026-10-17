@@ -39,6 +39,9 @@ type Rec = Record<string, unknown>;
 type PendingSwitch =
   { kind: "record"; item: Rec } | { kind: "new" } | { kind: "list" };
 
+/** Fields that belong to the retired audience-personalisation feature: kept in the data, never shown to editors. */
+const HIDDEN_FIELD_KEYS = ['personaRelevance'];
+
 const NAME_KEYS = ["title", "name", "question", "message", "headline", "label"];
 const PAGE_SIZE = 25;
 
@@ -167,7 +170,7 @@ export function RecordEditor({
 
   const published = draft.status === "published";
   const fieldKeys = Object.keys(draft).filter(
-    (k) => k !== "status" && !config.hiddenFields?.includes(k),
+    (k) => k !== "status" && !config.hiddenFields?.includes(k) && !HIDDEN_FIELD_KEYS.includes(k),
   );
 
   const sections = config.sections

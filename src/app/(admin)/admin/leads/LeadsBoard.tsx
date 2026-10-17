@@ -244,16 +244,6 @@ export function LeadsBoard({
               <option value="franchise">Franchise</option>
             </select>
           </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Persona</span>
-            <select name="persona" className="admin-input" defaultValue="">
-              <option value="">—</option>
-              <option value="student">Student</option>
-              <option value="parent">Parent</option>
-              <option value="professional">Professional</option>
-              <option value="franchise">Franchise</option>
-            </select>
-          </label>
           <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
             <span className="label-mono">Notes</span>
             <textarea name="notes" rows={2} className="admin-input resize-y" />
@@ -460,7 +450,7 @@ export function LeadsBoard({
         <div className="mt-10 adm-card p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="label-mono">{selected.source} · {selected.persona ?? 'no persona'}</p>
+              <p className="label-mono">{selected.source}</p>
               <h2 className="mt-2 text-2xl">{selected.name}</h2>
             </div>
             <button
@@ -510,7 +500,6 @@ export function LeadsBoard({
                 ['State', selected.state],
                 ['Centre', selected.centreName],
                 ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification],
-                ['Audience', selected.persona],
                 ['Form', selected.form],
                 ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')],
                 ['Landing page', selected.landingPage],
