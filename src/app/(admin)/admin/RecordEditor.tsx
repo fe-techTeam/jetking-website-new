@@ -7,6 +7,7 @@ import {
   setRecordStatus,
 } from "./actions";
 import { HistoryPanel } from "./HistoryPanel";
+import { ArrowLeft, CircleCheck, Copy, Eye, EyeOff, ExternalLink, History as HistoryIcon, Pencil, Plus, RotateCcw, Save, Search, Trash2, FileEdit } from "lucide-react";
 import type { CmsCollection } from "@/lib/cms/types";
 import { ADMIN_FORM_CONFIG } from "@/lib/cms/admin-form-config";
 import { ValueEditor, humanize, isWideField } from "./ValueEditor";
@@ -26,10 +27,7 @@ function StatusBadge({ status }: { status: string }) {
           : "bg-[var(--color-signal-50)] text-[#b54708]"
       }`}
     >
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 rounded-full bg-current"
-      />
+      {published ? <CircleCheck aria-hidden="true" className="h-3.5 w-3.5" /> : <FileEdit aria-hidden="true" className="h-3.5 w-3.5" />}
       {published ? "Published" : status === "draft" ? "Draft" : status}
     </span>
   );
@@ -394,9 +392,9 @@ export function RecordEditor({
                   <button
                     type="button"
                     onClick={startNew}
-                    className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold"
+                    className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-5 text-sm font-bold"
                   >
-                    + New {singular}
+                    <Plus aria-hidden="true" className="h-4 w-4" />New {singular}
                   </button>
                 ) : undefined
               }
@@ -405,6 +403,8 @@ export function RecordEditor({
             <WebsiteUsage live={live} appearsOn={appearsOn} note={note} />
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
+<div className="relative w-full sm:max-w-sm sm:flex-1">
+                <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
               <input
                 value={search}
                 onChange={(e) => {
@@ -413,8 +413,10 @@ export function RecordEditor({
                 }}
                 placeholder={`Search ${title.toLowerCase()}…`}
                 aria-label="Search records"
-                className="admin-input h-11 w-full text-sm sm:max-w-sm sm:flex-1"
+                style={{ paddingLeft: 36 }}
+                className="admin-input h-11 w-full text-sm"
               />
+              </div>
               <div
                 className="flex gap-1.5"
                 role="group"
@@ -443,9 +445,9 @@ export function RecordEditor({
                 <button
                   type="button"
                   onClick={() => setPanel(panel === "trash" ? null : "trash")}
-                  className="ml-auto min-h-11 cursor-pointer px-2 text-xs font-semibold text-foreground-muted hover:text-foreground"
+                  className="ml-auto inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-2 text-xs font-semibold text-foreground-muted hover:text-foreground"
                 >
-                  Deleted records…
+                  <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />Deleted records…
                 </button>
               ) : null}
             </div>
@@ -482,7 +484,7 @@ export function RecordEditor({
                     return (
                       <li
                         key={id}
-                        className="grid gap-3 px-5 py-3.5 transition-colors hover:bg-surface/60 md:grid-cols-[minmax(0,1fr)_9rem_14rem] md:items-center md:gap-4"
+                        className="grid gap-3 px-5 py-3.5 transition-colors hover:bg-surface/60 md:grid-cols-[minmax(0,1fr)_9rem_19rem] md:items-center md:gap-4"
                       >
                         <button
                           type="button"
@@ -505,9 +507,9 @@ export function RecordEditor({
                           <button
                             type="button"
                             onClick={() => loadRecord(item)}
-                            className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                            className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                           >
-                            {mode === "list" ? "Edit" : "Open"}
+                            {mode === "list" ? <Pencil aria-hidden="true" className="h-3.5 w-3.5" /> : <Eye aria-hidden="true" className="h-3.5 w-3.5" />}{mode === "list" ? "Edit" : "Open"}
                           </button>
                           {mode === "list" &&
                           (status === "published" || status === "draft") ? (
@@ -522,9 +524,9 @@ export function RecordEditor({
                                 })
                               }
                               aria-label={`${status === "published" ? "Unpublish" : "Publish"} ${id}`}
-                              className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
+                              className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
                             >
-                              {status === "published" ? "Unpublish" : "Publish"}
+                              {status === "published" ? <EyeOff aria-hidden="true" className="h-3.5 w-3.5" /> : <Eye aria-hidden="true" className="h-3.5 w-3.5" />}{status === "published" ? "Unpublish" : "Publish"}
                             </button>
                           ) : null}
                           {mode === "list" ? (
@@ -533,9 +535,9 @@ export function RecordEditor({
                               disabled={pending}
                               aria-label={`Delete ${id}`}
                               onClick={() => setPendingDeleteId(id)}
-                              className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45"
+                              className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45"
                             >
-                              Delete
+                              <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />Delete
                             </button>
                           ) : null}
                         </div>
@@ -579,7 +581,7 @@ export function RecordEditor({
                 onClick={goList}
                 className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]"
               >
-                <span aria-hidden="true">←</span> All {title.toLowerCase()}
+                <ArrowLeft aria-hidden="true" className="h-4 w-4" /> All {title.toLowerCase()}
               </button>
             ) : null}
 
@@ -645,9 +647,9 @@ export function RecordEditor({
                           )}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex min-h-11 items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                          className="inline-flex min-h-11 items-center gap-2 rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                         >
-                          View on site
+                          <ExternalLink aria-hidden="true" className="h-4 w-4" />View on site
                         </a>
                       ) : null}
                       <button
@@ -655,25 +657,25 @@ export function RecordEditor({
                         onClick={() =>
                           setPanel(panel === "history" ? null : "history")
                         }
-                        className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                        className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                       >
-                        History
+                        <HistoryIcon aria-hidden="true" className="h-4 w-4" />History
                       </button>
                       {mode === "list" ? (
                         <>
                           <button
                             type="button"
                             onClick={duplicate}
-                            className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                            className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                           >
-                            Duplicate
+                            <Copy aria-hidden="true" className="h-4 w-4" />Duplicate
                           </button>
                           <button
                             type="button"
                             onClick={() => setPendingDeleteId(originalId)}
-                            className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
+                            className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
                           >
-                            Delete
+                            <Trash2 aria-hidden="true" className="h-4 w-4" />Delete
                           </button>
                         </>
                       ) : null}
@@ -683,9 +685,9 @@ export function RecordEditor({
                     type="button"
                     disabled={pending}
                     onClick={requestSave}
-                    className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
+                    className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
                   >
-                    {pending ? "Saving…" : "Save"}
+                    <Save aria-hidden="true" className="h-4 w-4" />{pending ? "Saving…" : "Save"}
                   </button>
                 </div>
               </div>
@@ -791,9 +793,9 @@ export function RecordEditor({
                 type="button"
                 disabled={pending}
                 onClick={requestSave}
-                className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45"
+                className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45"
               >
-                {pending ? "Saving…" : "Save"}
+                <Save aria-hidden="true" className="h-4 w-4" />{pending ? "Saving…" : "Save"}
               </button>
             </div>
           </>

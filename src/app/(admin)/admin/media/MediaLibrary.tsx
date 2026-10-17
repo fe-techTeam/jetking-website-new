@@ -1,5 +1,6 @@
 'use client';
 
+import { Check, Copy, FileText, Trash2, Upload } from 'lucide-react';
 import { useRef, useState, useTransition } from 'react';
 import type { MediaItem } from '@/lib/media/store';
 import { removeMedia, setMediaAlt, uploadMedia } from './actions';
@@ -62,7 +63,7 @@ export function MediaGrid({
           className="admin-input h-10 max-w-xs text-sm"
         />
         <label className="adm-btn-primary inline-flex min-h-10 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold">
-          {pending ? 'Uploading…' : 'Upload files'}
+          <Upload aria-hidden="true" className="mr-2 h-4 w-4" />{pending ? 'Uploading…' : 'Upload files'}
           <input
             ref={input}
             type="file"
@@ -102,7 +103,7 @@ export function MediaGrid({
                   // eslint-disable-next-line @next/next/no-img-element -- admin preview of an arbitrary upload
                   <img src={m.url} alt={m.alt} loading="lazy" className="h-full w-full object-contain" />
                 ) : (
-                  <span className="grid h-full place-items-center text-sm font-bold text-foreground-muted">PDF</span>
+                  <span className="grid h-full place-items-center text-sm font-bold text-foreground-muted"><FileText aria-hidden="true" className="h-8 w-8" /><span className="sr-only">PDF</span></span>
                 )}
               </button>
               <div className="p-3">
@@ -127,10 +128,10 @@ export function MediaGrid({
                     />
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <button type="button" onClick={() => copy(m)} className="cursor-pointer text-xs font-semibold text-[var(--accent-ink)] hover:underline">
-                        {copied === m.id ? 'Copied' : 'Copy URL'}
+                        {copied === m.id ? <Check aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" /> : <Copy aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />}{copied === m.id ? 'Copied' : 'Copy URL'}
                       </button>
                       <button type="button" onClick={() => setToDelete(m)} className="cursor-pointer text-xs font-semibold text-foreground-muted hover:text-[#b42318]">
-                        Delete
+                        <Trash2 aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />Delete
                       </button>
                     </div>
                   </>

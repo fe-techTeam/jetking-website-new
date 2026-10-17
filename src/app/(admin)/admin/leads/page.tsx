@@ -10,7 +10,7 @@ export default async function AdminLeadsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  await requireRole(['admin', 'editor', 'centre_staff']);
+  const user = await requireRole(['admin', 'editor', 'centre_staff']);
   const params = await searchParams;
   const initialStatusFilter = LEAD_STATUSES.includes(params.status as LeadStatus)
     ? (params.status as LeadStatus)
@@ -39,5 +39,5 @@ export default async function AdminLeadsPage({
   // of "what can this role see," not a second copy that could drift from it.
   const leads = await getLeads();
 
-  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} />;
+  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} me={user.name} />;
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { Pencil, Save, X } from 'lucide-react';
 import { useMemo, useState, useTransition } from 'react';
 import { saveSeo, type SeoTarget, type SeoValues } from './actions';
 import { MediaPickerButton } from '../MediaPicker';
@@ -152,7 +153,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                   ) : null}
                 </div>
                 <button type="button" onClick={() => (isOpen ? setOpenKey(null) : open(r))} className="min-h-10 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-bold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">
-                  {isOpen ? 'Close' : 'Edit'}
+                  {isOpen ? <X aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" /> : <Pencil aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />}{isOpen ? 'Close' : 'Edit'}
                 </button>
               </div>
 
@@ -187,7 +188,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                     {error ? <p role="alert" className="text-sm font-medium text-[var(--color-error-600)]">{error}</p> : null}
                     <div>
                       <button type="button" disabled={pending} onClick={() => setConfirmRow(r)} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45">
-                        {pending ? 'Saving…' : 'Save'}
+                        <Save aria-hidden="true" className="mr-2 inline h-4 w-4" />{pending ? 'Saving…' : 'Save'}
                       </button>
                     </div>
                   </div>

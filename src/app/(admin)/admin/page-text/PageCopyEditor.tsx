@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
-import { Search } from 'lucide-react';
+import { ArrowLeft, Pencil, RotateCcw, Save, Search } from 'lucide-react';
 import { saveCollectionItem, removeCollectionItem } from '../actions';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { MediaPickerButton } from '../MediaPicker';
@@ -207,7 +207,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                           onClick={() => requestSwitch(p.id)}
                           className="min-h-10 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-xs font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
                         >
-                          Edit text
+                          <Pencil aria-hidden="true" className="mr-1.5 inline h-3.5 w-3.5" />Edit text
                         </button>
                       </li>
                     );
@@ -222,7 +222,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
       {view === 'edit' ? (
       <div className="min-w-0">
         <button type="button" onClick={goList} className="mb-3 inline-flex min-h-10 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]">
-          <span aria-hidden="true">←</span> All pages
+          <ArrowLeft aria-hidden="true" className="h-4 w-4" /> All pages
         </button>
         <div className="adm-card p-5 sm:p-7">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-5">
@@ -264,7 +264,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                 onClick={() => setConfirmReset(true)}
                 className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border-medium bg-background px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--color-error-600)] hover:text-[#b42318] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Reset page
+                <RotateCcw aria-hidden="true" className="mr-2 inline h-4 w-4" />Reset page
               </button>
               <button
                 type="button"
@@ -272,7 +272,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                 onClick={() => setConfirmSave(true)}
                 className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
               >
-                {pending ? 'Saving…' : 'Save'}
+                <Save aria-hidden="true" className="mr-2 inline h-4 w-4" />{pending ? 'Saving…' : 'Save'}
               </button>
             </div>
           </div>

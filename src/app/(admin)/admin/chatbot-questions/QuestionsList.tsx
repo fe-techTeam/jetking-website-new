@@ -1,5 +1,6 @@
 'use client';
 
+import { PencilLine, RotateCcw, X } from 'lucide-react';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useState, useTransition } from 'react';
@@ -54,10 +55,10 @@ export function QuestionsList({ initial }: { initial: UnansweredGroup[] }) {
                 href={`/admin/chatbot-knowledge?question=${encodeURIComponent(g.question)}` as Route}
                 className="inline-flex min-h-10 items-center rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-bold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
               >
-                Write answer
+                <PencilLine aria-hidden="true" className="mr-1.5 h-3.5 w-3.5" />Write answer
               </Link>
               <button type="button" disabled={pending} onClick={() => dismiss(g.question, !showResolved)} className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted hover:text-foreground disabled:opacity-45">
-                {showResolved ? 'Reopen' : 'Dismiss'}
+                {showResolved ? <RotateCcw aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" /> : <X aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />}{showResolved ? 'Reopen' : 'Dismiss'}
               </button>
             </div>
           </li>

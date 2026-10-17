@@ -39,12 +39,16 @@ export const leads = pgTable(
     utmCampaign: text('utm_campaign'),
     utmContent: text('utm_content'),
     landingPage: text('landing_page'),
+    /** Staff member working this lead (their display name — stays readable if the account is later removed). */
+    assignedTo: text('assigned_to'),
+    /** When the next follow-up is due; the Leads screen flags it once it passes. */
+    followUpAt: timestamp('follow_up_at', { withTimezone: true }),
     /** Hand-off to the external CRM: 'none' (not configured) | 'routed' | 'failed'. The lead is stored here regardless. */
     crmStatus: text('crm_status').notNull().default('none'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index('leads_status_idx').on(table.status), index('leads_created_at_idx').on(table.createdAt), index('leads_phone_idx').on(table.phone), index('leads_centre_idx').on(table.centreSlug)],
+  (table) => [index('leads_status_idx').on(table.status), index('leads_created_at_idx').on(table.createdAt), index('leads_phone_idx').on(table.phone), index('leads_centre_idx').on(table.centreSlug), index('leads_follow_up_idx').on(table.followUpAt)],
 );
 
 /** One row per timeline entry shown in the lead detail drawer (call logged, chatbot handoff, note added). */

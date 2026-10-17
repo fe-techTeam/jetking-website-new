@@ -1,5 +1,6 @@
 'use client';
 
+import { KeyRound, Plus, Trash2, UserCheck, UserX, X } from 'lucide-react';
 import { useRef, useState, useTransition, type FormEvent } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import {
@@ -155,7 +156,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           onClick={() => setShowInvite((v) => !v)}
           className="adm-btn-primary font-bold inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm"
         >
-          {showInvite ? 'Cancel' : '+ Invite'}
+          {showInvite ? <X aria-hidden="true" className="mr-2 h-4 w-4" /> : <Plus aria-hidden="true" className="mr-2 h-4 w-4" />}{showInvite ? 'Cancel' : 'Invite'}
         </button>
       </div>
 
@@ -358,7 +359,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                     }`}
                     title={user.status === 'active' ? 'Click to disable' : 'Click to re-activate'}
                   >
-                    <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
+                    {user.status === 'active' ? <UserCheck aria-hidden="true" className="h-3.5 w-3.5" /> : <UserX aria-hidden="true" className="h-3.5 w-3.5" />}
                     {user.status}
                   </button>
                 </td>
@@ -370,16 +371,16 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                     <button
                       type="button"
                       onClick={() => setResetPasswordFor(user)}
-                      className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+                      className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
                     >
-                      Reset password
+                      <KeyRound aria-hidden="true" className="h-4 w-4" />Reset password
                     </button>
                     <button
                       type="button"
                       onClick={() => setPendingRemove(user)}
-                      className="min-h-11 cursor-pointer rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318] focus-visible:outline-2 focus-visible:outline-[var(--color-error-600)]"
+                      className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318] focus-visible:outline-2 focus-visible:outline-[var(--color-error-600)]"
                     >
-                      Remove
+                      <Trash2 aria-hidden="true" className="h-4 w-4" />Remove
                     </button>
                   </div>
                 </td>

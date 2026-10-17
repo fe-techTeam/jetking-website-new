@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowRight, Pencil, Plus, Trash2, Upload } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { importRedirects, removeRedirect, saveRedirect, type RedirectItem } from './actions';
@@ -73,8 +74,8 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
               </p>
             ) : null}
             <div className="flex gap-2 sm:col-span-2">
-              <button type="button" disabled={pending} onClick={() => setConfirmAdd('save')} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">
-                {pending ? 'Saving…' : form.id ? 'Save changes' : 'Add redirect'}
+              <button type="button" disabled={pending} onClick={() => setConfirmAdd('save')} className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">
+                <Plus aria-hidden="true" className="mr-2 h-4 w-4" />{pending ? 'Saving…' : form.id ? 'Save changes' : 'Add redirect'}
               </button>
               {form.id ? (
                 <button type="button" onClick={() => setForm(blank)} className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary">
@@ -90,7 +91,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
           <p className="mt-1 text-xs text-foreground-muted">One per line: /old-url , /new-url</p>
           <textarea value={bulk} onChange={(e) => setBulk(e.target.value)} rows={5} className="admin-input mt-3 font-mono text-xs" aria-label="Redirects to import" />
           <button type="button" disabled={pending || !bulk.trim()} onClick={() => setConfirmAdd('import')} className="mt-3 min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] disabled:opacity-45">
-            Import
+            <Upload aria-hidden="true" className="mr-2 inline h-4 w-4" />Import
           </button>
           {bulkResult ? <pre className="mt-3 max-h-40 overflow-auto text-xs whitespace-pre-wrap text-foreground-secondary">{bulkResult}</pre> : null}
         </details>
@@ -111,7 +112,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
               <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0 text-sm">
                   <p className="truncate font-semibold text-foreground">
-                    {r.source} <span className="text-foreground-muted">→</span> {r.destination}
+                    {r.source} <ArrowRight aria-hidden="true" className="mx-1 inline h-3.5 w-3.5 text-foreground-muted" /> {r.destination}
                   </p>
                   <p className="text-xs text-foreground-muted">
                     {r.permanent ? 'Permanent' : 'Temporary'}
@@ -121,10 +122,10 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
                 </div>
                 <div className="flex shrink-0 gap-2">
                   <button type="button" onClick={() => setForm({ id: r.id, source: r.source, destination: r.destination, permanent: r.permanent, note: r.note })} className="cursor-pointer text-xs font-semibold text-[var(--accent-ink)] hover:underline">
-                    Edit
+                    <Pencil aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />Edit
                   </button>
                   <button type="button" onClick={() => setToDelete(r)} className="cursor-pointer text-xs font-semibold text-foreground-muted hover:text-[#b42318]">
-                    Delete
+                    <Trash2 aria-hidden="true" className="mr-1 inline h-3.5 w-3.5" />Delete
                   </button>
                 </div>
               </li>
