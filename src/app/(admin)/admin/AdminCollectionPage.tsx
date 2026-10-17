@@ -33,6 +33,7 @@ export async function AdminCollectionPage({
       note={meta.note}
       mode={meta.mode}
       openId={open}
+      viewPath={meta.viewPath}
     />
   );
 }

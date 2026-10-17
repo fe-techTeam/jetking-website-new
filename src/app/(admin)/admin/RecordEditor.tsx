@@ -39,6 +39,7 @@ export function RecordEditor({
   note,
   mode = 'list',
   openId,
+  viewPath,
 }: {
   collection: CmsCollection;
   idKey: string;
@@ -57,6 +58,8 @@ export function RecordEditor({
   mode?: 'list' | 'fixed' | 'singleton';
   /** Record to open first instead of the first in the list. */
   openId?: string;
+  /** Public URL pattern for a record; shows a "View on site" link for saved, published records. */
+  viewPath?: string;
 }) {
   // Looked up here rather than passed as a prop: a Server Component page can't
   // hand a Client Component a config object whose `blank` field is a function —
@@ -375,6 +378,16 @@ export function RecordEditor({
               <div className="flex flex-wrap items-center gap-3">
                 {originalId ? (
                   <>
+                    {viewPath && published ? (
+                      <a
+                        href={viewPath.replace(/\{(\w+)\}/g, (_m, k: string) => String(draft[k] ?? ''))}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                      >
+                        View on site
+                      </a>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => setPanel(panel === 'history' ? null : 'history')}

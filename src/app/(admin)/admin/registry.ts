@@ -34,6 +34,8 @@ export interface AdminCollection {
   mode?: 'list' | 'fixed' | 'singleton';
   /** Who may open and save it. Defaults to admin + editor. */
   roles?: Role[];
+  /** Public URL of one record, with `{field}` placeholders filled from the record (e.g. `/courses/{slug}`). */
+  viewPath?: string;
   /** False for collections that have their own editor and aren't a record count worth charting. */
   dashboard?: boolean;
 }
@@ -59,6 +61,7 @@ export const COLLECTIONS: AdminCollection[] = [
   },
   {
     key: 'courses',
+    viewPath: '/courses/{slug}',
     route: 'courses',
     idKey: 'slug',
     label: 'Courses',
@@ -76,6 +79,7 @@ export const COLLECTIONS: AdminCollection[] = [
   },
   {
     key: 'centres',
+    viewPath: '/centres/{citySlug}/{slug}',
     route: 'centres',
     idKey: 'slug',
     label: 'Centres',
@@ -92,6 +96,7 @@ export const COLLECTIONS: AdminCollection[] = [
   },
   {
     key: 'cities',
+    viewPath: '/centres/{slug}',
     route: 'cities',
     idKey: 'slug',
     label: 'Cities',
@@ -103,6 +108,7 @@ export const COLLECTIONS: AdminCollection[] = [
   },
   {
     key: 'posts',
+    viewPath: '/blog/{slug}',
     route: 'posts',
     idKey: 'slug',
     label: 'Blog posts',
