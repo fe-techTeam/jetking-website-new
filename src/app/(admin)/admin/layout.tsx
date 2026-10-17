@@ -39,6 +39,7 @@ type NavItem = { href: Route; label: string; icon: string; group: string; roles?
 /** Extra Website-group screens that are not record collections, placed after the website's collections. */
 const WEBSITE_TOOLS: NavItem[] = [
   { href: '/admin/media' as Route, label: 'Media library', icon: 'Image', group: GROUP.website, roles: ['admin', 'editor'] },
+  { href: '/admin/redirects' as Route, label: 'Redirects', icon: 'Link2', group: GROUP.website, roles: ['admin', 'editor'] },
 ];
 
 const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
@@ -109,7 +110,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </span>
         </div>
 
-        <form action={adminLogout} className="mt-3">
+        <Link
+          href={'/admin/account' as Route}
+          className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-[12px] px-4 text-sm font-semibold text-white/85 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+        >
+          My account
+        </Link>
+
+        <form action={adminLogout} className="mt-1">
           <button
             type="submit"
             className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[12px] border border-white/15 px-4 text-sm font-semibold text-white/85 transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"

@@ -1,4 +1,4 @@
-import type { Course, Testimonial } from '@/lib/content/types';
+import type { Course, LogoItem, Testimonial } from '@/lib/content/types';
 import type { professionalCopy } from '@/lib/content/copy/pages/professional';
 import { ProfessionalBottomCta } from './ProfessionalBottomCta';
 import { ProfessionalGrowthPath } from './ProfessionalGrowthPath';
@@ -10,9 +10,12 @@ import { ProfessionalSocialProof } from './ProfessionalSocialProof';
 export function ProfessionalLanding({
   copy,
   courses,
+  partners,
 }: {
   copy: typeof professionalCopy.defaults;
   courses: Course[];
+  /** Hiring-partner logos (CMS `logo_lists`: `professional-employers`). */
+  partners: LogoItem[];
   testimonials?: Testimonial[];
 }) {
   return (
@@ -39,7 +42,7 @@ export function ProfessionalLanding({
         <ProfessionalGrowthPath copy={copy} />
         <ProfessionalPrograms copy={copy} courses={courses} />
         <ProfessionalImpact copy={copy} />
-        <ProfessionalSocialProof copy={copy} />
+        <ProfessionalSocialProof copy={copy} partners={partners} />
         <ProfessionalBottomCta copy={copy} />
       </div>
     </>

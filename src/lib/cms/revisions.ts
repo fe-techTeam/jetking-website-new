@@ -63,3 +63,10 @@ export async function listDeleted(collection: string, limit = 50): Promise<CmsRe
     .orderBy(desc(cmsRevisions.createdAt))
     .limit(limit);
 }
+
+/** The latest edits across every collection — the dashboard's "Recent edits". */
+export async function listRecentRevisions(limit = 8): Promise<CmsRevisionRow[]> {
+  const db = getDb();
+  if (!db) return [];
+  return db.select().from(cmsRevisions).orderBy(desc(cmsRevisions.createdAt)).limit(limit);
+}

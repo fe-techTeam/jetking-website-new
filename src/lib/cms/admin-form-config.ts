@@ -445,6 +445,32 @@ const placements_page: AdminFormConfig = {
   ],
 };
 
+const investors_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'investors',
+    company: { registeredOffice: '', phone: '', email: '', listedAt: '', scripCode: '', tradingSymbol: '' },
+    stockLive: '',
+    latestNews: '',
+    grievanceOfficer: { name: '', phone: '', email: '' },
+    registrar: { name: '', address: '', phone: '', fax: '', email: '', website: '' },
+    kmp: [],
+    syncedAt: today(),
+    sections: [],
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  itemTemplates: {
+    kmp: { name: '', designation: '', phone: '', email: '' },
+    sections: { id: '', title: '', items: [] },
+    items: { label: '', href: '' },
+  },
+  sections: [
+    { title: 'Company & listing', fields: ['company', 'stockLive', 'latestNews'] },
+    { title: 'Investor contacts', fields: ['grievanceOfficer', 'registrar', 'kmp'] },
+    { title: 'Disclosure documents', fields: ['syncedAt', 'sections'] },
+  ],
+};
+
 const legal_documents: AdminFormConfig = {
   blank: () => ({
     slug: '',
@@ -460,9 +486,43 @@ const legal_documents: AdminFormConfig = {
   ],
 };
 
+const logo_lists: AdminFormConfig = {
+  blank: () => ({ id: '', title: '', description: '', items: [], status: 'draft' }),
+  lockedFields: ['id'],
+  itemTemplates: { items: { name: '', file: '', dark: false } },
+  sections: [
+    { title: 'List', fields: ['id', 'title', 'description'] },
+    { title: 'Logos', fields: ['items'] },
+  ],
+};
+
 /** Edited by the dedicated Page text editor, not the generic record form — present only to satisfy the collection map. */
 const page_copy: AdminFormConfig = {
   blank: () => ({ id: '', entries: {}, status: 'published' }),
+};
+
+const announcements: AdminFormConfig = {
+  blank: () => ({
+    id: '',
+    message: '',
+    linkLabel: '',
+    linkHref: '',
+    tone: 'info',
+    startsAt: '',
+    endsAt: '',
+    dismissible: true,
+    status: 'draft',
+  }),
+  selectFields: {
+    tone: {
+      label: 'Style',
+      options: [
+        { value: 'info', label: 'Info (neutral)' },
+        { value: 'promo', label: 'Promotion (brand red)' },
+        { value: 'alert', label: 'Alert (amber)' },
+      ],
+    },
+  },
 };
 
 export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
@@ -479,6 +539,9 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   persona_rules,
   about_page,
   placements_page,
+  investors_page,
   legal_documents,
+  logo_lists,
   page_copy,
+  announcements,
 };

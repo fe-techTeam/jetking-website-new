@@ -8,6 +8,7 @@ import type {
   Course,
   Faq,
   HomepageVariant,
+  LogoItem,
   PlacementsPageContent,
   Post,
   TrustSignal,
@@ -42,6 +43,8 @@ export interface HomeData {
   faqs: Faq[];
   /** Most recent posts, already limited — `BlogTeaser`. */
   posts: Post[];
+  /** Editable logo rows (CMS `logo_lists`) — `CredibilityMarquee`. */
+  logos: { certifications: LogoItem[]; employers: LogoItem[] };
   /** Slim centre records for the map — `CentreNetwork`. */
   centres: Array<{ slug: string; name: string; citySlug: string; locality: string }>;
 }
@@ -82,7 +85,7 @@ function pickHomeFaqs(all: Faq[]): Faq[] {
 }
 
 export async function loadHomeData(): Promise<HomeData> {
-  const [courses, cities, centres, trust, variants, posts, about, placements, allFaqs] = await Promise.all([
+  const [courses, cities, centres, trust, variants, posts, about, placements, allFaqs, certLogos, employerLogos] = await Promise.all([
     content.listCourses(),
     content.listCities(),
     content.listCentres(),
@@ -92,6 +95,8 @@ export async function loadHomeData(): Promise<HomeData> {
     content.getAboutPage(),
     content.getPlacementsPage(),
     content.listFaqs(),
+    content.getLogoList('home-certifications'),
+    content.getLogoList('home-employers'),
   ]);
 
   const defaultVariant = variants.find((v) => v.id === 'default') ?? variants[0];
@@ -107,6 +112,7 @@ export async function loadHomeData(): Promise<HomeData> {
     cities,
     posts,
     faqs: pickHomeFaqs(allFaqs),
+    logos: { certifications: certLogos.items, employers: employerLogos.items },
     centres: centres.map((c) => ({ slug: c.slug, name: c.name, citySlug: c.citySlug, locality: c.locality })),
   };
 }

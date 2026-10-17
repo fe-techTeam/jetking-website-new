@@ -1,5 +1,5 @@
 import { AdminCollectionPage } from '../AdminCollectionPage';
 
-export default function AdminLegalPage() {
-  return <AdminCollectionPage collection="legal_documents" />;
+export default function AdminLegalPage({ searchParams }: { searchParams: Promise<{ open?: string }> }) {
+  return <AdminCollectionPage collection="legal_documents" searchParams={searchParams} />;
 }

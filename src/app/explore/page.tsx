@@ -26,12 +26,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ExplorePage() {
   const copy = await loadCopy(exploreCopy);
-  const [courses, home, posts, centres, cities] = await Promise.all([
+  const [courses, home, posts, centres, cities, partners] = await Promise.all([
     content.listCourses(),
     loadHomeData(),
     content.listPosts({ limit: 3 }),
     content.listCentres(),
     content.listCities(),
+    content.getLogoList('explore-partners'),
   ]);
 
   const trail: Crumb[] = [
@@ -49,6 +50,7 @@ export default async function ExplorePage() {
         about={home.about}
         placements={home.placements}
         posts={posts}
+        partners={partners.items}
         enquiryCentres={toEnquiryCentres(centres, cities)}
         copy={copy}
       />

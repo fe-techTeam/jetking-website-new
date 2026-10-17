@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index, jsonb, doublePrecision, integer, primaryKey, customType } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, index, jsonb, doublePrecision, integer, primaryKey, customType, boolean } from 'drizzle-orm/pg-core';
 import type { StoredMessage } from '@/lib/chatbot/types';
 
 /**
@@ -264,3 +264,26 @@ export const mediaAssets = pgTable(
 export type CmsRecordRow = typeof cmsRecords.$inferSelect;
 export type CmsRevisionRow = typeof cmsRevisions.$inferSelect;
 export type MediaAssetRow = typeof mediaAssets.$inferSelect;
+
+/**
+ * Redirects managed in the admin (moved pages, retired campaign URLs). The reviewed legacy list in
+ * `redirects.json` is baked into the build; these are looked up per request by the proxy
+ * (`src/lib/redirects/lookup.ts`), so an editor can add a 301 without a deploy.
+ */
+export const redirects = pgTable(
+  'redirects',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Path being redirected, e.g. `/old-course`. Matched exactly, ignoring a trailing slash and the query string. */
+    source: text('source').notNull().unique(),
+    /** A path on this site (`/courses`) or an absolute https URL. */
+    destination: text('destination').notNull(),
+    permanent: boolean('permanent').notNull().default(true),
+    note: text('note').notNull().default(''),
+    createdBy: text('created_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('redirects_created_idx').on(table.createdAt)],
+);
+
+export type RedirectRow = typeof redirects.$inferSelect;

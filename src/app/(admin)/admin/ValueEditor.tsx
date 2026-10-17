@@ -9,7 +9,7 @@ import type { LegalBlock } from '@/lib/content/types';
 import { MediaPickerButton } from './MediaPicker';
 
 /** String fields that hold an image path/URL get a preview and a "Choose image" button. */
-const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|banner|poster)(url|src|path)?$|^ogImage$/i;
+const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|banner|poster)(url|src|path)?$|^ogImage$|^file$/i;
 
 /** Field names whose data key predates the website's wording. The site says "courses" everywhere. */
 const LABEL_OVERRIDES: Record<string, string> = {

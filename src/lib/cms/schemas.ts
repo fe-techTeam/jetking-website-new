@@ -395,6 +395,45 @@ const placementsPageSchema = withStatus({
   }),
 });
 
+const investorsPageSchema = withStatus({
+  id: z.literal('investors'),
+  company: z.object({
+    registeredOffice: z.string().min(1),
+    phone: z.string().min(1),
+    email: z.string().min(1),
+    listedAt: z.string().min(1),
+    scripCode: z.string().min(1),
+    tradingSymbol: z.string().min(1),
+  }),
+  stockLive: z.string(),
+  latestNews: z.string(),
+  grievanceOfficer: z.object({ name: z.string().min(1), phone: z.string().min(1), email: z.string().min(1) }),
+  registrar: z.object({
+    name: z.string().min(1),
+    address: z.string().min(1),
+    phone: z.string().min(1),
+    fax: z.string(),
+    email: z.string().min(1),
+    website: z.string().min(1),
+  }),
+  kmp: z.array(
+    z.object({
+      name: z.string().min(1),
+      designation: z.string().min(1),
+      phone: z.string().min(1),
+      email: z.string().min(1),
+    }),
+  ),
+  syncedAt: z.string().min(1),
+  sections: z.array(
+    z.object({
+      id: z.string().min(1),
+      title: z.string().min(1),
+      items: z.array(z.object({ label: z.string().min(1), href: z.string().min(1) })),
+    }),
+  ),
+});
+
 const legalBlockSchema = z.discriminatedUnion('t', [
   z.object({ t: z.enum(['h2', 'h3']), text: z.string().min(1) }),
   z.object({ t: z.literal('p'), text: z.string().min(1) }),
@@ -424,9 +463,33 @@ const legalDocumentSchema = withStatus({
   blocks: z.array(legalBlockSchema),
 });
 
+const logoListSchema = withStatus({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string(),
+  items: z.array(
+    z.object({
+      name: z.string().min(1),
+      file: z.string().optional(),
+      dark: z.boolean().optional(),
+    }),
+  ),
+});
+
 const pageCopySchema = withStatus({
   id: z.string().min(1),
   entries: z.record(z.string(), z.string()),
+});
+
+const announcementSchema = withStatus({
+  id: z.string().min(1),
+  message: z.string().min(1),
+  linkLabel: z.string(),
+  linkHref: z.string(),
+  tone: z.enum(['info', 'promo', 'alert']),
+  startsAt: z.string(),
+  endsAt: z.string(),
+  dismissible: z.boolean(),
 });
 
 const CMS_COLLECTION_SCHEMAS = {
@@ -443,8 +506,11 @@ const CMS_COLLECTION_SCHEMAS = {
   persona_rules: personaRuleSchema,
   about_page: aboutPageSchema,
   placements_page: placementsPageSchema,
+  investors_page: investorsPageSchema,
   legal_documents: legalDocumentSchema,
+  logo_lists: logoListSchema,
   page_copy: pageCopySchema,
+  announcements: announcementSchema,
 } satisfies Record<CmsCollection, z.ZodTypeAny>;
 
 /** Runtime allowlist for `collection` — a compile-time-only `CmsCollection` union

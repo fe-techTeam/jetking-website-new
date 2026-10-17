@@ -42,7 +42,7 @@ export function HomeSections({
   return (
     <div className="dark-canvas no-orbs">
       <ProgramShowcase courses={data.courses} copy={copy} />
-      <CredibilityMarquee copy={copy} />
+      <CredibilityMarquee copy={copy} certifications={data.logos.certifications} employers={data.logos.employers} />
       <WhyJetking copy={copy} />
       <PlacementProof disclaimer={data.placements.disclaimer} copy={copy} />
       <Recognitions copy={copy} />

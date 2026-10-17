@@ -3,8 +3,7 @@ import { Section, SectionHeader } from '@/components/kit';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, BookOpen, ChevronDown, Compass, MapPin, ShieldCheck } from 'lucide-react';
-import type { Course, CourseLevel, Post } from '@/lib/content/types';
-import { PLACEMENT_PARTNERS } from './partners';
+import type { Course, CourseLevel, LogoItem, Post } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
 import { fill } from '@/lib/content/copy/define';
 import type { exploreCopy } from '@/lib/content/copy/pages/explore';
@@ -196,10 +195,13 @@ export function ExploreLanding({
   enquiryCentres,
   about,
   placements,
+  partners,
   copy,
 }: {
   about: AboutPageContent;
   placements: PlacementsPageContent;
+  /** Placement-partner logos (CMS `logo_lists`: `explore-partners`). */
+  partners: LogoItem[];
   enquiryCentres: LocatedCentre[];
   courses: Course[];
   counts: { courses: number; centres: number; cities: number };
@@ -525,7 +527,7 @@ export function ExploreLanding({
       <Section tone="tint" labelledBy="exp-partners">
         <SectionHeader id="exp-partners" title={copy['partners.title']} />
         <CollapsibleLogoGrid
-          items={PLACEMENT_PARTNERS}
+          items={partners}
           itemKey={(partner) => partner.name}
           showAll={copy['partners.showAll']}
           showFewer={copy['common.showFewer']}

@@ -15,6 +15,9 @@ export const CMS_ID_KEYS: Record<CmsCollection, 'slug' | 'id'> = {
   persona_rules: 'id',
   about_page: 'id',
   placements_page: 'id',
+  investors_page: 'id',
   legal_documents: 'slug',
+  logo_lists: 'id',
   page_copy: 'id',
+  announcements: 'id',
 };

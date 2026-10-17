@@ -8,6 +8,8 @@ import { getLeadsSummary } from './leads/actions';
 import { StatCard, BarChartCard, DonutChartCard } from './DashboardWidgets';
 import { ResetFixturesCard } from './ResetFixturesCard';
 import { COLLECTIONS } from './registry';
+import { listRecentRevisions } from '@/lib/cms/revisions';
+import { listMedia } from '@/lib/media/store';
 
 export default async function AdminDashboard() {
   // Every role lands here — this is `requireRole`'s own redirect target for
@@ -41,6 +43,21 @@ export default async function AdminDashboard() {
   const leadStats = isDatabaseConfigured() ? await getLeadsSummary() : null;
 
   const canEditContent = user.role !== 'centre_staff';
+
+  // Recent edits and open drafts are for people who edit content, not centre staff.
+  const recent = canEditContent ? await listRecentRevisions(8) : [];
+  const mediaCount = canEditContent && isDatabaseConfigured() ? (await listMedia(1000)).length : 0;
+  const drafts = canEditContent
+    ? rows
+        .flatMap((r) =>
+          (r.items as unknown as Record<string, unknown>[])
+            .filter((item) => item.status === 'draft')
+            .map((item) => ({ route: r.route, label: r.label, id: String(item[r.idKey]) })),
+        )
+        .slice(0, 8)
+    : [];
+  const when = (d: Date) => d.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+
   const publishedPercent = totalContent > 0 ? Math.round((publishedCount / totalContent) * 100) : 0;
   const firstName = user.name.trim().split(/\s+/)[0] || 'there';
   const draftSummary =
@@ -62,8 +79,8 @@ export default async function AdminDashboard() {
           Welcome back, {firstName}
         </h1>
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/80">
-          {totalContent} records across {rows.length} collections. {draftSummary} Saving revalidates the
-          site and triggers Guide re-ingest.
+          {totalContent} records across {rows.length} collections. {draftSummary} Saving updates the
+          live site straight away.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2.5">
@@ -138,6 +155,65 @@ export default async function AdminDashboard() {
           />
         </div>
       </div>
+
+      {canEditContent ? (
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <section className="adm-card overflow-hidden" aria-labelledby="recent-edits">
+            <h2 id="recent-edits" className="border-b border-border bg-surface/70 px-5 py-3.5 text-sm font-bold text-foreground">
+              Recent edits
+            </h2>
+            {recent.length === 0 ? (
+              <p className="px-5 py-6 text-sm text-foreground-muted">No edits yet. Changes made in the editors show up here.</p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {recent.map((r) => (
+                  <li key={r.id} className="px-5 py-2.5 text-sm">
+                    <Link
+                      href={`/admin/${COLLECTIONS.find((c) => c.key === r.collection)?.route ?? r.collection}?open=${encodeURIComponent(r.recordId)}` as Route}
+                      className="font-semibold text-foreground hover:text-[var(--accent-ink)]"
+                    >
+                      {r.recordId}
+                    </Link>
+                    <span className="text-foreground-muted">
+                      {' '}
+                      · {r.action === 'delete' ? 'deleted' : r.action === 'restore' ? 'restored' : 'saved'} in {r.collection.replace(/_/g, ' ')}
+                    </span>
+                    <span className="block text-xs text-foreground-muted">
+                      {when(r.createdAt)} · {r.actorName}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="adm-card overflow-hidden" aria-labelledby="open-drafts">
+            <h2 id="open-drafts" className="flex items-center justify-between border-b border-border bg-surface/70 px-5 py-3.5 text-sm font-bold text-foreground">
+              Drafts
+              <Link href={'/admin/media' as Route} className="text-xs font-semibold text-foreground-muted hover:text-[var(--accent-ink)]">
+                {mediaCount} files in media library →
+              </Link>
+            </h2>
+            {drafts.length === 0 ? (
+              <p className="px-5 py-6 text-sm text-foreground-muted">No drafts — everything is published.</p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {drafts.map((d) => (
+                  <li key={`${d.route}:${d.id}`}>
+                    <Link
+                      href={`/admin/${d.route}?open=${encodeURIComponent(d.id)}` as Route}
+                      className="flex items-center justify-between gap-3 px-5 py-2.5 text-sm hover:bg-surface/70"
+                    >
+                      <span className="min-w-0 truncate font-medium text-foreground">{d.id}</span>
+                      <span className="shrink-0 text-xs text-foreground-muted">{d.label}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      ) : null}
 
       {canEditContent ? <ResetFixturesCard action={seedCmsFromFixtures} /> : null}
     </div>

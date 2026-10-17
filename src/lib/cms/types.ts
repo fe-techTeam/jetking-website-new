@@ -14,5 +14,8 @@ export type CmsCollection =
   | 'persona_rules'
   | 'about_page'
   | 'placements_page'
+  | 'investors_page'
   | 'legal_documents'
-  | 'page_copy';
+  | 'logo_lists'
+  | 'page_copy'
+  | 'announcements';

@@ -338,6 +338,18 @@ export interface Post {
 /* FAQ                                                                        */
 /* ────────────────────────────────────────────────────────────────────────── */
 
+/** A slim bar at the very top of every public page. Window fields are ISO date-times; empty = no limit. */
+export interface Announcement {
+  id: string;
+  message: string;
+  linkLabel: string;
+  linkHref: string;
+  tone: 'info' | 'promo' | 'alert';
+  startsAt: string;
+  endsAt: string;
+  dismissible: boolean;
+}
+
 export interface Faq {
   id: string;
   /** @grounded */
@@ -624,6 +636,39 @@ export type PlacementsPageRecord = Omit<PlacementsPageContent, 'contact' | 'offe
   offerLetters: { src: string; title: string; sector: string }[];
 };
 
+/** One document row in an Investors-page disclosure section. */
+export interface InvestorDocument {
+  label: string;
+  href: string;
+}
+
+/**
+ * The Investors page (/investors): SEBI (LODR) Regulation 46 and 62 disclosures. Regulatory content:
+ * company facts, named contacts and the document lists. One document.
+ */
+export interface InvestorsPageContent {
+  id: 'investors';
+  company: {
+    registeredOffice: string;
+    phone: string;
+    email: string;
+    listedAt: string;
+    scripCode: string;
+    tradingSymbol: string;
+  };
+  /** BSE live-price page. Empty hides the button. */
+  stockLive: string;
+  /** BSE corporate-announcements page. Empty hides the button. */
+  latestNews: string;
+  grievanceOfficer: { name: string; phone: string; email: string };
+  registrar: { name: string; address: string; phone: string; fax: string; email: string; website: string };
+  /** Key Managerial Personnel authorised to determine the materiality of an event or information. */
+  kmp: { name: string; designation: string; phone: string; email: string }[];
+  /** ISO date (YYYY-MM-DD) the document lists were last checked against jetking.com/investors. */
+  syncedAt: string;
+  sections: { id: string; title: string; items: InvestorDocument[] }[];
+}
+
 export type LegalBlock =
   | { t: 'h2' | 'h3'; text: string }
   | { t: 'p'; text: string }
@@ -638,6 +683,21 @@ export interface LegalDoc {
   title: string;
   sourceUrl: string;
   blocks: LegalBlock[];
+}
+
+/** One logo tile. A missing `file` renders a plain name tile; `dark` = light-on-dark artwork. */
+export interface LogoItem {
+  name: string;
+  file?: string;
+  dark?: boolean;
+}
+
+/** An editable list of logos (certifications, employers, partners) shown on a public page. */
+export interface LogoList {
+  id: string;
+  title: string;
+  description: string;
+  items: LogoItem[];
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -663,6 +723,9 @@ export interface ContentSource {
 
   listFaqs(): Promise<Faq[]>;
 
+  /** Published announcements (any window); the site shell picks the active one. */
+  listAnnouncements(): Promise<Announcement[]>;
+
   /** Returns verified signals only. Unverified claims never reach a template. */
   listTrustSignals(): Promise<TrustSignal[]>;
 
@@ -684,6 +747,8 @@ export interface ContentSource {
   getAboutPage(): Promise<AboutPageContent>;
   /** Placements page content (same fallback rule). */
   getPlacementsPage(): Promise<PlacementsPageContent>;
+  /** Investors page content (same fallback rule). */
+  getInvestorsPage(): Promise<InvestorsPageContent>;
 
   /** Published text overrides for a page (empty when none, or when the record is a draft). */
   getPageCopyOverrides(id: string): Promise<Record<string, string>>;
@@ -691,4 +756,7 @@ export interface ContentSource {
   listLegalDocuments(): Promise<LegalDoc[]>;
   /** One legal page by slug; falls back to the in-repo copy if the CMS record is missing or a draft. */
   getLegalDocument(slug: string): Promise<LegalDoc | null>;
+
+  /** A logo / partner list by id. Never blank: falls back to the in-repo list if the CMS record is missing or a draft. */
+  getLogoList(id: string): Promise<LogoList>;
 }

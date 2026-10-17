@@ -1,5 +1,6 @@
 import type {
   AboutPageContent,
+  InvestorsPageContent,
   Leader,
   Milestone,
   PlacementsPageContent,
@@ -7,6 +8,7 @@ import type {
 } from './types';
 import { aboutDefaults } from './fixtures/about';
 import { placementsDefaults } from './fixtures/placements-page';
+import { investorsDefaults } from './fixtures/investors-page';
 
 /**
  * Shape a stored About/Placements record into what the page components expect.
@@ -67,3 +69,23 @@ export function normalizePlacements(record: PlacementsPageRecord): PlacementsPag
 /** The in-repo copy, shaped exactly like a CMS record that was published unchanged. */
 export const aboutFallback = (): AboutPageContent => normalizeAbout(aboutDefaults);
 export const placementsFallback = (): PlacementsPageContent => normalizePlacements(placementsDefaults);
+
+const trim = (value: string) => value.trim();
+
+/** Trim what editors type; drop blank document rows and unnamed sections' stray whitespace. */
+export function normalizeInvestors(record: InvestorsPageContent): InvestorsPageContent {
+  return {
+    ...record,
+    stockLive: trim(record.stockLive),
+    latestNews: trim(record.latestNews),
+    sections: record.sections.map((s) => ({
+      ...s,
+      title: trim(s.title),
+      items: s.items
+        .map((i) => ({ label: trim(i.label), href: trim(i.href) }))
+        .filter((i) => i.label && i.href),
+    })),
+  };
+}
+
+export const investorsFallback = (): InvestorsPageContent => normalizeInvestors(investorsDefaults);

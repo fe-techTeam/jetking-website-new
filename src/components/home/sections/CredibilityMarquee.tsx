@@ -4,24 +4,26 @@ import { LogoStrip, Section, SectionHeader } from '@/components/kit';
 import { UNIVERSITY_PARTNERS } from '@/components/explore/content';
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
-import { HIRING_PARTNERS } from '@/components/professional/data';
-import { CERT_LOGOS, MORE_EMPLOYER_LOGOS } from './data';
+import type { LogoItem } from '@/lib/content/types';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
-
-const EMPLOYER_LOGOS: ReadonlyArray<{ name: string; file: string; dark?: boolean }> = [
-  ...HIRING_PARTNERS.map((p) => ({ name: p.name, file: p.logo })),
-  ...MORE_EMPLOYER_LOGOS,
-];
 
 /**
  * Two auto-scrolling logo rows — certifications the curriculum prepares students for, and
  * where alumni work. Same `.dc-marquee` recipe as `ProfessionalPartnerMarquee` (pause on
  * hover/focus, explicit Pause/Play control for WCAG 2.2.2, static wrapped grid under
  * `prefers-reduced-motion`). Logos are real assets already in the repo — `public/logos/`
- * (matched against certifications named in the course fixtures) and `HIRING_PARTNERS`
- * (jetking.com's own published recruiter list) — nothing invented for this page.
+ * (matched against certifications named in the course fixtures) and jetking.com's own published
+ * recruiter list. Both rows are the CMS `logo_lists` records `home-certifications` and `home-employers` — nothing invented for this page.
  */
-export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
+export function CredibilityMarquee({
+  copy,
+  certifications,
+  employers,
+}: {
+  copy: HomeCopy;
+  certifications: LogoItem[];
+  employers: LogoItem[];
+}) {
   const [paused, setPaused] = useState(false);
 
   return (
@@ -36,8 +38,8 @@ export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
           <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.certs.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '32s' }}>
             <div className="dc-marquee-track">
-              <LogoList items={CERT_LOGOS} />
-              <LogoList items={CERT_LOGOS} clone />
+              <LogoList items={certifications} />
+              <LogoList items={certifications} clone />
             </div>
           </div>
         </div>
@@ -46,8 +48,8 @@ export function CredibilityMarquee({ copy }: { copy: HomeCopy }) {
           <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.alumni.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '40s' }}>
             <div className="dc-marquee-track">
-              <LogoList items={EMPLOYER_LOGOS} />
-              <LogoList items={EMPLOYER_LOGOS} clone />
+              <LogoList items={employers} />
+              <LogoList items={employers} clone />
             </div>
           </div>
         </div>
@@ -88,7 +90,7 @@ function LogoList({
   items,
   clone = false,
 }: {
-  items: ReadonlyArray<{ name: string; file: string; dark?: boolean }>;
+  items: LogoItem[];
   clone?: boolean;
 }) {
   return (
@@ -99,15 +101,23 @@ function LogoList({
       {items.map((item, index) => (
         <li
           key={`${item.name}-${index}`}
-          className={`flex h-16 w-32 shrink-0 items-center justify-center rounded-[12px] px-4 py-3 shadow-logo sm:h-20 sm:w-40 ${'dark' in item && item.dark ? 'bg-tile-dark' : 'bg-white'}`}
+          className={`flex h-16 w-32 shrink-0 items-center justify-center rounded-[12px] px-4 py-3 shadow-logo sm:h-20 sm:w-40 ${item.dark ? 'bg-tile-dark' : 'bg-white'}`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
-          <img
-            src={item.file}
-            alt={clone ? '' : item.name}
-            draggable={false}
-            className="max-h-full max-w-full object-contain"
-          />
+          {item.file ? (
+            // eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do
+            <img
+              src={item.file}
+              alt={clone ? '' : item.name}
+              draggable={false}
+              className="max-h-full max-w-full object-contain"
+            />
+          ) : (
+            <span
+              className={`text-center font-display text-[13px] leading-tight font-extrabold [overflow-wrap:anywhere] ${item.dark ? 'text-white' : 'text-[#374151]'}`}
+            >
+              {item.name}
+            </span>
+          )}
         </li>
       ))}
     </ul>

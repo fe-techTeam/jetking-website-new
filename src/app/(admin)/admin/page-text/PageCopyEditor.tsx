@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from 'react';
 import { Search } from 'lucide-react';
 import { saveCollectionItem, removeCollectionItem } from '../actions';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
+import { MediaPickerButton } from '../MediaPicker';
 
 export interface EditablePage {
   id: string;
@@ -32,6 +33,9 @@ function describeKey(key: string): { section: string; label: string } {
   const [first, ...rest] = parts;
   return { section: humanizeSegment(first!), label: rest.map(humanizeSegment).join(' › ') };
 }
+
+/** Copy keys that hold an image path: `hero.image`, `seo.ogImage`, `affiliation.0.logo`… */
+const IMAGE_KEY = /(^|\.)(image|photo|logo|avatar|poster|src|ogImage)$/i;
 
 const LONG_KEY = /description|body|lede|intro|text|paragraph|answer|summary|quote|disclaimer|note/i;
 
@@ -291,7 +295,22 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                               </button>
                             ) : null}
                           </div>
-                          {long ? (
+                          {IMAGE_KEY.test(key) ? (
+                            <div className="flex items-start gap-3">
+                              {value ? (
+                                // eslint-disable-next-line @next/next/no-img-element -- admin preview of an arbitrary path
+                                <img src={value} alt="" className="h-14 w-14 shrink-0 rounded-md border border-border bg-surface object-contain" />
+                              ) : null}
+                              <input
+                                id={id}
+                                value={value}
+                                onChange={(e) => setDraft((d) => ({ ...d, [key]: e.target.value }))}
+                                placeholder="/path/to/image or https://…"
+                                className="admin-input min-w-0 flex-1"
+                              />
+                              <MediaPickerButton onPick={(item) => setDraft((d) => ({ ...d, [key]: item.url }))} />
+                            </div>
+                          ) : long ? (
                             <textarea
                               id={id}
                               value={value}

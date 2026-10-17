@@ -4,11 +4,18 @@ import { Section, SectionHeader } from '@/components/kit';
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
 import { ProfessionalPartnerMarquee } from './ProfessionalPartnerMarquee';
+import type { LogoItem } from '@/lib/content/types';
 import type { professionalCopy } from '@/lib/content/copy/pages/professional';
 import { fill } from '@/lib/content/copy/define';
 import { SUCCESS_STORIES } from './data';
 
-export function ProfessionalSocialProof({ copy }: { copy: typeof professionalCopy.defaults }) {
+export function ProfessionalSocialProof({
+  copy,
+  partners,
+}: {
+  copy: typeof professionalCopy.defaults;
+  partners: LogoItem[];
+}) {
   const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
   // Story text comes from the page copy (`stories.N.*`); the id and portrait stay with the code.
   const stories = SUCCESS_STORIES.map((story, i) => ({
@@ -92,7 +99,7 @@ export function ProfessionalSocialProof({ copy }: { copy: typeof professionalCop
                 {copy['partners.note']}
               </p>
               <div className="mt-7 sm:mt-8">
-                <ProfessionalPartnerMarquee copy={copy} />
+                <ProfessionalPartnerMarquee copy={copy} partners={partners} />
               </div>
             </div>
           </div>

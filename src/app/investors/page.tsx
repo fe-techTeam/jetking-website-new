@@ -5,7 +5,9 @@ import { ArrowUpRight, ChevronDown, FileText, TrendingUp } from 'lucide-react';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { Breadcrumbs, JsonLd, cx, type Crumb } from '@/components/ui';
 import { siteConfig } from '@/lib/site';
-import { disclosures, linkKind, type DisclosureSection } from '@/lib/investors/disclosures';
+import { linkKind } from '@/lib/investors/disclosures';
+import { content } from '@/lib/content';
+import type { InvestorsPageContent } from '@/lib/content/types';
 import { investorsCopy } from '@/lib/content/copy/pages/investors';
 import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
@@ -39,13 +41,13 @@ const externalLink = { target: '_blank', rel: 'noopener noreferrer' } as const;
  * works without JavaScript and keeps every document in the DOM for search engines.
  */
 export default async function InvestorsPage() {
-  const copy = await loadCopy(investorsCopy);
+  const [copy, page] = await Promise.all([loadCopy(investorsCopy), content.getInvestorsPage()]);
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
     { name: copy['breadcrumb.label'], path: '/investors' },
   ];
   const live = { brand: siteConfig.name, legalName: siteConfig.legalName };
-  const sections = disclosures.sections;
+  const sections = page.sections;
   // The contacts accordion follows the policies, where NIIT's page places it.
   const contactsAfter = 'code-of-conduct-policies';
 
@@ -106,7 +108,7 @@ export default async function InvestorsPage() {
 
           <div className="mx-auto mt-8 max-w-[56rem] space-y-3 sm:mt-10">
             <Accordion title={copy['company.accordion']} defaultOpen>
-              <CompanyDetails copy={copy} stockLive={disclosures.links.stockLive} latestNews={disclosures.links.latestNews} />
+              <CompanyDetails copy={copy} company={page.company} stockLive={page.stockLive} latestNews={page.latestNews} />
             </Accordion>
 
             {sections.map((section) => (
@@ -114,18 +116,19 @@ export default async function InvestorsPage() {
                 key={section.id}
                 section={section}
                 copy={copy}
+                page={page}
                 withContacts={section.id === contactsAfter}
               />
             ))}
           </div>
 
           <p className="mx-auto mt-8 max-w-[56rem] text-center text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">
-            {fill(copy['reports.note'], { ...live, date: formatDate(disclosures.syncedAt) })}{' '}
+            {fill(copy['reports.note'], { ...live, date: formatDate(page.syncedAt) })}{' '}
             <a
-              href={`mailto:${copy['company.email']}`}
+              href={`mailto:${page.company.email}`}
               className="font-bold text-[var(--dc-accent-soft)] hover:underline"
             >
-              {copy['company.email']}
+              {page.company.email}
             </a>
             .
           </p>
@@ -150,14 +153,15 @@ function SectionAccordions({
   section,
   withContacts,
   copy,
+  page,
 }: {
-  section: DisclosureSection;
+  section: InvestorsPageContent['sections'][number];
   withContacts: boolean;
   copy: Copy;
+  page: InvestorsPageContent;
 }) {
   if (section.items.length === 0) return null;
-  // The heading is editable per section id; a section the sync adds later keeps its synced title.
-  const title = (copy as Record<string, string>)[`sections.${section.id}.title`] ?? section.title;
+  const title = section.title;
   const scroll = section.items.length > SCROLL_AFTER;
 
   return (
@@ -179,7 +183,7 @@ function SectionAccordions({
 
       {withContacts ? (
         <Accordion title={copy['contacts.accordion']}>
-          <InvestorContacts copy={copy} />
+          <InvestorContacts copy={copy} page={page} />
         </Accordion>
       ) : null}
     </>
@@ -251,23 +255,33 @@ function DocumentRow({ label, href, copy }: { label: string; href: string; copy:
   );
 }
 
-function CompanyDetails({ stockLive, latestNews, copy }: { stockLive?: string; latestNews?: string; copy: Copy }) {
+function CompanyDetails({
+  stockLive,
+  latestNews,
+  company,
+  copy,
+}: {
+  stockLive?: string;
+  latestNews?: string;
+  company: InvestorsPageContent['company'];
+  copy: Copy;
+}) {
   const rows: Array<[string, ReactNode]> = [
     [copy['company.label.company'], siteConfig.legalName],
-    [copy['company.label.listedAt'], copy['company.listedAt']],
-    [copy['company.label.scripCode'], copy['company.scripCode']],
-    [copy['company.label.tradingSymbol'], copy['company.tradingSymbol']],
-    [copy['company.label.registeredOffice'], copy['company.registeredOffice']],
+    [copy['company.label.listedAt'], company.listedAt],
+    [copy['company.label.scripCode'], company.scripCode],
+    [copy['company.label.tradingSymbol'], company.tradingSymbol],
+    [copy['company.label.registeredOffice'], company.registeredOffice],
     [
       copy['company.label.phone'],
-      <a key="tel" href={`tel:${copy['company.phone']}`} className={contactLink}>
-        {copy['company.phone']}
+      <a key="tel" href={`tel:${company.phone}`} className={contactLink}>
+        {company.phone}
       </a>,
     ],
     [
       copy['company.label.email'],
-      <a key="mail" href={`mailto:${copy['company.email']}`} className={contactLink}>
-        {copy['company.email']}
+      <a key="mail" href={`mailto:${company.email}`} className={contactLink}>
+        {company.email}
       </a>,
     ],
   ];
@@ -331,51 +345,47 @@ const contactLink =
   'inline-flex min-h-11 items-center font-bold [overflow-wrap:anywhere] text-[var(--dc-accent-soft)] hover:underline';
 
 /** Grievance redressal, the registrar and transfer agent, and the KMP authorised on materiality. */
-function InvestorContacts({ copy }: { copy: Copy }) {
-  const byKey: Record<string, string> = copy;
-  const kmp = Array.from({ length: 4 }, (_, i) => ({
-    name: byKey[`kmp.${i}.name`] ?? '',
-    designation: byKey[`kmp.${i}.designation`] ?? '',
-  }));
+function InvestorContacts({ copy, page }: { copy: Copy; page: InvestorsPageContent }) {
+  const { grievanceOfficer, registrar, kmp } = page;
 
   return (
     <div className="space-y-3">
       <ContactBlock heading={copy['grievance.heading']}>
-        <p className="font-semibold text-[var(--dc-ink)]">{copy['grievance.name']}</p>
+        <p className="font-semibold text-[var(--dc-ink)]">{grievanceOfficer.name}</p>
         <p>
           {copy['contacts.tel']}{' '}
-          <a href={`tel:${copy['grievance.phone'].replace(/\s/g, '')}`} className={contactLink}>
-            {copy['grievance.phone']}
+          <a href={`tel:${grievanceOfficer.phone.replace(/\s/g, '')}`} className={contactLink}>
+            {grievanceOfficer.phone}
           </a>
         </p>
         <p>
           {copy['contacts.email']}{' '}
-          <a href={`mailto:${copy['grievance.email']}`} className={contactLink}>
-            {copy['grievance.email']}
+          <a href={`mailto:${grievanceOfficer.email}`} className={contactLink}>
+            {grievanceOfficer.email}
           </a>
         </p>
       </ContactBlock>
 
       <ContactBlock heading={copy['registrar.heading']}>
-        <p className="font-semibold text-[var(--dc-ink)]">{copy['registrar.name']}</p>
-        <p>{copy['registrar.address']}</p>
+        <p className="font-semibold text-[var(--dc-ink)]">{registrar.name}</p>
+        <p>{registrar.address}</p>
         <p>
           {copy['contacts.tel']}{' '}
-          <a href={`tel:${copy['registrar.phone'].replace(/\s/g, '')}`} className={contactLink}>
-            {copy['registrar.phone']}
+          <a href={`tel:${registrar.phone.replace(/\s/g, '')}`} className={contactLink}>
+            {registrar.phone}
           </a>{' '}
-          · {copy['contacts.fax']} {copy['registrar.fax']}
+          · {copy['contacts.fax']} {registrar.fax}
         </p>
         <p>
           {copy['contacts.email']}{' '}
-          <a href={`mailto:${copy['registrar.email']}`} className={contactLink}>
-            {copy['registrar.email']}
+          <a href={`mailto:${registrar.email}`} className={contactLink}>
+            {registrar.email}
           </a>
         </p>
         <p>
           {copy['contacts.website']}{' '}
-          <a href={copy['registrar.website']} {...externalLink} className={contactLink}>
-            {copy['registrar.website']}
+          <a href={registrar.website} {...externalLink} className={contactLink}>
+            {registrar.website}
             <span className="sr-only"> {copy['common.newTab']}</span>
           </a>
         </p>
@@ -399,10 +409,10 @@ function InvestorContacts({ copy }: { copy: Copy }) {
                   <th scope="row" className="py-2.5 pr-4 font-semibold text-[var(--dc-ink)]">{person.name}</th>
                   <td className="py-2.5 pr-4">{person.designation}</td>
                   <td className="py-2.5 pr-4">
-                    <a href={`tel:${copy['kmp.phone']}`} className={contactLink}>{copy['kmp.phone']}</a>
+                    <a href={`tel:${person.phone}`} className={contactLink}>{person.phone}</a>
                   </td>
                   <td className="py-2.5">
-                    <a href={`mailto:${copy['kmp.email']}`} className={contactLink}>{copy['kmp.email']}</a>
+                    <a href={`mailto:${person.email}`} className={contactLink}>{person.email}</a>
                   </td>
                 </tr>
               ))}

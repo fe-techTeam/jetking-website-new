@@ -38,6 +38,7 @@ export function RecordEditor({
   appearsOn = [],
   note,
   mode = 'list',
+  openId,
 }: {
   collection: CmsCollection;
   idKey: string;
@@ -54,13 +55,15 @@ export function RecordEditor({
    * (About, Placements): no list at all, just its form.
    */
   mode?: 'list' | 'fixed' | 'singleton';
+  /** Record to open first instead of the first in the list. */
+  openId?: string;
 }) {
   // Looked up here rather than passed as a prop: a Server Component page can't
   // hand a Client Component a config object whose `blank` field is a function —
   // React Server Components can only serialize plain data across that boundary.
   const config = ADMIN_FORM_CONFIG[collection];
   const initialRecords = initial as Rec[];
-  const firstRecord = initialRecords[0];
+  const firstRecord = (openId ? initialRecords.find((r) => String(r[idKey]) === openId) : undefined) ?? initialRecords[0];
   const firstDraft = { ...config.blank(), ...(firstRecord ?? {}) };
 
   const [items, setItems] = useState<Rec[]>(initialRecords);

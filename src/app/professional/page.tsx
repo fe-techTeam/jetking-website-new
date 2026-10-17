@@ -23,10 +23,11 @@ export async function generateMetadata() {
 }
 
 export default async function ProfessionalPage() {
-  const [copy, courses, home] = await Promise.all([
+  const [copy, courses, home, partners] = await Promise.all([
     loadCopy(professionalCopy),
     content.listCourses(),
     loadHomeData(),
+    content.getLogoList('professional-employers'),
   ]);
 
   const preferred = [
@@ -67,6 +68,7 @@ export default async function ProfessionalPage() {
       <ProfessionalLanding
         copy={copy}
         courses={professionalCourses}
+        partners={partners.items}
         testimonials={testimonials}
       />
     </>

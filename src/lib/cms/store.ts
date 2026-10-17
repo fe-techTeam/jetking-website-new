@@ -3,13 +3,16 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import type {
   AboutPageContent,
+  Announcement,
   Centre,
   City,
   Course,
   Faculty,
   Faq,
   HomepageVariant,
+  InvestorsPageContent,
   LegalDoc,
+  LogoList,
   PageCopyRecord,
   PersonaRule,
   PlacementPage,
@@ -33,7 +36,9 @@ import {
 } from '@/lib/content/fixtures/kb';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
+import { logoListDefaults } from '@/lib/content/fixtures/logo-lists';
 import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
+import { investorsDefaults } from '@/lib/content/fixtures/investors-page';
 import { getSupabase } from '@/lib/supabase';
 import type { CmsCollection, PublishStatus } from '@/lib/cms/types';
 import { CMS_COLLECTIONS } from '@/lib/cms/schemas';
@@ -71,8 +76,11 @@ export interface CmsStore {
   persona_rules: WithStatus<PersonaRule>[];
   about_page: WithStatus<AboutPageContent>[];
   placements_page: WithStatus<PlacementsPageRecord>[];
+  investors_page: WithStatus<InvestorsPageContent>[];
   legal_documents: WithStatus<LegalDoc>[];
+  logo_lists: WithStatus<LogoList>[];
   page_copy: WithStatus<PageCopyRecord>[];
+  announcements: WithStatus<Announcement>[];
 }
 
 const STORE_PATH = path.join(process.cwd(), 'data', 'cms', 'store.json');
@@ -96,9 +104,25 @@ function seedStore(): CmsStore {
     persona_rules: published(seedRules),
     about_page: published([aboutDefaults]),
     placements_page: published([placementsDefaults]),
+    investors_page: published([investorsDefaults]),
     legal_documents: published(legalDefaults),
+    logo_lists: published(logoListDefaults),
     // No overrides until an editor changes something: every page starts on its shipped text.
     page_copy: [],
+    // One disabled example so the editor has something to copy; nothing shows on the site until published.
+    announcements: [
+      {
+        id: 'example-admissions-open',
+        message: 'Admissions are open for the next batch.',
+        linkLabel: 'Enquire now',
+        linkHref: '/enquiry',
+        tone: 'promo',
+        startsAt: '',
+        endsAt: '',
+        dismissible: true,
+        status: 'draft',
+      },
+    ],
   };
 }
 

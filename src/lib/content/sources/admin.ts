@@ -3,11 +3,13 @@ import type {
   Centre,
   City,
   ContentSource,
+  Announcement,
   Course,
   Faculty,
   Faq,
   HomepageVariant,
   LegalDoc,
+  LogoList,
   PersonaRule,
   PlacementPage,
   Policy,
@@ -16,7 +18,8 @@ import type {
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
 import { legalDefaults } from '../fixtures/legal';
-import { aboutFallback, normalizeAbout, normalizePlacements, placementsFallback } from '../page-content';
+import { logoListFallback } from '../fixtures/logo-lists';
+import { aboutFallback, investorsFallback, normalizeAbout, normalizeInvestors, normalizePlacements, placementsFallback } from '../page-content';
 
 function published<T extends { status: string }>(rows: T[]): Omit<T, 'status'>[] {
   return rows.map(({ status: _s, ...rest }) => rest);
@@ -79,6 +82,10 @@ export const adminSource: ContentSource = {
 
   async listFaqs() {
     return published(await listCollection('faqs', { publishedOnly: true })) as Faq[];
+  },
+
+  async listAnnouncements() {
+    return published(await listCollection('announcements', { publishedOnly: true })) as Announcement[];
   },
 
   async listTrustSignals() {
@@ -151,6 +158,11 @@ export const adminSource: ContentSource = {
     return record ? normalizePlacements(published([record])[0]!) : placementsFallback();
   },
 
+  async getInvestorsPage() {
+    const [record] = await listCollection('investors_page', { publishedOnly: true });
+    return record ? normalizeInvestors(published([record])[0]!) : investorsFallback();
+  },
+
   async getPageCopyOverrides(id: string) {
     const rows = await listCollection('page_copy', { publishedOnly: true });
     return rows.find((r) => r.id === id)?.entries ?? {};
@@ -165,5 +177,10 @@ export const adminSource: ContentSource = {
   async getLegalDocument(slug: string) {
     const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
     return rows.find((d) => d.slug === slug) ?? legalDefaults.find((d) => d.slug === slug) ?? null;
+  },
+
+  async getLogoList(id: string) {
+    const rows = published(await listCollection('logo_lists', { publishedOnly: true })) as LogoList[];
+    return rows.find((l) => l.id === id) ?? logoListFallback(id);
   },
 };

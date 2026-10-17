@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
-import { ExternalLink, Menu } from 'lucide-react';
+import { ExternalLink, Menu, Search } from 'lucide-react';
 
 export function AdminTopbar({
   items,
@@ -42,7 +42,20 @@ export function AdminTopbar({
         </span>
       </nav>
 
-      <div className="ml-auto flex items-center gap-2 sm:gap-3">
+      <form action="/admin/search" role="search" className="ml-auto hidden md:block md:mr-0">
+        <label className="relative block">
+          <span className="sr-only">Search content</span>
+          <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
+          <input
+            name="q"
+            type="search"
+            placeholder="Search content…"
+            className="admin-input h-10 w-56 pl-9 text-sm lg:w-72"
+          />
+        </label>
+      </form>
+
+      <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-0">
         <span
           title={
             liveContent

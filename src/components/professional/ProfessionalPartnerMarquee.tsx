@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import type { professionalCopy } from '@/lib/content/copy/pages/professional';
-import { HIRING_PARTNERS } from './data';
+import type { LogoItem } from '@/lib/content/types';
 
 /**
  * Hiring-partner logos as an auto-scrolling strip (same recipe as the /placements recruiter
@@ -14,15 +14,21 @@ import { HIRING_PARTNERS } from './data';
  * CSS turns the strip into a static wrapped grid and the button is hidden. The second copy of
  * the list only exists for the seamless loop, so it is `aria-hidden`.
  */
-export function ProfessionalPartnerMarquee({ copy }: { copy: typeof professionalCopy.defaults }) {
+export function ProfessionalPartnerMarquee({
+  copy,
+  partners,
+}: {
+  copy: typeof professionalCopy.defaults;
+  partners: LogoItem[];
+}) {
   const [paused, setPaused] = useState(false);
 
   return (
     <div>
       <div className="dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '36s' }}>
         <div className="dc-marquee-track">
-          <PartnerList />
-          <PartnerList clone />
+          <PartnerList partners={partners} />
+          <PartnerList partners={partners} clone />
         </div>
       </div>
 
@@ -46,26 +52,34 @@ export function ProfessionalPartnerMarquee({ copy }: { copy: typeof professional
   );
 }
 
-function PartnerList({ clone = false }: { clone?: boolean }) {
+function PartnerList({ partners, clone = false }: { partners: LogoItem[]; clone?: boolean }) {
   return (
     <ul
       // `pr-4` matches the gap, so both copies are the same width and the loop lands exactly.
       className={`flex shrink-0 gap-4 pr-4${clone ? ' dc-marquee-clone' : ''}`}
       aria-hidden={clone || undefined}
     >
-      {HIRING_PARTNERS.map((partner) => (
+      {partners.map((partner, index) => (
         <li
-          key={partner.name}
+          key={`${partner.name}-${index}`}
           // White tiles in both themes: the logos are artwork drawn for a white ground.
-          className="flex h-20 w-40 shrink-0 items-center justify-center rounded-[12px] bg-white px-5 py-3.5 shadow-logo sm:h-24 sm:w-48"
+          className={`flex h-20 w-40 shrink-0 items-center justify-center rounded-[12px] px-5 py-3.5 shadow-logo sm:h-24 sm:w-48 ${partner.dark ? 'bg-tile-dark' : 'bg-white'}`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
-          <img
-            src={partner.logo}
-            alt={clone ? '' : partner.name}
-            draggable={false}
-            className="max-h-full max-w-full object-contain"
-          />
+          {partner.file ? (
+            // eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do
+            <img
+              src={partner.file}
+              alt={clone ? '' : partner.name}
+              draggable={false}
+              className="max-h-full max-w-full object-contain"
+            />
+          ) : (
+            <span
+              className={`text-center font-display text-[14px] leading-tight font-extrabold [overflow-wrap:anywhere] ${partner.dark ? 'text-white' : 'text-[#374151]'}`}
+            >
+              {partner.name}
+            </span>
+          )}
         </li>
       ))}
     </ul>

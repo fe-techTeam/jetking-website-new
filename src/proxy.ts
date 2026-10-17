@@ -1,3 +1,4 @@
+import { findRedirect } from '@/lib/redirects/lookup';
 import { UTM_COOKIE, UTM_MAX_AGE, encodeUtm, utmFromParams } from '@/lib/utm';
 import { NextResponse, type NextRequest } from 'next/server';
 import { classify } from '@/persona/classify';
@@ -85,6 +86,17 @@ function setVisitorCookie(response: NextResponse, req: NextRequest): void {
 }
 
 export async function proxy(req: NextRequest) {
+  // Redirects managed in the admin (/admin/redirects) apply to everyone, crawlers included — that is the
+  // point of a 301. Never to the admin itself, so a bad rule can't lock editors out.
+  if (!req.nextUrl.pathname.startsWith('/admin')) {
+    const rule = await findRedirect(req.nextUrl.pathname);
+    if (rule) {
+      const target = rule.destination.startsWith('/') ? new URL(rule.destination, req.url) : new URL(rule.destination);
+      if (rule.destination.startsWith('/')) target.search = req.nextUrl.search;
+      return NextResponse.redirect(target, rule.permanent ? 308 : 307);
+    }
+  }
+
   const response = NextResponse.next();
 
   if (isCrawler(req.headers.get('user-agent'))) return response;

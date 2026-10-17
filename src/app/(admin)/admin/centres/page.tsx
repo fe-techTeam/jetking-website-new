@@ -1,5 +1,5 @@
 import { AdminCollectionPage } from '../AdminCollectionPage';
 
-export default function AdminCentresPage() {
-  return <AdminCollectionPage collection="centres" />;
+export default function AdminCentresPage({ searchParams }: { searchParams: Promise<{ open?: string }> }) {
+  return <AdminCollectionPage collection="centres" searchParams={searchParams} />;
 }

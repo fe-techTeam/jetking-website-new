@@ -5,6 +5,7 @@ import { PersonaProvider } from '@/persona/PersonaProvider';
 import { SilentPersonaInfer } from '@/persona/SilentPersonaInfer';
 import { SiteChrome, FooterChrome } from '@/components/SiteShell';
 import { SiteHeaderServer } from '@/components/SiteHeaderServer';
+import { AnnouncementBarServer } from '@/components/AnnouncementBarServer';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PersonaInspector } from '@/components/PersonaInspector';
 import { ExitIntentPopup } from '@/components/ExitIntentPopup';
@@ -96,6 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <EnquirySheetServer>
                   <SilentPersonaInfer />
                   <SiteChrome>
+                    <AnnouncementBarServer />
                     <SiteHeaderServer />
                   </SiteChrome>
                   <main id="main">{children}</main>

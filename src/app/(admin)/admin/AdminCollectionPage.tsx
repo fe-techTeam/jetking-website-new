@@ -8,10 +8,18 @@ import { collectionByKey } from './registry';
  * and "where this appears on the website" all come from `registry.ts`, so a collection route is
  * a one-liner and can't disagree with the sidebar or the Website map.
  */
-export async function AdminCollectionPage({ collection }: { collection: CmsCollection }) {
+export async function AdminCollectionPage({
+  collection,
+  searchParams,
+}: {
+  collection: CmsCollection;
+  /** `?open=<id>` opens that record first (used by the admin search). */
+  searchParams?: Promise<{ open?: string }>;
+}) {
   const meta = collectionByKey(collection);
   await requireRole(meta.roles ?? ['admin', 'editor']);
   const items = await getAdminCollection(collection);
+  const open = (await searchParams)?.open;
 
   return (
     <RecordEditor
@@ -24,6 +32,7 @@ export async function AdminCollectionPage({ collection }: { collection: CmsColle
       appearsOn={meta.appearsOn}
       note={meta.note}
       mode={meta.mode}
+      openId={open}
     />
   );
 }
