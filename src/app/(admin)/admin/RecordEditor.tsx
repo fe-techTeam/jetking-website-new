@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { saveCollectionItem, removeCollectionItem, setRecordStatus } from './actions';
 import { HistoryPanel } from './HistoryPanel';
 import type { CmsCollection } from '@/lib/cms/types';
@@ -26,7 +26,19 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 type Rec = Record<string, unknown>;
-type PendingSwitch = { kind: 'record'; item: Rec } | { kind: 'new' };
+type PendingSwitch = { kind: 'record'; item: Rec } | { kind: 'new' } | { kind: 'list' };
+
+const NAME_KEYS = ['title', 'name', 'question', 'message', 'headline', 'label'];
+const PAGE_SIZE = 25;
+
+/** The human name of a record for the list and page heading — its title when it has one, else its id. */
+function displayName(item: Rec, fallback: string): string {
+  for (const key of NAME_KEYS) {
+    const v = item[key];
+    if (typeof v === 'string' && v.trim()) return v.length > 100 ? `${v.slice(0, 100)}…` : v;
+  }
+  return fallback;
+}
 
 export function RecordEditor({
   collection,
@@ -81,19 +93,37 @@ export function RecordEditor({
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingSwitch, setPendingSwitch] = useState<PendingSwitch | null>(null);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [pageIndex, setPageIndex] = useState(0);
+  /** A collection opens on its list; a record (or a singleton's one document) opens on its own page. */
+  const [view, setView] = useState<'list' | 'edit'>(mode === 'singleton' || openId ? 'edit' : 'list');
+  const singular = title.replace(/s$/, '').replace(/ies$/, 'y').toLowerCase();
   /** Anything that changes the live website waits for an explicit yes. */
   const [confirm, setConfirm] = useState<{ kind: 'save' } | { kind: 'toggle'; id: string; current: string } | null>(null);
   const [panel, setPanel] = useState<'history' | 'trash' | null>(null);
 
+  // Each screen starts at its top (the admin's scroll area is not the window).
+  useEffect(() => {
+    document.getElementById('admin-content')?.scrollTo({ top: 0 });
+  }, [view]);
+
   const isDirty = JSON.stringify(draft) !== savedSnapshot;
   const query = search.trim().toLowerCase();
-  const visibleItems = query ? items.filter((item) => String(item[idKey]).toLowerCase().includes(query)) : items;
+  const filtered = items.filter((item) => {
+    if (statusFilter !== 'all' && item.status !== statusFilter) return false;
+    return !query || `${String(item[idKey])} ${displayName(item, '')}`.toLowerCase().includes(query);
+  });
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageItems = filtered.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE);
 
   function confirmDelete(id: string) {
     start(async () => {
       await removeCollectionItem(collection, idKey, id);
       setItems((prev) => prev.filter((p) => p[idKey] !== id));
-      if (originalId === id) applyNew();
+      if (originalId === id) {
+        applyNew();
+        setView('list');
+      }
       setMessage(`Deleted ${id}.`);
       setPendingDeleteId(null);
     });
@@ -150,6 +180,7 @@ export function RecordEditor({
     setSavedSnapshot(asNew ? '' : JSON.stringify(draft));
     if (asNew) setOriginalId(undefined);
     setPanel(null);
+    setView('edit');
     setMessage(asNew ? 'Loaded the deleted record — Save to bring it back.' : 'Loaded an earlier version — Save to apply it.');
     setError(null);
   }
@@ -182,6 +213,7 @@ export function RecordEditor({
       return;
     }
     applyRecord(item);
+    setView('edit');
   }
 
   function startNew() {
@@ -190,12 +222,32 @@ export function RecordEditor({
       return;
     }
     applyNew();
+    setView('edit');
+  }
+
+  /** Back to the list; unsaved edits ask first. */
+  function goList() {
+    if (isDirty) {
+      setPendingSwitch({ kind: 'list' });
+      return;
+    }
+    setView('list');
+    setPanel(null);
   }
 
   function confirmSwitch() {
     if (!pendingSwitch) return;
-    if (pendingSwitch.kind === 'record') applyRecord(pendingSwitch.item);
-    else applyNew();
+    if (pendingSwitch.kind === 'record') {
+      applyRecord(pendingSwitch.item);
+      setView('edit');
+    } else if (pendingSwitch.kind === 'new') {
+      applyNew();
+      setView('edit');
+    } else {
+      applyRecord(items.find((r) => String(r[idKey]) === originalId) ?? config.blank());
+      setView('list');
+      setPanel(null);
+    }
     setPendingSwitch(null);
   }
 
@@ -241,132 +293,187 @@ export function RecordEditor({
 
   return (
     <div>
-      <AdminPageHeader
-        eyebrow={collection.replace(/_/g, ' ')}
-        title={title}
-        description={description}
-      />
+      {view === 'list' ? (
+        <>
+          <AdminPageHeader
+            eyebrow={collection.replace(/_/g, ' ')}
+            title={title}
+            description={description}
+            actions={
+              mode === 'list' ? (
+                <button
+                  type="button"
+                  onClick={startNew}
+                  className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold"
+                >
+                  + New {singular}
+                </button>
+              ) : undefined
+            }
+          />
 
-      <WebsiteUsage live={live} appearsOn={appearsOn} note={note} />
+          <WebsiteUsage live={live} appearsOn={appearsOn} note={note} />
 
-      <div
-        className={`mt-6 grid gap-6 lg:items-start ${mode === 'singleton' ? '' : 'lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]'}`}
-      >
-        {/* ── Record list ─────────────────────────────────────────────── */}
-        <div className={`min-w-0 ${mode === 'singleton' ? 'hidden' : ''}`}>
-          <div className="adm-card overflow-hidden">
-            <div className="flex items-center justify-between gap-4 border-b border-border bg-surface/70 px-4 py-3.5">
-              <h2 className="text-sm font-bold tracking-tight text-foreground">Records</h2>
-              <span className="numeral rounded-full bg-background px-2.5 py-0.5 text-xs font-bold text-foreground-secondary ring-1 ring-border">
-                {query ? `${visibleItems.length} / ${items.length}` : items.length}
-              </span>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPageIndex(0);
+              }}
+              placeholder={`Search ${title.toLowerCase()}…`}
+              aria-label="Search records"
+              className="admin-input h-11 w-full text-sm sm:max-w-sm sm:flex-1"
+            />
+            <div className="flex gap-1.5" role="group" aria-label="Filter by status">
+              {(['all', 'published', 'draft'] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  aria-pressed={statusFilter === f}
+                  onClick={() => {
+                    setStatusFilter(f);
+                    setPageIndex(0);
+                  }}
+                  className={`min-h-11 cursor-pointer rounded-full border px-4 text-xs font-bold capitalize transition-colors ${
+                    statusFilter === f
+                      ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+                      : 'border-border text-foreground-secondary hover:border-border-medium'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
             </div>
-
-            {items.length > 8 ? (
-              <div className="border-b border-border p-2">
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search records…"
-                  aria-label="Search records"
-                  className="admin-input h-9 text-sm"
-                />
-              </div>
+            {mode === 'list' ? (
+              <button
+                type="button"
+                onClick={() => setPanel(panel === 'trash' ? null : 'trash')}
+                className="ml-auto min-h-11 cursor-pointer px-2 text-xs font-semibold text-foreground-muted hover:text-foreground"
+              >
+                Deleted records…
+              </button>
             ) : null}
-
-            <ul className="max-h-[34rem] overflow-auto">
-              {visibleItems.length === 0 ? (
-                <li className="px-4 py-6 text-center text-sm text-foreground-muted">
-                  {query ? 'No records match your search.' : 'No records yet — add one below.'}
-                </li>
-              ) : null}
-              {visibleItems.map((item, i) => {
-                const id = String(item[idKey] ?? i);
-                const status = String(item.status ?? 'unknown');
-                const isActive = originalId === id;
-
-                return (
-                  <li
-                    key={id}
-                    className={`relative flex items-center gap-2 border-b border-border px-3 transition-colors last:border-none ${
-                      isActive ? 'bg-[var(--accent-soft)]' : 'hover:bg-surface/70'
-                    }`}
-                  >
-                    {isActive ? (
-                      <span
-                        aria-hidden="true"
-                        className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r-full bg-[var(--accent)]"
-                      />
-                    ) : null}
-                    <button
-                      type="button"
-                      aria-current={isActive ? 'true' : undefined}
-                      className="min-w-0 flex-1 cursor-pointer py-3 text-left focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
-                      onClick={() => loadRecord(item)}
-                    >
-                      <span
-                        className={`block text-sm leading-snug break-words ${isActive ? 'font-bold text-[var(--accent-ink)]' : 'font-medium text-foreground'}`}
-                      >
-                        {id}
-                      </span>
-                      <span className="mt-1 block">
-                        <StatusBadge status={status} />
-                      </span>
-                    </button>
-
-                    {mode === 'list' && (status === 'published' || status === 'draft') ? (
-                      <button
-                        type="button"
-                        disabled={pending}
-                        onClick={() => setConfirm({ kind: 'toggle', id, current: status })}
-                        aria-label={`${status === 'published' ? 'Unpublish' : 'Publish'} ${id}`}
-                        className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
-                      >
-                        {status === 'published' ? 'Unpublish' : 'Publish'}
-                      </button>
-                    ) : null}
-
-                    {mode === 'list' ? (
-                    <button
-                      type="button"
-                      disabled={pending}
-                      aria-label={`Delete ${id}`}
-                      className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45"
-                      onClick={() => setPendingDeleteId(id)}
-                    >
-                      Delete
-                    </button>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
           </div>
 
-          {mode === 'list' ? (
-          <button
-            type="button"
-            onClick={startNew}
-            className="mt-3 min-h-11 w-full cursor-pointer rounded-[12px] border border-dashed border-border-medium bg-background px-4 text-sm font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-ink)] focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
-          >
-            + New record
-          </button>
+          {panel === 'trash' ? (
+            <HistoryPanel
+              collection={collection}
+              idKey={idKey}
+              recordId={undefined}
+              mode="trash"
+              onLoad={loadVersion}
+              onClose={() => setPanel(null)}
+            />
           ) : null}
-          {mode === 'list' ? (
+
+          <div className="adm-card mt-4 overflow-hidden">
+            <div className="hidden grid-cols-[minmax(0,1fr)_9rem_14rem] gap-4 border-b border-border bg-surface/70 px-5 py-3 text-xs font-bold tracking-wide text-foreground-muted uppercase md:grid">
+              <span>{title}</span>
+              <span>Status</span>
+              <span className="text-right">Actions</span>
+            </div>
+            {pageItems.length === 0 ? (
+              <p className="px-5 py-10 text-center text-sm text-foreground-muted">
+                {items.length === 0 ? `No ${title.toLowerCase()} yet.` : 'Nothing matches your search.'}
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {pageItems.map((item, i) => {
+                  const id = String(item[idKey] ?? i);
+                  const status = String(item.status ?? 'unknown');
+                  const name = displayName(item, id);
+                  return (
+                    <li
+                      key={id}
+                      className="grid gap-3 px-5 py-3.5 transition-colors hover:bg-surface/60 md:grid-cols-[minmax(0,1fr)_9rem_14rem] md:items-center md:gap-4"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => loadRecord(item)}
+                        className="min-w-0 cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
+                      >
+                        <span className="block truncate text-[15px] font-semibold text-foreground hover:text-[var(--accent-ink)]">{name}</span>
+                        {name !== id ? <span className="block truncate text-xs text-foreground-muted">{id}</span> : null}
+                      </button>
+                      <span>
+                        <StatusBadge status={status} />
+                      </span>
+                      <div className="flex flex-wrap justify-start gap-2 md:justify-end">
+                        <button
+                          type="button"
+                          onClick={() => loadRecord(item)}
+                          className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3.5 text-xs font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                        >
+                          {mode === 'list' ? 'Edit' : 'Open'}
+                        </button>
+                        {mode === 'list' && (status === 'published' || status === 'draft') ? (
+                          <button
+                            type="button"
+                            disabled={pending}
+                            onClick={() => setConfirm({ kind: 'toggle', id, current: status })}
+                            aria-label={`${status === 'published' ? 'Unpublish' : 'Publish'} ${id}`}
+                            className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
+                          >
+                            {status === 'published' ? 'Unpublish' : 'Publish'}
+                          </button>
+                        ) : null}
+                        {mode === 'list' ? (
+                          <button
+                            type="button"
+                            disabled={pending}
+                            aria-label={`Delete ${id}`}
+                            onClick={() => setPendingDeleteId(id)}
+                            className="min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45"
+                          >
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          {pageCount > 1 ? (
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <button type="button" disabled={pageIndex === 0} onClick={() => setPageIndex(pageIndex - 1)} className="min-h-10 cursor-pointer font-semibold text-foreground-secondary disabled:opacity-40">
+                ← Previous
+              </button>
+              <span className="text-foreground-muted">
+                Page {pageIndex + 1} of {pageCount} · {filtered.length} {title.toLowerCase()}
+              </span>
+              <button type="button" disabled={pageIndex >= pageCount - 1} onClick={() => setPageIndex(pageIndex + 1)} className="min-h-10 cursor-pointer font-semibold text-foreground-secondary disabled:opacity-40">
+                Next →
+              </button>
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <>
+          {mode !== 'singleton' ? (
             <button
               type="button"
-              onClick={() => setPanel(panel === 'trash' ? null : 'trash')}
-              className="mt-2 w-full cursor-pointer py-2 text-xs font-semibold text-foreground-muted hover:text-foreground"
+              onClick={goList}
+              className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]"
             >
-              Deleted records…
+              <span aria-hidden="true">←</span> All {title.toLowerCase()}
             </button>
           ) : null}
-        </div>
 
-        {/* ── Form ────────────────────────────────────────────────────── */}
-        <div className="min-w-0">
-          <div className="adm-card p-5 sm:p-7">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
+          <AdminPageHeader
+            eyebrow={originalId ? `Editing ${singular}` : `New ${singular}`}
+            title={mode === 'singleton' ? title : displayName(draft, String(draft[idKey] || `New ${singular}`))}
+            description={mode === 'singleton' ? description : originalId ? String(draft[idKey] ?? '') : 'Fill in the details, then save.'}
+            actions={<StatusBadge status={String(draft.status ?? 'draft')} />}
+          />
+
+          {mode === 'singleton' ? <WebsiteUsage live={live} appearsOn={appearsOn} note={note} /> : null}
+
+          <div className="adm-card mt-6 p-5 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <button
                 type="button"
                 role="switch"
@@ -376,20 +483,14 @@ export function RecordEditor({
               >
                 <span
                   aria-hidden="true"
-                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                    published ? 'bg-growth-600' : 'bg-border-medium'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${published ? 'bg-growth-600' : 'bg-border-medium'}`}
                 >
-                  <span
-                    className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform ${
-                      published ? 'translate-x-6' : 'translate-x-1'
-                    }`}
-                  />
+                  <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform ${published ? 'translate-x-6' : 'translate-x-1'}`} />
                 </span>
-                {published ? 'Published' : 'Draft'}
+                {published ? 'Published — visible on the website' : 'Draft — hidden from the website'}
               </button>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 {originalId ? (
                   <>
                     {viewPath && published ? (
@@ -410,25 +511,24 @@ export function RecordEditor({
                       History
                     </button>
                     {mode === 'list' ? (
-                      <button
-                        type="button"
-                        onClick={duplicate}
-                        className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
-                      >
-                        Duplicate
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={duplicate}
+                          className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPendingDeleteId(originalId)}
+                          className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
+                        >
+                          Delete
+                        </button>
+                      </>
                     ) : null}
                   </>
-                ) : null}
-                {error ? (
-                  <p role="alert" className="text-sm font-medium text-[var(--color-error-600)]">
-                    {error}
-                  </p>
-                ) : null}
-                {message ? (
-                  <p aria-live="polite" className="text-sm text-growth-600">
-                    {message}
-                  </p>
                 ) : null}
                 <button
                   type="button"
@@ -440,66 +540,65 @@ export function RecordEditor({
                 </button>
               </div>
             </div>
-
-            {panel ? (
-              <HistoryPanel
-                collection={collection}
-                idKey={idKey}
-                recordId={originalId}
-                mode={panel}
-                onLoad={loadVersion}
-                onClose={() => setPanel(null)}
-              />
+            {error ? (
+              <p role="alert" className="mt-3 text-sm font-medium text-[var(--color-error-600)]">
+                {error}
+              </p>
             ) : null}
-
-            <div className="mt-5 flex flex-col gap-6">
-              {sections.map((section, i) => (
-                <div key={section.title ?? 'flat'} className={i > 0 ? 'border-t border-border pt-6' : ''}>
-                  {section.title ? (
-                    <h3 className="mb-4 text-sm font-bold tracking-tight text-foreground">{section.title}</h3>
-                  ) : null}
-                  <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
-                    {section.fields.map((key) => {
-                      const value = draft[key];
-                      const isWide = Array.isArray(value) || (typeof value === 'object' && value !== null);
-                      return (
-                        <div key={key} className={isWide ? 'sm:col-span-2' : ''}>
-                          {/* A section that is just one field already carries that field's name as its heading. */}
-                          {section.fields.length === 1 && section.title === humanize(key) ? null : (
-                            <label className="mb-1.5 block text-xs font-semibold text-foreground-secondary">
-                              {config.selectFields?.[key]?.label ?? humanize(key)}
-                            </label>
-                          )}
-                          {config.lockedFields?.includes(key) && typeof value === 'string' ? (
-                            <input
-                              value={value}
-                              readOnly
-                              aria-readonly="true"
-                              className="admin-input cursor-not-allowed bg-surface text-foreground-muted"
-                            />
-                          ) : (
-                            <ValueEditor
-                              fieldKey={key}
-                              value={value}
-                              config={config}
-                              onChange={(next) => setDraft((prev) => ({ ...prev, [key]: next }))}
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
+            {message ? (
+              <p aria-live="polite" className="mt-3 text-sm text-growth-600">
+                {message}
+              </p>
+            ) : null}
           </div>
 
-          {/* Sticks to the bottom of the viewport on a long form, so Save is
-             never more than one glance away without scrolling back to the top. */}
-          <div className="adm-card sticky bottom-4 z-10 mt-4 flex items-center justify-between gap-3 !bg-background/90 px-4 py-3 shadow-[var(--adm-shadow-lift)] backdrop-blur-md">
-            <span
-              className={`inline-flex items-center gap-2 text-sm font-semibold ${isDirty ? 'text-[#b54708]' : 'text-foreground-muted'}`}
-            >
+          {panel === 'history' ? (
+            <HistoryPanel
+              collection={collection}
+              idKey={idKey}
+              recordId={originalId}
+              mode="history"
+              onLoad={loadVersion}
+              onClose={() => setPanel(null)}
+            />
+          ) : null}
+
+          <div className="mt-5 flex flex-col gap-5">
+            {sections.map((section) => (
+              <section key={section.title ?? 'flat'} className="adm-card p-5 sm:p-6">
+                {section.title ? <h3 className="mb-4 text-base font-bold tracking-tight text-foreground">{section.title}</h3> : null}
+                <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
+                  {section.fields.map((key) => {
+                    const value = draft[key];
+                    const isWide = Array.isArray(value) || (typeof value === 'object' && value !== null);
+                    return (
+                      <div key={key} className={isWide ? 'sm:col-span-2' : ''}>
+                        {section.fields.length === 1 && section.title === humanize(key) ? null : (
+                          <label className="mb-1.5 block text-xs font-semibold text-foreground-secondary">
+                            {config.selectFields?.[key]?.label ?? humanize(key)}
+                          </label>
+                        )}
+                        {config.lockedFields?.includes(key) && typeof value === 'string' ? (
+                          <input value={value} readOnly aria-readonly="true" className="admin-input cursor-not-allowed bg-surface text-foreground-muted" />
+                        ) : (
+                          <ValueEditor
+                            fieldKey={key}
+                            value={value}
+                            config={config}
+                            onChange={(next) => setDraft((prev) => ({ ...prev, [key]: next }))}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+          </div>
+
+          {/* Sticks to the bottom of the viewport on a long form, so Save is never more than a glance away. */}
+          <div className="adm-card sticky bottom-4 z-10 mt-5 flex items-center justify-between gap-3 !bg-background/90 px-4 py-3 shadow-[var(--adm-shadow-lift)] backdrop-blur-md">
+            <span className={`inline-flex items-center gap-2 text-sm font-semibold ${isDirty ? 'text-[#b54708]' : 'text-foreground-muted'}`}>
               <span aria-hidden="true" className="adm-dot" />
               {isDirty ? 'Unsaved changes' : 'All changes saved'}
             </span>
@@ -512,9 +611,8 @@ export function RecordEditor({
               {pending ? 'Saving…' : 'Save'}
             </button>
           </div>
-        </div>
-      </div>
-
+        </>
+      )}
       <AdminConfirmDialog
         open={pendingDeleteId !== null}
         onOpenChange={(open) => !open && setPendingDeleteId(null)}
