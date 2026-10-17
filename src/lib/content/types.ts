@@ -320,6 +320,8 @@ export interface Post {
   /** @grounded */
   excerpt: string;
   body: BodyBlock[];
+  /** Rich article HTML from the editor (sanitised). When present it is what the article page shows; `body` is derived from it. */
+  bodyHtml?: string;
   author: string;
   publishedAt: string;
   updatedAt: string;

@@ -196,6 +196,7 @@ const postSchema = withStatus({
   title: z.string().min(1),
   excerpt: z.string().min(1),
   body: z.array(bodyBlockSchema),
+  bodyHtml: z.string().optional(),
   author: z.string().min(1),
   publishedAt: z.string(),
   updatedAt: z.string(),

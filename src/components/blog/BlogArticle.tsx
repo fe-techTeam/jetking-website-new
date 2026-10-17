@@ -10,6 +10,7 @@ import type { Crumb } from '@/components/ui';
 import { categoryHref, formatPostDate, PostCard, postCover } from './BlogCards';
 import { cleanBlogBody, decodeEntities } from '@/lib/content/cleanBlogBody';
 import { fill } from '@/lib/content/copy/define';
+import { sanitizeRichHtml } from '@/lib/rich/html';
 import type { blogCopy } from '@/lib/content/copy/pages/blog';
 
 function Block({ block }: { block: BodyBlock }) {
@@ -154,7 +155,9 @@ export function BlogArticle({
           </p>
 
           <div className="blog-prose mt-8 border-t border-[var(--dc-hairline-strong)]/35 pt-8">
-            {body.length > 0 ? (
+            {post.bodyHtml ? (
+              <div className="blog-rich" dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(post.bodyHtml) }} />
+            ) : body.length > 0 ? (
               body.map((block, index) => <Block key={index} block={block} />)
             ) : (
               <p className="blog-prose-p text-[var(--dc-ink-muted)]">

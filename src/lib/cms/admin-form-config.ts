@@ -210,6 +210,7 @@ const posts: AdminFormConfig = {
     title: '',
     excerpt: '',
     body: [],
+    bodyHtml: '',
     author: '',
     publishedAt: today(),
     updatedAt: today(),
@@ -222,6 +223,8 @@ const posts: AdminFormConfig = {
     kind: 'blog',
     status: 'draft',
   }),
+  // `body` (the plain structured text) is derived from the rich article on save, so only the rich editor is shown.
+  hiddenFields: ['body'],
   selectFields: {
     kind: {
       label: 'Kind',
@@ -233,7 +236,7 @@ const posts: AdminFormConfig = {
   },
   sections: [
     { title: 'Basics', fields: ['slug', 'title', 'excerpt', 'author', 'publishedAt', 'updatedAt', 'category', 'kind', 'legacyPath'] },
-    { title: 'Content', fields: ['body', 'tags'] },
+    { title: 'Content', fields: ['bodyHtml', 'tags'] },
     { title: 'Audience & SEO', fields: ['personaRelevance', 'heroImage', 'seo'] },
   ],
 };

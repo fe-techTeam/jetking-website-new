@@ -724,6 +724,7 @@ export function RecordEditor({
                     {section.fields.map((key) => {
                       const value = draft[key];
                       const isWide =
+                        key === "bodyHtml" ||
                         Array.isArray(value) ||
                         (typeof value === "object" && value !== null);
                       return (

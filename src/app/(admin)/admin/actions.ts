@@ -17,6 +17,7 @@ import { CMS_COLLECTIONS, validateCmsRecord } from '@/lib/cms/schemas';
 import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, type Role } from '@/lib/auth/users';
 import { verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
+import { htmlToBlocks, sanitizeRichHtml } from '@/lib/rich/html';
 import { getRevision, listDeleted, listRevisions } from '@/lib/cms/revisions';
 import { collectionByKey } from './registry';
 
@@ -275,6 +276,26 @@ export async function saveCollectionItem(
     const record = JSON.parse(json) as Record<string, unknown>;
     if (!record[idKey]) return { ok: false, error: `Missing ${idKey}` };
     if (!record.status) record.status = 'published';
+
+    // An optional image the editor left empty ({ url: '', alt: '' }) means "no image", not an invalid one.
+    for (const [key, value] of Object.entries(record)) {
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const v = value as Record<string, unknown>;
+        if (v.url === '' && 'alt' in v && Object.keys(v).every((k) => k === 'url' || k === 'alt') && !String(v.alt ?? '').trim()) delete record[key];
+      }
+    }
+
+    // Rich article: clean the HTML, and derive the plain structured body from it so search, the chatbot index
+    // and anything that reads `body` stay in step with what the article shows.
+    if (collection === 'posts') {
+      const html = typeof record.bodyHtml === 'string' ? sanitizeRichHtml(record.bodyHtml) : '';
+      if (html) {
+        record.bodyHtml = html;
+        record.body = htmlToBlocks(html);
+      } else {
+        delete record.bodyHtml;
+      }
+    }
 
     // Validated for pass/fail only — the schema isn't a perfectly exhaustive
     // mirror of every field content/types.ts allows, and zod's default `strip`

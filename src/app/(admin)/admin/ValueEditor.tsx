@@ -9,6 +9,14 @@ import type { LegalBlock } from '@/lib/content/types';
 import { MediaPickerButton } from './MediaPicker';
 import { AutoTextarea, MultiRelation, RelationsContext, SpecialField, fieldKind } from './FieldInputs';
 import { useContext } from 'react';
+import dynamic from 'next/dynamic';
+import { blocksToHtml } from '@/lib/rich/blocks';
+
+// The editor pulls in ProseMirror — load it only on forms that have an article body.
+const RichTextEditor = dynamic(() => import('./RichTextEditor').then((m) => m.RichTextEditor), {
+  ssr: false,
+  loading: () => <div className="admin-input h-48 animate-pulse bg-surface" aria-busy="true" />,
+});
 
 /** String fields that hold an image path/URL get a preview and a "Choose image" button. */
 const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|banner|poster)(url|src|path)?$|^ogImage$|^file$/i;
@@ -225,6 +233,15 @@ export function ValueEditor({
     );
   }
 
+  if (fieldKey === 'bodyHtml' && typeof value === 'string' && !path.includes('.')) {
+    return (
+      <RichTextEditor
+        value={value}
+        fallbackHtml={blocksToHtml(context?.body as never)}
+        onChange={onChange as (v: string) => void}
+      />
+    );
+  }
   const kind = fieldKind(fieldKey, path || fieldKey, value);
   if ((typeof value === 'string' || value === null || value === undefined) && kind !== 'text' && kind !== 'seo-title' && kind !== 'seo-description' && !asImage) {
     return <SpecialField kind={kind} value={typeof value === 'string' ? value : ''} onChange={onChange as (v: string) => void} context={context} />;
