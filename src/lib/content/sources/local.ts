@@ -1,3 +1,4 @@
+import { chatbotSettingsDefaults } from '../fixtures/chatbot';
 import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import type {
   Centre,
@@ -77,6 +78,14 @@ export const localSource: ContentSource = {
 
   async listFaqs(): Promise<Faq[]> {
     return [...faqs];
+  },
+
+  async getChatbotSettings() {
+    return chatbotSettingsDefaults;
+  },
+
+  async listChatbotKnowledge() {
+    return [];
   },
 
   async getSeoSettings() {

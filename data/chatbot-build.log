@@ -1,0 +1,29 @@
+
+> jetking-adaptive-website@0.1.0 build:chatbot-index
+> npm run export:chatbot-content && node scripts/build-index.mjs --embed
+
+
+> jetking-adaptive-website@0.1.0 export:chatbot-content
+> node --conditions=react-server --import tsx scripts/export-site-corpus.mts
+
+Exported 1558 website records to src/content/website-corpus.json
+By type: {"course":18,"faq":20,"blog":1284,"centre":69,"info":29,"placement":6,"about":19,"franchise":6,"professional":4,"parent":3,"student":1,"explore":4,"policy":95}
+from knowledge base : 992 items
+from current website: 1568 items
+from manual knowledge: 0 items
+reused from scrape  : 3545 items (dropped 1567 replaced website rows, 0 replaced manual rows, 992 replaced kb rows, 0 blog listing rows, 0 legal/policy rows)
+total               : 6105 items
+by type             : {"overview":171,"centre":769,"home":23,"placement":298,"course":772,"info":100,"curriculum":31,"faq":99,"eligibility":68,"fees":16,"duration":21,"blog":3532,"about":17,"franchise":6,"professional":4,"parent":3,"student":1,"explore":4,"policy":95,"page":75}
+vectors reusable    : 6052 · to embed: 53
+
+--- samples ---
+[fees] What is the Cost of Cloud computing courses in Kolkata? — Best Cloud Computing Courses & Training Institute in Kolkata ¶ To find out the cost and dura
+[eligibility] What are the entry requirements for BCA in cloud computing and cyber security course? — BCA in Cloud Computing & Cyber Security | BCA Degree Course ¶ 
+[duration] How long is BCA in Cloud Computing & Cyber Security? ¶ BCA in Cloud Computing & Cyber Security runs for 3 years.
+[curriculum] Immersive curriculum — Best AWS Solution Architect Training and Courses in India ¶ Prepare for the AWS Solution Architect Associate certification with
+[placement] Build a Powerful Career with India’s Most Trusted Digital Skills Institute. — Jetking ¶ We ensure you learn the best, from the best through innovative
+[centre] Jetking centre in Azadpur ¶ Jetking Best Institute for Cloud Computing Course in Delhi. Learn AWS, Azure, Linux, Networking, CCNA, Cyber Security Trai
+
+Embedding 53 new items with Xenova/paraphrase-multilingual-MiniLM-L12-v2 …
+  53/53
+Wrote 6105 embeddings → src/content/jetking-embeddings.json

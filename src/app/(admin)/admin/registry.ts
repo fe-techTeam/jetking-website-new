@@ -47,7 +47,7 @@ export interface AdminCollection {
 export const GROUP = {
   website: 'Website',
   personalisation: 'Personalisation',
-  guide: 'Jetking Guide',
+  guide: 'Chatbot',
 } as const;
 
 const ALL_COLLECTIONS: AdminCollection[] = [
@@ -275,6 +275,31 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     live: false,
     appearsOn: [],
     note: 'Nothing on the website reads these rules yet, so saving here does not change what visitors see. The rule matcher exists in code but is not wired to any page.',
+  },
+  {
+    key: 'chatbot_settings',
+    route: 'chatbot-settings',
+    idKey: 'id',
+    label: 'Assistant settings',
+    icon: 'Settings',
+    group: GROUP.guide,
+    description: 'Switch the assistant on or off, its name and greeting, starter questions, and what it says when it cannot answer.',
+    live: true,
+    mode: 'singleton',
+    appearsOn: [{ label: 'Chat page', href: '/chatbot' }],
+    note: 'The assistant only ever answers from the website’s own content. These settings change how it presents itself, not what it knows.',
+  },
+  {
+    key: 'chatbot_knowledge',
+    route: 'chatbot-knowledge',
+    idKey: 'id',
+    label: 'Custom answers',
+    icon: 'MessageSquareQuote',
+    group: GROUP.guide,
+    description: 'Question-and-answer pairs you write for the assistant, for things the website does not say yet.',
+    live: true,
+    appearsOn: [{ label: 'Chat page', href: '/chatbot' }],
+    note: 'Published answers join the assistant’s knowledge the next time the index is rebuilt (Chatbot overview → Rebuild knowledge).',
   },
   {
     key: 'policies',

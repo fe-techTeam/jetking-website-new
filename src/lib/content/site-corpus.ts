@@ -424,10 +424,16 @@ async function partnerItems(): Promise<CorpusItem[]> {
   return out;
 }
 
+/** Question-and-answer pairs editors wrote under Chatbot → Custom answers. */
+async function knowledgeItems(): Promise<CorpusItem[]> {
+  const entries = await content.listChatbotKnowledge();
+  return entries.map((e) => item(`custom-${slugify(e.id)}`, 'info', e.question, e.link || '/', noAbbrevDots(e.answer)));
+}
+
 /* ── Entry point ───────────────────────────────────────────────────────── */
 
 export async function buildSiteCorpusItems(counts: { courses: number; centres: number; cities: number }): Promise<CorpusItem[]> {
-  const [about, placements, franchise, professional, parent, student, explore, legalDocs, investors, contact, partners] = await Promise.all([
+  const [about, placements, franchise, professional, parent, student, explore, legalDocs, investors, contact, partners, custom] = await Promise.all([
     aboutItems(counts),
     placementItems(),
     franchiseItems(),
@@ -439,6 +445,7 @@ export async function buildSiteCorpusItems(counts: { courses: number; centres: n
     investorsItems(),
     contactItems(),
     partnerItems(),
+    knowledgeItems(),
   ]);
-  return [...about, ...placements, ...franchise, ...professional, ...parent, ...student, ...explore, ...legalDocs.flatMap(legalItems), ...investors, ...contact, ...partners];
+  return [...about, ...placements, ...franchise, ...professional, ...parent, ...student, ...explore, ...legalDocs.flatMap(legalItems), ...investors, ...contact, ...partners, ...custom];
 }

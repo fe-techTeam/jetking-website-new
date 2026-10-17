@@ -16,14 +16,20 @@ export async function AdminCollectionPage({
 }: {
   collection: CmsCollection;
   /** `?open=<id>` opens that record first (used by the admin search). */
-  searchParams?: Promise<{ open?: string }>;
+  searchParams?: Promise<{ open?: string; question?: string }>;
 }) {
   const meta = collectionByKey(collection);
   if (meta.hidden) notFound();
   await requireRole(meta.roles ?? ['admin', 'editor']);
   const hidden = new Set(meta.hiddenRecordIds ?? []);
   const items = (await getAdminCollection(collection)).filter((r) => !hidden.has(String((r as unknown as Record<string, unknown>)[meta.idKey])));
-  const open = (await searchParams)?.open;
+  const sp = await searchParams;
+  const open = sp?.open;
+  // `?question=` (from Unanswered questions) opens a new Custom answer with the question filled in.
+  const prefill =
+    collection === 'chatbot_knowledge' && sp?.question
+      ? { id: sp.question.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60), question: sp.question.slice(0, 300), status: 'draft' }
+      : undefined;
   const [courses, centres, cities] = await Promise.all([listCollection('courses'), listCollection('centres'), listCollection('cities')]);
   const relations = {
     courses: courses.map((c) => ({ value: c.slug, label: c.title })),
@@ -43,6 +49,7 @@ export async function AdminCollectionPage({
       note={meta.note}
       mode={meta.mode}
       openId={open}
+      prefill={prefill}
       relations={relations}
       viewPath={meta.viewPath}
     />

@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 import type { FeatureExtractionPipeline } from '@xenova/transformers';
@@ -179,6 +179,9 @@ interface Store {
 }
 
 let store: Store | null = null;
+/** Which index file `store` was built from and when it last changed — a rebuild from the admin is picked up without a restart. */
+let storeFile: { path: string; mtimeMs: number; checkedAt: number } | null = null;
+const RELOAD_CHECK_MS = 5_000;
 /**
  * Locates and reads the embedding index.
  *
@@ -188,7 +191,7 @@ let store: Store | null = null;
  * with the paths that were actually attempted, turns a silent "no answers"
  * into something diagnosable from a log line.
  */
-function readIndexFile(): string {
+function readIndexFile(): { raw: string; path: string } {
   const relative = path.join('src', 'content', 'jetking-embeddings.json');
   const candidates = [
     ...(serverEnv.indexPath ? [serverEnv.indexPath] : []),
@@ -199,7 +202,7 @@ function readIndexFile(): string {
 
   for (const candidate of candidates) {
     try {
-      return readFileSync(candidate, 'utf8');
+      return { raw: readFileSync(candidate, 'utf8'), path: candidate };
     } catch {
       // Try the next location.
     }
@@ -213,9 +216,19 @@ function readIndexFile(): string {
 }
 
 function getStore(): Store {
+  if (store && storeFile && Date.now() - storeFile.checkedAt > RELOAD_CHECK_MS) {
+    storeFile.checkedAt = Date.now();
+    try {
+      if (statSync(storeFile.path).mtimeMs !== storeFile.mtimeMs) store = null;
+    } catch {
+      // Keep serving the loaded index if the file cannot be stat'ed for a moment (a rebuild is writing it).
+    }
+  }
   if (store) return store;
 
-  const raw = JSON.parse(readIndexFile()) as {
+  const file = readIndexFile();
+  storeFile = { path: file.path, mtimeMs: statSync(file.path).mtimeMs, checkedAt: Date.now() };
+  const raw = JSON.parse(file.raw) as {
     dim: number;
     items: IndexItem[];
     vectors: string;

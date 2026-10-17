@@ -372,6 +372,32 @@ export interface SeoSettings {
   organization: { description: string; logo: string; phone: string; sameAs: string[] };
 }
 
+/** How the Jetking AI assistant presents itself and what it says when it cannot answer — one document (id `chatbot`). */
+export interface ChatbotSettings {
+  id: 'chatbot';
+  /** Off: the chat page shows `disabledMessage` and the API refuses new questions. */
+  enabled: boolean;
+  disabledMessage: string;
+  name: string;
+  welcomeMessage: string;
+  welcomeChips: { label: string; query: string }[];
+  inputPlaceholder: string;
+  /** Said when nothing in the website content answers the question. */
+  noMatchReply: string;
+  /** Said for questions that are not about Jetking. */
+  offTopicReply: string;
+}
+
+/** A question and answer an editor wrote for the assistant. It is indexed with the rest of the website content. */
+export interface ChatbotKnowledge {
+  id: string;
+  question: string;
+  answer: string;
+  /** Page the answer is attributed to in citations (a path like /courses). Empty = the home page. */
+  link: string;
+  tags: string[];
+}
+
 export interface Faq {
   id: string;
   /** @grounded */
@@ -749,6 +775,10 @@ export interface ContentSource {
   listAnnouncements(): Promise<Announcement[]>;
   /** Site-wide SEO controls; the in-repo defaults when none is published. */
   getSeoSettings(): Promise<SeoSettings>;
+  /** Assistant settings; the in-repo defaults when none is published. */
+  getChatbotSettings(): Promise<ChatbotSettings>;
+  /** Published Q&A entries written for the assistant. */
+  listChatbotKnowledge(): Promise<ChatbotKnowledge[]>;
 
   /** Returns verified signals only. Unverified claims never reach a template. */
   listTrustSignals(): Promise<TrustSignal[]>;

@@ -43,7 +43,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { JetkingShield } from '@/components/brand/jetking-shield';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -851,7 +851,21 @@ function RightSidebar({ onIntent, onQuery }: Omit<SidebarProps, 'activeKey'>) {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-export function JetkingAiClient() {
+/** What an editor controls from the admin (Chatbot → Assistant settings). Absent = the built-in wording. */
+export interface ChatbotUiConfig {
+  welcomeMessage: string;
+  welcomeChips: { label: string; query: string }[];
+  inputPlaceholder: string;
+}
+
+export function JetkingAiClient({ config }: { config?: ChatbotUiConfig }) {
+  const welcome = useMemo(
+    () =>
+      config
+        ? { message: config.welcomeMessage, chips: config.welcomeChips.map((c) => ({ label: c.label, query: c.query })) as Chip[] }
+        : STARTERS.welcome,
+    [config],
+  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [draft, setDraft] = useState('');
@@ -912,8 +926,8 @@ export function JetkingAiClient() {
       id: 'm0',
       role: 'assistant',
       kind: 'text',
-      text: STARTERS.welcome.message,
-      chips: STARTERS.welcome.chips,
+      text: welcome.message,
+      chips: welcome.chips,
     },
   ]);
 
@@ -984,8 +998,8 @@ export function JetkingAiClient() {
         id: nextId(),
         role: 'assistant',
         kind: 'text',
-        text: STARTERS.welcome.message,
-        chips: STARTERS.welcome.chips,
+        text: welcome.message,
+        chips: welcome.chips,
       },
     ]);
   }, []);
@@ -1114,7 +1128,7 @@ export function JetkingAiClient() {
       return;
     }
     awaitingCityRef.current = key === 'locations';
-    const starter = STARTERS[key];
+    const starter = key === 'welcome' ? welcome : STARTERS[key];
     setMessages((m) => [
       ...m,
       {
@@ -1493,7 +1507,7 @@ export function JetkingAiClient() {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 aria-label="Ask Jetking AI"
-                placeholder="Ask Jetking AI… English or Hinglish"
+                placeholder={config?.inputPlaceholder || "Ask Jetking AI… English or Hinglish"}
                 className="h-10 min-w-0 flex-1 bg-transparent text-[12px] text-ink min-[360px]:h-11 outline-none placeholder:text-[12px] placeholder:text-ink-subtle min-[360px]:text-[13px] min-[360px]:placeholder:text-[12px] sm:text-[14.5px] sm:placeholder:text-[14.5px]"
                 disabled={busy}
               />

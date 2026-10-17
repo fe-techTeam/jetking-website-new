@@ -5,6 +5,7 @@ import type {
   ContentSource,
   Announcement,
   SeoSettings,
+  ChatbotKnowledge,
   Course,
   Faculty,
   Faq,
@@ -18,6 +19,7 @@ import type {
   TrustSignal,
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
+import { chatbotSettingsDefaults } from '../fixtures/chatbot';
 import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import { legalDefaults } from '../fixtures/legal';
 import { logoListFallback } from '../fixtures/logo-lists';
@@ -84,6 +86,15 @@ export const adminSource: ContentSource = {
 
   async listFaqs() {
     return published(await listCollection('faqs', { publishedOnly: true })) as Faq[];
+  },
+
+  async getChatbotSettings() {
+    const [record] = await listCollection('chatbot_settings', { publishedOnly: true });
+    return record ? { ...chatbotSettingsDefaults, ...published([record])[0]! } : chatbotSettingsDefaults;
+  },
+
+  async listChatbotKnowledge() {
+    return published(await listCollection('chatbot_knowledge', { publishedOnly: true })) as ChatbotKnowledge[];
   },
 
   async getSeoSettings() {

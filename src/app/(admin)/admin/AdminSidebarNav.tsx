@@ -34,6 +34,7 @@ import {
   Boxes,
   Inbox,
   Search,
+  Bot,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
@@ -71,6 +72,7 @@ const ICONS: Record<string, LucideIcon> = {
   Boxes,
   Inbox,
   Search,
+  Bot,
 };
 
 export function AdminSidebarNav({

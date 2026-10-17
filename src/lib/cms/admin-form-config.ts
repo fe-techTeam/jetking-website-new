@@ -565,6 +565,34 @@ const seo_settings: AdminFormConfig = {
   ],
 };
 
+const chatbot_settings: AdminFormConfig = {
+  requiredFields: ['name', 'welcomeMessage', 'noMatchReply', 'offTopicReply'],
+  blank: () => ({
+    id: 'chatbot',
+    enabled: true,
+    disabledMessage: '',
+    name: 'Jetking AI',
+    welcomeMessage: '',
+    welcomeChips: [],
+    inputPlaceholder: '',
+    noMatchReply: '',
+    offTopicReply: '',
+    status: 'published',
+  }),
+  itemTemplates: { welcomeChips: { label: '', query: '' } },
+  lockedFields: ['id'],
+  sections: [
+    { title: 'Availability', fields: ['enabled', 'disabledMessage'] },
+    { title: 'Greeting', fields: ['name', 'welcomeMessage', 'welcomeChips', 'inputPlaceholder'] },
+    { title: 'When it cannot answer', fields: ['noMatchReply', 'offTopicReply'] },
+  ],
+};
+
+const chatbot_knowledge: AdminFormConfig = {
+  requiredFields: ['id', 'question', 'answer'],
+  blank: () => ({ id: '', question: '', answer: '', link: '', tags: [], status: 'draft' }),
+};
+
 export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   courses,
   cities,
@@ -585,4 +613,6 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   page_copy,
   announcements,
   seo_settings,
+  chatbot_settings,
+  chatbot_knowledge,
 };

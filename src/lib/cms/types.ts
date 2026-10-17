@@ -19,4 +19,6 @@ export type CmsCollection =
   | 'logo_lists'
   | 'page_copy'
   | 'announcements'
-  | 'seo_settings';
+  | 'seo_settings'
+  | 'chatbot_settings'
+  | 'chatbot_knowledge';

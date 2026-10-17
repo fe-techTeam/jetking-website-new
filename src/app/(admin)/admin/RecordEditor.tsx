@@ -68,6 +68,7 @@ export function RecordEditor({
   openId,
   viewPath,
   relations,
+  prefill,
 }: {
   collection: CmsCollection;
   idKey: string;
@@ -90,6 +91,8 @@ export function RecordEditor({
   viewPath?: string;
   /** Options for fields that point at other records. */
   relations?: Relations;
+  /** Opens a new record with these values already filled in (e.g. a visitor's unanswered question). */
+  prefill?: Record<string, unknown>;
 }) {
   // Looked up here rather than passed as a prop: a Server Component page can't
   // hand a Client Component a config object whose `blank` field is a function —
@@ -100,15 +103,15 @@ export function RecordEditor({
     (openId
       ? initialRecords.find((r) => String(r[idKey]) === openId)
       : undefined) ?? initialRecords[0];
-  const firstDraft = { ...config.blank(), ...(firstRecord ?? {}) };
+  const firstDraft = prefill ? { ...config.blank(), ...prefill } : { ...config.blank(), ...(firstRecord ?? {}) };
 
   const [items, setItems] = useState<Rec[]>(initialRecords);
   const [draft, setDraft] = useState<Rec>(firstDraft);
   const [savedSnapshot, setSavedSnapshot] = useState(() =>
-    JSON.stringify(firstDraft),
+    prefill ? "" : JSON.stringify(firstDraft),
   );
   const [originalId, setOriginalId] = useState<string | undefined>(
-    firstRecord ? String(firstRecord[idKey]) : undefined,
+    firstRecord && !prefill ? String(firstRecord[idKey]) : undefined,
   );
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -124,7 +127,7 @@ export function RecordEditor({
   const [pageIndex, setPageIndex] = useState(0);
   /** A collection opens on its list; a record (or a singleton's one document) opens on its own page. */
   const [view, setView] = useState<"list" | "edit">(
-    mode === "singleton" || openId ? "edit" : "list",
+    mode === "singleton" || openId || prefill ? "edit" : "list",
   );
   const singular = title.replace(/s$/, "").replace(/ies$/, "y").toLowerCase();
   /** Anything that changes the live website waits for an explicit yes. */

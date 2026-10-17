@@ -511,6 +511,26 @@ const seoSettingsSchema = withStatus({
   }),
 });
 
+const chatbotSettingsSchema = withStatus({
+  id: z.literal('chatbot'),
+  enabled: z.boolean(),
+  disabledMessage: z.string(),
+  name: z.string().min(1),
+  welcomeMessage: z.string().min(1),
+  welcomeChips: z.array(z.object({ label: z.string().min(1), query: z.string().min(1) })),
+  inputPlaceholder: z.string(),
+  noMatchReply: z.string().min(1),
+  offTopicReply: z.string().min(1),
+});
+
+const chatbotKnowledgeSchema = withStatus({
+  id: z.string().min(1),
+  question: z.string().min(1),
+  answer: z.string().min(1),
+  link: z.string(),
+  tags: z.array(z.string()),
+});
+
 const CMS_COLLECTION_SCHEMAS = {
   courses: courseSchema,
   cities: citySchema,
@@ -531,6 +551,8 @@ const CMS_COLLECTION_SCHEMAS = {
   page_copy: pageCopySchema,
   announcements: announcementSchema,
   seo_settings: seoSettingsSchema,
+  chatbot_settings: chatbotSettingsSchema,
+  chatbot_knowledge: chatbotKnowledgeSchema,
 } satisfies Record<CmsCollection, z.ZodTypeAny>;
 
 /** Runtime allowlist for `collection` — a compile-time-only `CmsCollection` union

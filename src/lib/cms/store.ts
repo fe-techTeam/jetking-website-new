@@ -5,6 +5,8 @@ import type {
   AboutPageContent,
   Announcement,
   SeoSettings,
+  ChatbotSettings,
+  ChatbotKnowledge,
   Centre,
   City,
   Course,
@@ -35,6 +37,7 @@ import {
   placements as seedPlacements,
   policies as seedPolicies,
 } from '@/lib/content/fixtures/kb';
+import { chatbotSettingsDefaults } from '@/lib/content/fixtures/chatbot';
 import { seoSettingsDefaults } from '@/lib/content/fixtures/seo-settings';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
@@ -84,6 +87,8 @@ export interface CmsStore {
   page_copy: WithStatus<PageCopyRecord>[];
   announcements: WithStatus<Announcement>[];
   seo_settings: WithStatus<SeoSettings>[];
+  chatbot_settings: WithStatus<ChatbotSettings>[];
+  chatbot_knowledge: WithStatus<ChatbotKnowledge>[];
 }
 
 const STORE_PATH = path.join(process.cwd(), 'data', 'cms', 'store.json');
@@ -113,6 +118,8 @@ function seedStore(): CmsStore {
     // No overrides until an editor changes something: every page starts on its shipped text.
     page_copy: [],
     seo_settings: published([seoSettingsDefaults]),
+    chatbot_settings: published([chatbotSettingsDefaults]),
+    chatbot_knowledge: [],
     // One disabled example so the editor has something to copy; nothing shows on the site until published.
     announcements: [
       {

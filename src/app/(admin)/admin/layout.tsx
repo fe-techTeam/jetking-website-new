@@ -55,11 +55,20 @@ const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
     tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
   }),
 );
+/** The assistant's own screens, listed at the top of the Chatbot group. */
+const CHATBOT_TOOLS: NavItem[] = [
+  { href: '/admin/chatbot' as Route, label: 'Chatbot overview', icon: 'Bot', group: GROUP.guide, roles: ['admin', 'editor'] },
+  { href: '/admin/chatbot-questions' as Route, label: 'Unanswered questions', icon: 'Inbox', group: GROUP.guide, roles: ['admin', 'editor'] },
+];
+
 const lastWebsite = COLLECTION_NAV.map((i) => i.group).lastIndexOf(GROUP.website);
+const firstGuide = COLLECTION_NAV.findIndex((i) => i.group === GROUP.guide);
 const CONTENT_NAV: NavItem[] = [
   ...COLLECTION_NAV.slice(0, lastWebsite + 1),
   ...WEBSITE_TOOLS,
-  ...COLLECTION_NAV.slice(lastWebsite + 1),
+  ...COLLECTION_NAV.slice(lastWebsite + 1, firstGuide),
+  ...CHATBOT_TOOLS,
+  ...COLLECTION_NAV.slice(firstGuide),
 ];
 
 const NAV: NavItem[] = [

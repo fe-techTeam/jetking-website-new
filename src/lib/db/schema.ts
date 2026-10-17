@@ -308,3 +308,23 @@ export const redirects = pgTable(
 );
 
 export type RedirectRow = typeof redirects.$inferSelect;
+
+/**
+ * Questions the assistant could not answer from website content — one row per ask. The panel groups them
+ * ("asked 14 times") so an editor can write a Custom answer or fix the page the answer should have come from.
+ */
+export const chatbotUnanswered = pgTable(
+  'chatbot_unanswered',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    question: text('question').notNull(),
+    intent: text('intent').notNull().default(''),
+    reason: text('reason').notNull(), // 'low-confidence' | 'no-centre-match'
+    topScore: doublePrecision('top_score'),
+    /** Set when an editor dismissed it or answered it with a Custom answer. */
+    resolved: boolean('resolved').notNull().default(false),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('chatbot_unanswered_created_idx').on(table.createdAt), index('chatbot_unanswered_resolved_idx').on(table.resolved)],
+);
+export type ChatbotUnanswered = typeof chatbotUnanswered.$inferSelect;
