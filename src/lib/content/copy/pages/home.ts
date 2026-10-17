@@ -21,10 +21,11 @@ export const homeCopy = definePageCopy({
     // ── Hero ──────────────────────────────────────────────────────────────
     'hero.image': '/home/hero-student.jpg',
     'hero.eyebrow': 'India’s No.1 Technology Training Institute',
-    'hero.title.line1': 'Learn Today.',
-    'hero.title.line2': 'Lead Tomorrow.',
-    'hero.sub.line1': 'Empowering you with future-ready digital skills',
-    'hero.sub.line2': 'to build a successful career.',
+    'hero.title.line1': 'The Power of Three',
+    'hero.title.line2': 'with',
+    'hero.title.accent': 'Jetking',
+    'hero.sub.line1': 'Industry-relevant training. Real-world projects.',
+    'hero.sub.line2': 'Placement support that delivers.',
     'hero.placed.detail': 'Explore more at {centres} centres in {cities} cities',
     'hero.cta.label': 'Explore Courses',
     'hero.cta.href': '/courses',
@@ -35,6 +36,11 @@ export const homeCopy = definePageCopy({
     'hero.pillar1': 'Industry aligned courses in‑demand skills',
     'hero.pillar2': 'Work on real projects in our Adv Labs',
     'hero.pillar3': 'Placement support that delivers',
+
+    // ── Placement band (solid red, straight after the banner) ─────────────
+    // `{placed}` is the learners-placed figure from the placements content, so the number is edited in one place.
+    'placementBand.line1': '{placed} placements in 2025,',
+    'placementBand.line2': 'You could be next',
 
     // ── Logo marquee ──────────────────────────────────────────────────────
     'marquee.eyebrow': 'Trusted by industry',

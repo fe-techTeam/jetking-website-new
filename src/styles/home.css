@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════════════════
    HOMEPAGE LEAD SKIN — "FUTURE-READY"
    Dark canvas, Jetking red highlights, hexagon chooser,
-   action bar, floating ActionRail. Shared by the live homepage (HomeV2) and
+   action bar, floating ActionRail. Shared by the live homepage (HomeHero) and
    the Professional persona page, which reuses the same `.home-v2` language.
 
    Why this file exists rather than new tokens in globals.css: this design

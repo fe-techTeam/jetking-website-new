@@ -101,7 +101,7 @@ export function ParentLanding({
         'student-page relative flex flex-col overflow-hidden',
         /* Bleed the page's own gradient background up behind the sticky,
            transparent header instead of stopping in a hard line at its
-           bottom edge — see the matching fix in home/v2/HomeV2.tsx. Offsets
+           bottom edge — see the matching fix in home/hero/HomeHero.tsx. Offsets
            must match SiteHeader's height breakpoints (72/80/88/96). */
         '-mt-[72px] pt-[72px]',
         'xs:-mt-[80px] xs:pt-[80px]',

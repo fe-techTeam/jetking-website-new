@@ -19,9 +19,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 /**
  * Footer-specific chrome gate — same admin/chatbot exclusion as SiteChrome.
  *
- * `/` used to be excluded too: the homepage was a full-viewport hero (see HomeV2)
+ * `/` used to be excluded too: the homepage was a full-viewport hero (see HomeHero)
  * designed to end at the fold. It now continues into a full section stack
- * (`HomeSections`, `v3/`) below that hero, so it hands off into the footer like
+ * (`HomeSections`, `sections/`) below that hero, so it hands off into the footer like
  * every other route.
  */
 export function FooterChrome({ children }: { children: ReactNode }) {

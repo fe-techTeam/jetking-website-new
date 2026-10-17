@@ -4,8 +4,9 @@ import { siteConfig } from '@/lib/site';
 import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { content } from '@/lib/content';
 import { loadHomeData } from '@/components/home/data';
-import { HomeV2 } from '@/components/home/v2/HomeV2';
-import { HomeSections } from '@/components/home/v3/HomeSections';
+import { HomeHero } from '@/components/home/hero/HomeHero';
+import { HomeSections } from '@/components/home/sections/HomeSections';
+import { PlacementBand } from '@/components/home/sections/PlacementBand';
 import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
 import { homeCopy } from '@/lib/content/copy/pages/home';
@@ -24,8 +25,8 @@ export async function generateMetadata() {
 /**
  * The homepage.
  *
- * `HomeV2` (v2/) is the hero lead: headline, persona chooser, action bar and quick-action
- * rail. `HomeSections` (v3/) is everything below it, ending in the site's normal footer
+ * `HomeHero` (hero/) is the hero lead: headline, persona chooser, action bar and quick-action
+ * rail. `HomeSections` (sections/) is everything below it, ending in the site's normal footer
  * (see `FooterChrome`).
  */
 export default async function HomePage() {
@@ -41,13 +42,14 @@ export default async function HomePage() {
     <>
       <ScrollDepthTracker />
       <div className="relative overflow-hidden [transform:translateZ(0)]">
-        <HomeV2
+        <HomeHero
           enquiryCentres={enquiryCentres}
           counts={data.counts}
           placed={data.placements.stats.learnersPlaced}
           copy={copy}
         />
       </div>
+      <PlacementBand copy={copy} placed={data.placements.stats.learnersPlaced} />
       <HomeSections data={data} enquiryCentres={enquiryCentres} copy={copy} />
     </>
   );

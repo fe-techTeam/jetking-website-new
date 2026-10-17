@@ -177,7 +177,7 @@ export const coursesCopy = definePageCopy({
     // ── Course page: the Jetking centre advantage and centre picker ─────
     'courseCentres.kicker': 'The Jetking centre advantage',
     'courseCentres.degreeTitle': 'A mini campus near your home',
-    'courseCentres.programmeKicker': 'Optional support at a Jetking centre',
+    'courseCentres.programmeKicker': 'Support at a Jetking centre',
     'courseCentres.programmeTitle': 'Labs, master sessions and certification near you',
     'courseCentres.programmeNote': 'Your degree is awarded by the university. Jetking centres offer labs, master sessions and certification as additional support services; they are not a mandatory part of the degree.',
     'courseCentres.shortTitle': 'Your learning journey, with a mini campus near your home',
