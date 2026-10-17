@@ -416,8 +416,27 @@ See `.env.example` for the full annotated list.
 
 ---
 
+## CMS platform (Postgres-backed)
+
+With `DATABASE_URL` set, **every** collection is stored in Postgres (`cms_records`, one jsonb row per
+record; cities/centres keep their own tables) and seeded once per collection from the in-repo defaults.
+Without it the panel falls back to `data/cms/store.json`. Migrations: `npm run db:migrate`.
+
+| Feature | Where |
+| --- | --- |
+| Version history, "Load into editor", Deleted records (restore), Duplicate, one-click Publish/Unpublish | every collection editor (`cms_revisions`) |
+| Media library — validated uploads (PNG/JPG/WebP/GIF/AVIF/PDF, 6 MB) served from `/media/{id}.{ext}`; "Choose image" on image fields and Page text | `/admin/media` |
+| Logos & partners (home, explore, professional marquees) | `/admin/logo-lists` |
+| Investors page (company, contacts, KMP, disclosure documents) — admin only | `/admin/investors-page` |
+| Announcement bar with schedule window, tone, dismissible | `/admin/announcements` |
+| Redirects (301/302 looked up in the proxy, ~30 s to take effect, bulk import, loop check) | `/admin/redirects` |
+| Content search across all collections; `?open=<id>` deep links | `/admin/search` |
+| Dashboard recent edits and open drafts | `/admin` |
+| My account (change own password); audit log filters + pagination | `/admin/account`, `/admin/audit` |
+
+Local dev DB used while building this: `postgres://jetking@localhost:5433/jetking_cms` (start with
+`LC_ALL=en_US.UTF-8 pg_ctl -D ~/.jetking-pg -o "-p 5433 -k /tmp" start`).
+
 ## Known gaps
 
-- No self-service password change or "forgot password" flow — password resets are admin-only,
-  by design, for a small internal staff tool.
-- Audit log has no filtering/search UI yet — it's a plain, newest-first read-only list for now.
+- No "forgot password" email flow — admins reset passwords; signed-in users can change their own at `/admin/account`.
