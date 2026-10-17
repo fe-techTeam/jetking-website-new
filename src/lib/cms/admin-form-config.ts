@@ -34,6 +34,8 @@ export interface AdminFormConfig {
   paragraphFields?: string[];
   /** Top-level fields not shown at all — a singleton's fixed `id` means nothing to an editor. */
   hiddenFields?: string[];
+  /** Fields the site cannot render without — marked * and checked before saving. */
+  requiredFields?: string[];
   /** Top-level fields shown read-only — identity keys that must not be renamed (a singleton's `id`). */
   lockedFields?: string[];
 }
@@ -45,6 +47,7 @@ const personaRelevanceBlank = () => ({ student: 0, professional: 0, parent: 0, f
 const today = () => new Date().toISOString().slice(0, 10);
 
 const courses: AdminFormConfig = {
+  requiredFields: ['slug', 'title', 'shortTitle', 'duration', 'eligibility', 'summary'],
   blank: () => ({
     slug: '',
     title: '',
@@ -118,6 +121,7 @@ const courses: AdminFormConfig = {
 };
 
 const cities: AdminFormConfig = {
+  requiredFields: ['slug', 'name', 'state', 'intro'],
   blank: () => ({
     slug: '',
     name: '',
@@ -130,6 +134,7 @@ const cities: AdminFormConfig = {
 };
 
 const centres: AdminFormConfig = {
+  requiredFields: ['slug', 'name', 'citySlug', 'addressLine', 'locality', 'state', 'pincode'],
   blank: () => ({
     slug: '',
     name: '',
@@ -199,6 +204,7 @@ const centres: AdminFormConfig = {
 };
 
 const posts: AdminFormConfig = {
+  requiredFields: ['slug', 'title', 'excerpt', 'author', 'publishedAt'],
   blank: () => ({
     slug: '',
     title: '',
@@ -233,6 +239,7 @@ const posts: AdminFormConfig = {
 };
 
 const faqs: AdminFormConfig = {
+  requiredFields: ['id', 'question', 'answer'],
   blank: () => ({
     id: '',
     question: '',
@@ -502,6 +509,7 @@ const page_copy: AdminFormConfig = {
 };
 
 const announcements: AdminFormConfig = {
+  requiredFields: ['id', 'message'],
   blank: () => ({
     id: '',
     message: '',

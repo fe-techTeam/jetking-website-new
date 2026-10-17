@@ -1,5 +1,5 @@
 import { AdminCollectionPage } from '../AdminCollectionPage';
 
-export default function AdminAnnouncementsPage() {
-  return <AdminCollectionPage collection="announcements" />;
+export default function AdminAnnouncementsPage({ searchParams }: { searchParams: Promise<{ open?: string }> }) {
+  return <AdminCollectionPage collection="announcements" searchParams={searchParams} />;
 }

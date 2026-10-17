@@ -7,6 +7,8 @@ import { ParagraphListEditor } from './ParagraphListEditor';
 import { LegalBlocksEditor } from './LegalBlocksEditor';
 import type { LegalBlock } from '@/lib/content/types';
 import { MediaPickerButton } from './MediaPicker';
+import { AutoTextarea, MultiRelation, RelationsContext, SpecialField, fieldKind } from './FieldInputs';
+import { useContext } from 'react';
 
 /** String fields that hold an image path/URL get a preview and a "Choose image" button. */
 const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|banner|poster)(url|src|path)?$|^ogImage$|^file$/i;
@@ -22,6 +24,15 @@ const LABEL_OVERRIDES: Record<string, string> = {
   recruitersDisclaimer: 'Recruiters note',
   videoId: 'Video ID',
   sourceUrl: 'Original page URL',
+  citySlug: 'City',
+  coursesOffered: 'Courses offered',
+  relatedCourseSlugs: 'Related courses',
+  centreSlugs: 'Centres',
+  addressLine: 'Address',
+  personaRelevance: 'Relevance by audience',
+  startsAt: 'Starts',
+  endsAt: 'Ends',
+  legacyPath: 'Old URL (legacy)',
 };
 
 export function humanize(key: string): string {
@@ -98,6 +109,7 @@ function ObjectListEditor({
           <ObjectFields
             value={{ ...itemTemplate, ...item }}
             config={config}
+            path={`${fieldKey}[]`}
             depth={depth + 1}
             onChange={(next) => {
               const copy = [...value];
@@ -126,11 +138,13 @@ function ObjectFields({
   config,
   depth,
   onChange,
+  path,
 }: {
   value: Record<string, unknown>;
   config: AdminFormConfig;
   depth: number;
   onChange: (next: Record<string, unknown>) => void;
+  path: string;
 }) {
   return (
     <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">
@@ -148,7 +162,9 @@ function ObjectFields({
               fieldKey={key}
               config={config}
               depth={depth}
-              asImage={key === 'url' && 'alt' in value}
+              path={path ? `${path}.${key}` : key}
+              context={value}
+              asImage={(key === 'url' && ('alt' in value || 'caption' in value)) || (path === 'experiencePhotos')}
               onChange={(next) => onChange({ ...value, [key]: next })}
             />
           </div>
@@ -165,6 +181,8 @@ export function ValueEditor({
   config,
   depth = 0,
   asImage = false,
+  path = '',
+  context,
 }: {
   value: unknown;
   fieldKey: string;
@@ -173,7 +191,12 @@ export function ValueEditor({
   depth?: number;
   /** Forces the image treatment — for a bare `url` that sits beside an `alt` (an image reference). */
   asImage?: boolean;
+  /** Dotted position in the record (`seo.title`, `personaRelevance.student`) — what lets a field's meaning depend on where it sits. */
+  path?: string;
+  /** The object this field belongs to, for fields that react to a sibling (a slug follows its title). */
+  context?: Record<string, unknown>;
 }) {
+  const relations = useContext(RelationsContext);
   const select = config.selectFields?.[fieldKey];
   if (select) {
     return (
@@ -202,6 +225,21 @@ export function ValueEditor({
     );
   }
 
+  const kind = fieldKind(fieldKey, path || fieldKey, value);
+  if ((typeof value === 'string' || value === null || value === undefined) && kind !== 'text' && kind !== 'seo-title' && kind !== 'seo-description' && !asImage) {
+    return <SpecialField kind={kind} value={typeof value === 'string' ? value : ''} onChange={onChange as (v: string) => void} context={context} />;
+  }
+  if (typeof value === 'number' && (kind === 'score' || kind === 'geo')) {
+    return <SpecialField kind={kind} value={String(value)} onChange={(v) => onChange(v === '' ? 0 : Number(v))} />;
+  }
+  if (typeof value === 'string' && (kind === 'seo-title' || kind === 'seo-description')) {
+    return kind === 'seo-title' ? (
+      <AutoTextarea value={value} onChange={onChange as (v: string) => void} minRows={1} min={20} max={60} />
+    ) : (
+      <AutoTextarea value={value} onChange={onChange as (v: string) => void} minRows={2} min={70} max={160} />
+    );
+  }
+
   if (typeof value === 'string' && (asImage || IMAGE_FIELDS.test(fieldKey))) {
     return (
       <div className="flex items-start gap-3">
@@ -217,14 +255,7 @@ export function ValueEditor({
 
   if (typeof value === 'string') {
     if (LONG_TEXT_FIELDS.test(fieldKey) || value.length > 80) {
-      return (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={3}
-          className="admin-input resize-y"
-        />
-      );
+      return <AutoTextarea value={value} onChange={onChange as (v: string) => void} minRows={3} />;
     }
     return <input value={value} onChange={(e) => onChange(e.target.value)} className="admin-input" />;
   }
@@ -242,15 +273,18 @@ export function ValueEditor({
 
   if (typeof value === 'boolean') {
     return (
-      <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm font-medium text-foreground-secondary">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => onChange(e.target.checked)}
-          className="h-5 w-5 cursor-pointer rounded border-border-medium accent-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/25"
-        />
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium text-foreground-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+      >
+        <span aria-hidden="true" className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${value ? 'bg-growth-600' : 'bg-border-medium'}`}>
+          <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform ${value ? 'translate-x-6' : 'translate-x-1'}`} />
+        </span>
         {value ? 'Yes' : 'No'}
-      </label>
+      </button>
     );
   }
 
@@ -263,6 +297,17 @@ export function ValueEditor({
     }
     if (config.paragraphFields?.includes(fieldKey)) {
       return <ParagraphListEditor value={value as string[]} onChange={onChange as (next: string[]) => void} />;
+    }
+    const arrKind = fieldKind(fieldKey, path || fieldKey, value);
+    if (arrKind === 'course-multi' || arrKind === 'centre-multi') {
+      return (
+        <MultiRelation
+          value={value as string[]}
+          onChange={onChange as (v: string[]) => void}
+          options={arrKind === 'course-multi' ? relations.courses : relations.centres}
+          noun={arrKind === 'course-multi' ? 'course' : 'centre'}
+        />
+      );
     }
     const itemTemplate = config.itemTemplates?.[fieldKey];
     if (itemTemplate) {
@@ -291,6 +336,7 @@ export function ValueEditor({
         value={value as Record<string, unknown>}
         config={config}
         depth={depth + 1}
+        path={path || fieldKey}
         onChange={onChange as (next: Record<string, unknown>) => void}
       />
     );

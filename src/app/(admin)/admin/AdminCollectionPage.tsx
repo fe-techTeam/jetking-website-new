@@ -1,6 +1,7 @@
 import type { CmsCollection } from '@/lib/cms/types';
 import { getAdminCollection, requireRole } from './actions';
 import { RecordEditor } from './RecordEditor';
+import { listCollection } from '@/lib/cms/store';
 import { collectionByKey } from './registry';
 
 /**
@@ -21,6 +22,12 @@ export async function AdminCollectionPage({
   const hidden = new Set(meta.hiddenRecordIds ?? []);
   const items = (await getAdminCollection(collection)).filter((r) => !hidden.has(String((r as unknown as Record<string, unknown>)[meta.idKey])));
   const open = (await searchParams)?.open;
+  const [courses, centres, cities] = await Promise.all([listCollection('courses'), listCollection('centres'), listCollection('cities')]);
+  const relations = {
+    courses: courses.map((c) => ({ value: c.slug, label: c.title })),
+    centres: centres.map((c) => ({ value: c.slug, label: c.name })),
+    cities: cities.map((c) => ({ value: c.slug, label: c.name })),
+  };
 
   return (
     <RecordEditor
@@ -34,6 +41,7 @@ export async function AdminCollectionPage({
       note={meta.note}
       mode={meta.mode}
       openId={open}
+      relations={relations}
       viewPath={meta.viewPath}
     />
   );
