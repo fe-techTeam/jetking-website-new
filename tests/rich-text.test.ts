@@ -45,3 +45,25 @@ describe('rich article HTML', () => {
     expect(htmlToBlocks(blocksToHtml(blocks))).toEqual(blocks);
   });
 });
+
+import { isRichHtml, plainText, plainToHtml, stripRichTags } from '@/lib/rich/text';
+
+describe('fields that are plain text or rich HTML', () => {
+  it('treats existing plain values as plain', () => {
+    expect(isRichHtml('You need 10+2 in any stream.')).toBe(false);
+    expect(isRichHtml('2 < 3 and 5 > 4')).toBe(false);
+    expect(plainText('Plain answer')).toBe('Plain answer');
+  });
+  it('recognises editor HTML and reads it as plain text', () => {
+    const html = '<p>You need <strong>10+2</strong>.</p><ul><li><p>One</p></li><li><p>Two &amp; three</p></li></ul>';
+    expect(isRichHtml(html)).toBe(true);
+    expect(plainText(html)).toBe('You need 10+2. One Two & three');
+  });
+  it('turns plain paragraphs into editor HTML, escaping markup', () => {
+    expect(plainToHtml('First\n\nSecond <b>x</b>')).toBe('<p>First</p><p>Second &lt;b&gt;x&lt;/b&gt;</p>');
+  });
+  it('strips tags from a passage that merely contains rich fields', () => {
+    expect(stripRichTags('Question: Q Answer: <p>A <strong>b</strong></p>')).toBe('Question: Q Answer: A b');
+    expect(stripRichTags('no tags here')).toBe('no tags here');
+  });
+});

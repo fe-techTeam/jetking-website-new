@@ -18,6 +18,7 @@ import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, typ
 import { verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
 import { htmlToBlocks, sanitizeRichHtml } from '@/lib/rich/html';
+import { isRichHtml } from '@/lib/rich/text';
 import { getRevision, listDeleted, listRevisions } from '@/lib/cms/revisions';
 import { collectionByKey } from './registry';
 
@@ -283,6 +284,13 @@ export async function saveCollectionItem(
         const v = value as Record<string, unknown>;
         if (v.url === '' && 'alt' in v && Object.keys(v).every((k) => k === 'url' || k === 'alt') && !String(v.alt ?? '').trim()) delete record[key];
       }
+    }
+
+    // FAQ answers written in the rich editor: sanitised here, so the public pages can render them as-is.
+    const cleanAnswer = (v: unknown) => (typeof v === 'string' && isRichHtml(v) ? sanitizeRichHtml(v) : v);
+    if (collection === 'faqs') record.answer = cleanAnswer(record.answer);
+    if ((collection === 'courses' || collection === 'centres') && Array.isArray(record.faqs)) {
+      record.faqs = (record.faqs as Array<Record<string, unknown>>).map((f) => ({ ...f, answer: cleanAnswer(f.answer) }));
     }
 
     // Rich article: clean the HTML, and derive the plain structured body from it so search, the chatbot index

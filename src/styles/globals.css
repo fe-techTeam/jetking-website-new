@@ -1189,3 +1189,11 @@ html .dark-canvas::before,
 html .dark-canvas::after {
   background: none !important;
 }
+
+/* Rich FAQ answers (written in the admin's editor). */
+.faq-rich > * + * { margin-top: 0.75rem; }
+.faq-rich ul { list-style: disc; padding-left: 1.25rem; }
+.faq-rich ol { list-style: decimal; padding-left: 1.25rem; }
+.faq-rich li + li { margin-top: 0.35rem; }
+.faq-rich a { color: var(--k-red); text-decoration: underline; text-underline-offset: 3px; }
+.faq-rich strong { color: var(--k-ink); font-weight: 700; }

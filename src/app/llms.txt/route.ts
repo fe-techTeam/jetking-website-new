@@ -1,4 +1,5 @@
 import { content } from '@/lib/content';
+import { plainText } from '@/lib/rich/text';
 import { centrePath } from '@/lib/centre-path';
 import { FOUNDED_YEAR } from '@/lib/brand-facts';
 import { absoluteUrl, siteConfig } from '@/lib/site';
@@ -90,7 +91,7 @@ export async function GET() {
     '',
     '## Frequently asked questions',
     '',
-    ...faqs.flatMap((faq) => [`### ${oneLine(faq.question)}`, '', oneLine(faq.answer), '']),
+    ...faqs.flatMap((faq) => [`### ${oneLine(faq.question)}`, '', oneLine(plainText(faq.answer)), '']),
     '## Optional',
     '',
     `- [Sitemap](${absoluteUrl('/sitemap.xml')})`,

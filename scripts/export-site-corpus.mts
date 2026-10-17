@@ -23,6 +23,7 @@ import { buildCorpus } from '@/guide/corpus';
 import type { ChunkType } from '@/guide/types';
 import { content } from '@/lib/content';
 import { buildSiteCorpusItems } from '@/lib/content/site-corpus';
+import { stripRichTags } from '@/lib/rich/text';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUTPUT = resolve(HERE, '../src/content/website-corpus.json');
@@ -50,7 +51,8 @@ const items = chunks.map((chunk) => ({
   type: typeMap[chunk.type],
   title: chunk.title,
   path: chunk.url,
-  text: chunk.text,
+  // Rich fields (FAQ answers written in the admin's editor) are indexed as plain text.
+  text: stripRichTags(chunk.text),
   source: 'website-content-source' as const,
 }));
 

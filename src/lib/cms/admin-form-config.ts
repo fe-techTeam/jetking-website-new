@@ -34,6 +34,8 @@ export interface AdminFormConfig {
   paragraphFields?: string[];
   /** Top-level fields not shown at all — a singleton's fixed `id` means nothing to an editor. */
   hiddenFields?: string[];
+  /** Text fields edited in the rich-text editor (dotted path, `[]` for list items): `answer`, `faqs[].answer`. */
+  richFields?: string[];
   /** Fields the site cannot render without — marked * and checked before saving. */
   requiredFields?: string[];
   /** Top-level fields shown read-only — identity keys that must not be renamed (a singleton's `id`). */
@@ -47,6 +49,7 @@ const personaRelevanceBlank = () => ({ student: 0, professional: 0, parent: 0, f
 const today = () => new Date().toISOString().slice(0, 10);
 
 const courses: AdminFormConfig = {
+  richFields: ['faqs[].answer'],
   requiredFields: ['slug', 'title', 'shortTitle', 'duration', 'eligibility', 'summary'],
   blank: () => ({
     slug: '',
@@ -134,6 +137,7 @@ const cities: AdminFormConfig = {
 };
 
 const centres: AdminFormConfig = {
+  richFields: ['faqs[].answer'],
   requiredFields: ['slug', 'name', 'citySlug', 'addressLine', 'locality', 'state', 'pincode'],
   blank: () => ({
     slug: '',
@@ -242,6 +246,7 @@ const posts: AdminFormConfig = {
 };
 
 const faqs: AdminFormConfig = {
+  richFields: ['answer'],
   requiredFields: ['id', 'question', 'answer'],
   blank: () => ({
     id: '',

@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { isRichHtml } from '@/lib/rich/text';
 
 /**
  * An open FAQ accordion: no outer box, thin rules between questions, a red bar on the open one. Uses native
@@ -40,9 +41,17 @@ export function FaqList({
               </span>
             </span>
           </summary>
-          <p className="max-w-[68ch] pb-6 pl-5 text-[15.5px] leading-relaxed text-[var(--k-ink-2)] sm:text-[16px] lg:pl-12">
-            {faq.answer}
-          </p>
+          {isRichHtml(faq.answer) ? (
+            // Written in the admin's editor and sanitised when saved (see `prepareRichFields`).
+            <div
+              className="faq-rich max-w-[68ch] pb-6 pl-5 text-[15.5px] leading-relaxed text-[var(--k-ink-2)] sm:text-[16px] lg:pl-12"
+              dangerouslySetInnerHTML={{ __html: faq.answer }}
+            />
+          ) : (
+            <p className="max-w-[68ch] pb-6 pl-5 text-[15.5px] leading-relaxed text-[var(--k-ink-2)] sm:text-[16px] lg:pl-12">
+              {faq.answer}
+            </p>
+          )}
         </details>
       ))}
     </div>

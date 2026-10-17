@@ -409,3 +409,5 @@
   float: left; height: 0; pointer-events: none; color: #98a2b3;
 }
 .rich-editor-surface .selectedCell { background: rgb(199 20 28 / 0.08); }
+
+.rich-editor-compact { min-height: 7rem; max-height: 22rem; padding: 0.7rem 0.9rem; font-size: 0.95rem; }

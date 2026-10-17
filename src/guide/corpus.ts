@@ -1,4 +1,5 @@
 import { content } from '@/lib/content';
+import { plainText } from '@/lib/rich/text';
 import { centrePath } from '@/lib/centre-path';
 import type { BodyBlock } from '@/lib/content/types';
 import type { Chunk } from './types';
@@ -76,7 +77,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       type: 'faq',
       title: faq.question,
       url: '/faq',
-      text: `Question: ${faq.question} Answer: ${faq.answer}`,
+      text: `Question: ${faq.question} Answer: ${plainText(faq.answer)}`,
     });
   }
 

@@ -11,6 +11,7 @@ import { AutoTextarea, MultiRelation, RelationsContext, SpecialField, fieldKind 
 import { useContext, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { blocksToHtml } from '@/lib/rich/blocks';
+import { isRichHtml, plainToHtml } from '@/lib/rich/text';
 
 // The editor pulls in ProseMirror — load it only on forms that have an article body.
 const RichTextEditor = dynamic(() => import('./RichTextEditor').then((m) => m.RichTextEditor), {
@@ -264,6 +265,16 @@ export function ValueEditor({
       <RichTextEditor
         value={value}
         fallbackHtml={blocksToHtml(context?.body as never)}
+        onChange={onChange as (v: string) => void}
+      />
+    );
+  }
+  if (typeof value === 'string' && config.richFields?.includes(path || fieldKey)) {
+    return (
+      <RichTextEditor
+        compact
+        value={isRichHtml(value) ? value : ''}
+        fallbackHtml={plainToHtml(value)}
         onChange={onChange as (v: string) => void}
       />
     );

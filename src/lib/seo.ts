@@ -6,6 +6,7 @@ import { centrePath } from './centre-path';
 import { SOCIAL_LINKS } from './social';
 import { FOUNDED_YEAR } from './brand-facts';
 import { cleanBlogBody } from './content/cleanBlogBody';
+import { plainText as richPlainText } from './rich/text';
 
 /**
  * SEO helpers.
@@ -275,7 +276,7 @@ export function faqSchema(faqs: Array<Pick<Faq, 'question' | 'answer'>>): JsonLd
     mainEntity: faqs.map((f) => ({
       '@type': 'Question',
       name: f.question,
-      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      acceptedAnswer: { '@type': 'Answer', text: richPlainText(f.answer) },
     })),
   };
 }

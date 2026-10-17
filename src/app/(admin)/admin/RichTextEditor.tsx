@@ -36,7 +36,7 @@ function Btn({ label, active, disabled, onClick, children }: { label: string; ac
 
 const Sep = () => <span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />;
 
-function Toolbar({ editor }: { editor: Editor }) {
+function Toolbar({ editor, compact }: { editor: Editor; compact: boolean }) {
   // Re-render the toolbar on every selection/content change so active states stay correct.
   const s = useEditorState({
     editor,
@@ -70,6 +70,8 @@ function Toolbar({ editor }: { editor: Editor }) {
   const c = () => editor.chain().focus();
   return (
     <div className="flex flex-wrap items-center gap-0.5 border-b border-border bg-surface/70 p-1.5" role="toolbar" aria-label="Formatting">
+      {compact ? null : (
+      <>
       <select
         aria-label="Text style"
         value={s.h2 ? 'h2' : s.h3 ? 'h3' : 'p'}
@@ -85,16 +87,20 @@ function Toolbar({ editor }: { editor: Editor }) {
         <option value="h3">Subheading</option>
       </select>
       <Sep />
+      </>
+      )}
       <Btn label="Bold" active={s.bold} onClick={() => c().toggleBold().run()}><b>B</b></Btn>
       <Btn label="Italic" active={s.italic} onClick={() => c().toggleItalic().run()}><i>I</i></Btn>
       <Btn label="Underline" active={s.underline} onClick={() => c().toggleUnderline().run()}><u>U</u></Btn>
-      <Btn label="Strikethrough" active={s.strike} onClick={() => c().toggleStrike().run()}><s>S</s></Btn>
+      {compact ? null : <Btn label="Strikethrough" active={s.strike} onClick={() => c().toggleStrike().run()}><s>S</s></Btn>}
       <Sep />
       <Btn label="Bulleted list" active={s.ul} onClick={() => c().toggleBulletList().run()}>• List</Btn>
       <Btn label="Numbered list" active={s.ol} onClick={() => c().toggleOrderedList().run()}>1. List</Btn>
-      <Btn label="Quote" active={s.quote} onClick={() => c().toggleBlockquote().run()}>“ ”</Btn>
+      {compact ? null : <Btn label="Quote" active={s.quote} onClick={() => c().toggleBlockquote().run()}>“ ”</Btn>}
       <Sep />
       <Btn label="Link" active={s.link} onClick={setLink}>Link</Btn>
+      {compact ? null : (
+      <>
       <MediaPickerButton label="Image" onPick={(m) => editor.chain().focus().setImage({ src: m.url, alt: m.alt || '' }).run()} />
       <Btn label="Insert table" active={s.table} onClick={() => c().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>Table</Btn>
       {s.table ? (
@@ -110,6 +116,8 @@ function Toolbar({ editor }: { editor: Editor }) {
       <Btn label="Align left" onClick={() => c().setTextAlign('left').run()}>⇤</Btn>
       <Btn label="Align centre" onClick={() => c().setTextAlign('center').run()}>↔</Btn>
       <Btn label="Divider line" onClick={() => c().setHorizontalRule().run()}>—</Btn>
+      </>
+      )}
       <Btn label="Clear formatting" onClick={() => c().unsetAllMarks().clearNodes().run()}>Tx</Btn>
       <Sep />
       <Btn label="Undo" disabled={!s.canUndo} onClick={() => c().undo().run()}>↶</Btn>
@@ -122,7 +130,10 @@ export function RichTextEditor({
   value,
   fallbackHtml,
   onChange,
+  compact = false,
 }: {
+  /** A shorter surface with only the formatting a paragraph or two needs (bold, italic, lists, links). */
+  compact?: boolean;
   /** Saved HTML. Empty means "not edited with this editor yet" — the editor then starts from `fallbackHtml`. */
   value: string;
   fallbackHtml: string;
@@ -141,10 +152,10 @@ export function RichTextEditor({
       TableRow,
       TableHeader,
       TableCell,
-      Placeholder.configure({ placeholder: 'Write the article here…' }),
+      Placeholder.configure({ placeholder: compact ? 'Write here…' : 'Write the article here…' }),
     ],
     content: value || fallbackHtml,
-    editorProps: { attributes: { class: 'rich-editor-surface', 'aria-label': 'Article body' } },
+    editorProps: { attributes: { class: compact ? 'rich-editor-surface rich-editor-compact' : 'rich-editor-surface', 'aria-label': compact ? 'Text' : 'Article body' } },
     onUpdate: ({ editor: e }) => onChange(e.isEmpty ? '' : e.getHTML()),
   });
 
@@ -159,7 +170,7 @@ export function RichTextEditor({
 
   return (
     <div className="overflow-hidden rounded-[var(--admin-radius)] border border-border bg-background">
-      {source ? null : <Toolbar editor={editor} />}
+      {source ? null : <Toolbar editor={editor} compact={compact} />}
       {source ? (
         <textarea
           aria-label="HTML source"
