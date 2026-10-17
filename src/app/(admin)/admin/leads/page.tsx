@@ -2,7 +2,7 @@ import { requireRole } from '../actions';
 import { isDatabaseConfigured } from '@/lib/leads/store';
 import { LEAD_STATUSES } from '@/lib/leads/schema';
 import type { LeadStatus } from '@/lib/leads/store';
-import { getLeads, getLeadsSummary } from './actions';
+import { getLeads } from './actions';
 import { LeadsBoard } from './LeadsBoard';
 
 export default async function AdminLeadsPage({
@@ -37,7 +37,7 @@ export default async function AdminLeadsPage({
   // Both already apply `centre_staff` scoping — going through the same
   // actions the client calls later means there's exactly one implementation
   // of "what can this role see," not a second copy that could drift from it.
-  const [leads, stats] = await Promise.all([getLeads(), getLeadsSummary()]);
+  const leads = await getLeads();
 
-  return <LeadsBoard initialLeads={leads} initialStats={stats} initialStatusFilter={initialStatusFilter} />;
+  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} />;
 }

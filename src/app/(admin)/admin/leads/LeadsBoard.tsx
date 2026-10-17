@@ -1,67 +1,87 @@
 'use client';
 
-import { useRef, useState, useTransition, type FormEvent } from 'react';
+import { useMemo, useRef, useState, useTransition, type FormEvent } from 'react';
 import { submitLead, moveLeadStatus, addNote, removeLead, getLeadTimeline } from './actions';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
-import type { LeadStats, LeadStatus } from '@/lib/leads/store';
+import type { LeadStatus } from '@/lib/leads/store';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
-import { FilterChip } from '../FilterChip';
 
 const STATUSES: LeadStatus[] = ['new', 'contacted', 'enrolled', 'lost'];
-const STATUS_LABEL: Record<LeadStatus, string> = {
-  new: 'New',
-  contacted: 'Contacted',
-  enrolled: 'Enrolled',
-  lost: 'Lost',
+const STATUS_LABEL: Record<LeadStatus, string> = { new: 'New', contacted: 'Contacted', enrolled: 'Enrolled', lost: 'Lost' };
+/** Colour carries the meaning here (amber = needs a call, green = won) — never the brand accent. */
+const STATUS_STYLE: Record<LeadStatus, { dot: string; pill: string }> = {
+  new: { dot: '#f79009', pill: 'bg-[var(--color-signal-50)] text-[#b54708]' },
+  contacted: { dot: '#667085', pill: 'bg-surface text-foreground-secondary ring-1 ring-border' },
+  enrolled: { dot: '#12b76a', pill: 'bg-[var(--color-growth-50)] text-[#067647]' },
+  lost: { dot: '#c4c9d4', pill: 'bg-surface text-foreground-muted ring-1 ring-border' },
 };
-/** Status semantics, not the accent: "new" borrows the warning/amber token (needs
- *  attention), "enrolled" the success token — the blue accent stays reserved for
- *  interactive UI, never a status label. */
-const STATUS_CLASS: Record<LeadStatus, string> = {
-  new: 'text-[var(--color-signal-600)]',
-  contacted: 'text-foreground-secondary',
-  enrolled: 'text-growth-600',
-  lost: 'text-foreground-muted',
-};
+const SOURCE_LABEL: Record<string, string> = { form: 'Website form', chatbot: 'Chatbot', centre: 'Centre', franchise: 'Franchise' };
+const PAGE_SIZE = 25;
 
-/** The little dot beside each status label — colour carries meaning here, so it is never the accent. */
-const STATUS_DOT: Record<LeadStatus, string> = {
-  new: '#f79009',
-  contacted: '#667085',
-  enrolled: '#12b76a',
-  lost: '#c4c9d4',
-};
+type SortKey = 'createdAt' | 'name' | 'status';
+type Range = 'all' | 'today' | '7' | '30';
 
-function emptyByStatus(): Record<LeadStatus, number> {
-  return { new: 0, contacted: 0, enrolled: 0, lost: 0 };
+const when = (d: Date | string) =>
+  new Date(d).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+
+function statsFrom(rows: Lead[]): { total: number; byStatus: Record<LeadStatus, number> } {
+  const byStatus = { new: 0, contacted: 0, enrolled: 0, lost: 0 };
+  for (const row of rows) if (row.status in byStatus) byStatus[row.status as LeadStatus] += 1;
+  return { total: rows.length, byStatus };
 }
 
-function statsFrom(rows: Lead[]): LeadStats {
-  const byStatus = emptyByStatus();
-  for (const row of rows) {
-    const status = row.status as LeadStatus;
-    if (status in byStatus) byStatus[status] += 1;
-  }
-  return { total: rows.length, byStatus };
+/** Spreadsheet formulas typed into a name or message must not run when the file is opened. */
+const csvCell = (v: unknown) => {
+  const s = String(v ?? '');
+  const safe = /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
+
+/** The status select, styled as the pill — changing it saves straight away. */
+function StatusSelect({ lead, onChange, disabled }: { lead: Lead; onChange: (s: LeadStatus) => void; disabled: boolean }) {
+  const s = lead.status as LeadStatus;
+  return (
+    <select
+      aria-label={`Status of ${lead.name}`}
+      value={s}
+      disabled={disabled}
+      onClick={(e) => e.stopPropagation()}
+      onChange={(e) => onChange(e.target.value as LeadStatus)}
+      className={`h-9 cursor-pointer rounded-full border-0 px-3 text-xs font-bold focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] disabled:opacity-60 ${STATUS_STYLE[s].pill}`}
+    >
+      {STATUSES.map((x) => (
+        <option key={x} value={x}>
+          {STATUS_LABEL[x]}
+        </option>
+      ))}
+    </select>
+  );
 }
 
 export function LeadsBoard({
   initialLeads,
-  initialStats,
   initialStatusFilter,
 }: {
   initialLeads: Lead[];
-  initialStats: LeadStats;
   initialStatusFilter?: LeadStatus;
 }) {
   const [leads, setLeads] = useState(initialLeads);
-  const [stats, setStats] = useState(initialStats);
-  const [view, setView] = useState<'board' | 'list'>('board');
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>(initialStatusFilter ?? 'all');
-  const [sourceFilter, setSourceFilter] = useState<string | 'all'>('all');
+  const stats = useMemo(() => statsFrom(leads), [leads]);
+  // "Today / last 7 days" are measured from when the page was opened.
+  const [now] = useState(() => Date.now());
+  const [view, setView] = useState<'list' | 'detail'>('list');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [timeline, setTimeline] = useState<LeadActivity[]>([]);
+
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>(initialStatusFilter ?? 'all');
+  const [sourceFilter, setSourceFilter] = useState('all');
+  const [cityFilter, setCityFilter] = useState('all');
+  const [range, setRange] = useState<Range>('all');
+  const [sort, setSort] = useState<{ key: SortKey; dir: 'asc' | 'desc' }>({ key: 'createdAt', dir: 'desc' });
+  const [pageIndex, setPageIndex] = useState(0);
+  const [checked, setChecked] = useState<string[]>([]);
+
   const [showNew, setShowNew] = useState(false);
   const [noteDraft, setNoteDraft] = useState('');
   const [pending, start] = useTransition();
@@ -71,42 +91,80 @@ export function LeadsBoard({
   const formRef = useRef<HTMLFormElement>(null);
 
   const selected = leads.find((l) => l.id === selectedId) ?? null;
+  const sources = useMemo(() => Array.from(new Set(leads.map((l) => l.source))).sort(), [leads]);
+  const cities = useMemo(() => Array.from(new Set(leads.map((l) => l.city).filter((c): c is string => Boolean(c)))).sort(), [leads]);
 
-  const sources = Array.from(new Set(leads.map((l) => l.source))).sort();
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const since = range === 'all' ? 0 : range === 'today' ? new Date(now).setHours(0, 0, 0, 0) : now - Number(range) * 86_400_000;
+    const rows = leads.filter((l) => {
+      if (statusFilter !== 'all' && l.status !== statusFilter) return false;
+      if (sourceFilter !== 'all' && l.source !== sourceFilter) return false;
+      if (cityFilter !== 'all' && l.city !== cityFilter) return false;
+      if (since && new Date(l.createdAt).getTime() < since) return false;
+      if (!q) return true;
+      return [l.name, l.courseInterest, l.city, l.phone, l.email, l.centreName, l.message].some((f) => f?.toLowerCase().includes(q));
+    });
+    const dir = sort.dir === 'asc' ? 1 : -1;
+    return rows.sort((a, b) => {
+      if (sort.key === 'name') return a.name.localeCompare(b.name) * dir;
+      if (sort.key === 'status') return (STATUSES.indexOf(a.status as LeadStatus) - STATUSES.indexOf(b.status as LeadStatus)) * dir;
+      return (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) * dir;
+    });
+  }, [leads, search, statusFilter, sourceFilter, cityFilter, range, sort, now]);
 
-  const query = search.trim().toLowerCase();
-  const filteredLeads = leads.filter((l) => {
-    if (statusFilter !== 'all' && l.status !== statusFilter) return false;
-    if (sourceFilter !== 'all' && l.source !== sourceFilter) return false;
-    if (!query) return true;
-    return [l.name, l.courseInterest, l.city, l.phone, l.email, l.centreName].some((f) => f?.toLowerCase().includes(query));
-  });
-  const filtersActive = statusFilter !== 'all' || sourceFilter !== 'all' || query.length > 0;
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageRows = filtered.slice(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE);
+  const filtersActive = statusFilter !== 'all' || sourceFilter !== 'all' || cityFilter !== 'all' || range !== 'all' || search.trim() !== '';
+  const allOnPage = pageRows.length > 0 && pageRows.every((l) => checked.includes(l.id));
 
-  function selectLead(id: string) {
+  function clearFilters() {
+    setSearch('');
+    setStatusFilter('all');
+    setSourceFilter('all');
+    setCityFilter('all');
+    setRange('all');
+    setPageIndex(0);
+  }
+
+  function sortBy(key: SortKey) {
+    setSort((s) => (s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: key === 'name' ? 'asc' : 'desc' }));
+  }
+  const arrow = (key: SortKey) => (sort.key === key ? (sort.dir === 'asc' ? ' ↑' : ' ↓') : '');
+
+  function openLead(id: string) {
     setSelectedId(id);
     setNoteDraft('');
     setMessage(null);
     setError(null);
-    start(async () => {
-      setTimeline(await getLeadTimeline(id));
-    });
+    setView('detail');
+    document.getElementById('admin-content')?.scrollTo({ top: 0 });
+    start(async () => setTimeline(await getLeadTimeline(id)));
   }
 
   function changeStatus(id: string, status: LeadStatus) {
+    setError(null);
     start(async () => {
       const result = await moveLeadStatus(id, status);
       if (!result.ok) {
         setError(result.error);
         return;
       }
-      setLeads((prev) => {
-        const next = prev.map((l) => (l.id === id ? result.lead : l));
-        setStats(statsFrom(next));
-        return next;
-      });
+      setLeads((prev) => prev.map((l) => (l.id === id ? result.lead : l)));
       if (selectedId === id) setTimeline(await getLeadTimeline(id));
       setMessage(`Moved to ${STATUS_LABEL[status]}.`);
+    });
+  }
+
+  function bulkStatus(status: LeadStatus) {
+    const ids = checked;
+    start(async () => {
+      for (const id of ids) {
+        const result = await moveLeadStatus(id, status);
+        if (result.ok) setLeads((prev) => prev.map((l) => (l.id === id ? result.lead : l)));
+      }
+      setChecked([]);
+      setMessage(`Moved ${ids.length} lead${ids.length === 1 ? '' : 's'} to ${STATUS_LABEL[status]}.`);
     });
   }
 
@@ -124,21 +182,17 @@ export function LeadsBoard({
     });
   }
 
-  function handleDelete(id: string, name: string) {
-    setPendingDelete({ id, name });
-  }
-
   function confirmDeleteLead() {
     if (!pendingDelete) return;
     const { id, name } = pendingDelete;
     start(async () => {
       await removeLead(id);
-      setLeads((prev) => {
-        const next = prev.filter((l) => l.id !== id);
-        setStats(statsFrom(next));
-        return next;
-      });
-      if (selectedId === id) setSelectedId(null);
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+      setChecked((c) => c.filter((x) => x !== id));
+      if (selectedId === id) {
+        setSelectedId(null);
+        setView('list');
+      }
       setMessage(`Deleted ${name}.`);
       setPendingDelete(null);
     });
@@ -156,445 +210,349 @@ export function LeadsBoard({
         setError(result.error);
         return;
       }
-      setLeads((prev) => {
-        const next = [result.lead, ...prev];
-        setStats(statsFrom(next));
-        return next;
-      });
+      setLeads((prev) => [result.lead, ...prev]);
       setMessage('Lead added.');
       setShowNew(false);
       formRef.current?.reset();
     });
   }
 
-  return (
-    <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="adm-eyebrow">leads</p>
-          <h1 className="adm-title mt-3">Leads</h1>
-          <p className="adm-lede mt-3">
-            Everything the chatbot, enquiry form, and centre staff bring in — one pipeline.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="adm-btn-primary font-bold inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm"
-          onClick={() => setShowNew((v) => !v)}
-        >
-          {showNew ? 'Cancel' : '+ New lead'}
-        </button>
-      </div>
+  function exportCsv() {
+    const head = ['Received', 'Name', 'Phone', 'Email', 'Course', 'City', 'State', 'Centre', 'Qualification', 'Source', 'Form', 'Status', 'Campaign', 'Message'];
+    const rows = filtered.map((l) => [
+      new Date(l.createdAt).toISOString(), l.name, l.phone, l.email, l.courseInterest, l.city, l.state, l.centreName, l.qualification,
+      SOURCE_LABEL[l.source] ?? l.source, l.form, STATUS_LABEL[l.status as LeadStatus] ?? l.status,
+      [l.utmSource, l.utmMedium, l.utmCampaign].filter(Boolean).join(' / '), l.message,
+    ]);
+    const csv = '﻿' + [head, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = `jetking-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <div className="adm-card p-4 sm:p-5">
-          <p className="flex items-center gap-2 text-sm font-semibold text-foreground-secondary">
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-            Total
-          </p>
-          <p className="numeral mt-3 text-[1.875rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
-            {stats.total}
-          </p>
-        </div>
-        {STATUSES.map((s) => (
-          <div key={s} className="adm-card p-4 sm:p-5">
-            <p className="flex items-center gap-2 text-sm font-semibold text-foreground-secondary">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: STATUS_DOT[s] }} />
-              {STATUS_LABEL[s]}
-            </p>
-            <p className="numeral mt-3 text-[1.875rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
-              {stats.byStatus[s]}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {showNew ? (
-        <form
-          ref={formRef}
-          onSubmit={handleCreate}
-          className="mt-8 grid gap-4 adm-card p-5 sm:grid-cols-2"
-        >
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Name</span>
-            <input name="name" required className="admin-input" placeholder="Full name" />
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Phone</span>
-            <input name="phone" className="admin-input" placeholder="+91 …" />
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Email</span>
-            <input name="email" type="email" className="admin-input" placeholder="name@example.com" />
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">City</span>
-            <input name="city" className="admin-input" placeholder="Pune" />
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Course interest</span>
-            <input name="courseInterest" className="admin-input" placeholder="CCNA" />
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="label-mono">Source</span>
-            <select name="source" className="admin-input" defaultValue="form">
-              <option value="form">Form</option>
-              <option value="chatbot">Chatbot</option>
-              <option value="centre">Centre</option>
-              <option value="franchise">Franchise</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
-            <span className="label-mono">Notes</span>
-            <textarea name="notes" rows={2} className="admin-input resize-y" />
-          </label>
-          <div className="sm:col-span-2">
-            <button
-              type="submit"
-              disabled={pending}
-              className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
-            >
-              {pending ? 'Saving…' : 'Save lead'}
-            </button>
-          </div>
-        </form>
-      ) : null}
-
+  const banner = (
+    <>
       {error ? (
-        <p role="alert" className="mt-6 text-sm font-medium text-[var(--color-error-600)]">
+        <p role="alert" className="mt-4 text-sm font-medium text-[var(--color-error-600)]">
           {error}
         </p>
       ) : null}
       {message ? (
-        <p aria-live="polite" className="mt-6 text-sm text-growth-600">
+        <p aria-live="polite" className="mt-4 text-sm font-medium text-growth-600">
           {message}
         </p>
       ) : null}
+    </>
+  );
 
-      <div role="group" aria-label="Leads view" className="mt-10 inline-flex rounded-[13px] bg-border-subtle p-1 ring-1 ring-border">
-        {(['board', 'list'] as const).map((v) => (
-          <button
-            key={v}
-            type="button"
-            onClick={() => setView(v)}
-            aria-pressed={view === v}
-            className={`min-h-11 min-w-24 cursor-pointer rounded-[10px] px-4 text-sm font-bold capitalize transition-all focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] ${
-              view === v
-                ? 'bg-background text-foreground shadow-[0_1px_3px_rgb(14_20_36/0.12)]'
-                : 'text-foreground-secondary hover:text-foreground'
-            }`}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
+  return (
+    <div className="mx-auto max-w-7xl">
+      {view === 'list' ? (
+        <>
+          <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
+              <p className="adm-eyebrow">Leads</p>
+              <h1 className="adm-title mt-3">Leads</h1>
+              <p className="adm-lede mt-3">Every enquiry from the website, the chatbot and your centres, in one list.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={exportCsv} disabled={filtered.length === 0} className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45">
+                Export CSV
+              </button>
+              <button type="button" onClick={() => setShowNew((v) => !v)} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold">
+                {showNew ? 'Cancel' : '+ New lead'}
+              </button>
+            </div>
+          </header>
 
-      <div className="mt-6 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search name, course, or city…"
-            className="admin-input h-10 w-full max-w-xs"
-            aria-label="Search leads"
-          />
-          <div className="flex flex-wrap items-center gap-1.5">
-            <FilterChip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>
-              All statuses
-            </FilterChip>
-            {STATUSES.map((s) => (
-              <FilterChip
-                key={s}
-                active={statusFilter === s}
-                onClick={() => setStatusFilter((prev) => (prev === s ? 'all' : s))}
-              >
-                {STATUS_LABEL[s]}
-              </FilterChip>
-            ))}
-          </div>
-          {sources.length > 1 ? (
-            <div className="flex flex-wrap items-center gap-1.5 border-l border-border pl-3">
-              <FilterChip active={sourceFilter === 'all'} onClick={() => setSourceFilter('all')} capitalize>
-                All sources
-              </FilterChip>
-              {sources.map((s) => (
-                <FilterChip
+          {/* Status tiles double as filters. */}
+          <div className="-mx-4 mt-6 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-3 sm:overflow-visible sm:px-0" role="group" aria-label="Filter by status">
+            {(['all', ...STATUSES] as const).map((s) => {
+              const count = s === 'all' ? stats.total : stats.byStatus[s];
+              const active = statusFilter === s;
+              return (
+                <button
                   key={s}
-                  active={sourceFilter === s}
-                  onClick={() => setSourceFilter((prev) => (prev === s ? 'all' : s))}
-                  capitalize
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => {
+                    setStatusFilter(s);
+                    setPageIndex(0);
+                  }}
+                  className={`adm-card min-w-[7.5rem] shrink-0 cursor-pointer p-3 text-left transition-shadow sm:min-w-0 sm:p-4 ${active ? 'ring-2 ring-[var(--accent)]' : 'hover:shadow-[var(--adm-shadow-lift)]'}`}
                 >
-                  {s}
-                </FilterChip>
-              ))}
-            </div>
+                  <span className="flex items-center gap-2 text-sm font-semibold text-foreground-secondary">
+                    <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: s === 'all' ? 'var(--accent)' : STATUS_STYLE[s].dot }} />
+                    {s === 'all' ? 'All leads' : STATUS_LABEL[s]}
+                  </span>
+                  <span className="numeral mt-1.5 block text-2xl leading-none font-extrabold tracking-[-0.03em] text-foreground sm:mt-2 sm:text-[1.75rem]">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {showNew ? (
+            <form ref={formRef} onSubmit={handleCreate} className="adm-card mt-6 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
+              <label className="flex flex-col gap-1.5 text-sm"><span className="label-mono">Name *</span><input name="name" required className="admin-input" placeholder="Full name" /></label>
+              <label className="flex flex-col gap-1.5 text-sm"><span className="label-mono">Phone</span><input name="phone" type="tel" className="admin-input" placeholder="+91 …" /></label>
+              <label className="flex flex-col gap-1.5 text-sm"><span className="label-mono">Email</span><input name="email" type="email" className="admin-input" placeholder="name@example.com" /></label>
+              <label className="flex flex-col gap-1.5 text-sm"><span className="label-mono">City</span><input name="city" className="admin-input" placeholder="Pune" /></label>
+              <label className="flex flex-col gap-1.5 text-sm"><span className="label-mono">Course interest</span><input name="courseInterest" className="admin-input" placeholder="BCA" /></label>
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="label-mono">Source</span>
+                <select name="source" className="admin-input" defaultValue="form">
+                  <option value="form">Website form</option>
+                  <option value="chatbot">Chatbot</option>
+                  <option value="centre">Centre (walk-in / phone)</option>
+                  <option value="franchise">Franchise</option>
+                </select>
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm sm:col-span-2 lg:col-span-3"><span className="label-mono">Notes</span><textarea name="notes" rows={2} className="admin-input resize-y" /></label>
+              <div className="sm:col-span-2 lg:col-span-3">
+                <button type="submit" disabled={pending} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45">
+                  {pending ? 'Saving…' : 'Save lead'}
+                </button>
+              </div>
+            </form>
           ) : null}
-          {filtersActive ? (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch('');
-                setStatusFilter('all');
-                setSourceFilter('all');
+
+          {banner}
+
+          {/* Filters */}
+          <div className="mt-5 flex flex-wrap items-center gap-2.5">
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPageIndex(0);
               }}
-              className="cursor-pointer text-xs font-semibold text-foreground-muted hover:text-foreground"
-            >
-              Clear filters
-            </button>
-          ) : null}
-        </div>
-        {filtersActive ? (
-          <p className="label-mono">
-            Showing {filteredLeads.length} of {leads.length} leads
-          </p>
-        ) : null}
-      </div>
-
-      {view === 'board' ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {STATUSES.map((status) => (
-            <div key={status} className="adm-card">
-              <div className="flex items-center gap-2 border-b border-border px-4 py-3.5">
-                <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: STATUS_DOT[status] }} />
-                <span className="text-sm font-bold tracking-tight text-foreground">{STATUS_LABEL[status]}</span>
-                <span className="numeral ml-auto rounded-full bg-surface px-2.5 py-0.5 text-xs font-bold text-foreground-secondary ring-1 ring-border">
-                  {filteredLeads.filter((l) => l.status === status).length}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2 p-2.5">
-                {filteredLeads
-                  .filter((l) => l.status === status)
-                  .map((lead) => (
-                    <div
-                      key={lead.id}
-                      className="rounded-[12px] border border-border bg-background p-3 shadow-[0_1px_2px_rgb(14_20_36/0.04)] transition-[border-color,box-shadow] hover:border-border-medium hover:shadow-[0_6px_16px_-8px_rgb(14_20_36/0.22)]"
-                    >
-                      <button
-                        type="button"
-                        className="block min-h-11 w-full cursor-pointer text-left"
-                        onClick={() => selectLead(lead.id)}
-                      >
-                        <span className="block text-sm font-semibold text-foreground">
-                          {lead.name}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-foreground-muted">
-                          {[lead.courseInterest, lead.city].filter(Boolean).join(' · ') || '—'}
-                        </span>
-                      </button>
-                      <select
-                        aria-label={`Move ${lead.name}`}
-                        value={lead.status}
-                        disabled={pending}
-                        onChange={(e) => changeStatus(lead.id, e.target.value as LeadStatus)}
-                        className="admin-input mt-2 py-0 text-xs"
-                      >
-                        {STATUSES.map((s) => (
-                          <option key={s} value={s}>
-                            {STATUS_LABEL[s]}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
-                {filteredLeads.filter((l) => l.status === status).length === 0 ? (
-                  <p className="px-1 py-3 text-xs text-foreground-muted">No leads.</p>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-6 overflow-x-auto adm-card">
-          <table className="adm-table w-full min-w-[52rem] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border text-left">
-                {['Name', 'Course', 'City', 'Source', 'Status', 'Updated'].map((h) => (
-                  <th key={h} className="label-mono px-4 py-3 font-medium">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredLeads.map((lead) => (
-                <tr
-                  key={lead.id}
-                  className="cursor-pointer border-b border-border last:border-none hover:bg-surface"
-                  onClick={() => selectLead(lead.id)}
-                >
-                  <td className="px-4 py-3 font-semibold text-foreground">{lead.name}</td>
-                  <td className="px-4 py-3 text-foreground-secondary">{lead.courseInterest || '—'}</td>
-                  <td className="px-4 py-3 text-foreground-secondary">{lead.city || '—'}</td>
-                  <td className="px-4 py-3 text-foreground-secondary capitalize">{lead.source}</td>
-                  <td className={`px-4 py-3 font-medium ${STATUS_CLASS[lead.status as LeadStatus]}`}>
-                    {STATUS_LABEL[lead.status as LeadStatus]}
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs text-foreground-muted">
-                    {new Date(lead.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                  </td>
-                </tr>
-              ))}
-              {filteredLeads.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-sm text-foreground-muted">
-                    No leads match these filters.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {selected ? (
-        <div className="mt-10 adm-card p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="label-mono">{selected.source}</p>
-              <h2 className="mt-2 text-2xl">{selected.name}</h2>
-            </div>
-            <button
-              type="button"
-              className="cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 py-1 text-xs font-semibold text-foreground-muted transition-colors hover:border-border-strong hover:text-foreground"
-              onClick={() => setSelectedId(null)}
-            >
-              Close
-            </button>
-          </div>
-
-          <dl className="mt-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
-            <div>
-              <dt className="label-mono">Phone</dt>
-              <dd className="mt-1 font-mono text-foreground">
-                {selected.phone ? (
-                  <a href={`tel:${selected.phone}`} className="text-[var(--accent)] hover:underline">
-                    {selected.phone}
-                  </a>
-                ) : (
-                  '—'
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt className="label-mono">Email</dt>
-              <dd className="mt-1 font-mono text-foreground">
-                {selected.email ? (
-                  <a href={`mailto:${selected.email}`} className="text-[var(--accent)] hover:underline">
-                    {selected.email}
-                  </a>
-                ) : (
-                  '—'
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt className="label-mono">Course</dt>
-              <dd className="mt-1 text-foreground">{selected.courseInterest || '—'}</dd>
-            </div>
-            <div>
-              <dt className="label-mono">City</dt>
-              <dd className="mt-1 text-foreground">{selected.city || '—'}</dd>
-            </div>
-            {(
-              [
-                ['State', selected.state],
-                ['Centre', selected.centreName],
-                ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification],
-                ['Form', selected.form],
-                ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')],
-                ['Landing page', selected.landingPage],
-                ['CRM hand-off', selected.crmStatus === 'routed' ? 'Sent' : selected.crmStatus === 'failed' ? 'Failed — follow up manually' : 'Not configured'],
-              ] as const
-            )
-              .filter(([, v]) => v)
-              .map(([label, v]) => (
-                <div key={label}>
-                  <dt className="label-mono">{label}</dt>
-                  <dd className="mt-1 break-words text-foreground">{v}</dd>
-                </div>
-              ))}
-          </dl>
-          {selected.message ? (
-            <div className="mt-4 text-sm">
-              <p className="label-mono">Message from the visitor</p>
-              <p className="mt-1 whitespace-pre-wrap text-foreground">{selected.message}</p>
-            </div>
-          ) : null}
-
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <span className="label-mono">Status</span>
-            <select
-              value={selected.status}
-              disabled={pending}
-              onChange={(e) => changeStatus(selected.id, e.target.value as LeadStatus)}
-              className="admin-input h-9 w-auto"
-            >
-              {STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {STATUS_LABEL[s]}
-                </option>
-              ))}
+              placeholder="Search name, phone, email, course, city…"
+              aria-label="Search leads"
+              className="admin-input h-11 w-full text-sm lg:max-w-sm"
+            />
+            <select aria-label="Source" value={sourceFilter} onChange={(e) => { setSourceFilter(e.target.value); setPageIndex(0); }} style={{ width: "auto" }} className="admin-input h-11 text-sm">
+              <option value="all">All sources</option>
+              {sources.map((s) => (<option key={s} value={s}>{SOURCE_LABEL[s] ?? s}</option>))}
             </select>
-            <button
-              type="button"
-              disabled={pending}
-              className="ml-auto cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 py-1.5 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--color-error-600)] hover:text-[var(--color-error-600)] disabled:opacity-45"
-              onClick={() => handleDelete(selected.id, selected.name)}
-            >
-              Delete lead
-            </button>
+            <select aria-label="City" value={cityFilter} onChange={(e) => { setCityFilter(e.target.value); setPageIndex(0); }} style={{ width: "auto" }} className="admin-input h-11 text-sm">
+              <option value="all">All cities</option>
+              {cities.map((c) => (<option key={c} value={c}>{c}</option>))}
+            </select>
+            <select aria-label="Received" value={range} onChange={(e) => { setRange(e.target.value as Range); setPageIndex(0); }} style={{ width: "auto" }} className="admin-input h-11 text-sm">
+              <option value="all">Any time</option>
+              <option value="today">Today</option>
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+            </select>
+            {filtersActive ? (
+              <button type="button" onClick={clearFilters} className="min-h-11 cursor-pointer px-2 text-sm font-semibold text-[var(--accent-ink)] hover:underline">
+                Clear filters
+              </button>
+            ) : null}
+            <span className="ml-auto text-xs text-foreground-muted">
+              {filtered.length} of {leads.length} lead{leads.length === 1 ? '' : 's'}
+            </span>
           </div>
 
-          <div className="mt-6">
-            <p className="label-mono border-b border-border pb-2">Timeline</p>
-            <ul className="mt-3 flex flex-col gap-2">
+          {checked.length > 0 ? (
+            <div className="adm-card mt-3 flex flex-wrap items-center gap-3 px-4 py-2.5" role="region" aria-label="Bulk actions">
+              <span className="text-sm font-semibold text-foreground">{checked.length} selected</span>
+              <label className="flex items-center gap-2 text-sm text-foreground-secondary">
+                Move to
+                <select
+                  aria-label="Move selected leads to"
+                  defaultValue=""
+                  disabled={pending}
+                  onChange={(e) => e.target.value && bulkStatus(e.target.value as LeadStatus)}
+                  style={{ width: "auto" }} className="admin-input h-9 text-sm"
+                >
+                  <option value="" disabled>Choose status…</option>
+                  {STATUSES.map((s) => (<option key={s} value={s}>{STATUS_LABEL[s]}</option>))}
+                </select>
+              </label>
+              <button type="button" onClick={() => setChecked([])} className="ml-auto cursor-pointer text-sm font-semibold text-foreground-muted hover:text-foreground">Clear selection</button>
+            </div>
+          ) : null}
+
+          {/* Table (tablet and up) */}
+          <div className="adm-card mt-4 hidden overflow-hidden lg:block">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[46rem] border-collapse text-left text-sm">
+                <thead className="border-b border-border bg-surface/70 text-xs font-bold tracking-wide text-foreground-muted uppercase">
+                  <tr>
+                    <th scope="col" className="w-10 px-4 py-3">
+                      <input
+                        type="checkbox"
+                        aria-label="Select all leads on this page"
+                        checked={allOnPage}
+                        onChange={(e) => setChecked(e.target.checked ? Array.from(new Set([...checked, ...pageRows.map((l) => l.id)])) : checked.filter((id) => !pageRows.some((l) => l.id === id)))}
+                        className="h-4 w-4 cursor-pointer accent-[var(--accent)]"
+                      />
+                    </th>
+                    <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'name' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                      <button type="button" onClick={() => sortBy('name')} className="cursor-pointer font-bold uppercase hover:text-foreground">Lead{arrow('name')}</button>
+                    </th>
+                    <th scope="col" className="px-3 py-3">Interested in</th>
+                    <th scope="col" className="px-3 py-3">Source</th>
+                    <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'status' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                      <button type="button" onClick={() => sortBy('status')} className="cursor-pointer font-bold uppercase hover:text-foreground">Status{arrow('status')}</button>
+                    </th>
+                    <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'createdAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                      <button type="button" onClick={() => sortBy('createdAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Received{arrow('createdAt')}</button>
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-right"><span className="sr-only">Call</span></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {pageRows.map((l) => (
+                    <tr key={l.id} onClick={() => openLead(l.id)} className="cursor-pointer transition-colors hover:bg-surface/60">
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <input type="checkbox" aria-label={`Select ${l.name}`} checked={checked.includes(l.id)} onChange={(e) => setChecked(e.target.checked ? [...checked, l.id] : checked.filter((id) => id !== l.id))} className="h-4 w-4 cursor-pointer accent-[var(--accent)]" />
+                      </td>
+                      <td className="max-w-[16rem] px-3 py-3">
+                        <button type="button" onClick={(e) => { e.stopPropagation(); openLead(l.id); }} className="block max-w-full cursor-pointer truncate text-left font-semibold text-foreground hover:text-[var(--accent-ink)]">{l.name}</button>
+                        <span className="block truncate text-xs text-foreground-muted">{[l.phone, l.email].filter(Boolean).join(' · ') || '—'}</span>
+                      </td>
+                      <td className="max-w-[16rem] px-3 py-3 text-foreground-secondary">
+                        <span className="line-clamp-2">{l.courseInterest || '—'}</span>
+                        <span className="block truncate text-xs text-foreground-muted">{[l.city, l.centreName].filter(Boolean).join(' · ') || '—'}</span>
+                      </td>
+                      <td className="px-3 py-3 whitespace-nowrap text-foreground-secondary">{SOURCE_LABEL[l.source] ?? l.source}</td>
+                      <td className="px-3 py-3"><StatusSelect lead={l} disabled={pending} onChange={(s) => changeStatus(l.id, s)} /></td>
+                      <td className="px-3 py-3 whitespace-nowrap text-xs text-foreground-muted">{when(l.createdAt)}</td>
+                      <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-end gap-1.5">
+                          {l.phone ? (
+                            <a href={`tel:${l.phone}`} aria-label={`Call ${l.name}`} className="grid h-9 w-9 place-items-center rounded-full border border-border text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">☎</a>
+                          ) : null}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {pageRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-12 text-center text-foreground-muted">{leads.length === 0 ? 'No leads yet. They appear here as soon as someone submits an enquiry.' : 'No leads match these filters.'}</td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Cards (phones) */}
+          <ul className="mt-4 flex flex-col gap-3 lg:hidden">
+            {pageRows.map((l) => (
+              <li key={l.id} className="adm-card p-4">
+                <button type="button" onClick={() => openLead(l.id)} className="block w-full cursor-pointer text-left">
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="min-w-0">
+                      <span className="block truncate text-[15px] font-bold text-foreground">{l.name}</span>
+                      <span className="block truncate text-xs text-foreground-muted">{when(l.createdAt)} · {SOURCE_LABEL[l.source] ?? l.source}</span>
+                    </span>
+                  </span>
+                  <span className="mt-2 block text-sm text-foreground-secondary">{[l.courseInterest, l.city].filter(Boolean).join(' · ') || '—'}</span>
+                </button>
+                <div className="mt-3 flex items-center gap-2">
+                  {l.phone ? <a href={`tel:${l.phone}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-[var(--admin-radius)] bg-[var(--accent-soft)] text-sm font-bold text-[var(--accent-ink)]">Call {l.phone}</a> : null}
+                  <StatusSelect lead={l} disabled={pending} onChange={(s) => changeStatus(l.id, s)} />
+                </div>
+              </li>
+            ))}
+            {pageRows.length === 0 ? <li className="adm-card px-4 py-10 text-center text-sm text-foreground-muted">{leads.length === 0 ? 'No leads yet.' : 'No leads match these filters.'}</li> : null}
+          </ul>
+
+          {pageCount > 1 ? (
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <button type="button" disabled={pageIndex === 0} onClick={() => setPageIndex(pageIndex - 1)} className="min-h-10 cursor-pointer font-semibold text-foreground-secondary disabled:opacity-40">← Previous</button>
+              <span className="text-foreground-muted">Page {pageIndex + 1} of {pageCount}</span>
+              <button type="button" disabled={pageIndex >= pageCount - 1} onClick={() => setPageIndex(pageIndex + 1)} className="min-h-10 cursor-pointer font-semibold text-foreground-secondary disabled:opacity-40">Next →</button>
+            </div>
+          ) : null}
+        </>
+      ) : selected ? (
+        <>
+          <button type="button" onClick={() => setView('list')} className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]">
+            <span aria-hidden="true">←</span> All leads
+          </button>
+
+          <header className="mt-2 flex flex-wrap items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="adm-eyebrow">{SOURCE_LABEL[selected.source] ?? selected.source}</p>
+              <h1 className="adm-title mt-3">{selected.name}</h1>
+              <p className="adm-lede mt-2">Received {when(selected.createdAt)}</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusSelect lead={selected} disabled={pending} onChange={(s) => changeStatus(selected.id, s)} />
+              {selected.phone ? <a href={`tel:${selected.phone}`} className="inline-flex min-h-11 items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">Call</a> : null}
+              {selected.phone ? <a href={`https://wa.me/${selected.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">WhatsApp</a> : null}
+              {selected.email ? <a href={`mailto:${selected.email}`} className="inline-flex min-h-11 items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">Email</a> : null}
+              <button type="button" disabled={pending} onClick={() => setPendingDelete({ id: selected.id, name: selected.name })} className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-muted hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-50)] hover:text-[#b42318] disabled:opacity-45">Delete</button>
+            </div>
+          </header>
+          {banner}
+
+          <section className="adm-card mt-6 p-5 sm:p-6" aria-labelledby="lead-details">
+            <h2 id="lead-details" className="text-base font-bold text-foreground">Enquiry details</h2>
+            <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
+              {(
+                [
+                  ['Phone', selected.phone],
+                  ['Email', selected.email],
+                  ['Interested in', selected.courseInterest],
+                  ['City', selected.city],
+                  ['State', selected.state],
+                  ['Centre', selected.centreName],
+                  ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification],
+                  ['Came from', selected.form],
+                  ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')],
+                  ['Landing page', selected.landingPage],
+                  ['CRM hand-off', selected.crmStatus === 'routed' ? 'Sent' : selected.crmStatus === 'failed' ? 'Failed — follow up manually' : 'Not configured'],
+                ] as const
+              )
+                .filter(([, v]) => v)
+                .map(([label, v]) => (
+                  <div key={label}>
+                    <dt className="text-xs font-bold tracking-wide text-foreground-muted uppercase">{label}</dt>
+                    <dd className="mt-1 break-words text-foreground">{v}</dd>
+                  </div>
+                ))}
+            </dl>
+            {selected.message ? (
+              <div className="mt-5 border-t border-border pt-4 text-sm">
+                <p className="text-xs font-bold tracking-wide text-foreground-muted uppercase">Message from the visitor</p>
+                <p className="mt-1 whitespace-pre-wrap text-foreground">{selected.message}</p>
+              </div>
+            ) : null}
+          </section>
+
+          <section className="adm-card mt-5 p-5 sm:p-6" aria-labelledby="lead-activity">
+            <h2 id="lead-activity" className="text-base font-bold text-foreground">Activity</h2>
+            <div className="mt-4 flex gap-3">
+              <input value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)} placeholder="Add a note — what was discussed, next step…" aria-label="Add a note" className="admin-input h-11 min-w-0 flex-1" onKeyDown={(e) => { if (e.key === 'Enter') saveNote(selected.id); }} />
+              <button type="button" disabled={pending || !noteDraft.trim()} onClick={() => saveNote(selected.id)} className="adm-btn-primary min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">Add note</button>
+            </div>
+            <ol className="mt-5 flex flex-col">
               {timeline.map((entry) => (
-                <li key={entry.id} className="flex items-start gap-3 text-sm">
-                  <span className="label-mono mt-0.5 shrink-0 capitalize text-foreground-muted">
-                    {entry.kind.replace('_', ' ')}
-                  </span>
-                  <span className="text-foreground-secondary">{entry.body}</span>
-                  <span className="ml-auto shrink-0 font-mono text-xs text-foreground-muted">
-                    {new Date(entry.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                  </span>
+                <li key={entry.id} className="flex gap-3 border-l-2 border-border py-2 pl-4 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-foreground-secondary">{entry.body}</p>
+                    <p className="mt-0.5 text-xs text-foreground-muted capitalize">{entry.kind.replace('_', ' ')} · {when(entry.createdAt)}</p>
+                  </div>
                 </li>
               ))}
               {timeline.length === 0 ? <li className="text-sm text-foreground-muted">No activity yet.</li> : null}
-            </ul>
-
-            <div className="mt-4 flex gap-3">
-              <input
-                value={noteDraft}
-                onChange={(e) => setNoteDraft(e.target.value)}
-                placeholder="Add a note…"
-                className="admin-input flex-1"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') saveNote(selected.id);
-                }}
-              />
-              <button
-                type="button"
-                disabled={pending || !noteDraft.trim()}
-                onClick={() => saveNote(selected.id)}
-                className="cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-45"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
+            </ol>
+          </section>
+        </>
       ) : null}
 
       <AdminConfirmDialog
         open={pendingDelete !== null}
         onOpenChange={(open) => !open && setPendingDelete(null)}
         title="Delete lead"
-        description={
-          <>
-            Delete <span className="font-semibold text-foreground">{pendingDelete?.name}</span>? This
-            cannot be undone.
-          </>
-        }
+        description={<>Delete <span className="font-semibold text-foreground">{pendingDelete?.name}</span>? This cannot be undone.</>}
         pending={pending}
         onConfirm={confirmDeleteLead}
       />
