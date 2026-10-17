@@ -436,18 +436,18 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
           ) : null}
 
           {/* Table (desktop) */}
-          <div className="adm-card mt-4 hidden overflow-hidden xl:block">
+          <div className="adm-card mt-4 hidden overflow-hidden md:block">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[56rem] border-collapse text-left text-sm">
+              <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                 <thead className="border-b border-border bg-surface/70 text-xs font-bold tracking-wide text-foreground-muted uppercase">
                   <tr>
                     <th scope="col" className="w-10 px-4 py-3"><input type="checkbox" aria-label="Select all leads on this page" checked={allOnPage} onChange={(e) => setChecked(e.target.checked ? Array.from(new Set([...checked, ...pageRows.map((l) => l.id)])) : checked.filter((id) => !pageRows.some((l) => l.id === id)))} className="h-4 w-4 cursor-pointer accent-[var(--accent)]" /></th>
                     <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'name' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('name')} className="cursor-pointer font-bold uppercase hover:text-foreground">Lead{sortMark('name')}</button></th>
                     <th scope="col" className="px-3 py-3">Interested in</th>
-                    <th scope="col" className="px-3 py-3">Source</th>
+                    <th scope="col" className="hidden px-3 py-3 lg:table-cell">Source</th>
                     <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'status' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('status')} className="cursor-pointer font-bold uppercase hover:text-foreground">Status{sortMark('status')}</button></th>
-                    <th scope="col" className="px-3 py-3">Owner</th>
-                    <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'followUpAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('followUpAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Follow-up{sortMark('followUpAt')}</button></th>
+                    <th scope="col" className="hidden px-3 py-3 lg:table-cell">Owner</th>
+                    <th scope="col" className="hidden px-3 py-3 xl:table-cell" aria-sort={sort.key === 'followUpAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('followUpAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Follow-up{sortMark('followUpAt')}</button></th>
                     <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'createdAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('createdAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Received{sortMark('createdAt')}</button></th>
                     <th scope="col" className="px-4 py-3 text-right"><span className="sr-only">Actions</span></th>
                   </tr>
@@ -461,15 +461,20 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                         <td className="max-w-[15rem] px-3 py-3">
                           <button type="button" onClick={(e) => { e.stopPropagation(); openLead(l.id); }} className="block max-w-full cursor-pointer truncate text-left font-semibold text-foreground hover:text-[var(--accent-ink)]">{l.name}</button>
                           <span className="block truncate text-xs text-foreground-muted">{[l.phone, l.email].filter(Boolean).join(' · ') || '—'}</span>
+                          {/* Narrower screens drop the Owner and Follow-up columns; keep the facts under the name. */}
+                          <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 xl:hidden">
+                            <span className="lg:hidden"><Owner name={l.assignedTo} /></span>
+                            <FollowUp at={l.followUpAt} closed={!open(l)} now={now} />
+                          </span>
                         </td>
                         <td className="max-w-[15rem] px-3 py-3 text-foreground-secondary">
                           <span className="line-clamp-2">{l.courseInterest || '—'}</span>
                           <span className="flex items-center gap-1 truncate text-xs text-foreground-muted"><MapPin aria-hidden="true" className="h-3 w-3 shrink-0" />{[l.city, l.centreName].filter(Boolean).join(' · ') || '—'}</span>
                         </td>
-                        <td className="px-3 py-3 whitespace-nowrap text-foreground-secondary"><span className="inline-flex items-center gap-1.5"><SrcIcon aria-hidden="true" className="h-4 w-4 text-foreground-muted" />{SOURCE_LABEL[l.source] ?? l.source}</span></td>
+                        <td className="hidden px-3 py-3 whitespace-nowrap text-foreground-secondary lg:table-cell"><span className="inline-flex items-center gap-1.5"><SrcIcon aria-hidden="true" className="h-4 w-4 text-foreground-muted" />{SOURCE_LABEL[l.source] ?? l.source}</span></td>
                         <td className="px-3 py-3"><StatusSelect lead={l} disabled={pending} onChange={(s) => changeStatus(l.id, s)} /></td>
-                        <td className="px-3 py-3"><Owner name={l.assignedTo} /></td>
-                        <td className="px-3 py-3 whitespace-nowrap"><FollowUp at={l.followUpAt} closed={!open(l)} now={now} /></td>
+                        <td className="hidden px-3 py-3 lg:table-cell"><Owner name={l.assignedTo} /></td>
+                        <td className="hidden px-3 py-3 whitespace-nowrap xl:table-cell"><FollowUp at={l.followUpAt} closed={!open(l)} now={now} /></td>
                         <td className="px-3 py-3 whitespace-nowrap text-xs text-foreground-muted">{when(l.createdAt)}</td>
                         <td className="px-4 py-3">
                           <div className="flex justify-end">
@@ -500,7 +505,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
           </div>
 
           {/* Cards (phones and tablets) */}
-          <ul className="mt-4 flex flex-col gap-3 xl:hidden">
+          <ul className="mt-4 flex flex-col gap-3 md:hidden">
             {pageRows.map((l) => {
               const SrcIcon = SOURCE_ICON[l.source] ?? Globe;
               return (

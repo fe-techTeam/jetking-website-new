@@ -18,12 +18,14 @@ export function AdminShell({
   navItems,
   user,
   liveContent,
+  logoutAction,
   children,
 }: {
   sidebar: ReactNode;
   navItems: Array<{ href: Route; label: string; icon: string }>;
   user: { name: string; role: string };
   liveContent: boolean;
+  logoutAction: () => void | Promise<void>;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -100,7 +102,7 @@ export function AdminShell({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopbar items={navItems} user={user} liveContent={liveContent} onMenuClick={toggleMenu} menuExpanded={open || !collapsed} />
+        <AdminTopbar items={navItems} user={user} liveContent={liveContent} logoutAction={logoutAction} onMenuClick={toggleMenu} menuExpanded={open || !collapsed} />
         {children}
       </div>
     </div>

@@ -3,11 +3,13 @@
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
 import { ExternalLink, Menu, Search } from 'lucide-react';
+import { UserMenu } from './UserMenu';
 
 export function AdminTopbar({
   items,
   user,
   liveContent,
+  logoutAction,
   onMenuClick,
   menuExpanded,
 }: {
@@ -15,6 +17,7 @@ export function AdminTopbar({
   user: { name: string; role: string };
   /** `CONTENT_SOURCE=admin` — whether saves here are what the public site actually reads. */
   liveContent: boolean;
+  logoutAction: () => void | Promise<void>;
   onMenuClick: () => void;
   menuExpanded: boolean;
 }) {
@@ -96,13 +99,7 @@ export function AdminTopbar({
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
 
-        <span
-          aria-hidden="true"
-          title={`${user.name} · ${user.role}`}
-          className="hidden h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#f97066] to-[#a50d13] text-sm font-bold text-white shadow-[0_6px_14px_-6px_rgb(199_20_28/0.8)] md:grid"
-        >
-          {user.name.slice(0, 1).toUpperCase()}
-        </span>
+        <UserMenu variant="topbar" name={user.name} role={user.role} logoutAction={logoutAction} />
       </div>
     </header>
   );

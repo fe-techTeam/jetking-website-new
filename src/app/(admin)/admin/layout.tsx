@@ -6,6 +6,7 @@ import { adminLogout, getCurrentUser } from './actions';
 import { ROLE_LABEL, type Role } from '@/lib/auth/users';
 import { AdminSidebarNav } from './AdminSidebarNav';
 import { AdminShell } from './AdminShell';
+import { UserMenu } from './UserMenu';
 import { COLLECTIONS, GROUP } from './registry';
 
 export const metadata = {
@@ -104,37 +105,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
       <AdminSidebarNav items={nav} />
 
-      {/* Identity and sign-out are deliberately two visually distinct blocks
-         — the account summary isn't the same kind of thing as the sign-out action. */}
       <div className="mt-auto pt-4">
-        <div className="adm-sidebar-user flex items-center gap-3 p-3">
-          <span
-            aria-hidden="true"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#f97066] to-[#a50d13] text-sm font-bold text-white shadow-[0_6px_14px_-6px_rgb(199_20_28/0.9)]"
-          >
-            {user.name.slice(0, 1).toUpperCase()}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold text-white">{user.name}</span>
-            <span className="block truncate text-xs text-white/60">{ROLE_LABEL[user.role]}</span>
-          </span>
-        </div>
-
-        <Link
-          href={'/admin/account' as Route}
-          className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-[12px] px-4 text-sm font-semibold text-white/85 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-        >
-          My account
-        </Link>
-
-        <form action={adminLogout} className="mt-1">
-          <button
-            type="submit"
-            className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[12px] border border-white/15 px-4 text-sm font-semibold text-white/85 transition-colors hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-          >
-            Sign out
-          </button>
-        </form>
+        <UserMenu variant="sidebar" name={user.name} role={ROLE_LABEL[user.role]} logoutAction={adminLogout} />
       </div>
     </aside>
   ) : null;
@@ -161,6 +133,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             sidebar={sidebar}
             navItems={nav}
             user={{ name: user.name, role: ROLE_LABEL[user.role] }}
+            logoutAction={adminLogout}
             liveContent={(process.env.CONTENT_SOURCE ?? 'admin') === 'admin'}
           >
             <div id="admin-content" className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
