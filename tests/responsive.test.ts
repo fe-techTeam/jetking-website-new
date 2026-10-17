@@ -34,7 +34,7 @@ describe('mobile-first authoring', () => {
       'src/components/QuickEnquiryForm.tsx',
       'src/components/centres/CentreHeroForm.tsx',
       'src/components/centres/StickyCentreBar.tsx',
-      'src/components/home/v2/StatsStrip.tsx',
+      'src/components/home/hero/StatsStrip.tsx',
       'src/components/kit/Section.tsx',
       'src/components/parent/ParentLanding.tsx',
       'src/components/placements/OfferLetterSlider.tsx',
@@ -107,12 +107,12 @@ describe('sections stay on the page (placeholder, never hidden) when their data 
   });
 
   it('home sections keep their heading and show an empty-state message', () => {
-    expect(src('src/components/home/v3/BlogTeaser.tsx')).not.toMatch(/return null/);
-    expect(src('src/components/home/v3/BlogTeaser.tsx')).toContain("blog.empty");
-    expect(src('src/components/home/v3/ProgramShowcase.tsx')).not.toMatch(/return null/);
-    expect(src('src/components/home/v3/ProgramShowcase.tsx')).toContain("programs.empty");
-    expect(src('src/components/home/v3/VideoStories.tsx')).not.toMatch(/slides\.length === 0\) return null/);
-    expect(src('src/components/home/v3/VideoStories.tsx')).toContain("proof.stories.empty");
+    expect(src('src/components/home/sections/BlogTeaser.tsx')).not.toMatch(/return null/);
+    expect(src('src/components/home/sections/BlogTeaser.tsx')).toContain("blog.empty");
+    expect(src('src/components/home/sections/ProgramShowcase.tsx')).not.toMatch(/return null/);
+    expect(src('src/components/home/sections/ProgramShowcase.tsx')).toContain("programs.empty");
+    expect(src('src/components/home/sections/VideoStories.tsx')).not.toMatch(/slides\.length === 0\) return null/);
+    expect(src('src/components/home/sections/VideoStories.tsx')).toContain("proof.stories.empty");
   });
 });
 
@@ -143,7 +143,7 @@ describe('large screens (1920 to 4K)', () => {
   it('keeps long running text to a readable line length', () => {
     expect(src('src/components/legal/LegalDocument.tsx')).toContain('max-w-[85ch]');
     expect(src('src/components/blog/BlogArticle.tsx')).toContain('max-w-[75ch]');
-    expect(src('src/components/home/v3/PlacementProof.tsx')).toContain('max-w-[100ch]');
+    expect(src('src/components/home/sections/PlacementProof.tsx')).toContain('max-w-[100ch]');
     expect(src('src/components/placements/PlacementsLanding.tsx')).toContain('max-w-[110ch]');
     expect(src('src/app/enquiry/EnquiryForm.tsx')).toContain('max-w-[70ch]');
   });

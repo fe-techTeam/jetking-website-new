@@ -108,13 +108,13 @@ src/
 
 The homepage is a hero followed by a section stack, ending in the normal site footer.
 `src/app/page.tsx` loads one `loadHomeData()` (`src/components/home/data.ts`) and renders
-`HomeV2` (the original hero) then `HomeSections` (everything below).
+`HomeHero` (the hero) then `HomeSections` (everything below).
 
-| Order | Section | Component (`src/components/home/v3/`) | Data |
+| Order | Section | Component (`src/components/home/sections/`) | Data |
 |---|---|---|---|
-| 0 | Hero: headline, persona chooser, action bar (Get Skills / Get a Degree / 100% Placement) | `../v2/HomeV2.tsx` | website copy, static |
+| 0 | Hero: headline, persona chooser, action bar (Get Skills / Get a Degree / 100% Placement) | `../hero/HomeHero.tsx` | website copy, static |
 | 1 | "Trusted by top companies": certification and hiring-partner logos | `CredibilityMarquee.tsx` | `public/logos/`, `HIRING_PARTNERS` |
-| 2 | Explore our programmes: technology tabs and carousel | `ProgramShowcase.tsx`, `CardTrack.tsx` | `content.listCourses()` |
+| 2 | Explore our programmes: technology tabs and carousel | `ProgramShowcase.tsx`, `../../CardTrack.tsx` | `content.listCourses()` |
 | 3 | Build your career, step by step (Learn / Practice / Get certified / Placement support) | `HowItWorks.tsx` | `placements/data.ts`, `explore/content.ts`, course certifications |
 | 4 | "Our learners, our pride" red banner with testimonial carousel | `PlacementProof.tsx` | published testimonials in `placements/data.ts` |
 | 5 | Recognition and university partners | `Recognitions.tsx` | About timeline, course fixtures, `explore/content.ts` |
@@ -133,7 +133,7 @@ adding or reordering sections.
 
 **Design language.** Sections use the shared `.dark-canvas` token layer (`--dc-*`, in
 `src/styles/dark-canvas.css`) with `.no-orbs`, and the four global category hues
-(`--theme-network|cloud|cyber|ai-ink/tint`, exposed as `HUE_VARS` in `v3/data.ts`) for
+(`--theme-network|cloud|cyber|ai-ink/tint`, exposed as `HUE_VARS` in `sections/data.ts`) for
 per-card icon chips. The hero keeps its own `.home-v2` skin (`src/styles/home.css`).
 
 **Rules specific to this page**

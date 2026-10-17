@@ -18,7 +18,7 @@ import type { EnquiryCentre } from '@/components/EnquiryModal';
  * Ask Jetking lives on the global Guide launcher. There is no floating quick-action
  * rail here (Find Center / Call / Book Counselling) — the Professional page still uses it.
  */
-export function HomeV2({
+export function HomeHero({
   enquiryCentres,
   copy,
 }: {
@@ -56,7 +56,7 @@ export function HomeV2({
               <h1 className="page-title-hero text-[var(--dc-ink)]">
                 {copy['hero.title.line1']}
                 <br />
-                <span className="text-[var(--dc-accent-soft)]">{copy['hero.title.line2']}</span>
+                {copy['hero.title.line2']} <span className="text-[var(--dc-accent-soft)]">{copy['hero.title.accent']}</span>
               </h1>
 
               <p className="mt-4 max-w-[42ch] text-[15px] leading-[1.6] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:text-[16px] lg:text-[17px] 3xl:text-[18px]">
@@ -106,7 +106,7 @@ export function HomeV2({
                 { text: copy['hero.pillar2'], Icon: FlaskConical },
                 { text: copy['hero.pillar3'], Icon: Briefcase },
               ].map(({ text, Icon }) => (
-                <li key={text} className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
+                <li key={text} className="flex items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--v2-accent)] text-white">
                     <Icon className="h-4 w-4" strokeWidth={2} />
                   </span>

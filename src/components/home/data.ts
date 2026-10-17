@@ -14,8 +14,8 @@ import type {
 } from '@/lib/content/types';
 
 /**
- * One content read, shared by the hero (`HomeV2`) and the section stack below it
- * (`HomeSections`, `v3/`).
+ * One content read, shared by the hero (`HomeHero`) and the section stack below it
+ * (`HomeSections`, `sections/`).
  *
  * The hero itself only ever needed counts — this is why the doc comment used to say
  * "the leads never iterate the catalogue." That stopped being true once the homepage
