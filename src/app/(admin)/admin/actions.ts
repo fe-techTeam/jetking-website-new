@@ -17,6 +17,7 @@ import { CMS_COLLECTIONS, validateCmsRecord } from '@/lib/cms/schemas';
 import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, type Role } from '@/lib/auth/users';
 import { verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
+import { getRevision, listDeleted, listRevisions } from '@/lib/cms/revisions';
 import { collectionByKey } from './registry';
 
 /** `CmsCollection` is compile-time only — a raw call to this action (bypassing the
@@ -282,7 +283,7 @@ export async function saveCollectionItem(
     const validated = validateCmsRecord(collection, record);
     if (!validated.ok) return { ok: false, error: validated.error };
 
-    await upsertRecord(collection, record, idKey, previousId);
+    await upsertRecord(collection, record, idKey, previousId, user.name);
     await publishContent();
     const recordId = String(record[idKey]);
     void recordAudit(
@@ -305,7 +306,7 @@ export async function removeCollectionItem(
   id: string,
 ): Promise<void> {
   const user = await requireRole(rolesFor(collection));
-  await deleteRecord(collection, idKey, id);
+  await deleteRecord(collection, idKey, id, user.name);
   await publishContent();
   void recordAudit(user, 'cms.delete', collection, id, `Deleted ${collection} "${id}"`);
 }
@@ -320,4 +321,79 @@ export async function seedCmsFromFixtures(): Promise<void> {
 export async function getAdminCollection(collection: CmsCollection) {
   await requireRole(rolesFor(collection));
   return listCollection(collection);
+}
+
+export interface HistoryEntry {
+  id: string;
+  action: 'save' | 'delete' | 'restore';
+  actorName: string;
+  createdAt: string;
+  /** The record id the entry belongs to — differs from the open record only in the trash list. */
+  recordId: string;
+}
+
+/** Version history of one record, newest first. Empty without a database (history needs somewhere durable to live). */
+export async function getRecordHistory(collection: CmsCollection, recordId: string): Promise<HistoryEntry[]> {
+  await requireRole(rolesFor(collection));
+  const rows = await listRevisions(collection, recordId);
+  return rows.map((r) => ({
+    id: r.id,
+    action: r.action as HistoryEntry['action'],
+    actorName: r.actorName,
+    createdAt: r.createdAt.toISOString(),
+    recordId: r.recordId,
+  }));
+}
+
+/** Records deleted from this collection and not currently present — what can be brought back. */
+export async function getDeletedRecords(collection: CmsCollection, idKey: string): Promise<HistoryEntry[]> {
+  await requireRole(rolesFor(collection));
+  const [deleted, live] = await Promise.all([listDeleted(collection), listCollection(collection)]);
+  const liveIds = new Set((live as unknown as Record<string, unknown>[]).map((r) => String(r[idKey])));
+  const seen = new Set<string>();
+  const out: HistoryEntry[] = [];
+  for (const r of deleted) {
+    if (liveIds.has(r.recordId) || seen.has(r.recordId)) continue;
+    seen.add(r.recordId);
+    out.push({
+      id: r.id,
+      action: 'delete',
+      actorName: r.actorName,
+      createdAt: r.createdAt.toISOString(),
+      recordId: r.recordId,
+    });
+  }
+  return out;
+}
+
+/** The record as it was at a revision — loaded into the editor as an unsaved draft, never applied directly. */
+export async function getRevisionRecord(
+  collection: CmsCollection,
+  revisionId: string,
+): Promise<{ ok: true; record: Record<string, unknown> } | { ok: false; error: string }> {
+  await requireRole(rolesFor(collection));
+  const revision = await getRevision(revisionId);
+  if (!revision || revision.collection !== collection) return { ok: false, error: 'That version no longer exists.' };
+  return { ok: true, record: revision.data };
+}
+
+/** Flip one record between Published and Draft without opening it. */
+export async function setRecordStatus(
+  collection: CmsCollection,
+  idKey: string,
+  id: string,
+  status: 'published' | 'draft',
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const user = await requireRole(rolesFor(collection));
+  try {
+    const rows = (await listCollection(collection)) as unknown as Record<string, unknown>[];
+    const current = rows.find((r) => r[idKey] === id);
+    if (!current) return { ok: false, error: 'Record not found.' };
+    await upsertRecord(collection, { ...current, status }, idKey, id, user.name);
+    await publishContent();
+    void recordAudit(user, 'cms.status', collection, id, `${status === 'published' ? 'Published' : 'Unpublished'} ${collection} "${id}"`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Update failed' };
+  }
 }

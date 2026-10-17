@@ -54,6 +54,8 @@ const nextConfig: NextConfig = {
 
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    // Media-library uploads travel through a server action (6 MB per file, several at a time).
+    serverActions: { bodySizeLimit: '24mb' },
   },
 
   // Hosting-agnostic: no platform-specific adapters in the core build.

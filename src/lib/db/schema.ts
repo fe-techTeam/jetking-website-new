@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index, jsonb, doublePrecision } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, index, jsonb, doublePrecision, integer, primaryKey, customType } from 'drizzle-orm/pg-core';
 import type { StoredMessage } from '@/lib/chatbot/types';
 
 /**
@@ -190,3 +190,77 @@ export const centres = pgTable(
 
 export type CityRow = typeof cities.$inferSelect;
 export type CentreRow = typeof centres.$inferSelect;
+
+/**
+ * Every CMS collection except cities/centres (own tables above), one row per record.
+ *
+ * `data` is the whole record exactly as the public site reads it (including `status`), so a record
+ * is always read and written whole and a new field never needs a migration. `status` and `position`
+ * are real columns: the public site filters on the first and keeps editors' list order with the second.
+ */
+export const cmsRecords = pgTable(
+  'cms_records',
+  {
+    collection: text('collection').notNull(),
+    recordId: text('record_id').notNull(),
+    data: jsonb('data').$type<Record<string, unknown>>().notNull(),
+    status: text('status').notNull().default('published'), // 'published' | 'draft'
+    position: integer('position').notNull().default(0),
+    updatedBy: text('updated_by'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.collection, table.recordId] }),
+    index('cms_records_collection_idx').on(table.collection, table.position),
+  ],
+);
+
+/** Collections whose in-repo seed has already been copied into `cms_records` — so emptying one is not undone by a reseed. */
+export const cmsSeeded = pgTable('cms_seeded', {
+  collection: text('collection').primaryKey(),
+  seededAt: timestamp('seeded_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
+ * Version history: a snapshot of a record after each save, and of its last state when deleted, so an
+ * editor can compare and restore. Pruned to the newest few per record by `cms/revisions.ts`.
+ */
+export const cmsRevisions = pgTable(
+  'cms_revisions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    collection: text('collection').notNull(),
+    recordId: text('record_id').notNull(),
+    action: text('action').notNull(), // 'save' | 'delete' | 'restore'
+    data: jsonb('data').$type<Record<string, unknown>>().notNull(),
+    actorName: text('actor_name').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('cms_revisions_record_idx').on(table.collection, table.recordId, table.createdAt)],
+);
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType() {
+    return 'bytea';
+  },
+});
+
+/** Uploaded images/documents (the media library). Bytes live in the database so uploads survive a redeploy on any host. */
+export const mediaAssets = pgTable(
+  'media_assets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    filename: text('filename').notNull(),
+    mime: text('mime').notNull(),
+    size: integer('size').notNull(),
+    alt: text('alt').notNull().default(''),
+    data: bytea('data').notNull(),
+    uploadedBy: text('uploaded_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('media_assets_created_idx').on(table.createdAt)],
+);
+
+export type CmsRecordRow = typeof cmsRecords.$inferSelect;
+export type CmsRevisionRow = typeof cmsRevisions.$inferSelect;
+export type MediaAssetRow = typeof mediaAssets.$inferSelect;

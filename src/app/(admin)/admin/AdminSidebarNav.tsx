@@ -25,6 +25,14 @@ import {
   Award,
   Scale,
   Type,
+  Image as ImageIcon,
+  Settings,
+  Link2,
+  Landmark,
+  Megaphone,
+  MessageSquareQuote,
+  Boxes,
+  Inbox,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react';
@@ -53,6 +61,14 @@ const ICONS: Record<string, LucideIcon> = {
   Award,
   Scale,
   Type,
+  Image: ImageIcon,
+  Settings,
+  Link2,
+  Landmark,
+  Megaphone,
+  MessageSquareQuote,
+  Boxes,
+  Inbox,
 };
 
 export function AdminSidebarNav({

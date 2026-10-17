@@ -36,21 +36,34 @@ export const metadata = {
 // drift from the collection pages or the Website map.
 type NavItem = { href: Route; label: string; icon: string; group: string; roles?: Role[]; tag?: string };
 
+/** Extra Website-group screens that are not record collections, placed after the website's collections. */
+const WEBSITE_TOOLS: NavItem[] = [
+  { href: '/admin/media' as Route, label: 'Media library', icon: 'Image', group: GROUP.website, roles: ['admin', 'editor'] },
+];
+
+const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
+  (c): NavItem => ({
+    href: `/admin/${c.route}` as Route,
+    label: c.label,
+    icon: c.icon,
+    group: c.group,
+    roles: c.roles ?? ['admin', 'editor'],
+    // Collections the website does not render say so in the sidebar, not only on their own page. The
+    // Jetking Guide group's heading already says it, so only the others need a tag.
+    tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
+  }),
+);
+const lastWebsite = COLLECTION_NAV.map((i) => i.group).lastIndexOf(GROUP.website);
+const CONTENT_NAV: NavItem[] = [
+  ...COLLECTION_NAV.slice(0, lastWebsite + 1),
+  ...WEBSITE_TOOLS,
+  ...COLLECTION_NAV.slice(lastWebsite + 1),
+];
+
 const NAV: NavItem[] = [
   { href: '/admin' as Route, label: 'Dashboard', icon: 'LayoutGrid', group: 'Main' },
   { href: '/admin/website' as Route, label: 'Website map', icon: 'Globe', group: 'Main', roles: ['admin', 'editor'] },
-  ...COLLECTIONS.map(
-    (c): NavItem => ({
-      href: `/admin/${c.route}` as Route,
-      label: c.label,
-      icon: c.icon,
-      group: c.group,
-      roles: c.roles ?? ['admin', 'editor'],
-      // Collections the website does not render say so in the sidebar, not only on their own page. The
-      // Jetking Guide group's heading already says it, so only the others need a tag.
-      tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
-    }),
-  ),
+  ...CONTENT_NAV,
   { href: '/admin/leads' as Route, label: 'Leads', icon: 'Users', group: 'CRM' },
   { href: '/admin/team' as Route, label: 'Team & access', icon: 'KeyRound', group: 'Administration', roles: ['admin'] },
   { href: '/admin/audit' as Route, label: 'Audit log', icon: 'History', group: 'Administration', roles: ['admin'] },
@@ -130,10 +143,10 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             sidebar={sidebar}
             navItems={nav}
             user={{ name: user.name, role: ROLE_LABEL[user.role] }}
-            liveContent={process.env.CONTENT_SOURCE === 'admin'}
+            liveContent={(process.env.CONTENT_SOURCE ?? 'admin') === 'admin'}
           >
             <div id="admin-content" className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-              {process.env.CONTENT_SOURCE !== 'admin' ? (
+              {(process.env.CONTENT_SOURCE ?? 'admin') !== 'admin' ? (
                 <div
                   role="alert"
                   className="mb-6 rounded-[var(--admin-radius)] border border-[var(--color-signal-600)]/25 bg-[var(--color-signal-50)] px-4 py-3 text-sm font-medium text-[var(--color-signal-600)]"

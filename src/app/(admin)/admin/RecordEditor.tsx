@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { saveCollectionItem, removeCollectionItem } from './actions';
+import { saveCollectionItem, removeCollectionItem, setRecordStatus } from './actions';
+import { HistoryPanel } from './HistoryPanel';
 import type { CmsCollection } from '@/lib/cms/types';
 import { ADMIN_FORM_CONFIG } from '@/lib/cms/admin-form-config';
 import { ValueEditor, humanize } from './ValueEditor';
@@ -74,6 +75,7 @@ export function RecordEditor({
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingSwitch, setPendingSwitch] = useState<PendingSwitch | null>(null);
   const [search, setSearch] = useState('');
+  const [panel, setPanel] = useState<'history' | 'trash' | null>(null);
 
   const isDirty = JSON.stringify(draft) !== savedSnapshot;
   const query = search.trim().toLowerCase();
@@ -123,6 +125,49 @@ export function RecordEditor({
     setError(null);
   }
 
+  /** Copy the open record into a new unsaved one; the id gets a suffix so it cannot collide. */
+  function duplicate() {
+    const next = { ...draft, [idKey]: `${String(draft[idKey] ?? 'record')}-copy`, status: 'draft' };
+    setDraft(next);
+    setSavedSnapshot('');
+    setOriginalId(undefined);
+    setMessage('Duplicated as a draft — change the id, then Save.');
+    setError(null);
+  }
+
+  /** A version from history: becomes the editor's draft, unsaved, so it can be reviewed first. */
+  function loadVersion(record: Rec, asNew: boolean) {
+    const next = { ...config.blank(), ...record };
+    setDraft(next);
+    setSavedSnapshot(asNew ? '' : JSON.stringify(draft));
+    if (asNew) setOriginalId(undefined);
+    setPanel(null);
+    setMessage(asNew ? 'Loaded the deleted record — Save to bring it back.' : 'Loaded an earlier version — Save to apply it.');
+    setError(null);
+  }
+
+  function toggleStatus(id: string, current: string) {
+    const next = current === 'published' ? 'draft' : 'published';
+    start(async () => {
+      const result = await setRecordStatus(collection, idKey, id, next);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setItems((prev) => prev.map((p) => (p[idKey] === id ? { ...p, status: next } : p)));
+      if (originalId === id) {
+        setDraft((prev) => ({ ...prev, status: next }));
+        setSavedSnapshot((snap) => {
+          try {
+            return JSON.stringify({ ...JSON.parse(snap), status: next });
+          } catch {
+            return snap;
+          }
+        });
+      }
+    });
+  }
+
   function loadRecord(item: Rec) {
     if (isDirty) {
       setPendingSwitch({ kind: 'record', item });
@@ -170,7 +215,7 @@ export function RecordEditor({
       });
       setOriginalId(String(draft[idKey]));
       setSavedSnapshot(JSON.stringify(draft));
-      setMessage('Saved. Revalidation and Guide re-ingest hooks fired.');
+      setMessage(draft.status === 'draft' ? 'Saved as a draft — not shown on the site.' : 'Saved — live on the site.');
     });
   }
 
@@ -249,6 +294,18 @@ export function RecordEditor({
                       </span>
                     </button>
 
+                    {mode === 'list' && (status === 'published' || status === 'draft') ? (
+                      <button
+                        type="button"
+                        disabled={pending}
+                        onClick={() => toggleStatus(id, status)}
+                        aria-label={`${status === 'published' ? 'Unpublish' : 'Publish'} ${id}`}
+                        className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
+                      >
+                        {status === 'published' ? 'Unpublish' : 'Publish'}
+                      </button>
+                    ) : null}
+
                     {mode === 'list' ? (
                     <button
                       type="button"
@@ -274,6 +331,15 @@ export function RecordEditor({
           >
             + New record
           </button>
+          ) : null}
+          {mode === 'list' ? (
+            <button
+              type="button"
+              onClick={() => setPanel(panel === 'trash' ? null : 'trash')}
+              className="mt-2 w-full cursor-pointer py-2 text-xs font-semibold text-foreground-muted hover:text-foreground"
+            >
+              Deleted records…
+            </button>
           ) : null}
         </div>
 
@@ -303,7 +369,27 @@ export function RecordEditor({
                 {published ? 'Published' : 'Draft'}
               </button>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                {originalId ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setPanel(panel === 'history' ? null : 'history')}
+                      className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                    >
+                      History
+                    </button>
+                    {mode === 'list' ? (
+                      <button
+                        type="button"
+                        onClick={duplicate}
+                        className="min-h-11 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)]"
+                      >
+                        Duplicate
+                      </button>
+                    ) : null}
+                  </>
+                ) : null}
                 {error ? (
                   <p role="alert" className="text-sm font-medium text-[var(--color-error-600)]">
                     {error}
@@ -324,6 +410,17 @@ export function RecordEditor({
                 </button>
               </div>
             </div>
+
+            {panel ? (
+              <HistoryPanel
+                collection={collection}
+                idKey={idKey}
+                recordId={originalId}
+                mode={panel}
+                onLoad={loadVersion}
+                onClose={() => setPanel(null)}
+              />
+            ) : null}
 
             <div className="mt-5 flex flex-col gap-6">
               {sections.map((section, i) => (
@@ -395,7 +492,7 @@ export function RecordEditor({
         description={
           <>
             Delete <span className="font-semibold text-foreground">{pendingDeleteId}</span> from{' '}
-            {collection}? This cannot be undone.
+            {collection}? You can bring it back from “Deleted records”.
           </>
         }
         pending={pending}

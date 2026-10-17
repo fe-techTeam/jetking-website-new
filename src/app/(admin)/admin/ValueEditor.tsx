@@ -6,6 +6,10 @@ import { TagListEditor } from './TagListEditor';
 import { ParagraphListEditor } from './ParagraphListEditor';
 import { LegalBlocksEditor } from './LegalBlocksEditor';
 import type { LegalBlock } from '@/lib/content/types';
+import { MediaPickerButton } from './MediaPicker';
+
+/** String fields that hold an image path/URL get a preview and a "Choose image" button. */
+const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|banner|poster)(url|src|path)?$|^ogImage$/i;
 
 /** Field names whose data key predates the website's wording. The site says "courses" everywhere. */
 const LABEL_OVERRIDES: Record<string, string> = {
@@ -144,6 +148,7 @@ function ObjectFields({
               fieldKey={key}
               config={config}
               depth={depth}
+              asImage={key === 'url' && 'alt' in value}
               onChange={(next) => onChange({ ...value, [key]: next })}
             />
           </div>
@@ -159,12 +164,15 @@ export function ValueEditor({
   onChange,
   config,
   depth = 0,
+  asImage = false,
 }: {
   value: unknown;
   fieldKey: string;
   onChange: (next: unknown) => void;
   config: AdminFormConfig;
   depth?: number;
+  /** Forces the image treatment — for a bare `url` that sits beside an `alt` (an image reference). */
+  asImage?: boolean;
 }) {
   const select = config.selectFields?.[fieldKey];
   if (select) {
@@ -191,6 +199,19 @@ export function ValueEditor({
         onChange={(e) => onChange(e.target.value)}
         className="admin-input"
       />
+    );
+  }
+
+  if (typeof value === 'string' && (asImage || IMAGE_FIELDS.test(fieldKey))) {
+    return (
+      <div className="flex items-start gap-3">
+        {value ? (
+          // eslint-disable-next-line @next/next/no-img-element -- admin preview of an arbitrary path
+          <img src={value} alt="" className="h-14 w-14 shrink-0 rounded-md border border-border bg-surface object-contain" />
+        ) : null}
+        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="/path/to/image or https://…" className="admin-input min-w-0 flex-1" />
+        <MediaPickerButton onPick={(item) => onChange(item.url)} />
+      </div>
     );
   }
 

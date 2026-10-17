@@ -34,9 +34,18 @@ import {
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
 import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
-import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import type { CmsCollection, PublishStatus } from '@/lib/cms/types';
 import { CMS_COLLECTIONS } from '@/lib/cms/schemas';
+import { isDatabaseConfigured } from '@/lib/db/client';
+import {
+  deleteRecordRow,
+  listRecordRows,
+  resetRecordRows,
+  upsertRecordRow,
+} from '@/lib/cms/records-db';
+import { recordRevision } from '@/lib/cms/revisions';
+import { CMS_ID_KEYS } from '@/lib/cms/id-keys';
 import {
   deleteLocationRow,
   isLocationCollection,
@@ -172,23 +181,45 @@ function serialized<T>(task: () => Promise<T>): Promise<T> {
   return result;
 }
 
-export async function readCmsStore(): Promise<CmsStore> {
-  if (isSupabaseConfigured()) {
-    // Production path hooks in via getSupabase() on write; file store is the
-    // offline source of truth until tables are fully wired.
+/** The starting content for a database that has none yet: the file store when present, else the in-repo fixtures. Never written to disk. */
+async function loadSeedStore(): Promise<CmsStore> {
+  try {
+    const raw = await fs.readFile(STORE_PATH, 'utf8');
+    return withMissingCollections(JSON.parse(raw) as CmsStore);
+  } catch {
+    return seedStore();
   }
+}
+
+export async function readCmsStore(): Promise<CmsStore> {
   return ensureFileStore();
+}
+
+/** Rows of a collection from Postgres, or null when the database is not configured / reachable. */
+async function listDbCollection(
+  collection: CmsCollection,
+  publishedOnly?: boolean,
+): Promise<Record<string, unknown>[] | null> {
+  if (!isDatabaseConfigured() || isLocationCollection(collection)) return null;
+  return listRecordRows(collection, {
+    publishedOnly,
+    idKey: CMS_ID_KEYS[collection],
+    seed: async () => (await loadSeedStore())[collection] as unknown as Record<string, unknown>[],
+  });
 }
 
 export async function listCollection<K extends CmsCollection>(
   collection: K,
   opts?: { publishedOnly?: boolean },
 ): Promise<CmsStore[K]> {
-  // Cities and centres live in Postgres when DATABASE_URL is set (empty/unreachable => file store).
+  // Cities and centres have their own tables (empty/unreachable => file store).
   if (isLocationCollection(collection)) {
     const dbRows = await listLocationRows(collection, opts);
     if (dbRows) return dbRows as unknown as CmsStore[K];
   }
+  const dbRows = await listDbCollection(collection, opts?.publishedOnly);
+  if (dbRows) return dbRows as unknown as CmsStore[K];
+
   const store = await readCmsStore();
   const rows = store[collection];
   if (opts?.publishedOnly) {
@@ -204,6 +235,8 @@ export class DuplicateIdError extends Error {
   }
 }
 
+const SYSTEM_ACTOR = 'system';
+
 export async function upsertRecord(
   collection: CmsCollection,
   record: Record<string, unknown>,
@@ -216,12 +249,21 @@ export async function upsertRecord(
    * left behind, still published, still rendering at its old URL.
    */
   previousId?: string,
+  /** Who is saving — recorded in the version history. */
+  actor: string = SYSTEM_ACTOR,
+  /** Marks a history entry as a restore rather than an ordinary save. */
+  revisionAction: 'save' | 'restore' = 'save',
 ): Promise<void> {
   return serialized(async () => {
-    const store = await readCmsStore();
+    const useDb = isDatabaseConfigured() && !isLocationCollection(collection);
+    const store = useDb ? null : await readCmsStore();
     // For DB-backed collections the database is the truth for duplicate/rename checks (the file copy may lag it).
-    const dbRows = isLocationCollection(collection) ? await listLocationRows(collection) : null;
-    const rows = [...(dbRows ?? (store[collection] as unknown as Record<string, unknown>[]))];
+    const dbRows = isLocationCollection(collection)
+      ? await listLocationRows(collection)
+      : useDb
+        ? await listDbCollection(collection)
+        : null;
+    const rows = [...(dbRows ?? (store![collection] as unknown as Record<string, unknown>[]))];
     const id = record[idKey];
 
     // Renaming: the old row still carries `previousId`, not `id`, so it can
@@ -231,23 +273,32 @@ export async function upsertRecord(
     if (renaming && rows.some((r) => r[idKey] === id)) {
       throw new DuplicateIdError(String(id));
     }
-
-    const targetIdx = rows.findIndex((r) => r[idKey] === (renaming ? previousId : id));
-    if (targetIdx >= 0) rows[targetIdx] = record;
-    else rows.push(record);
-    (store as unknown as Record<string, unknown>)[collection] = rows;
-
-    if (isLocationCollection(collection)) await upsertLocationRow(collection, record, previousId);
-
-    const supabase = getSupabase();
-    if (supabase) {
-      if (renaming && targetIdx >= 0) {
-        await supabase.from(collection).delete().eq(idKey, previousId);
-      }
-      await supabase.from(collection).upsert(record as never);
+    // Creating (no previousId) over an existing id would silently overwrite that record.
+    if (previousId === undefined && rows.some((r) => r[idKey] === id)) {
+      throw new DuplicateIdError(String(id));
     }
 
-    await writeFileStore(store);
+    if (useDb) {
+      await upsertRecordRow(collection, record, idKey, previousId, actor);
+    } else {
+      const targetIdx = rows.findIndex((r) => r[idKey] === (renaming ? previousId : id));
+      if (targetIdx >= 0) rows[targetIdx] = record;
+      else rows.push(record);
+      (store as unknown as Record<string, unknown>)[collection] = rows;
+
+      if (isLocationCollection(collection)) await upsertLocationRow(collection, record, previousId);
+
+      const supabase = getSupabase();
+      if (supabase) {
+        if (renaming && targetIdx >= 0) {
+          await supabase.from(collection).delete().eq(idKey, previousId);
+        }
+        await supabase.from(collection).upsert(record as never);
+      }
+
+      await writeFileStore(store!);
+    }
+    await recordRevision(collection, String(id), revisionAction, record, actor);
   });
 }
 
@@ -255,28 +306,38 @@ export async function deleteRecord(
   collection: CmsCollection,
   idKey: string,
   id: string,
+  actor: string = SYSTEM_ACTOR,
 ): Promise<void> {
   return serialized(async () => {
-    const store = await readCmsStore();
-    const rows = (store[collection] as unknown as Record<string, unknown>[]).filter(
-      (r) => r[idKey] !== id,
-    );
-    (store as unknown as Record<string, unknown>)[collection] = rows;
+    const useDb = isDatabaseConfigured() && !isLocationCollection(collection);
+    // Keep the last state so the record can be restored from the trash.
+    const current = (await listCollection(collection)) as unknown as Record<string, unknown>[];
+    const existing = current.find((r) => r[idKey] === id);
 
-    if (isLocationCollection(collection)) await deleteLocationRow(collection, id);
+    if (useDb) {
+      await deleteRecordRow(collection, id);
+    } else {
+      const store = await readCmsStore();
+      const rows = (store[collection] as unknown as Record<string, unknown>[]).filter((r) => r[idKey] !== id);
+      (store as unknown as Record<string, unknown>)[collection] = rows;
 
-    const supabase = getSupabase();
-    if (supabase) {
-      await supabase.from(collection).delete().eq(idKey, id);
+      if (isLocationCollection(collection)) await deleteLocationRow(collection, id);
+
+      const supabase = getSupabase();
+      if (supabase) {
+        await supabase.from(collection).delete().eq(idKey, id);
+      }
+
+      await writeFileStore(store);
     }
-
-    await writeFileStore(store);
+    if (existing) await recordRevision(collection, id, 'delete', existing, actor);
   });
 }
 
 export async function resetCmsStoreFromFixtures(): Promise<CmsStore> {
   return serialized(async () => {
     const seeded = seedStore();
+    if (isDatabaseConfigured()) await resetRecordRows();
     await writeFileStore(seeded);
     return seeded;
   });
