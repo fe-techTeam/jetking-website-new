@@ -75,6 +75,20 @@ const ICONS: Record<string, LucideIcon> = {
   Bot,
 };
 
+type NavEntry = { href: Route; label: string; icon: string; group?: string; tag?: string };
+
+/** Consecutive items sharing a group become one group (the list is already ordered the way the menu reads). */
+function groupsOf(items: NavEntry[]): Array<{ group: string; entries: NavEntry[] }> {
+  const out: Array<{ group: string; entries: NavEntry[] }> = [];
+  for (const item of items) {
+    const group = item.group ?? '';
+    const last = out[out.length - 1];
+    if (last && last.group === group) last.entries.push(item);
+    else out.push({ group, entries: [item] });
+  }
+  return out;
+}
+
 export function AdminSidebarNav({
   items,
 }: {
@@ -84,6 +98,27 @@ export function AdminSidebarNav({
   const scrollRef = useRef<HTMLElement>(null);
   const [more, setMore] = useState({ above: false, below: false });
   const [filter, setFilter] = useState('');
+  /** Menu groups the editor has folded away. Remembered per browser; a group holding the current page opens itself. */
+  const [folded, setFolded] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('jk-admin-nav-folded') ?? '[]') as unknown;
+      if (Array.isArray(saved)) setFolded(saved.filter((g): g is string => typeof g === 'string')); // eslint-disable-line react-hooks/set-state-in-effect
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
+  function toggleGroup(group: string) {
+    setFolded((prev) => {
+      const next = prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group];
+      try {
+        localStorage.setItem('jk-admin-nav-folded', JSON.stringify(next));
+      } catch {
+        /* storage blocked */
+      }
+      return next;
+    });
+  }
   const f = filter.trim().toLowerCase();
   const visible = f ? items.filter((i) => i.label.toLowerCase().includes(f)) : items;
 
@@ -108,7 +143,7 @@ export function AdminSidebarNav({
       observer.disconnect();
       el.removeEventListener('scroll', measure);
     };
-  }, [items.length, visible.length]);
+  }, [items.length, visible.length, folded]);
 
   return (
     <div className="relative mt-4 flex min-h-0 flex-1 flex-col">
@@ -126,26 +161,41 @@ export function AdminSidebarNav({
         className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {visible.length === 0 ? <p className="px-3 py-4 text-sm text-white/55">Nothing matches.</p> : null}
-        {visible.map((item, index) => {
-          const showGroupHeading = Boolean(item.group) && item.group !== visible[index - 1]?.group;
-          const Icon = ICONS[item.icon] ?? LayoutGrid;
-          const active = item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href);
-
+        {groupsOf(visible).map(({ group, entries }) => {
+          const holdsCurrent = entries.some((item) => (item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href)));
+          // While filtering, or when the group holds the page you are on, it stays open.
+          const open = Boolean(f) || holdsCurrent || !folded.includes(group);
           return (
-            <Fragment key={item.href}>
-              {showGroupHeading ? <p className="adm-sidebar-group first:pt-2">{item.group}</p> : null}
-              <Link href={item.href} aria-current={active ? 'page' : undefined} className="adm-nav-link">
-                <span className="adm-nav-icon">
-                  <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2} />
-                </span>
-                <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                {/* Collections the website doesn't render say so here, not only on their own page. */}
-                {item.tag ? (
-                  <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/70">
-                    {item.tag}
-                  </span>
-                ) : null}
-              </Link>
+            <Fragment key={group}>
+              {group ? (
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group)}
+                  aria-expanded={open}
+                  className="adm-sidebar-group flex w-full cursor-pointer items-center justify-between text-left first:pt-2 hover:text-white/80"
+                >
+                  <span>{group}</span>
+                  <ChevronDown aria-hidden="true" className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? '' : '-rotate-90'}`} strokeWidth={2.5} />
+                </button>
+              ) : null}
+              {open
+                ? entries.map((item) => {
+                    const Icon = ICONS[item.icon] ?? LayoutGrid;
+                    const active = item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href);
+                    return (
+                      <Link key={item.href} href={item.href} aria-current={active ? 'page' : undefined} className="adm-nav-link">
+                        <span className="adm-nav-icon">
+                          <Icon aria-hidden="true" className="h-[18px] w-[18px]" strokeWidth={2} />
+                        </span>
+                        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                        {/* Collections the website doesn't render say so here, not only on their own page. */}
+                        {item.tag ? (
+                          <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-white/70">{item.tag}</span>
+                        ) : null}
+                      </Link>
+                    );
+                  })
+                : null}
             </Fragment>
           );
         })}
