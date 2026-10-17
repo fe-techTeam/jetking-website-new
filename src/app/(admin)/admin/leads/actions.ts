@@ -29,9 +29,14 @@ async function scopeCityFor(user: CurrentUser): Promise<string | null> {
   return resolveCentreCity(user.centreSlug);
 }
 
-function scopeLeads(scopeCity: string | null, leads: Lead[]): Lead[] {
+/** In scope: the lead's city is the staff member's centre city, or it was enquired for that exact centre. */
+function inScope(scopeCity: string | null, centreSlug: string | null, lead: Lead): boolean {
+  return cityMatches(scopeCity, lead.city) || (centreSlug !== null && lead.centreSlug === centreSlug);
+}
+
+function scopeLeads(scopeCity: string | null, leads: Lead[], centreSlug: string | null = null): Lead[] {
   if (scopeCity === null) return leads;
-  return leads.filter((l) => cityMatches(scopeCity, l.city));
+  return leads.filter((l) => inScope(scopeCity, centreSlug, l));
 }
 
 async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Lead> {
@@ -39,7 +44,7 @@ async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Le
   if (!lead) throw new Error('Lead not found.');
   if (user.role === 'centre_staff') {
     const scopeCity = await scopeCityFor(user);
-    if (!cityMatches(scopeCity, lead.city)) throw new Error('Lead not found.');
+    if (!inScope(scopeCity, user.centreSlug, lead)) throw new Error('Lead not found.');
   }
   return lead;
 }
@@ -47,7 +52,7 @@ async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Le
 export async function getLeads(): Promise<Lead[]> {
   const user = await requireRole([...STAFF_ROLES]);
   const scopeCity = await scopeCityFor(user);
-  return scopeLeads(scopeCity, await listLeads());
+  return scopeLeads(scopeCity, await listLeads(), user.centreSlug);
 }
 
 export async function getLeadsSummary(): Promise<LeadStats> {
@@ -55,7 +60,7 @@ export async function getLeadsSummary(): Promise<LeadStats> {
   if (user.role !== 'centre_staff') return getLeadStats();
 
   const scopeCity = await scopeCityFor(user);
-  const scoped = scopeLeads(scopeCity, await listLeads());
+  const scoped = scopeLeads(scopeCity, await listLeads(), user.centreSlug);
   const byStatus = { new: 0, contacted: 0, enrolled: 0, lost: 0 };
   for (const lead of scoped) byStatus[lead.status as LeadStatus] = (byStatus[lead.status as LeadStatus] ?? 0) + 1;
   return { total: scoped.length, byStatus };

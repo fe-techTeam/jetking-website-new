@@ -20,10 +20,31 @@ export const leads = pgTable(
     persona: text('persona'), // 'student' | 'parent' | 'professional' | 'franchise'
     status: text('status').notNull().default('new'), // 'new' | 'contacted' | 'enrolled' | 'lost'
     notes: text('notes'),
+    /** Which form/surface sent it (`home-final-cta-form`, `franchise-landing`, `jetking-ai-chat`, a page path…). `source` above is the channel. */
+    form: text('form'),
+    state: text('state'),
+    /** Centre the visitor picked, resolved against the CMS centres. */
+    centreSlug: text('centre_slug'),
+    centreName: text('centre_name'),
+    courseSlug: text('course_slug'),
+    qualification: text('qualification'), // '10+2' | 'graduate'
+    /** What the visitor typed in the enquiry's message box — kept apart from staff `notes`. */
+    message: text('message'),
+    visitorId: text('visitor_id'),
+    accountId: text('account_id'),
+    journeyStage: text('journey_stage'),
+    intent: text('intent'),
+    utmSource: text('utm_source'),
+    utmMedium: text('utm_medium'),
+    utmCampaign: text('utm_campaign'),
+    utmContent: text('utm_content'),
+    landingPage: text('landing_page'),
+    /** Hand-off to the external CRM: 'none' (not configured) | 'routed' | 'failed'. The lead is stored here regardless. */
+    crmStatus: text('crm_status').notNull().default('none'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index('leads_status_idx').on(table.status), index('leads_created_at_idx').on(table.createdAt)],
+  (table) => [index('leads_status_idx').on(table.status), index('leads_created_at_idx').on(table.createdAt), index('leads_phone_idx').on(table.phone), index('leads_centre_idx').on(table.centreSlug)],
 );
 
 /** One row per timeline entry shown in the lead detail drawer (call logged, chatbot handoff, note added). */

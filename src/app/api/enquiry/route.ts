@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import { getSessionUser } from '@/lib/chatbot/session';
 import { QUALIFICATION_VALUES } from '@/lib/enquiry-fields';
+import { saveEnquiry, setCrmStatus } from '@/lib/leads/intake';
 import { UTM_COOKIE, cookieValue, decodeUtm, utmToFlat } from '@/lib/utm';
 
 export const runtime = 'nodejs';
@@ -151,6 +152,34 @@ export async function POST(request: Request) {
     receivedAt: new Date().toISOString(),
   };
 
+  // Durable record first, in our own database — before any CRM call, so an outage there can't lose the lead.
+  // Best-effort: if storing fails the CRM hand-off below (and the log line) still carry it.
+  let leadId: string | null = null;
+  try {
+    const saved = await saveEnquiry({
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email || undefined,
+      city: lead.city,
+      state: lead.state,
+      centre: lead.centre,
+      qualification: lead.qualification,
+      courseSlug: lead.courseSlug,
+      message: lead.message,
+      persona: lead.persona,
+      source: lead.source,
+      visitorId: lead.visitorId,
+      journeyStage: lead.journeyStage,
+      intent: lead.intent,
+      accountId: account?.id,
+      utm: decodeUtm(cookieValue(request.headers.get('cookie'), UTM_COOKIE)),
+    });
+    if (saved?.duplicate) return NextResponse.json({ ok: true, routed: false });
+    leadId = saved?.id ?? null;
+  } catch (error) {
+    console.error('[enquiry:store-failed]', JSON.stringify(enquiry), error);
+  }
+
   const endpoint = process.env.CRM_ENDPOINT;
 
   if (!endpoint) {
@@ -175,11 +204,13 @@ export async function POST(request: Request) {
 
     if (!response.ok) throw new Error(`CRM returned ${response.status}`);
 
+    if (leadId) await setCrmStatus(leadId, 'routed').catch(() => {});
     return NextResponse.json({ ok: true, routed: true });
   } catch (error) {
     // The visitor must not be told to re-submit — we have their details, and a
     // duplicate submission is worse than a delayed hand-off. Log loudly instead.
     console.error('[enquiry:crm-failed]', JSON.stringify(enquiry), error);
+    if (leadId) await setCrmStatus(leadId, 'failed').catch(() => {});
     return NextResponse.json({ ok: true, routed: false });
   }
 }

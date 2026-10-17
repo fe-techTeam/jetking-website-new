@@ -504,7 +504,32 @@ export function LeadsBoard({
               <dt className="label-mono">City</dt>
               <dd className="mt-1 text-foreground">{selected.city || '—'}</dd>
             </div>
+            {(
+              [
+                ['State', selected.state],
+                ['Centre', selected.centreName],
+                ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification],
+                ['Audience', selected.persona],
+                ['Form', selected.form],
+                ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')],
+                ['Landing page', selected.landingPage],
+                ['CRM hand-off', selected.crmStatus === 'routed' ? 'Sent' : selected.crmStatus === 'failed' ? 'Failed — follow up manually' : 'Not configured'],
+              ] as const
+            )
+              .filter(([, v]) => v)
+              .map(([label, v]) => (
+                <div key={label}>
+                  <dt className="label-mono">{label}</dt>
+                  <dd className="mt-1 break-words text-foreground">{v}</dd>
+                </div>
+              ))}
           </dl>
+          {selected.message ? (
+            <div className="mt-4 text-sm">
+              <p className="label-mono">Message from the visitor</p>
+              <p className="mt-1 whitespace-pre-wrap text-foreground">{selected.message}</p>
+            </div>
+          ) : null}
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <span className="label-mono">Status</span>
