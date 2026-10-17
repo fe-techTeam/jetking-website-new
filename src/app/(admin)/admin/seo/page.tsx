@@ -2,6 +2,7 @@ import { requireRole } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { listCollection } from '@/lib/cms/store';
 import { COPY_PAGES } from '@/lib/content/copy/registry';
+import { UNLISTED_PAGE_IDS } from '../registry';
 import { SeoTable, type SeoRow } from './SeoTable';
 
 export const metadata = { title: 'SEO overview | Jetking Admin' };
@@ -12,7 +13,7 @@ export default async function SeoOverviewPage() {
   const overrides = (await listCollection('page_copy')) as unknown as Array<{ id: string; entries: Record<string, string>; status: string }>;
   const rows: SeoRow[] = [];
 
-  for (const page of COPY_PAGES.filter((p) => p.path && 'seo.title' in p.defaults)) {
+  for (const page of COPY_PAGES.filter((p) => p.path && 'seo.title' in p.defaults && !UNLISTED_PAGE_IDS.includes(p.id))) {
     const o = overrides.find((r) => r.id === page.id && r.status === 'published')?.entries ?? {};
     const pick = (k: string) => (o[k]?.trim() ? o[k]! : (page.defaults[k] ?? ''));
     rows.push({

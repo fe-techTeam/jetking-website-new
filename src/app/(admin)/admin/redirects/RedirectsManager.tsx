@@ -15,6 +15,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
   const [bulkResult, setBulkResult] = useState<string | null>(null);
   const [toDelete, setToDelete] = useState<RedirectItem | null>(null);
   const [pending, start] = useTransition();
+  const [confirmAdd, setConfirmAdd] = useState<'save' | 'import' | null>(null);
 
   const q = query.trim().toLowerCase();
   const shown = q ? items.filter((r) => r.source.toLowerCase().includes(q) || r.destination.toLowerCase().includes(q)) : items;
@@ -72,7 +73,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
               </p>
             ) : null}
             <div className="flex gap-2">
-              <button type="button" disabled={pending} onClick={submit} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">
+              <button type="button" disabled={pending} onClick={() => setConfirmAdd('save')} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45">
                 {pending ? 'Saving…' : form.id ? 'Save changes' : 'Add redirect'}
               </button>
               {form.id ? (
@@ -88,7 +89,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
           <h2 className="text-sm font-bold text-foreground">Bulk import</h2>
           <p className="mt-1 text-xs text-foreground-muted">One per line: /old-url , /new-url</p>
           <textarea value={bulk} onChange={(e) => setBulk(e.target.value)} rows={5} className="admin-input mt-3 font-mono text-xs" aria-label="Redirects to import" />
-          <button type="button" disabled={pending || !bulk.trim()} onClick={runImport} className="mt-3 min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] disabled:opacity-45">
+          <button type="button" disabled={pending || !bulk.trim()} onClick={() => setConfirmAdd('import')} className="mt-3 min-h-10 cursor-pointer rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] disabled:opacity-45">
             Import
           </button>
           {bulkResult ? <pre className="mt-3 max-h-40 overflow-auto text-xs whitespace-pre-wrap text-foreground-secondary">{bulkResult}</pre> : null}
@@ -152,6 +153,23 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
             setItems((prev) => prev.filter((r) => r.id !== target.id));
             setToDelete(null);
           });
+        }}
+      />
+
+      <AdminConfirmDialog
+        open={confirmAdd !== null}
+        onOpenChange={(open) => !pending && !open && setConfirmAdd(null)}
+        title={confirmAdd === 'import' ? 'Publish these redirects?' : 'Publish this redirect?'}
+        description="Visitors are sent to the new address within about 30 seconds."
+        confirmLabel="Publish"
+        pendingLabel="Saving…"
+        tone="default"
+        pending={pending}
+        onConfirm={() => {
+          const what = confirmAdd;
+          setConfirmAdd(null);
+          if (what === 'import') runImport();
+          else submit();
         }}
       />
     </div>

@@ -81,6 +81,8 @@ export function RecordEditor({
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingSwitch, setPendingSwitch] = useState<PendingSwitch | null>(null);
   const [search, setSearch] = useState('');
+  /** Anything that changes the live website waits for an explicit yes. */
+  const [confirm, setConfirm] = useState<{ kind: 'save' } | { kind: 'toggle'; id: string; current: string } | null>(null);
   const [panel, setPanel] = useState<'history' | 'trash' | null>(null);
 
   const isDirty = JSON.stringify(draft) !== savedSnapshot;
@@ -197,6 +199,18 @@ export function RecordEditor({
     setPendingSwitch(null);
   }
 
+  /** Saving touches the live site when the record is (or was) published; drafts save without asking. */
+  function requestSave() {
+    let wasLive = false;
+    try {
+      wasLive = JSON.parse(savedSnapshot || '{}').status === 'published';
+    } catch {
+      /* new record */
+    }
+    if (draft.status === 'published' || wasLive) setConfirm({ kind: 'save' });
+    else save();
+  }
+
   function save() {
     start(async () => {
       setMessage(null);
@@ -304,7 +318,7 @@ export function RecordEditor({
                       <button
                         type="button"
                         disabled={pending}
-                        onClick={() => toggleStatus(id, status)}
+                        onClick={() => setConfirm({ kind: 'toggle', id, current: status })}
                         aria-label={`${status === 'published' ? 'Unpublish' : 'Publish'} ${id}`}
                         className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-muted transition-colors hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45"
                       >
@@ -419,7 +433,7 @@ export function RecordEditor({
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={save}
+                  onClick={requestSave}
                   className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
                 >
                   {pending ? 'Saving…' : 'Save'}
@@ -492,7 +506,7 @@ export function RecordEditor({
             <button
               type="button"
               disabled={pending}
-              onClick={save}
+              onClick={requestSave}
               className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm font-bold disabled:opacity-45"
             >
               {pending ? 'Saving…' : 'Save'}
@@ -513,6 +527,50 @@ export function RecordEditor({
         }
         pending={pending}
         onConfirm={() => pendingDeleteId && confirmDelete(pendingDeleteId)}
+      />
+
+      <AdminConfirmDialog
+        open={confirm !== null}
+        onOpenChange={(open) => !open && !pending && setConfirm(null)}
+        title={
+          confirm?.kind === 'toggle'
+            ? confirm.current === 'published'
+              ? 'Take this page offline?'
+              : 'Publish this record?'
+            : draft.status === 'published'
+              ? 'Publish changes to the live site?'
+              : 'Take this record offline?'
+        }
+        description={
+          confirm?.kind === 'toggle' ? (
+            <>
+              <span className="font-semibold text-foreground">{confirm.id}</span>{' '}
+              {confirm.current === 'published'
+                ? 'will disappear from the website straight away.'
+                : 'will appear on the website straight away.'}
+            </>
+          ) : draft.status === 'published' ? (
+            <>
+              Saving <span className="font-semibold text-foreground">{String(draft[idKey] ?? 'this record')}</span> updates the live website
+              straight away.
+            </>
+          ) : (
+            <>
+              <span className="font-semibold text-foreground">{String(draft[idKey] ?? 'This record')}</span> is live now. Saving it as a draft removes it
+              from the website.
+            </>
+          )
+        }
+        confirmLabel={confirm?.kind === 'toggle' ? (confirm.current === 'published' ? 'Unpublish' : 'Publish') : draft.status === 'published' ? 'Publish' : 'Save as draft'}
+        pendingLabel="Saving…"
+        tone="default"
+        pending={pending}
+        onConfirm={() => {
+          const c = confirm;
+          setConfirm(null);
+          if (c?.kind === 'toggle') toggleStatus(c.id, c.current);
+          else if (c) save();
+        }}
       />
 
       <AdminConfirmDialog

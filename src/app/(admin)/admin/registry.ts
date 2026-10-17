@@ -36,6 +36,8 @@ export interface AdminCollection {
   roles?: Role[];
   /** Public URL of one record, with `{field}` placeholders filled from the record (e.g. `/courses/{slug}`). */
   viewPath?: string;
+  /** Records the website never shows (their only page is unreachable), kept in the database but not offered for editing. */
+  hiddenRecordIds?: string[];
   /** False for collections that have their own editor and aren't a record count worth charting. */
   dashboard?: boolean;
 }
@@ -128,7 +130,7 @@ export const COLLECTIONS: AdminCollection[] = [
     description: 'The About page: heading, vision and mission, leadership, company timeline, awards and partners.',
     live: true,
     mode: 'singleton',
-    appearsOn: [{ label: 'About', href: '/about-us' }, { label: 'Explore', href: '/explore' }],
+    appearsOn: [{ label: 'About', href: '/about-us' }],
     note: 'Set the switch to Draft to show the built-in copy instead of this document.',
   },
   {
@@ -145,7 +147,6 @@ export const COLLECTIONS: AdminCollection[] = [
       { label: 'Placements', href: '/placements' },
       { label: 'Home', href: '/' },
       { label: 'Course pages' },
-      { label: 'Explore', href: '/explore' },
     ],
     note: 'Set the switch to Draft to show the built-in copy instead of this document. Keep the disclaimer: no figure here may imply a placement guarantee.',
   },
@@ -213,13 +214,12 @@ export const COLLECTIONS: AdminCollection[] = [
     label: 'Logos & partners',
     icon: 'Boxes',
     group: GROUP.website,
-    description: 'The certification, employer and placement-partner logo rows shown on the home, Explore and Professionals pages.',
+    description: 'The certification and employer logo rows shown on the home page.',
     live: true,
     mode: 'fixed',
+    hiddenRecordIds: ['explore-partners', 'professional-employers'],
     appearsOn: [
       { label: 'Home', href: '/' },
-      { label: 'Explore', href: '/explore' },
-      { label: 'Professionals', href: '/professional' },
     ],
     note: 'Each list is a fixed document: add, remove, reorder or rename its logos. A logo without an image shows as a plain name tile. Set a list to Draft to show the built-in logos instead.',
   },
@@ -253,13 +253,11 @@ export const COLLECTIONS: AdminCollection[] = [
     label: 'Homepage variants',
     icon: 'LayoutTemplate',
     group: GROUP.personalisation,
-    description: 'The testimonials shown on each audience landing page.',
+    description: 'The testimonials shown on the Franchise page (the default variant is the fallback).',
     live: true,
-    note: 'Only a variant’s testimonials reach the website today. Its banner, CTA, stories and video fields are not rendered by any page yet, and the home page does not use variants.',
+    note: 'Only a variant’s testimonials reach the website today (the Franchise page). Its banner, CTA, stories and video fields are not rendered by any page yet, and the home page does not use variants.',
+    hiddenRecordIds: ['student', 'parent', 'professional', 'ai-mumbai'],
     appearsOn: [
-      { label: 'Students', href: '/student' },
-      { label: 'Parents', href: '/parent' },
-      { label: 'Professionals', href: '/professional' },
       { label: 'Franchise', href: '/franchise' },
     ],
   },
@@ -313,6 +311,12 @@ export const COLLECTIONS: AdminCollection[] = [
   },
 ];
 
+/**
+ * Pages that exist but are not reachable by visitors: no link from anywhere, left out of the sitemap and
+ * set to noindex. The admin does not list them, so editors don't spend time on pages nobody can find.
+ */
+export const UNLISTED_PAGE_IDS: readonly string[] = ['student', 'parent', 'professional', 'explore'];
+
 export function collectionByKey(key: CmsCollection): AdminCollection {
   const found = COLLECTIONS.find((c) => c.key === key);
   if (!found) throw new Error(`No admin registry entry for collection "${key}".`);
@@ -350,17 +354,7 @@ export const SITE_PAGES: SitePage[] = [
   { name: 'Blog', path: '/blog', href: '/blog', cms: ['posts'] },
   { name: 'Article', path: '/blog/[slug]', cms: ['posts'] },
   { name: 'FAQ', path: '/faq', href: '/faq', cms: ['faqs'] },
-  { name: 'Students', path: '/student', href: '/student', cms: ['homepage_variants', 'courses'], code: 'Page copy' },
-  { name: 'Parents', path: '/parent', href: '/parent', cms: ['homepage_variants', 'courses'], code: 'Page copy' },
-  {
-    name: 'Professionals',
-    path: '/professional',
-    href: '/professional',
-    cms: ['homepage_variants', 'courses', 'logo_lists'],
-    code: 'Page copy',
-  },
   { name: 'Franchise', path: '/franchise', href: '/franchise', cms: ['homepage_variants', 'faqs'], code: 'Page copy' },
-  { name: 'Explore', path: '/explore', href: '/explore', cms: ['courses', 'centres', 'cities', 'posts', 'about_page', 'placements_page', 'logo_lists'], code: 'Page copy' },
   { name: 'Enquiry', path: '/enquiry', href: '/enquiry', cms: ['courses', 'centres', 'cities'], code: 'Form copy (submissions land in Leads)' },
   {
     name: 'About',

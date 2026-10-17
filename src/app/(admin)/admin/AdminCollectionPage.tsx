@@ -18,7 +18,8 @@ export async function AdminCollectionPage({
 }) {
   const meta = collectionByKey(collection);
   await requireRole(meta.roles ?? ['admin', 'editor']);
-  const items = await getAdminCollection(collection);
+  const hidden = new Set(meta.hiddenRecordIds ?? []);
+  const items = (await getAdminCollection(collection)).filter((r) => !hidden.has(String((r as unknown as Record<string, unknown>)[meta.idKey])));
   const open = (await searchParams)?.open;
 
   return (

@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import { saveSeo, type SeoTarget, type SeoValues } from './actions';
 import { MediaPickerButton } from '../MediaPicker';
+import { AdminConfirmDialog } from '../AdminConfirmDialog';
 
 export interface SeoRow {
   kind: 'page' | 'record';
@@ -55,6 +56,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
   const [draft, setDraft] = useState<SeoValues | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
+  const [confirmRow, setConfirmRow] = useState<SeoRow | null>(null);
 
   const titleCounts = useMemo(() => {
     const m = new Map<string, number>();
@@ -184,7 +186,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                     </label>
                     {error ? <p role="alert" className="text-sm font-medium text-[var(--color-error-600)]">{error}</p> : null}
                     <div>
-                      <button type="button" disabled={pending} onClick={() => save(r)} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45">
+                      <button type="button" disabled={pending} onClick={() => setConfirmRow(r)} className="adm-btn-primary min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45">
                         {pending ? 'Saving…' : 'Save'}
                       </button>
                     </div>
@@ -210,6 +212,27 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
           <button type="button" disabled={page >= pages - 1} onClick={() => setPage(page + 1)} className="cursor-pointer font-semibold text-foreground-secondary disabled:opacity-40">Next →</button>
         </div>
       ) : null}
+
+      <AdminConfirmDialog
+        open={confirmRow !== null}
+        onOpenChange={(open) => !pending && !open && setConfirmRow(null)}
+        title="Publish these SEO changes?"
+        description={
+          <>
+            The title, description and indexing for <span className="font-semibold text-foreground">{confirmRow?.label}</span> change on the live site
+            straight away.
+          </>
+        }
+        confirmLabel="Publish"
+        pendingLabel="Saving…"
+        tone="default"
+        pending={pending}
+        onConfirm={() => {
+          const row = confirmRow;
+          setConfirmRow(null);
+          if (row) save(row);
+        }}
+      />
     </div>
   );
 }

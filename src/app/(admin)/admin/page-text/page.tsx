@@ -1,6 +1,7 @@
 import { getAdminCollection, requireRole } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { COPY_PAGES } from '@/lib/content/copy/registry';
+import { UNLISTED_PAGE_IDS } from '../registry';
 import { PageCopyEditor, type EditablePage } from './PageCopyEditor';
 
 export const metadata = { title: 'Page text | Jetking Admin' };
@@ -10,7 +11,7 @@ export default async function AdminPageTextPage() {
   // `getAdminCollection` returns a union over every collection; for 'page_copy' each row is exactly this.
   const records = (await getAdminCollection('page_copy')) as unknown as Array<{ id: string; entries: Record<string, string> }>;
 
-  const pages: EditablePage[] = COPY_PAGES.map((p) => ({
+  const pages: EditablePage[] = COPY_PAGES.filter((p) => !UNLISTED_PAGE_IDS.includes(p.id)).map((p) => ({
     id: p.id,
     label: p.label,
     path: p.path,

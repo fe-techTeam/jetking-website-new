@@ -51,6 +51,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmSave, setConfirmSave] = useState(false);
   const [pendingSwitch, setPendingSwitch] = useState<string | null>(null);
 
   const page = pages.find((p) => p.id === selectedId) ?? pages[0]!;
@@ -241,7 +242,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
               <button
                 type="button"
                 disabled={pending || !isDirty}
-                onClick={save}
+                onClick={() => setConfirmSave(true)}
                 className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
               >
                 {pending ? 'Saving…' : 'Save'}
@@ -340,6 +341,20 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
         </div>
       </div>
 
+      <AdminConfirmDialog
+        open={confirmSave}
+        onOpenChange={(open) => !pending && setConfirmSave(open)}
+        title="Publish these text changes?"
+        description="The new wording and images go live on the website straight away."
+        confirmLabel="Publish"
+        pendingLabel="Saving…"
+        tone="default"
+        pending={pending}
+        onConfirm={() => {
+          setConfirmSave(false);
+          save();
+        }}
+      />
       <AdminConfirmDialog
         open={confirmReset}
         onOpenChange={(open) => !pending && setConfirmReset(open)}
