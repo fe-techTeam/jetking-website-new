@@ -9,12 +9,14 @@ export function AdminTopbar({
   user,
   liveContent,
   onMenuClick,
+  menuExpanded,
 }: {
   items: Array<{ href: Route; label: string; icon: string }>;
   user: { name: string; role: string };
   /** `CONTENT_SOURCE=admin` — whether saves here are what the public site actually reads. */
   liveContent: boolean;
   onMenuClick: () => void;
+  menuExpanded: boolean;
 }) {
   const pathname = usePathname();
   const current =
@@ -26,8 +28,9 @@ export function AdminTopbar({
       <button
         type="button"
         onClick={onMenuClick}
-        aria-label="Open navigation"
-        className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-[12px] border border-border text-foreground-secondary transition-colors hover:border-border-medium hover:bg-surface hover:text-foreground lg:hidden"
+        aria-label="Toggle navigation"
+        aria-expanded={menuExpanded}
+        className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-[12px] border border-border text-foreground-secondary transition-colors hover:border-border-medium hover:bg-surface hover:text-foreground"
       >
         <Menu aria-hidden="true" className="h-5 w-5" />
       </button>
