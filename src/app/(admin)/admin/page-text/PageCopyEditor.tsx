@@ -141,7 +141,17 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
     });
   }
 
-  const groups = [...new Set(pages.map((p) => p.group))];
+  // Find a page by its name or by any wording on it — handy when you remember a sentence, not which page it is on.
+  const [pageQuery, setPageQuery] = useState('');
+  const pq = pageQuery.trim().toLowerCase();
+  const listedPages = pq
+    ? pages.filter(
+        (p) =>
+          p.label.toLowerCase().includes(pq) ||
+          Object.values({ ...p.defaults, ...(overrides[p.id] ?? {}) }).some((v) => v.toLowerCase().includes(pq)),
+      )
+    : pages;
+  const groups = [...new Set(listedPages.map((p) => p.group))];
   const fieldCount = Object.keys(page.defaults).length;
   const editedCount = Object.keys(nextEntries).length;
 
@@ -150,13 +160,23 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
       {/* ── Page list ─────────────────────────────────────────────────── */}
       <nav aria-label="Pages" className="min-w-0">
         <div className="adm-card overflow-hidden">
+          <div className="border-b border-border p-2">
+            <input
+              value={pageQuery}
+              onChange={(e) => setPageQuery(e.target.value)}
+              placeholder="Search pages and wording…"
+              aria-label="Search pages"
+              className="admin-input h-10 text-sm"
+            />
+          </div>
+          {listedPages.length === 0 ? <p className="px-4 py-6 text-center text-sm text-foreground-muted">No page has that wording.</p> : null}
           {groups.map((group) => (
             <div key={group}>
               <p className="border-b border-border bg-surface/70 px-4 py-3 text-xs font-bold tracking-wide text-foreground-muted uppercase">
                 {group}
               </p>
               <ul>
-                {pages
+                {listedPages
                   .filter((p) => p.group === group)
                   .map((p) => {
                     const active = p.id === page.id;

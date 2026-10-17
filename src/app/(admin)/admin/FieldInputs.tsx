@@ -56,6 +56,8 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const plural = (noun: string) => (noun.endsWith('y') ? `${noun.slice(0, -1)}ies` : `${noun}s`);
+
 const hint = (text: string) => <p className="mt-1 text-xs text-foreground-muted">{text}</p>;
 
 /** A textarea that grows with its content (no inner scrollbar to hunt through) and, optionally, counts characters. */
@@ -173,17 +175,7 @@ export function SpecialField({
         </select>
       );
     case 'city-select':
-      return (
-        <select value={value} onChange={(e) => onChange(e.target.value)} className="admin-input">
-          <option value="">Choose a city…</option>
-          {value && !relations.cities.some((c) => c.value === value) ? <option value={value}>{value}</option> : null}
-          {relations.cities.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      );
+      return <SearchSelect value={value} onChange={onChange} options={relations.cities} placeholder="Choose a city…" noun="city" />;
     case 'provider':
       return (
         <select value={value} onChange={(e) => onChange(e.target.value)} className="admin-input">
@@ -245,7 +237,7 @@ export function MultiRelation({
           ))}
         </ul>
       ) : null}
-      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Add a ${noun}…`} aria-label={`Search ${noun}s`} className="admin-input h-10 text-sm" />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={`Add a ${noun}…`} aria-label={`Search ${plural(noun)}`} className="admin-input h-10 text-sm" />
       {q || available.length <= 8 ? (
         <ul className="mt-1.5 max-h-44 overflow-auto">
           {available.slice(0, 40).map((o) => (
@@ -262,11 +254,93 @@ export function MultiRelation({
               </button>
             </li>
           ))}
-          {available.length === 0 ? <li className="px-2 py-2 text-xs text-foreground-muted">No {noun}s left to add.</li> : null}
+          {available.length === 0 ? <li className="px-2 py-2 text-xs text-foreground-muted">No {plural(noun)} left to add.</li> : null}
         </ul>
       ) : (
-        <p className="mt-1.5 px-1 text-xs text-foreground-muted">Type to search {available.length} {noun}s.</p>
+        <p className="mt-1.5 px-1 text-xs text-foreground-muted">Type to search {available.length} {plural(noun)}.</p>
       )}
+    </div>
+  );
+}
+
+/** A single-choice dropdown with a search box — for lists too long to scan (cities, centres). */
+export function SearchSelect({
+  value,
+  onChange,
+  options,
+  placeholder,
+  noun,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: RelationOption[];
+  placeholder: string;
+  noun: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: MouseEvent) => !box.current?.contains(e.target as Node) && setOpen(false);
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('mousedown', away);
+    document.addEventListener('keydown', esc);
+    return () => {
+      document.removeEventListener('mousedown', away);
+      document.removeEventListener('keydown', esc);
+    };
+  }, [open]);
+
+  const q = query.trim().toLowerCase();
+  const list = options.filter((o) => !q || `${o.label} ${o.value}`.toLowerCase().includes(q));
+  const current = options.find((o) => o.value === value)?.label ?? value;
+
+  return (
+    <div ref={box} className="relative">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => {
+          setOpen(!open);
+          setQuery('');
+        }}
+        className="admin-input flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 text-left"
+      >
+        <span className={current ? 'text-foreground' : 'text-foreground-muted'}>{current || placeholder}</span>
+        <span aria-hidden="true" className="text-foreground-muted">▾</span>
+      </button>
+      {open ? (
+        <div className="absolute z-20 mt-1 w-full rounded-[var(--admin-radius)] border border-border bg-background p-2 shadow-[var(--adm-shadow-lift)]">
+          <input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={`Search ${plural(noun)}…`}
+            aria-label={`Search ${plural(noun)}`}
+            className="admin-input h-10 text-sm"
+          />
+          <ul role="listbox" className="mt-1.5 max-h-56 overflow-auto">
+            {list.length === 0 ? <li className="px-2 py-2 text-xs text-foreground-muted">No {noun} matches.</li> : null}
+            {list.map((o) => (
+              <li key={o.value} role="option" aria-selected={o.value === value}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange(o.value);
+                    setOpen(false);
+                  }}
+                  className={`block min-h-9 w-full cursor-pointer rounded-md px-2 text-left text-sm hover:bg-surface ${o.value === value ? 'font-bold text-[var(--accent-ink)]' : 'text-foreground-secondary'}`}
+                >
+                  {o.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }

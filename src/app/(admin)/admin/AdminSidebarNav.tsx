@@ -81,6 +81,9 @@ export function AdminSidebarNav({
   const pathname = usePathname();
   const scrollRef = useRef<HTMLElement>(null);
   const [more, setMore] = useState({ above: false, below: false });
+  const [filter, setFilter] = useState('');
+  const f = filter.trim().toLowerCase();
+  const visible = f ? items.filter((i) => i.label.toLowerCase().includes(f)) : items;
 
   // The list scrolls inside the sidebar on short screens (the phone drawer, small laptops). With
   // the scrollbar hidden there was no sign that more links sat below the fold, so a fade + chevron
@@ -103,17 +106,26 @@ export function AdminSidebarNav({
       observer.disconnect();
       el.removeEventListener('scroll', measure);
     };
-  }, [items.length]);
+  }, [items.length, visible.length]);
 
   return (
     <div className="relative mt-4 flex min-h-0 flex-1 flex-col">
+      <input
+        type="search"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Jump to…"
+        aria-label="Filter the menu"
+        className="mb-2 h-10 w-full shrink-0 rounded-[10px] border border-white/10 bg-white/[0.06] px-3 text-sm text-white placeholder:text-white/45 focus:border-white/30 focus:outline-none"
+      />
       <nav
         ref={scrollRef}
         aria-label="Admin sections"
         className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {items.map((item, index) => {
-          const showGroupHeading = Boolean(item.group) && item.group !== items[index - 1]?.group;
+        {visible.length === 0 ? <p className="px-3 py-4 text-sm text-white/55">Nothing matches.</p> : null}
+        {visible.map((item, index) => {
+          const showGroupHeading = Boolean(item.group) && item.group !== visible[index - 1]?.group;
           const Icon = ICONS[item.icon] ?? LayoutGrid;
           const active = item.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(item.href);
 

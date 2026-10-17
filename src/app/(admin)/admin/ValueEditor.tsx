@@ -8,7 +8,7 @@ import { LegalBlocksEditor } from './LegalBlocksEditor';
 import type { LegalBlock } from '@/lib/content/types';
 import { MediaPickerButton } from './MediaPicker';
 import { AutoTextarea, MultiRelation, RelationsContext, SpecialField, fieldKind } from './FieldInputs';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { blocksToHtml } from '@/lib/rich/blocks';
 
@@ -78,9 +78,29 @@ function ObjectListEditor({
     onChange(copy);
   }
 
+  // A long list (timeline, recruiters, disclosure rows…) gets a filter so one entry can be found without scrolling.
+  const [filter, setFilter] = useState('');
+  const f = filter.trim().toLowerCase();
+  const visible = (item: Record<string, unknown>) => !f || JSON.stringify(item).toLowerCase().includes(f);
+  const shown = value.filter(visible).length;
+
   return (
     <div className="flex flex-col gap-4">
-      {value.map((item, i) => (
+      {value.length > 8 ? (
+        <div className="flex items-center gap-3">
+          <input
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder={`Search ${humanize(fieldKey).toLowerCase()}…`}
+            aria-label={`Search ${humanize(fieldKey)}`}
+            className="admin-input h-10 max-w-xs text-sm"
+          />
+          <span className="text-xs text-foreground-muted">
+            {f ? `${shown} of ${value.length}` : `${value.length} items`}
+          </span>
+        </div>
+      ) : null}
+      {value.map((item, i) => !visible(item) ? null : (
         <div key={i} className="rounded-[var(--admin-radius)] border border-border p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
             <span className="label-mono">
