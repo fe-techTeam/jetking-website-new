@@ -12,6 +12,8 @@ import { adminAuditLog, type AdminAuditLogEntry } from '@/lib/db/schema';
  * set — same degrade-gracefully rule as leads and team accounts, since there
  * is nowhere to durably keep history without a database.
  */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function recordAudit(
   actor: { id: string; name: string },
   action: string,
@@ -23,7 +25,8 @@ export async function recordAudit(
   if (!db) return;
   try {
     await db.insert(adminAuditLog).values({
-      actorId: actor.id === 'local-admin' ? null : actor.id,
+      // Only real accounts have a uuid; the legacy admin and failed sign-ins by unknown people are recorded by name.
+      actorId: UUID.test(actor.id) ? actor.id : null,
       actorName: actor.name,
       action,
       targetType,
@@ -35,15 +38,16 @@ export async function recordAudit(
   }
 }
 
-export const AUDIT_GROUPS = ['content', 'leads', 'team', 'media'] as const;
+export const AUDIT_GROUPS = ['content', 'leads', 'team', 'media', 'auth'] as const;
 export type AuditGroup = (typeof AUDIT_GROUPS)[number];
 
-/** Action codes are namespaced (`cms.*`, `lead.*`, `team.*`, `media.*`); the filter groups map to those prefixes. */
+/** Action codes are namespaced (`cms.*`, `lead.*`, `team.*`, `media.*`, `auth.*`); the filter groups map to those prefixes. */
 const GROUP_PREFIX: Record<AuditGroup, string> = {
   content: 'cms.',
   leads: 'lead.',
   team: 'team.',
   media: 'media.',
+  auth: 'auth.',
 };
 
 export interface AuditFilter {

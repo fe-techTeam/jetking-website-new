@@ -24,7 +24,9 @@ function Inline({ text }: { text: string }) {
         const bold = part.match(/^\*\*([^*]+)\*\*$/);
         if (bold) return <strong key={i} className="font-bold text-[var(--dc-ink)]">{bold[1]}</strong>;
         const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-        const href = link ? link[2] : /^https?:\/\//.test(part) ? part : null;
+        const rawHref = link ? link[2] : /^https?:\/\//.test(part) ? part : null;
+        // Only web, mail, phone and site-relative links: a `[x](javascript:...)` in a legal document stays inert text.
+        const href = rawHref && /^(?:https?:|mailto:|tel:|\/(?!\/))/i.test(rawHref.trim()) ? rawHref.trim() : null;
         if (href) {
           return (
             <a

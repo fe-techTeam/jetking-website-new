@@ -2,6 +2,7 @@ import 'server-only';
 import { eq } from 'drizzle-orm';
 import { getDb } from '@/lib/db/client';
 import { redirects } from '@/lib/db/schema';
+import { normalizeSource } from './lookup-normalize';
 
 /**
  * Per-request redirect lookup for the proxy. The table is tiny and read on every page view, so the
@@ -19,12 +20,7 @@ const TTL_MS = 30_000;
 let cache: { at: number; map: Map<string, RedirectRule> } | null = null;
 let refreshing: Promise<void> | null = null;
 
-/** Canonical form used for matching: no query, no trailing slash (except root), lower-cased path. */
-export function normalizeSource(path: string): string {
-  const noQuery = path.split(/[?#]/)[0] ?? '';
-  const trimmed = noQuery.length > 1 ? noQuery.replace(/\/+$/, '') : noQuery;
-  return trimmed.toLowerCase();
-}
+export { normalizeSource };
 
 export function clearRedirectCache(): void {
   cache = null;

@@ -13,9 +13,27 @@ import {
 } from '@/lib/cms/store';
 import { publishContent } from '@/lib/cms/publish';
 import { createRateLimiter } from '@/lib/rate-limit';
-import { CMS_COLLECTIONS, validateCmsRecord } from '@/lib/cms/schemas';
-import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, type Role } from '@/lib/auth/users';
-import { verifyPassword } from '@/lib/auth/password';
+import { clientIpFromHeaders } from '@/lib/client-ip';
+import {
+  ADMIN_COOKIE,
+  SESSION_COOKIE_OPTIONS,
+  SESSION_MAX_AGE_SECONDS,
+  hmacSign,
+  setUserSessionCookie,
+  timingSafeEqual,
+  verifyMultiUserSession,
+} from '@/lib/auth/session';
+import { CMS_COLLECTIONS, CMS_ID_PATTERN, findUnsafeContent, validateCmsRecord } from '@/lib/cms/schemas';
+import { CMS_ID_KEYS } from '@/lib/cms/id-keys';
+import {
+  isDatabaseConfigured,
+  getUserByEmail,
+  getUserById,
+  revokeUserSessions,
+  touchLastActive,
+  type Role,
+} from '@/lib/auth/users';
+import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
 import { htmlToBlocks, sanitizeRichHtml } from '@/lib/rich/html';
 import { isRichHtml } from '@/lib/rich/text';
@@ -37,10 +55,14 @@ function rolesFor(collection: CmsCollection): Role[] {
   return collectionByKey(collection).roles ?? ['admin', 'editor'];
 }
 
-const ADMIN_COOKIE = 'jk_admin_session';
-/** Matches the cookie's own maxAge below — both must agree or a still-fresh cookie
- *  could be rejected early, or a stale one accepted late. */
-const SESSION_MAX_AGE_SECONDS = 60 * 60 * 12; // 12 hours
+/** The id field is a property of the collection, never of the caller: a raw action call passing e.g.
+ *  `idKey: 'status'` would otherwise make delete/rename match (and wipe) every row sharing a value. */
+function assertIdKey(collection: CmsCollection, idKey: string): void {
+  if (CMS_ID_KEYS[collection] !== idKey) throw new Error(`Invalid id field "${idKey}" for ${collection}.`);
+}
+
+/** Upper bound on one saved record (JSON text) — the biggest real article is far below this. */
+const MAX_RECORD_JSON_CHARS = 2_000_000;
 
 export interface CurrentUser {
   id: string;
@@ -51,7 +73,7 @@ export interface CurrentUser {
 }
 
 /** The pre-multi-user single shared password, used only when `DATABASE_URL`
- *  is unset — see the module doc below `signMultiUserSession`. */
+ *  is unset — see `@/lib/auth/session` for the multi-user cookie. */
 function adminPassword(): string {
   const value = process.env.ADMIN_PASSWORD;
   if (!value) {
@@ -63,62 +85,20 @@ function adminPassword(): string {
   return value;
 }
 
-/** Signs multi-user session cookies — independent of any user's password, so
- *  resetting one person's password doesn't invalidate everyone else's session,
- *  and rotating it revokes every session at once (same property the legacy
- *  scheme got for free from `ADMIN_PASSWORD` doubling as its signing key). */
-function sessionSecret(): string {
-  const value = process.env.ADMIN_SESSION_SECRET;
-  if (!value) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('ADMIN_SESSION_SECRET must be set in production.');
-    }
-    return 'dev-only-insecure-session-secret';
-  }
-  return value;
-}
-
-function toBase64Url(bytes: Uint8Array): string {
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-async function hmacSign(key: string, message: string): Promise<string> {
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(key),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-  const sig = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message));
-  return toBase64Url(new Uint8Array(sig));
-}
-
-/** Constant-time comparison — a fast-exit compare here leaks signature/password bytes. */
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
 async function signLegacySession(issuedAt: number): Promise<string> {
   return `${issuedAt}.${await hmacSign(adminPassword(), String(issuedAt))}`;
 }
 
-async function signMultiUserSession(userId: string, issuedAt: number): Promise<string> {
-  return `${userId}.${issuedAt}.${await hmacSign(sessionSecret(), `${userId}.${issuedAt}`)}`;
+/** Client identity for the login rate limiter (no Request object in a server action): proxy-controlled headers only. */
+async function loginKey(): Promise<string> {
+  return clientIpFromHeaders(await headers());
 }
 
-/** Best-effort client identity for the login rate limiter (no Request object in a server action). */
-async function loginKey(): Promise<string> {
-  const h = await headers();
-  const forwarded = h.get('x-forwarded-for');
-  return (
-    forwarded?.split(',')[0]?.trim() ?? h.get('x-real-ip') ?? h.get('cf-connecting-ip') ?? 'anonymous'
-  );
+let dummyHashPromise: Promise<string> | undefined;
+/** A throwaway hash verified against when the email is unknown (timing-equalisation). */
+function dummyHash(): Promise<string> {
+  dummyHashPromise ??= hashPassword('not-a-real-password');
+  return dummyHashPromise;
 }
 
 /** Deliberately tight — a real admin fails a password rarely; this is a brute-force brake. */
@@ -143,23 +123,13 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!session) return null;
 
   if (isDatabaseConfigured()) {
-    const parts = session.split('.');
-    if (parts.length !== 3) return null;
-    const [userId, issuedAtRaw, signature] = parts;
-    const issuedAt = Number(issuedAtRaw);
-    if (!userId || !signature || !Number.isFinite(issuedAt)) return null;
-    if (Date.now() - issuedAt > SESSION_MAX_AGE_SECONDS * 1000) return null;
+    const verified = await verifyMultiUserSession(session);
+    if (!verified) return null;
 
-    let expected: string;
-    try {
-      expected = await hmacSign(sessionSecret(), `${userId}.${issuedAt}`);
-    } catch {
-      return null;
-    }
-    if (!timingSafeEqual(signature, expected)) return null;
-
-    const user = await getUserById(userId);
+    const user = await getUserById(verified.userId);
     if (!user || user.status !== 'active') return null;
+    // A cookie issued before the last sign-out / password change carries an older version: revoked.
+    if (user.sessionVersion !== verified.version) return null;
     return {
       id: user.id,
       name: user.name,
@@ -221,22 +191,25 @@ export async function adminLogin(_prevState: LoginState, formData: FormData): Pr
   if (isDatabaseConfigured()) {
     const email = String(formData.get('email') ?? '').trim();
     const user = email ? await getUserByEmail(email) : undefined;
-    const validPassword = user ? await verifyPassword(password, user.passwordHash) : false;
+    // Always run one PBKDF2 verification, even for an unknown email, so response time doesn't reveal
+    // which emails have accounts.
+    const validPassword = await verifyPassword(password, user ? user.passwordHash : await dummyHash());
     if (!user || user.status !== 'active' || !validPassword) {
+      // The audit trail (admin-only) records why; the visitor always sees the same message.
+      const why = !user ? 'unknown email' : user.status !== 'active' ? 'account disabled' : 'wrong password';
+      void recordAudit(
+        { id: user?.id ?? 'anonymous', name: user?.name ?? (email.slice(0, 120) || 'unknown') },
+        'auth.login_failed',
+        'session',
+        user?.id ?? null,
+        `Failed sign-in for ${email.slice(0, 120) || 'no email'} (${why})`,
+      );
       return { error: 'Incorrect email or password.' };
     }
 
-    const issuedAt = Date.now();
-    const session = await signMultiUserSession(user.id, issuedAt);
-    const jar = await cookies();
-    jar.set(ADMIN_COOKIE, session, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: SESSION_MAX_AGE_SECONDS,
-    });
-    void touchLastActive(user.id);
+    await setUserSessionCookie(user.id, user.sessionVersion);
+    void touchLastActive(user.id).catch(() => {});
+    void recordAudit(user, 'auth.login', 'session', user.id, `${user.name} signed in`);
     redirect('/admin' as Route);
   }
 
@@ -247,17 +220,17 @@ export async function adminLogin(_prevState: LoginState, formData: FormData): Pr
   const issuedAt = Date.now();
   const session = await signLegacySession(issuedAt);
   const jar = await cookies();
-  jar.set(ADMIN_COOKIE, session, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: SESSION_MAX_AGE_SECONDS,
-  });
+  jar.set(ADMIN_COOKIE, session, { ...SESSION_COOKIE_OPTIONS, secure: process.env.NODE_ENV === 'production' });
   redirect('/admin' as Route);
 }
 
 export async function adminLogout(): Promise<void> {
+  // Signing out revokes every session cookie the user holds (not just this browser's), so a copied cookie dies too.
+  const me = await getCurrentUser();
+  if (me && isDatabaseConfigured()) {
+    await revokeUserSessions(me.id).catch((e) => console.error('Failed to revoke sessions on logout:', e));
+    void recordAudit(me, 'auth.logout', 'session', me.id, `${me.name} signed out`);
+  }
   const jar = await cookies();
   jar.delete(ADMIN_COOKIE);
   redirect('/admin/login' as Route);
@@ -274,8 +247,18 @@ export async function saveCollectionItem(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await requireRole(rolesFor(collection));
   try {
-    const record = JSON.parse(json) as Record<string, unknown>;
+    assertIdKey(collection, idKey);
+    if (typeof json !== 'string' || json.length > MAX_RECORD_JSON_CHARS) return { ok: false, error: 'This record is too large to save.' };
+    const parsed: unknown = JSON.parse(json);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { ok: false, error: 'The record must be a JSON object.' };
+    const record = parsed as Record<string, unknown>;
     if (!record[idKey]) return { ok: false, error: `Missing ${idKey}` };
+    if (typeof record[idKey] !== 'string' || !CMS_ID_PATTERN.test(record[idKey] as string)) {
+      return { ok: false, error: `${idKey}: use letters, numbers, "-", "_" or "." only (no spaces or slashes).` };
+    }
+    if (previousId !== undefined && (typeof previousId !== 'string' || !CMS_ID_PATTERN.test(previousId))) {
+      return { ok: false, error: 'Invalid previous id.' };
+    }
     if (!record.status) record.status = 'published';
 
     // An optional image the editor left empty ({ url: '', alt: '' }) means "no image", not an invalid one.
@@ -311,6 +294,8 @@ export async function saveCollectionItem(
     // record is what gets saved.
     const validated = validateCmsRecord(collection, record);
     if (!validated.ok) return { ok: false, error: validated.error };
+    const unsafe = findUnsafeContent(record);
+    if (unsafe) return { ok: false, error: unsafe };
 
     await upsertRecord(collection, record, idKey, previousId, user.name);
     await publishContent();
@@ -335,13 +320,15 @@ export async function removeCollectionItem(
   id: string,
 ): Promise<void> {
   const user = await requireRole(rolesFor(collection));
+  assertIdKey(collection, idKey);
   await deleteRecord(collection, idKey, id, user.name);
   await publishContent();
   void recordAudit(user, 'cms.delete', collection, id, `Deleted ${collection} "${id}"`);
 }
 
 export async function seedCmsFromFixtures(): Promise<void> {
-  const user = await requireRole(['admin', 'editor']);
+  // Admin only: it wipes every collection (including the admin-only legal pages), so an editor must not be able to.
+  const user = await requireRole(['admin']);
   await resetCmsStoreFromFixtures();
   await publishContent();
   void recordAudit(user, 'cms.reset_fixtures', 'cms', null, 'Reset all CMS content from fixtures');
@@ -377,6 +364,7 @@ export async function getRecordHistory(collection: CmsCollection, recordId: stri
 /** Records deleted from this collection and not currently present — what can be brought back. */
 export async function getDeletedRecords(collection: CmsCollection, idKey: string): Promise<HistoryEntry[]> {
   await requireRole(rolesFor(collection));
+  assertIdKey(collection, idKey);
   const [deleted, live] = await Promise.all([listDeleted(collection), listCollection(collection)]);
   const liveIds = new Set((live as unknown as Record<string, unknown>[]).map((r) => String(r[idKey])));
   const seen = new Set<string>();
@@ -415,6 +403,8 @@ export async function setRecordStatus(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await requireRole(rolesFor(collection));
   try {
+    assertIdKey(collection, idKey);
+    if (status !== 'published' && status !== 'draft') return { ok: false, error: 'Invalid status.' };
     const rows = (await listCollection(collection)) as unknown as Record<string, unknown>[];
     const current = rows.find((r) => r[idKey] === id);
     if (!current) return { ok: false, error: 'Record not found.' };

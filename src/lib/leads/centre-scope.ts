@@ -42,3 +42,17 @@ export function cityMatches(scopeCity: string | null, leadCity: string | null): 
   if (!scopeCity || !leadCity) return false;
   return scopeCity.trim().toLowerCase() === leadCity.trim().toLowerCase();
 }
+
+/** In scope: the lead's city is the staff member's centre city, or it was enquired for that exact centre. */
+export function leadInScope(scopeCity: string | null, centreSlug: string | null, lead: { city: string | null; centreSlug: string | null }): boolean {
+  return cityMatches(scopeCity, lead.city) || (!!centreSlug && lead.centreSlug === centreSlug);
+}
+
+/** Filters to a centre-staff member's leads. `restricted` leads with no resolvable scope see NOTHING (fail closed). */
+export function scopeLeadList<T extends { city: string | null; centreSlug: string | null }>(restricted: boolean, scopeCity: string | null, centreSlug: string | null, leads: T[]): T[] {
+  if (!restricted) return leads;
+  return leads.filter((l) => leadInScope(scopeCity, centreSlug, l));
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const isUuid = (v: unknown): v is string => typeof v === 'string' && UUID_RE.test(v);

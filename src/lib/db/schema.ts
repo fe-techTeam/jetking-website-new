@@ -91,6 +91,8 @@ export const adminUsers = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     lastActiveAt: timestamp('last_active_at', { withTimezone: true }),
+    /** Embedded in the session cookie; bumping it signs the user out everywhere (logout, password change/reset). */
+    sessionVersion: integer('session_version').notNull().default(0),
   },
   (table) => [index('admin_users_role_idx').on(table.role)],
 );

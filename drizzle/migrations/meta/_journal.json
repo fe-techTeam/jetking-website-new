@@ -71,6 +71,13 @@
       "when": 1792234324703,
       "tag": "0009_lead_assignment",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792383475392,
+      "tag": "0010_session_version",
+      "breakpoints": true
     }
   ]
 }

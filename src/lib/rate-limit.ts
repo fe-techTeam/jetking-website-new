@@ -17,6 +17,8 @@
  * `createRateLimiter()`. No route changes.
  */
 
+import { clientIpFromHeaders } from '@/lib/client-ip';
+
 interface RateLimitResult {
   allowed: boolean;
   /** Seconds until the window resets. Sent as `retry-after`. */
@@ -109,13 +111,8 @@ export function createRateLimiter(config: RateLimitConfig): RateLimiter {
   }
 }
 
-/** Best-effort client identity. Behind a proxy, the first XFF hop is the client. */
+
+/** Client identity for limiter keys: see `client-ip.ts` — only proxy-controlled headers are trusted. */
 export function clientKey(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  return (
-    forwarded?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    request.headers.get('cf-connecting-ip') ??
-    'anonymous'
-  );
+  return clientIpFromHeaders(request.headers);
 }

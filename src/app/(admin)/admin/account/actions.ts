@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from '../actions';
 import { getUserById, isDatabaseConfigured, resetUserPassword } from '@/lib/auth/users';
+import { setUserSessionCookie } from '@/lib/auth/session';
 import { verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
 
@@ -35,6 +36,9 @@ export async function changeOwnPassword(
   }
 
   await resetUserPassword(me.id, next);
+  // The reset bumped the session version (signing out every other browser); keep this one signed in.
+  const updated = await getUserById(me.id);
+  if (updated) await setUserSessionCookie(updated.id, updated.sessionVersion);
   await recordAudit(me, 'team.password_change', 'user', me.id, `${me.name} changed their own password`);
   return { ok: true, error: null };
 }

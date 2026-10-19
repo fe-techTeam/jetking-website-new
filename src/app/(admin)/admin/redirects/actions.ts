@@ -5,10 +5,10 @@ import { requireRole } from '../actions';
 import { getDb } from '@/lib/db/client';
 import { redirects, type RedirectRow } from '@/lib/db/schema';
 import { clearRedirectCache, normalizeSource } from '@/lib/redirects/lookup';
+import { MAX_IMPORT_LINES, findRedirectLoop, validateRedirect } from '@/lib/redirects/validate';
 import { recordAudit } from '@/lib/audit/log';
 
 const ROLES = ['admin', 'editor'] as const;
-const RESERVED = /^\/(admin|api|_next|media)(\/|$)/i;
 
 export interface RedirectItem {
   id: string;
@@ -30,18 +30,6 @@ const toItem = (r: RedirectRow): RedirectItem => ({
   createdAt: r.createdAt.toISOString(),
 });
 
-function validate(sourceRaw: string, destinationRaw: string): { ok: true; source: string; destination: string } | { ok: false; error: string } {
-  const source = sourceRaw.trim();
-  const destination = destinationRaw.trim();
-  if (!source.startsWith('/') || /[\s?#]/.test(source)) return { ok: false, error: 'The old URL must be a path like /old-page (no spaces, query or #).' };
-  if (RESERVED.test(source)) return { ok: false, error: 'Admin, API and media paths cannot be redirected.' };
-  if (!(destination.startsWith('/') && !destination.startsWith('//')) && !/^https:\/\/[^\s]+$/i.test(destination)) {
-    return { ok: false, error: 'The new URL must be a path like /courses or a full https:// link.' };
-  }
-  if (normalizeSource(source) === normalizeSource(destination)) return { ok: false, error: 'The old and new URL are the same.' };
-  return { ok: true, source, destination };
-}
-
 export async function listRedirects(): Promise<RedirectItem[]> {
   await requireRole([...ROLES]);
   const db = getDb();
@@ -59,17 +47,16 @@ export async function saveRedirect(input: {
   const user = await requireRole([...ROLES]);
   const db = getDb();
   if (!db) return { ok: false, error: 'Redirects need the database (DATABASE_URL).' };
-  const v = validate(input.source, input.destination);
+  const v = validateRedirect(input.source, input.destination);
   if (!v.ok) return v;
 
   // A rule whose target is itself redirected makes a chain; a rule pointing back at its own source makes a loop.
   const all = await db.select().from(redirects);
-  const target = normalizeSource(v.destination);
-  const back = all.find((r) => normalizeSource(r.source) === target && normalizeSource(r.destination) === normalizeSource(v.source));
+  const back = findRedirectLoop(all.filter((r) => r.id !== input.id), v.source, v.destination);
   if (back) return { ok: false, error: `This would loop with the existing rule ${back.source} → ${back.destination}.` };
 
   try {
-    const values = { source: v.source, destination: v.destination, permanent: input.permanent, note: input.note.slice(0, 300) };
+    const values = { source: v.source, destination: v.destination, permanent: Boolean(input.permanent), note: String(input.note ?? '').slice(0, 300) };
     const [row] = input.id
       ? await db.update(redirects).set(values).where(eq(redirects.id, input.id)).returning()
       : await db.insert(redirects).values({ ...values, createdBy: user.name }).returning();
@@ -99,11 +86,12 @@ export async function importRedirects(text: string): Promise<{ added: number; sk
   const db = getDb();
   if (!db) return { added: 0, skipped: ['Redirects need the database (DATABASE_URL).'] };
   const existing = new Set((await db.select({ s: redirects.source }).from(redirects)).map((r) => normalizeSource(r.s)));
+  const known = await db.select({ source: redirects.source, destination: redirects.destination }).from(redirects);
   let added = 0;
   const skipped: string[] = [];
-  for (const line of text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean)) {
+  for (const line of String(text ?? '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean).slice(0, MAX_IMPORT_LINES)) {
     const [source = '', destination = ''] = line.split(/\s*(?:,|\t|->)\s*/);
-    const v = validate(source, destination);
+    const v = validateRedirect(source, destination);
     if (!v.ok) {
       skipped.push(`${line} — ${v.error}`);
       continue;
@@ -112,6 +100,12 @@ export async function importRedirects(text: string): Promise<{ added: number; sk
       skipped.push(`${line} — already exists`);
       continue;
     }
+    const loop = findRedirectLoop(known, v.source, v.destination);
+    if (loop) {
+      skipped.push(`${line} — would loop with ${loop.source} → ${loop.destination}`);
+      continue;
+    }
+    known.push({ source: v.source, destination: v.destination });
     await db.insert(redirects).values({ source: v.source, destination: v.destination, permanent: true, createdBy: user.name });
     existing.add(normalizeSource(v.source));
     added++;

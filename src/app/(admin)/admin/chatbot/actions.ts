@@ -37,6 +37,8 @@ export async function askTestQuestion(question: string): Promise<TestAnswer> {
   if (!q) return { ok: false, text: 'Type a question first.', reasoning: [], gated: false };
   const h = await headers();
   const host = h.get('x-forwarded-host') ?? h.get('host');
+  // The host comes from a request header: accept only a plain host[:port] so it cannot be steered at another target.
+  if (!host || !/^[a-z0-9.-]+(:\d{1,5})?$/i.test(host)) return { ok: false, text: 'Could not work out this site’s address.', reasoning: [], gated: false };
   const proto = h.get('x-forwarded-proto') ?? (host?.startsWith('localhost') ? 'http' : 'https');
   try {
     const res = await fetch(`${proto}://${host}/api/chat`, {

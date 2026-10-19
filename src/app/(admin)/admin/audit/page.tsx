@@ -9,6 +9,7 @@ const GROUP_OPTION_LABEL: Record<AuditGroup, string> = {
   leads: 'Leads',
   team: 'Team',
   media: 'Media',
+  auth: 'Sign-ins',
 };
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -22,6 +23,7 @@ const ACTION_GROUP_LABEL: Record<string, string> = {
   lead: 'Leads',
   team: 'Team',
   media: 'Media',
+  auth: 'Sign-in',
 };
 
 function actionGroup(action: string): string {

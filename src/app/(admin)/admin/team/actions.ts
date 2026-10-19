@@ -24,6 +24,11 @@ function isRole(value: string): value is Role {
 /** A `centre_staff` account is only ever scoped to a centre that actually
  *  exists in the CMS — free-text here previously let an admin assign a
  *  typo'd or since-deleted centre, silently scoping that person to nothing. */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** These actions are callable directly with any string; a non-uuid id would make Postgres throw. */
+const NOT_FOUND = { ok: false, error: 'User not found.' } as const;
+
 async function assertRealCentre(centreSlug: string): Promise<string | null> {
   const centres = await listCentreOptions();
   if (!centres.some((c) => c.slug === centreSlug)) {
@@ -78,6 +83,7 @@ export async function changeUserRole(
   centreSlug: string,
 ): Promise<{ ok: true; user: AdminUser } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
+  if (!UUID_RE.test(id)) return NOT_FOUND;
   if (!isRole(role)) return { ok: false, error: 'Invalid role.' };
   if (role === 'centre_staff') {
     if (!centreSlug.trim()) return { ok: false, error: 'Centre staff need a centre.' };
@@ -100,6 +106,7 @@ export async function changeUserRole(
 export async function toggleUserStatus(id: string): Promise<{ ok: true; user: AdminUser } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
   if (id === me.id) return { ok: false, error: "You can't disable your own account." };
+  if (!UUID_RE.test(id)) return NOT_FOUND;
 
   const users = await listUsers();
   const target = users.find((u) => u.id === id);
@@ -117,17 +124,21 @@ export async function adminResetPassword(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
   if (newPassword.length < 8) return { ok: false, error: 'Password must be at least 8 characters.' };
-  await resetUserPassword(id, newPassword);
+  if (!UUID_RE.test(id)) return NOT_FOUND;
   const target = await getUserById(id);
-  void recordAudit(me, 'team.password_reset', 'user', id, `Reset password for ${target?.name ?? id}`);
+  if (!target) return NOT_FOUND;
+  await resetUserPassword(id, newPassword);
+  void recordAudit(me, 'team.password_reset', 'user', id, `Reset password for ${target.name}`);
   return { ok: true };
 }
 
 export async function removeUser(id: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
   if (id === me.id) return { ok: false, error: "You can't remove your own account." };
+  if (!UUID_RE.test(id)) return NOT_FOUND;
   const target = await getUserById(id);
+  if (!target) return NOT_FOUND;
   await deleteUser(id);
-  void recordAudit(me, 'team.remove', 'user', id, `Removed ${target?.name ?? id}`);
+  void recordAudit(me, 'team.remove', 'user', id, `Removed ${target.name}`);
   return { ok: true };
 }

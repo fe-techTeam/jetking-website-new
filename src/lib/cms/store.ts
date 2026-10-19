@@ -56,10 +56,13 @@ import {
 } from '@/lib/cms/records-db';
 import { recordRevision } from '@/lib/cms/revisions';
 import { CMS_ID_KEYS } from '@/lib/cms/id-keys';
+import { sanitizeRichHtml } from '@/lib/rich/html';
+import { isRichHtml } from '@/lib/rich/text';
 import {
   deleteLocationRow,
   isLocationCollection,
   listLocationRows,
+  resetLocationRows,
   upsertLocationRow,
 } from '@/lib/cms/locations-db';
 
@@ -243,7 +246,31 @@ async function listDbCollection(
   });
 }
 
+/**
+ * Defence in depth for the public site: rich FAQ answers are sanitised when saved, but rows can also arrive
+ * from a database edit, an old store file or a restored revision. Pages render these with
+ * dangerouslySetInnerHTML, so anything served publicly is cleaned again here (a no-op on clean HTML).
+ */
+export function sanitizePublicRows<T>(collection: CmsCollection, rows: T[]): T[] {
+  if (collection !== 'faqs' && collection !== 'courses' && collection !== 'centres') return rows;
+  const clean = (v: unknown) => (typeof v === 'string' && isRichHtml(v) ? sanitizeRichHtml(v) : v);
+  return rows.map((row) => {
+    const r = row as unknown as Record<string, unknown>;
+    if (collection === 'faqs') return typeof r.answer === 'string' && isRichHtml(r.answer) ? ({ ...r, answer: clean(r.answer) } as T) : row;
+    if (!Array.isArray(r.faqs)) return row;
+    return { ...r, faqs: (r.faqs as Array<Record<string, unknown>>).map((f) => ({ ...f, answer: clean(f?.answer) })) } as T;
+  });
+}
+
 export async function listCollection<K extends CmsCollection>(
+  collection: K,
+  opts?: { publishedOnly?: boolean },
+): Promise<CmsStore[K]> {
+  const rows = await listCollectionRaw(collection, opts);
+  return (opts?.publishedOnly ? sanitizePublicRows(collection, rows as unknown[]) : rows) as CmsStore[K];
+}
+
+async function listCollectionRaw<K extends CmsCollection>(
   collection: K,
   opts?: { publishedOnly?: boolean },
 ): Promise<CmsStore[K]> {
@@ -321,7 +348,7 @@ export async function upsertRecord(
       else rows.push(record);
       (store as unknown as Record<string, unknown>)[collection] = rows;
 
-      if (isLocationCollection(collection)) await upsertLocationRow(collection, record, previousId);
+      if (isLocationCollection(collection)) await upsertLocationRow(collection, record, previousId, rows);
 
       const supabase = getSupabase();
       if (supabase) {
@@ -372,7 +399,11 @@ export async function deleteRecord(
 export async function resetCmsStoreFromFixtures(): Promise<CmsStore> {
   return serialized(async () => {
     const seeded = seedStore();
-    if (isDatabaseConfigured()) await resetRecordRows();
+    if (isDatabaseConfigured()) {
+      await resetRecordRows();
+      await resetLocationRows('cities', seeded.cities as unknown as Record<string, unknown>[]);
+      await resetLocationRows('centres', seeded.centres as unknown as Record<string, unknown>[]);
+    }
     await writeFileStore(seeded);
     return seeded;
   });

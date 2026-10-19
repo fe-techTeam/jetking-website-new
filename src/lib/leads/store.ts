@@ -180,7 +180,7 @@ export async function importLeadRows(rows: ImportRow[], importer: string): Promi
   let added = 0;
   let duplicates = 0;
   for (const r of rows) {
-    const phone = (r.phone ?? '').replace(/[^\d+]/g, '');
+    const phone = String(r.phone ?? '').replace(/[^\d+]/g, '');
     const digits = phone.replace(/\D/g, '');
     if (digits && existing.has(digits)) {
       duplicates++;
@@ -191,13 +191,13 @@ export async function importLeadRows(rows: ImportRow[], importer: string): Promi
       .insert(leads)
       .values({
         name: r.name.trim().slice(0, 200),
-        phone: phone || null,
-        email: r.email?.trim() || null,
-        courseInterest: r.courseInterest?.trim() || null,
-        city: r.city?.trim() || null,
+        phone: phone.slice(0, 20) || null,
+        email: r.email?.trim().slice(0, 200) || null,
+        courseInterest: r.courseInterest?.trim().slice(0, 200) || null,
+        city: r.city?.trim().slice(0, 120) || null,
         source,
         form: 'import',
-        notes: r.notes?.trim() || null,
+        notes: r.notes?.trim().slice(0, 2000) || null,
       })
       .returning({ id: leads.id });
     if (row) await db.insert(leadActivities).values({ leadId: row.id, kind: 'note', body: `Imported by ${importer}.` });

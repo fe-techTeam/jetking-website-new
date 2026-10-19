@@ -21,7 +21,7 @@ import {
   type LeadStatus,
   type LeadStats,
 } from '@/lib/leads/store';
-import { resolveCentreCity, cityMatches } from '@/lib/leads/centre-scope';
+import { resolveCentreCity, leadInScope, scopeLeadList, isUuid } from '@/lib/leads/centre-scope';
 import { leadInputSchema, leadStatusSchema } from '@/lib/leads/schema';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
@@ -38,17 +38,17 @@ async function scopeCityFor(user: CurrentUser): Promise<string | null> {
   return resolveCentreCity(user.centreSlug);
 }
 
-/** In scope: the lead's city is the staff member's centre city, or it was enquired for that exact centre. */
 function inScope(scopeCity: string | null, centreSlug: string | null, lead: Lead): boolean {
-  return cityMatches(scopeCity, lead.city) || (centreSlug !== null && lead.centreSlug === centreSlug);
+  return leadInScope(scopeCity, centreSlug, lead);
 }
 
-function scopeLeads(scopeCity: string | null, leads: Lead[], centreSlug: string | null = null): Lead[] {
-  if (scopeCity === null) return leads;
-  return leads.filter((l) => inScope(scopeCity, centreSlug, l));
+/** Fails closed: a centre_staff user whose centre cannot be resolved sees no leads (never all of them). */
+function scopeLeads(user: CurrentUser, scopeCity: string | null, leads: Lead[]): Lead[] {
+  return scopeLeadList(user.role === 'centre_staff', scopeCity, user.centreSlug, leads);
 }
 
 async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Lead> {
+  if (!isUuid(leadId)) throw new Error('Lead not found.');
   const lead = await getLead(leadId);
   if (!lead) throw new Error('Lead not found.');
   if (user.role === 'centre_staff') {
@@ -61,7 +61,7 @@ async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Le
 export async function getLeads(): Promise<Lead[]> {
   const user = await requireRole([...STAFF_ROLES]);
   const scopeCity = await scopeCityFor(user);
-  return scopeLeads(scopeCity, await listLeads(), user.centreSlug);
+  return scopeLeads(user, scopeCity, await listLeads());
 }
 
 export async function getLeadsSummary(): Promise<LeadStats> {
@@ -69,7 +69,7 @@ export async function getLeadsSummary(): Promise<LeadStats> {
   if (user.role !== 'centre_staff') return getLeadStats();
 
   const scopeCity = await scopeCityFor(user);
-  const scoped = scopeLeads(scopeCity, await listLeads(), user.centreSlug);
+  const scoped = scopeLeads(user, scopeCity, await listLeads());
   const byStatus = { new: 0, contacted: 0, enrolled: 0, lost: 0 };
   for (const lead of scoped) byStatus[lead.status as LeadStatus] = (byStatus[lead.status as LeadStatus] ?? 0) + 1;
   return { total: scoped.length, byStatus };
@@ -92,7 +92,8 @@ export async function submitLead(
     phone: String(formData.get('phone') ?? ''),
     email: String(formData.get('email') ?? ''),
     courseInterest: String(formData.get('courseInterest') ?? ''),
-    city: String(formData.get('city') ?? defaultCity ?? ''),
+    // centre_staff can only add leads inside their own centre's city, whatever the form says.
+    city: user.role === 'centre_staff' ? (defaultCity ?? '') : String(formData.get('city') ?? ''),
     source: String(formData.get('source') ?? 'form'),
     persona: String(formData.get('persona') ?? ''),
     notes: String(formData.get('notes') ?? ''),
@@ -111,7 +112,8 @@ export async function submitLead(
     void recordAudit(user, 'lead.create', 'lead', lead.id, `Added lead "${lead.name}"`);
     return { ok: true, lead };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : 'Could not save lead.' };
+    console.error('[leads:create-failed]', e);
+    return { ok: false, error: 'Could not save lead.' };
   }
 }
 
@@ -140,7 +142,8 @@ export async function moveLeadStatus(
 
 export async function addNote(leadId: string, note: string): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await requireRole([...STAFF_ROLES]);
-  if (!note.trim()) return { ok: false, error: 'Note is empty.' };
+  if (typeof note !== 'string' || !note.trim()) return { ok: false, error: 'Note is empty.' };
+  if (note.length > 5000) return { ok: false, error: 'Note is too long.' };
   let lead: Lead;
   try {
     lead = await requireLeadInScope(leadId, user);
@@ -238,9 +241,13 @@ export async function removeLeads(ids: string[]): Promise<{ deleted: number }> {
   return { deleted: scoped.length };
 }
 
+const clean = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+
 export async function importLeads(rows: ImportRow[]): Promise<{ added: number; duplicates: number; invalid: number }> {
   const user = await requireRole(['admin', 'editor']);
-  const valid = rows.filter((r) => r.name && r.name.trim() && (r.phone?.trim() || r.email?.trim())).slice(0, 2000);
+  if (!Array.isArray(rows)) return { added: 0, duplicates: 0, invalid: 0 };
+  const capped = rows.slice(0, 2000);
+  const valid = capped.filter((r) => r && typeof r.name === 'string' && r.name.trim() && (clean(r.phone) || clean(r.email)));
   const result = await importLeadRows(valid, user.name);
   void recordAudit(user, 'lead.import', 'lead', null, `Imported ${result.added} lead(s) (${result.duplicates} duplicates skipped)`);
   return { ...result, invalid: rows.length - valid.length };

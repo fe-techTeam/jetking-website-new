@@ -22,9 +22,14 @@ export async function POST(request: Request) {
   const limit = await limiter.check(clientKey(request));
   if (!limit.allowed) return new Response(null, { status: 429 });
 
+  // Largest legitimate payload is ~3 KB (message + stack + url); refuse anything much bigger before parsing it.
+  if (Number(request.headers.get('content-length') ?? 0) > 8_192) return new Response(null, { status: 413 });
+
   let body: unknown;
   try {
-    body = JSON.parse(await request.text());
+    const raw = await request.text();
+    if (raw.length > 8_192) return new Response(null, { status: 413 });
+    body = JSON.parse(raw);
   } catch {
     return new Response(null, { status: 400 });
   }

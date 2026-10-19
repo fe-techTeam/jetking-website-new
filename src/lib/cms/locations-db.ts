@@ -55,27 +55,64 @@ export async function listLocationRows(
   }
 }
 
-/** Insert or update one record; when `previousId` differs from the record's slug it is a rename. */
+type Tx = Parameters<Parameters<NonNullable<ReturnType<typeof getDb>>['transaction']>[0]>[0];
+
+async function insertRows(
+  tx: Tx,
+  collection: LocationCollection,
+  records: Record<string, unknown>[],
+  overwrite: boolean,
+): Promise<void> {
+  for (const record of records) {
+    if (collection === 'centres') {
+      const row = centreToRow(record);
+      const q = tx.insert(centresTable).values(row);
+      await (overwrite ? q.onConflictDoUpdate({ target: centresTable.slug, set: row }) : q.onConflictDoNothing());
+    } else {
+      const row = cityToRow(record);
+      const q = tx.insert(citiesTable).values(row);
+      await (overwrite ? q.onConflictDoUpdate({ target: citiesTable.slug, set: row }) : q.onConflictDoNothing());
+    }
+  }
+}
+
+/**
+ * Insert or update one record; when `previousId` differs from the record's slug it is a rename.
+ *
+ * `baseline` is the file-store/fixture rows the public site is serving while the table is still empty.
+ * They are copied in first, so saving the very first edit cannot turn a full directory into a one-row one.
+ */
 export async function upsertLocationRow(
   collection: LocationCollection,
   record: Record<string, unknown>,
   previousId?: string,
+  baseline?: Record<string, unknown>[],
 ): Promise<void> {
   const db = getDb();
   if (!db) return;
   const slug = String(record.slug);
   const table = collection === 'centres' ? centresTable : citiesTable;
   await db.transaction(async (tx) => {
+    const [existing] = await tx.select({ slug: table.slug }).from(table).limit(1);
+    if (!existing && baseline?.length) await insertRows(tx, collection, baseline, false);
     if (previousId && previousId !== slug) {
       await tx.delete(table).where(eq(table.slug, previousId));
     }
-    if (collection === 'centres') {
-      const row = centreToRow(record);
-      await tx.insert(centresTable).values(row).onConflictDoUpdate({ target: centresTable.slug, set: row });
-    } else {
-      const row = cityToRow(record);
-      await tx.insert(citiesTable).values(row).onConflictDoUpdate({ target: citiesTable.slug, set: row });
-    }
+    await insertRows(tx, collection, [record], true);
+  });
+}
+
+/** "Reset from fixtures": replace every row of the table with the given records. */
+export async function resetLocationRows(
+  collection: LocationCollection,
+  records: Record<string, unknown>[],
+): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  const table = collection === 'centres' ? centresTable : citiesTable;
+  await db.transaction(async (tx) => {
+    await tx.delete(table);
+    await insertRows(tx, collection, records, false);
   });
 }
 

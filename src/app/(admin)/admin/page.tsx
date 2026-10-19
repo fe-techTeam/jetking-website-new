@@ -215,7 +215,7 @@ export default async function AdminDashboard() {
         </div>
       ) : null}
 
-      {canEditContent ? <ResetFixturesCard action={seedCmsFromFixtures} /> : null}
+      {user.role === 'admin' ? <ResetFixturesCard action={seedCmsFromFixtures} /> : null}
     </div>
   );
 }

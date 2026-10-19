@@ -571,3 +571,40 @@ export function validateCmsRecord(
   const path = issue?.path.join('.') || '(root)';
   return { ok: false, error: `${path}: ${issue?.message ?? 'invalid'}` };
 }
+
+/** A record id / slug: URL- and filename-safe, so it can't smuggle a path, a query, markup or an object key trick. */
+export const CMS_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._~-]{0,199}$/;
+
+const UNSAFE_SCHEME = /^\s*(?:javascript|vbscript|data\s*:\s*(?:text\/html|image\/svg|application\/))/i;
+const UNSAFE_SCHEME_MD = /\]\(\s*(?:javascript|vbscript)\s*:/i;
+const URL_KEY = /(?:href|url|src|link|image|logo|poster|thumbnail|photo|file|sameas|website)$/i;
+const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/**
+ * Walks a record and returns a message for the first thing that must never be stored: a `javascript:` /
+ * `vbscript:` / HTML-data URL in a link-like field (or a markdown link), or a prototype-pollution key.
+ * Deliberately keyed on the field name so ordinary prose that merely starts with "JavaScript:" still saves.
+ */
+export function findUnsafeContent(value: unknown, path = '', inUrlField = false, depth = 0): string | null {
+  if (depth > 20) return `${path || '(root)'}: nested too deeply`;
+  if (typeof value === 'string') {
+    if (UNSAFE_SCHEME_MD.test(value)) return `${path}: contains an unsafe link`;
+    if (inUrlField && UNSAFE_SCHEME.test(value)) return `${path}: must be a normal web address or path, not a script`;
+    return null;
+  }
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const found = findUnsafeContent(value[i], `${path}.${i}`, inUrlField, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+      if (FORBIDDEN_KEYS.has(key)) return `${path ? `${path}.` : ''}${key}: this key is not allowed`;
+      const found = findUnsafeContent(child, path ? `${path}.${key}` : key, URL_KEY.test(key), depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
