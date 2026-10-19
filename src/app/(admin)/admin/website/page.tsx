@@ -46,7 +46,7 @@ export default async function WebsiteMapPage() {
         </h2>
         <ul className="mt-3 grid gap-3 lg:grid-cols-2">
           {SITE_PAGES.map((page) => (
-            <li key={page.path} className="adm-card p-4 sm:p-5">
+            <li key={`${page.path}:${page.name}`} className="adm-card p-4 sm:p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[15px] font-bold tracking-tight text-foreground">{page.name}</p>
