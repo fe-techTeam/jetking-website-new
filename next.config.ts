@@ -21,7 +21,40 @@ function loadRedirects(): RedirectEntry[] {
   }
 }
 
+/**
+ * Content Security Policy.
+ *
+ * A static header, not the per-request nonce variant: nonces need every page rendered dynamically, which
+ * would break this site's contract of one cacheable, persona-neutral HTML document per URL (DEVELOPMENT-PLAN
+ * §2.1). The cost is `'unsafe-inline'` for scripts and styles (Next's hydration scripts and React style
+ * attributes), so this does not stop an injected inline script by itself — XSS stays controlled by
+ * sanitising (src/lib/rich) — but it does close the rest of the surface: no plugins, no <base> or form hijack,
+ * no framing by other sites, and images/fonts/XHR/frames only from the origins the site actually uses.
+ *
+ * To add a third-party script (analytics, chat widget), add its host to `script-src` and `connect-src`
+ * here — and nowhere else.
+ */
+const isProd = process.env.NODE_ENV === 'production';
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  // 'unsafe-eval' only in development: React uses eval there to rebuild server stacks in the browser.
+  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://www.jetking.com",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  // Course and testimonial videos are YouTube / Vimeo embeds.
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  "media-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  ...(isProd ? ['upgrade-insecure-requests'] : []),
+].join('; ');
+
 const securityHeaders = [
+  { key: 'Content-Security-Policy', value: contentSecurityPolicy },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
