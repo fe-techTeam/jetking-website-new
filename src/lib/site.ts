@@ -44,5 +44,6 @@ export const mainNav = [
   { label: 'Placements', href: '/placements' },
   { label: 'Franchise', href: '/franchise' },
   { label: 'Investors', href: '/investors' },
+  { label: 'Jetking ABC Labs', href: '/jetking-abc-labs' },
   { label: 'Blog', href: '/blog' },
 ] as const;
