@@ -18,6 +18,29 @@ export function isDatabaseConfigured(): boolean {
   return Boolean(process.env.DATABASE_URL);
 }
 
+/**
+ * Shared "database is unreachable" breaker for READS that can fall back to the file store / fixtures.
+ * After a failed read, every reader skips the database for a while instead of each waiting out its own
+ * connection timeout: a page reads many collections, and a static build renders many pages at once, so
+ * without a shared breaker a down database turns every page into a multi-second (then timed-out) render.
+ * Writes never consult it — a failed write must fail loudly, not silently fall back.
+ */
+const RETRY_AFTER_MS = 30_000;
+let downUntil = 0;
+
+export function isDbDown(): boolean {
+  return Date.now() < downUntil;
+}
+
+export function markDbDown(): void {
+  downUntil = Date.now() + RETRY_AFTER_MS;
+}
+
+/** Test hook. */
+export function resetDbBreaker(): void {
+  downUntil = 0;
+}
+
 export function getDb(): NodePgDatabase<typeof schema> | null {
   if (!isDatabaseConfigured()) return null;
   if (cached) return cached;

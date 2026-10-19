@@ -1,6 +1,6 @@
 import 'server-only';
 import { eq } from 'drizzle-orm';
-import { getDb } from '@/lib/db/client';
+import { getDb, isDbDown, markDbDown } from '@/lib/db/client';
 import { centres as centresTable, cities as citiesTable } from '@/lib/db/schema';
 import { centreFromRow, centreToRow, cityFromRow, cityToRow } from '@/lib/cms/locations-map';
 
@@ -20,13 +20,6 @@ export function isLocationCollection(collection: string): collection is Location
 }
 
 /**
- * After a failed read, skip the database for a short while: a down database can take seconds to refuse a
- * connection, and a page reads several collections, so retrying on every call would make the site crawl.
- */
-const RETRY_AFTER_MS = 30_000;
-let dbDownUntil = 0;
-
-/**
  * Every row of the collection, or `null` when the database is unavailable or the table is still
  * empty (not yet seeded) — the caller then serves the file store / fixtures, so a fresh database
  * never blanks the directory. Pass `status` to push the published filter into SQL.
@@ -36,7 +29,7 @@ export async function listLocationRows(
   opts?: { publishedOnly?: boolean },
 ): Promise<Record<string, unknown>[] | null> {
   const db = getDb();
-  if (!db || Date.now() < dbDownUntil) return null;
+  if (!db || isDbDown()) return null;
   try {
     if (collection === 'centres') {
       const rows = await db.select().from(centresTable);
@@ -49,7 +42,7 @@ export async function listLocationRows(
     const records = rows.map(cityFromRow) as unknown as Record<string, unknown>[];
     return opts?.publishedOnly ? records.filter((r) => r.status === 'published') : records;
   } catch (error) {
-    dbDownUntil = Date.now() + RETRY_AFTER_MS;
+    markDbDown();
     console.error(`[cms:locations] reading "${collection}" from Postgres failed — falling back to the file store.`, error);
     return null;
   }

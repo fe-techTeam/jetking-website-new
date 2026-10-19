@@ -1,6 +1,6 @@
 import 'server-only';
 import { and, asc, eq, sql } from 'drizzle-orm';
-import { getDb } from '@/lib/db/client';
+import { getDb, isDbDown, markDbDown } from '@/lib/db/client';
 import { cmsRecords, cmsSeeded } from '@/lib/db/schema';
 
 /**
@@ -12,8 +12,6 @@ import { cmsRecords, cmsSeeded } from '@/lib/db/schema';
  * unreachable, and back off for a while so a down database cannot make every page wait on a timeout.
  */
 
-const RETRY_AFTER_MS = 30_000;
-let dbDownUntil = 0;
 
 /** Short in-process read cache: a page reads several collections and the table is read-mostly. Cleared on every write. */
 const CACHE_TTL_MS = 5_000;
@@ -25,7 +23,7 @@ export function clearRecordsCache(collection?: string): void {
 }
 
 export function recordsDbAvailable(): boolean {
-  return Boolean(getDb()) && Date.now() >= dbDownUntil;
+  return Boolean(getDb()) && !isDbDown();
 }
 
 /** Marks a collection as seeded and copies its starting records in, exactly once per database. */
@@ -59,7 +57,7 @@ export async function listRecordRows(
   opts: { publishedOnly?: boolean; idKey: string; seed: () => Promise<Record<string, unknown>[]> },
 ): Promise<Record<string, unknown>[] | null> {
   const db = getDb();
-  if (!db || Date.now() < dbDownUntil) return null;
+  if (!db || isDbDown()) return null;
   try {
     let all = cache.get(collection);
     if (!all || Date.now() - all.at > CACHE_TTL_MS) {
@@ -75,7 +73,7 @@ export async function listRecordRows(
     }
     return opts.publishedOnly ? all.rows.filter((r) => r.status === 'published') : all.rows;
   } catch (error) {
-    dbDownUntil = Date.now() + RETRY_AFTER_MS;
+    markDbDown();
     console.error(`[cms:records] reading "${collection}" from Postgres failed — falling back to the file store.`, error);
     return null;
   }
