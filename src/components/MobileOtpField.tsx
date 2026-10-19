@@ -79,9 +79,14 @@ export function MobileOtpField({
     return () => window.clearTimeout(t);
   }, [seconds]);
 
-  // Hand the keyboard to the code box as soon as it appears.
+  // Hand the keyboard to the code box as soon as it appears, and scroll it clear of that keyboard (on a phone the
+  // keyboard covers the lower half of the screen, which is exactly where this box sits).
   useEffect(() => {
-    if (phase === 'code') codeRef.current?.focus();
+    if (phase !== 'code') return;
+    const el = codeRef.current;
+    el?.focus({ preventScroll: true });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el?.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [phase]);
 
   const digits = normalizeMobile(phone);
@@ -257,16 +262,27 @@ export function MobileOtpField({
       </Field>
 
       {showCode ? (
-        <div className="mt-3 min-w-0 rounded-[var(--radius-input)] border border-border bg-surface p-3 sm:p-4" role="group" aria-labelledby={`${id}-code-label`}>
+        <div className="mt-3 min-w-0 rounded-[var(--radius-input)] border border-border bg-surface p-4" role="group" aria-labelledby={`${id}-code-label`}>
           <p id={`${id}-code-label`} className="text-sm text-foreground-secondary">
             {fill(copy['otp.sentTo'], { phone: masked || phone })}
           </p>
-          <div className="mt-3 flex items-stretch gap-2">
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2">
             <input
               ref={codeRef}
               value={code}
               onChange={onCodeChange}
               inputMode="numeric"
+              enterKeyHint="done"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              onKeyDown={(e) => {
+                // Enter belongs to this step, not to the enquiry form around it.
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  void confirm(code);
+                }
+              }}
               autoComplete="one-time-code"
               pattern="\d{6}"
               maxLength={OTP_CODE_LENGTH}
@@ -275,13 +291,13 @@ export function MobileOtpField({
               aria-invalid={error ? true : undefined}
               aria-describedby={error ? `${id}-code-error` : undefined}
               disabled={phase === 'verifying'}
-              className="h-12 min-w-0 flex-1 rounded-[var(--radius-input)] border border-border bg-background px-4 text-center font-display text-xl font-bold tracking-[0.5em] text-foreground placeholder:tracking-[0.35em] placeholder:text-foreground-disabled focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface aria-[invalid=true]:border-jk-600 lg:h-10 lg:text-base"
+              className="h-14 w-full min-w-0 rounded-[var(--radius-input)] border border-border bg-background px-4 text-center font-display text-2xl font-bold tracking-[0.5em] sm:h-12 sm:flex-1 sm:text-xl text-foreground placeholder:tracking-[0.35em] placeholder:text-foreground-disabled focus:border-jk-600 focus:ring-2 focus:ring-jk-600/20 focus:outline-none disabled:bg-surface aria-[invalid=true]:border-jk-600 lg:h-10 lg:text-base"
             />
             <button
               type="button"
               onClick={() => void confirm(code)}
               disabled={code.length !== OTP_CODE_LENGTH || phase === 'verifying'}
-              className="inline-flex min-h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full bg-jk-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-jk-500 active:bg-jk-700 disabled:cursor-not-allowed disabled:opacity-45 lg:min-h-10 lg:px-4"
+              className="inline-flex min-h-12 w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full bg-jk-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-jk-500 active:bg-jk-700 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto lg:min-h-10 lg:px-4"
             >
               {phase === 'verifying' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
               {phase === 'verifying' ? copy['otp.verifying'] : copy['otp.confirm']}
@@ -294,7 +310,7 @@ export function MobileOtpField({
             </p>
           ) : null}
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <div className="mt-3 flex items-center justify-between gap-3 text-sm sm:mt-2 sm:justify-start sm:gap-5">
             {seconds > 0 ? (
               <span className="text-foreground-muted" aria-live="off">
                 {fill(copy['otp.resendIn'], { seconds: String(seconds) })}
