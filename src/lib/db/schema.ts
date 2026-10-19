@@ -100,9 +100,32 @@ export type AdminAuditLogEntry = typeof adminAuditLog.$inferSelect;
 export type NewAdminAuditLogEntry = typeof adminAuditLog.$inferInsert;
 
 /**
- * Public /chatbot accounts — deliberately separate from `admin_users`: these are
- * visitors who log in to keep their chat history, with no role and no access to
- * the admin panel. Same PBKDF2 hashing (`src/lib/auth/password.ts`).
+ * Website register/login accounts — the main site's own account system,
+ * deliberately separate from both `admin_users` (staff) and `chat_users`
+ * (the /chatbot widget's accounts, kept independent for now; unifying the two
+ * — so a chat account and a website account can be the same person — is
+ * future work, not done here). Same PBKDF2 hashing (`src/lib/auth/password.ts`).
+ */
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  /** Normalised mobile number (digits with an optional leading +). Not unique — family members share numbers. */
+  phone: text('phone').notNull(),
+  /** Where the person is, for personalisation: state name, city slug, preferred centre slug. Nullable so the form can evolve. */
+  state: text('state'),
+  city: text('city'),
+  centre: text('centre'),
+  passwordHash: text('password_hash').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type UserRow = typeof users.$inferSelect;
+export type NewUserRow = typeof users.$inferInsert;
+
+/**
+ * /chatbot's own accounts — visitors who log in there to keep their chat
+ * history. Same PBKDF2 hashing (`src/lib/auth/password.ts`).
  */
 export const chatUsers = pgTable('chat_users', {
   id: uuid('id').primaryKey().defaultRandom(),

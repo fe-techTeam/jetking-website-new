@@ -29,6 +29,13 @@
       "when": 1789962873590,
       "tag": "0003_chatbot_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790255776911,
+      "tag": "0004_hesitant_gabe_jones",
+      "breakpoints": true
     }
   ]
 }

@@ -161,32 +161,34 @@ export function LeadsBoard({
 
   return (
     <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="label-mono text-[var(--accent-ink)]">leads</p>
-          <h1 className="mt-4 text-3xl sm:text-4xl">Leads</h1>
-          <p className="lede mt-4 max-w-prose">
+          <h1 className="mt-1.5 text-xl sm:text-2xl">Leads</h1>
+          <p className="mt-1.5 max-w-prose text-sm text-foreground-secondary">
             Everything the chatbot, enquiry form, and centre staff bring in — one pipeline.
           </p>
         </div>
         <button
           type="button"
-          className="inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)]"
+          className="inline-flex h-9 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] bg-[var(--accent)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-hover)]"
           onClick={() => setShowNew((v) => !v)}
         >
           {showNew ? 'Cancel' : '+ New lead'}
         </button>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-[var(--radius-card)] border border-border bg-background p-4">
-          <p className="label-mono">Total</p>
-          <p className="numeral mt-1 text-2xl font-semibold text-foreground">{stats.total}</p>
+      <div className="mt-5 grid grid-cols-5 gap-1.5 sm:gap-2.5">
+        <div className="min-w-0 rounded-[var(--radius-card)] border border-border bg-background p-2 sm:p-3">
+          <p className="label-mono truncate">Total</p>
+          <p className="numeral mt-1 text-base font-semibold text-foreground sm:text-xl">{stats.total}</p>
         </div>
         {STATUSES.map((s) => (
-          <div key={s} className="rounded-[var(--radius-card)] border border-border bg-background p-4">
-            <p className="label-mono">{STATUS_LABEL[s]}</p>
-            <p className={`numeral mt-1 text-2xl font-semibold ${STATUS_CLASS[s]}`}>{stats.byStatus[s]}</p>
+          <div key={s} className="min-w-0 rounded-[var(--radius-card)] border border-border bg-background p-2 sm:p-3">
+            <p className="label-mono truncate">{STATUS_LABEL[s]}</p>
+            <p className={`numeral mt-1 text-base font-semibold sm:text-xl ${STATUS_CLASS[s]}`}>
+              {stats.byStatus[s]}
+            </p>
           </div>
         ))}
       </div>
@@ -262,7 +264,7 @@ export function LeadsBoard({
         </p>
       ) : null}
 
-      <div className="mt-10 flex items-center gap-1 border-b border-border pb-3">
+      <div className="mt-6 flex items-center gap-1 border-b border-border pb-2">
         <button
           type="button"
           onClick={() => setView('board')}
@@ -287,13 +289,13 @@ export function LeadsBoard({
         </button>
       </div>
 
-      <div className="mt-6 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-col gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search name, course, or city…"
-            className="admin-input h-10 w-full max-w-xs"
+            className="admin-input h-9 w-full max-w-xs"
             aria-label="Search leads"
           />
           <div className="flex flex-wrap items-center gap-1.5">
@@ -349,7 +351,7 @@ export function LeadsBoard({
       </div>
 
       {view === 'board' ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           {STATUSES.map((status) => (
             <div key={status} className="rounded-[var(--radius-card)] border border-border bg-background">
               <div className="flex items-center gap-2 border-b border-border px-4 py-3">
@@ -401,7 +403,7 @@ export function LeadsBoard({
           ))}
         </div>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background">
+        <div className="mt-4 overflow-x-auto rounded-[var(--radius-card)] border border-border bg-background">
           <table className="w-full min-w-[52rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-left">

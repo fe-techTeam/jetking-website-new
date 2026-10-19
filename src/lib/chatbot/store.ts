@@ -34,6 +34,17 @@ export class DuplicateEmailError extends Error {
   }
 }
 
+/** Postgres' unique_violation code, wherever the driver put it — drizzle-orm wraps
+ *  the real `pg` error in `.cause` rather than exposing `.code` at the top level. */
+function isUniqueViolation(error: unknown): boolean {
+  for (const candidate of [error, (error as { cause?: unknown } | null)?.cause]) {
+    if (typeof candidate === 'object' && candidate !== null && 'code' in candidate && candidate.code === '23505') {
+      return true;
+    }
+  }
+  return false;
+}
+
 interface ChatStore {
   createUser(input: {
     name: string;
@@ -71,9 +82,7 @@ function pgStore(): ChatStore {
         if (!row) throw new Error('Insert did not return a row.');
         return row;
       } catch (error) {
-        if (typeof error === 'object' && error && 'code' in error && error.code === '23505') {
-          throw new DuplicateEmailError();
-        }
+        if (isUniqueViolation(error)) throw new DuplicateEmailError();
         throw error;
       }
     },

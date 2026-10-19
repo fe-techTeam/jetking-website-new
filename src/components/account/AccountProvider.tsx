@@ -2,13 +2,13 @@
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { useChatAccount } from '@/features/jetking-ai/account/use-chat-account';
-import type { ChatUser } from '@/lib/chatbot/types';
+import { useSiteAccount } from './use-site-account';
+import type { SiteUser } from '@/lib/users/types';
 import { SiteAuthDialog, type AuthMode } from './SiteAuthDialog';
 
 interface AccountContextValue {
   /** The signed-in visitor, or `null` for a guest. */
-  user: ChatUser | null;
+  user: SiteUser | null;
   /** False until the first "who am I" answer, so callers don't flash a Log in button at a signed-in user. */
   ready: boolean;
   /** Opens the site's Log in / Sign up dialog. */
@@ -31,14 +31,16 @@ export function useAccount(): AccountContextValue {
 }
 
 /**
- * One shared account for the whole public site. Inert on /admin and /chatbot: neither
- * shows the site chrome, and the chatbot runs its own instance of the same hook (it
- * also needs the saved-chat list, which the website does not).
+ * The website's own account, for the whole public site. Inert on /admin and
+ * /chatbot: neither shows the site chrome, and /chatbot runs its own, separate
+ * account system (`use-chat-account.ts`, `chat_users` table) — unifying the two
+ * is future work, not done here (see the `users` table's doc comment in
+ * `src/lib/db/schema.ts`).
  */
 export function AccountProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const enabled = !pathname.startsWith('/admin') && !pathname.startsWith('/chatbot');
-  const account = useChatAccount({ history: false, enabled });
+  const account = useSiteAccount({ enabled });
   const [dialog, setDialog] = useState<{ open: boolean; mode: AuthMode }>({ open: false, mode: 'login' });
 
   const { user, ready, logout } = account;

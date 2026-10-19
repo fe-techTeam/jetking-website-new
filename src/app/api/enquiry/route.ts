@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import { getSessionUser } from '@/lib/chatbot/session';
+import { createLead, isDatabaseConfigured } from '@/lib/leads/store';
+import type { LEAD_PERSONAS, LEAD_SOURCES } from '@/lib/leads/schema';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,7 +19,29 @@ export const dynamic = 'force-dynamic';
  * dropped. Losing a lead is the single worst failure this site can have, so the
  * no-CRM path must still succeed from the visitor's perspective and leave a durable
  * server-side record to reconcile.
+ *
+ * Independently of the CRM forward above, every enquiry is also written to the
+ * `leads` table (when `DATABASE_URL` is set) so it shows up in the Admin Panel's
+ * Leads board immediately — that board is staff's day-to-day view and must not
+ * depend on an external CRM being configured.
  */
+
+/** Every form on the site posts its own free-text label (`'franchise-landing'`,
+ *  `'jetking-ai-chat'`, …) so submissions stay distinguishable in logs/CRM. The
+ *  leads table only tracks three broad channels — collapse into those for the
+ *  `source` column, and keep the original label in the lead's notes. */
+function toLeadSource(raw: string): (typeof LEAD_SOURCES)[number] {
+  const s = raw.toLowerCase();
+  if (s.includes('chat')) return 'chatbot';
+  if (s.includes('centre') || s.includes('center')) return 'centre';
+  return 'form';
+}
+
+function toLeadPersona(persona: string): (typeof LEAD_PERSONAS)[number] | undefined {
+  return persona === 'student' || persona === 'parent' || persona === 'professional' || persona === 'franchise'
+    ? persona
+    : undefined;
+}
 
 const EnquirySchema = z.object({
   name: z.string().min(2).max(120),
@@ -100,6 +124,34 @@ export async function POST(request: Request) {
     accountId: account?.id,
     receivedAt: new Date().toISOString(),
   };
+
+  if (isDatabaseConfigured()) {
+    const notesParts = [
+      parsed.data.message,
+      parsed.data.state ? `State: ${parsed.data.state}` : null,
+      parsed.data.centre ? `Centre: ${parsed.data.centre}` : null,
+      parsed.data.guideSummary ? `Guide summary: ${parsed.data.guideSummary}` : null,
+      `Origin: ${parsed.data.source}`,
+    ].filter((part): part is string => Boolean(part));
+
+    try {
+      await createLead({
+        name: parsed.data.name,
+        phone: parsed.data.phone,
+        email: parsed.data.email || undefined,
+        courseInterest: parsed.data.courseSlug,
+        city: parsed.data.city,
+        source: toLeadSource(parsed.data.source),
+        persona: toLeadPersona(parsed.data.persona),
+        notes: notesParts.join('\n') || undefined,
+      });
+    } catch (error) {
+      // Same durability rule as the CRM forward below: a lead already logged via
+      // console.warn/console.error must never be lost, and a DB hiccup here must
+      // never cost the visitor their enquiry.
+      console.error('[enquiry:leads-write-failed]', JSON.stringify(enquiry), error);
+    }
+  }
 
   const endpoint = process.env.CRM_ENDPOINT;
 

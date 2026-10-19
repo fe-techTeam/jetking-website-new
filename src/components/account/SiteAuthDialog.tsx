@@ -7,7 +7,7 @@ import { Button, Field, Input, Select, cx } from '@/components/ui';
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
 import { track } from '@/lib/analytics';
-import type { ChatAccount } from '@/features/jetking-ai/account/use-chat-account';
+import type { SiteAccount } from './use-site-account';
 import { useLocationPicker, useLocations } from '@/features/jetking-ai/account/use-locations';
 
 export type AuthMode = 'login' | 'signup';
@@ -30,7 +30,7 @@ export function SiteAuthDialog({
   mode: AuthMode;
   onModeChange: (mode: AuthMode) => void;
   onClose: () => void;
-  account: Pick<ChatAccount, 'login' | 'signup'>;
+  account: Pick<SiteAccount, 'login' | 'signup'>;
 }) {
   const id = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
