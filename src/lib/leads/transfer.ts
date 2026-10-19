@@ -32,6 +32,24 @@ export interface ExportableLead {
 }
 
 export const SOURCE_LABEL: Record<string, string> = { form: 'Website form', chatbot: 'Chatbot', centre: 'Centre', franchise: 'Franchise' };
+/** How a lead's hand-off to the external CRM reads in the admin and in exports. */
+export function crmStatusLabel(status: string): string {
+  switch (status) {
+    case 'routed':
+      return 'Sent';
+    case 'duplicate':
+      return 'Already in CRM';
+    case 'rejected':
+      return 'Rejected by CRM';
+    case 'failed':
+      return 'Failed';
+    case 'skipped':
+      return 'Not sent (missing details)';
+    default:
+      return 'Not configured';
+  }
+}
+
 export const STATUS_LABEL: Record<string, string> = { new: 'New', contacted: 'Contacted', enrolled: 'Enrolled', lost: 'Lost' };
 
 export interface ExportColumn {
@@ -65,7 +83,7 @@ export const EXPORT_COLUMNS: ExportColumn[] = [
   { key: 'utmMedium', label: 'Campaign medium', default: false, get: (l) => l.utmMedium },
   { key: 'utmCampaign', label: 'Campaign name', default: false, get: (l) => l.utmCampaign },
   { key: 'landingPage', label: 'Landing page', default: false, get: (l) => l.landingPage },
-  { key: 'crm', label: 'CRM hand-off', default: false, get: (l) => (l.crmStatus === 'routed' ? 'Sent' : l.crmStatus === 'failed' ? 'Failed' : 'Not configured') },
+  { key: 'crm', label: 'CRM hand-off', default: false, get: (l) => crmStatusLabel(l.crmStatus) },
   { key: 'updatedAt', label: 'Last updated', default: false, get: (l) => date(l.updatedAt) },
   { key: 'id', label: 'Lead ID', default: false, get: (l) => l.id },
 ];

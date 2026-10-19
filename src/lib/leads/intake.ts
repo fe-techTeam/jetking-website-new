@@ -118,7 +118,9 @@ export async function saveEnquiry(input: EnquiryInput): Promise<{ id: string; du
   return { id: row.id, duplicate: false };
 }
 
-export async function setCrmStatus(id: string, status: 'routed' | 'failed'): Promise<void> {
+export type CrmHandoffStatus = 'routed' | 'failed' | 'duplicate' | 'rejected' | 'skipped';
+
+export async function setCrmStatus(id: string, status: CrmHandoffStatus): Promise<void> {
   const db = getDb();
   if (!db) return;
   await db.update(leads).set({ crmStatus: status }).where(eq(leads.id, id));

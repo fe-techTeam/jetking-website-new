@@ -11,7 +11,7 @@ import {
 } from './actions';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import type { LeadStatus } from '@/lib/leads/store';
-import { SOURCE_LABEL, STATUS_LABEL as STATUS_TEXT } from '@/lib/leads/transfer';
+import { SOURCE_LABEL, STATUS_LABEL as STATUS_TEXT, crmStatusLabel } from '@/lib/leads/transfer';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { ExportDialog } from './ExportDialog';
 import { ImportDialog } from './ImportDialog';
@@ -600,7 +600,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                 ['Phone', selected.phone], ['Email', selected.email], ['Interested in', selected.courseInterest], ['City', selected.city], ['State', selected.state], ['Centre', selected.centreName],
                 ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification], ['Came from', selected.form],
                 ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')], ['Landing page', selected.landingPage],
-                ['CRM hand-off', selected.crmStatus === 'routed' ? 'Sent' : selected.crmStatus === 'failed' ? 'Failed — follow up manually' : 'Not configured'],
+                ['CRM hand-off', crmStatusLabel(selected.crmStatus) + (['failed', 'rejected', 'skipped'].includes(selected.crmStatus) ? ' — follow up manually' : '')],
               ] as const).filter(([, v]) => v).map(([label, v]) => (
                 <div key={label}>
                   <dt className="text-xs font-bold tracking-wide text-foreground-muted uppercase">{label}</dt>

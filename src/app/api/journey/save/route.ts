@@ -68,7 +68,8 @@ export async function POST(request: Request) {
 
   const endpoint = process.env.CRM_ENDPOINT;
 
-  if (!endpoint) {
+  // The Smartrain CRM only accepts complete enquiries (email, state, city, centre); a soft-save is not one.
+  if (!endpoint || process.env.CRM_PROVIDER === 'smartrain') {
     console.warn('[journey:soft-save:unrouted]', leadForLog(payload));
     return NextResponse.json({ ok: true, routed: false });
   }

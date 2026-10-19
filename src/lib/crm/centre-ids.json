@@ -1,0 +1,242 @@
+{
+  "ameerpet": {
+    "center": 172,
+    "city": 4460,
+    "state": 36,
+    "crm": "New Ameerpeth Learning Centre"
+  },
+  "azadpur": {
+    "center": 59,
+    "city": 706,
+    "state": 10,
+    "crm": "Azadpur Learning Center"
+  },
+  "balasore": {
+    "center": 57,
+    "city": 2973,
+    "state": 29,
+    "crm": "Balasore Learning Center"
+  },
+  "bhopal": {
+    "center": 154,
+    "city": 2145,
+    "state": 21,
+    "crm": "Bhopal MP Nagar Learning Centre"
+  },
+  "bhubaneshwar": {
+    "center": 27,
+    "city": 2995,
+    "state": 29,
+    "crm": "Bhubaneshwar Learning Centre"
+  },
+  "borivali": {
+    "center": 52,
+    "city": 2707,
+    "state": 22,
+    "crm": "Borivali Learning Centre"
+  },
+  "bhawanipore": {
+    "center": 25,
+    "city": 5583,
+    "state": 41,
+    "crm": "Bhawanipore Learning Centre"
+  },
+  "chandigarh": {
+    "center": 11,
+    "city": 594,
+    "state": 6,
+    "crm": "Chandigarh Learning Centre"
+  },
+  "dadar": {
+    "center": 176,
+    "city": 2707,
+    "state": 22,
+    "crm": "New Dadar Learning Centre"
+  },
+  "dhanbad": {
+    "center": 24,
+    "city": 1396,
+    "state": 16,
+    "crm": "Dhanbad Learning Center"
+  },
+  "durg": {
+    "center": 56,
+    "city": 631,
+    "state": 7,
+    "crm": "Durg Learning Center"
+  },
+  "orai": {
+    "center": 182,
+    "city": 5029,
+    "state": 38,
+    "crm": "Orai Learning Centre"
+  },
+  "gorakhpur": {
+    "center": 184,
+    "city": 4773,
+    "state": 38,
+    "crm": "New Gorakhpur Learning Centre"
+  },
+  "gwalior": {
+    "center": 90,
+    "city": 2214,
+    "state": 21,
+    "crm": "Gwalior Learning Centre"
+  },
+  "gurgaon": {
+    "center": 10,
+    "city": 1126,
+    "state": 13,
+    "crm": "Gurgaon Learning Centre"
+  },
+  "indore": {
+    "center": 183,
+    "city": 2229,
+    "state": 21,
+    "crm": "Indore Learning Centre"
+  },
+  "jammu": {
+    "center": 43,
+    "city": 1303,
+    "state": 15,
+    "crm": "Jammu Learning Center"
+  },
+  "kanpur": {
+    "center": 34,
+    "city": 4861,
+    "state": 38,
+    "crm": "New Kanpur Learning Centre"
+  },
+  "kochi": {
+    "center": 30,
+    "city": 1930,
+    "state": 19,
+    "crm": "Kochi Learning Centre"
+  },
+  "kukatpally": {
+    "center": 37,
+    "city": 4460,
+    "state": 36,
+    "crm": "Kukatpally Learning Center"
+  },
+  "laxminagar": {
+    "center": 1,
+    "city": 706,
+    "state": 10,
+    "crm": "Laxminagar Learning Centre"
+  },
+  "lucknow-station-road": {
+    "center": 32,
+    "city": 4933,
+    "state": 38,
+    "crm": "Lucknow-Station Road Learning Centre"
+  },
+  "maninagar": {
+    "center": 20,
+    "city": 783,
+    "state": 12,
+    "crm": "Maninagar Learning Center"
+  },
+  "mohali": {
+    "center": 180,
+    "city": 3237,
+    "state": 32,
+    "crm": "Mohali Learning Centre"
+  },
+  "nagpurmahal": {
+    "center": 48,
+    "city": 2715,
+    "state": 22,
+    "crm": "Nagpur Mahal Learning Center"
+  },
+  "noida": {
+    "center": 173,
+    "city": 5022,
+    "state": 38,
+    "crm": "New Noida Learning Center"
+  },
+  "allahabad": {
+    "center": 5,
+    "city": 4546,
+    "state": 38,
+    "crm": "Prayagraj Learning Centre"
+  },
+  "rajajinagar": {
+    "center": 23,
+    "city": 1558,
+    "state": 17,
+    "crm": "Rajajinagar Learning Centre"
+  },
+  "shivajinagar": {
+    "center": 21,
+    "city": 1558,
+    "state": 17,
+    "crm": "Shivajinagar Learning Center"
+  },
+  "swargate": {
+    "center": 15,
+    "city": 2763,
+    "state": 22,
+    "crm": "Swargate Learning Center"
+  },
+  "south-extension": {
+    "center": 63,
+    "city": 706,
+    "state": 10,
+    "crm": "New South Ex Learning Centre"
+  },
+  "varanasi": {
+    "center": 71,
+    "city": 5211,
+    "state": 38,
+    "crm": "Varanasi new Learning Center"
+  },
+  "thane": {
+    "center": 54,
+    "city": 2836,
+    "state": 22,
+    "crm": "Thane learning Centre"
+  },
+  "vashi": {
+    "center": 58,
+    "city": 2726,
+    "state": 22,
+    "crm": "New Vashi Learning Centre"
+  },
+  "vasai": {
+    "center": 13,
+    "city": 2707,
+    "state": 22,
+    "crm": "Vasai Road Learning Center"
+  },
+  "vikaspuri": {
+    "center": 3,
+    "city": 706,
+    "state": 10,
+    "crm": "Vikas Puri Learning Center"
+  },
+  "wakad-chinchwad": {
+    "center": 66,
+    "city": 2763,
+    "state": 22,
+    "crm": "Wakad Learning Centre"
+  },
+  "wardha": {
+    "center": 181,
+    "city": 2875,
+    "state": 22,
+    "crm": "Wardha Learning Centre"
+  },
+  "khar-mumbai": {
+    "center": 187,
+    "city": 2707,
+    "state": 22,
+    "crm": "Khar Learning Centre"
+  },
+  "ghaziabad": {
+    "center": 179,
+    "city": 4759,
+    "state": 38,
+    "crm": "Ghaziabad Learning Centre"
+  }
+}
