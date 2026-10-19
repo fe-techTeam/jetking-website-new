@@ -47,8 +47,18 @@ export async function sendOtpSms(phone: string, code: string, fetchImpl: typeof 
     const response = await fetchImpl(url, { method: 'GET', signal: AbortSignal.timeout(TIMEOUT_MS), cache: 'no-store' });
     const body = (await response.text().catch(() => '')).slice(0, 300);
     if (!response.ok) return { ok: false, reason: `gateway HTTP ${response.status}` };
-    // The gateway answers 200 with a text/JSON body; an error is spelled out in it.
-    if (/\b(error|fail(ed|ure)?|invalid|unauthori[sz]ed|insufficient)\b/i.test(body)) {
+    // The gateway answers 200 with JSON, e.g. {"Status":"Success","Code":"000","Message-Id":"…"}; anything
+    // else in `Status` (or a body that spells out an error) is a failure even though the HTTP status is 200.
+    let status: unknown;
+    try {
+      status = (JSON.parse(body) as { Status?: unknown }).Status;
+    } catch {
+      status = undefined;
+    }
+    if (typeof status === 'string' && !/^success$/i.test(status)) {
+      return { ok: false, reason: `gateway status "${status.slice(0, 40)}"` };
+    }
+    if (typeof status !== 'string' && /\b(error|fail(ed|ure)?|invalid|unauthori[sz]ed|insufficient)\b/i.test(body)) {
       // The gateway may echo the request back: scrub the key and any long digit run (the code, the number).
       const key = process.env.SMS_AUTH_KEY ?? '';
       const scrubbed = (key ? body.split(key).join('***') : body).replace(/\d{6,}/g, '***');

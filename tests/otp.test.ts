@@ -160,6 +160,14 @@ describe('SMS gateway client', () => {
     expect(url.searchParams.get('authentic-key')).toBe('SECRETKEY123');
   });
 
+  it('reads the gateway status: Success is ok, any other Status is a failure even on HTTP 200', async () => {
+    configure();
+    const ok = vi.fn(async () => new Response('{"Status":"Success","Code":"000","Message-Id":"abc"}', { status: 200 }));
+    expect(await sendOtpSms(PHONE, '123456', ok as never)).toEqual({ ok: true });
+    const bad = vi.fn(async () => new Response('{"Status":"Failed","Code":"005","Description":"Invalid template"}', { status: 200 }));
+    expect(await sendOtpSms(PHONE, '123456', bad as never)).toEqual({ ok: false, reason: 'gateway status "Failed"' });
+  });
+
   it('never leaks the key or the code in a failure reason', async () => {
     configure();
     const cases: Array<(...a: never[]) => Promise<Response>> = [
