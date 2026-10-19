@@ -106,7 +106,7 @@ export function HomeHero({
                 { text: copy['hero.pillar2'], Icon: FlaskConical },
                 { text: copy['hero.pillar3'], Icon: Briefcase },
               ].map(({ text, Icon }) => (
-                <li key={text} className="flex items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
+                <li key={text} className="flex items-center justify-start gap-3 rounded-xl sm:justify-center border border-white/15 bg-white/10 px-3 py-2.5">
                   <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--v2-accent)] text-white">
                     <Icon className="h-4 w-4" strokeWidth={2} />
                   </span>

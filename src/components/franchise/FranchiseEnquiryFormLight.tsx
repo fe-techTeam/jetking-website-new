@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useRef, useState } from 'react';
 import { ChevronDown, Clock3 } from 'lucide-react';
 import { Field, Input } from '@/components/ui';
@@ -20,12 +21,19 @@ export function FranchiseEnquiryFormLight({ copy }: { copy: typeof franchiseCopy
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const startedRef = useRef(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
+
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
 
     setStatus('submitting');
     setError('');
@@ -34,6 +42,7 @@ export function FranchiseEnquiryFormLight({ copy }: { copy: typeof franchiseCopy
     const payload = {
       name: String(data.get('name') ?? ''),
       phone: String(data.get('phone') ?? ''),
+      otpToken: otpToken ?? undefined,
       email: String(data.get('email') ?? ''),
       city: String(data.get('city') ?? ''),
       message: investmentCapacity
@@ -107,19 +116,13 @@ export function FranchiseEnquiryFormLight({ copy }: { copy: typeof franchiseCopy
           />
         </Field>
 
-        <Field label={copy['form.phone.label']} required htmlFor="fra-phone">
-          <Input
-            id="fra-phone"
-            name="phone"
-            type="tel"
-            required
-            minLength={10}
-            autoComplete="tel"
-            inputMode="tel"
-            placeholder={copy['form.phone.placeholder']}
-            className={fieldClass}
-          />
-        </Field>
+        <MobileOtpField
+          label={copy['form.phone.label']}
+          placeholder={copy['form.phone.placeholder']}
+          inputClassName={fieldClass}
+          source="franchise-landing"
+          onTokenChange={setOtpToken}
+        />
 
         <Field label={copy['form.email.label']} htmlFor="fra-email">
           <Input

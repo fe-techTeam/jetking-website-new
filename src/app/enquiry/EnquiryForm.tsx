@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Route } from 'next';
 import Link from 'next/link';
@@ -70,6 +71,7 @@ export function EnquiryForm({
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string>('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const startedRef = useRef(false);
   const successRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -107,6 +109,12 @@ export function EnquiryForm({
     if (status === 'submitting') return;
 
     const form = new FormData(event.currentTarget);
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
 
@@ -117,6 +125,7 @@ export function EnquiryForm({
         body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
+          otpToken: otpToken ?? undefined,
           email: form.get('email') || undefined,
           state: loc.state || undefined,
           city: loc.city || undefined,
@@ -265,25 +274,15 @@ export function EnquiryForm({
         />
       </Field>
 
-      <Field
+      <MobileOtpField
+        key={`phone-${accountUser?.id ?? 'guest'}`}
         label={copy['form.phone.label']}
-        htmlFor="phone"
-        required
-      >
-        <Input
-          id="phone"
-          name="phone"
-          key={`phone-${accountUser?.id ?? 'guest'}`}
-          defaultValue={accountUser?.phone}
-          type="tel"
-          required
-          inputMode="tel"
-          autoComplete="tel"
-          placeholder={copy['form.phone.hint']}
-          pattern="[\d\s+\(\)\-]{10,20}"
-          className={fieldClass}
-        />
-      </Field>
+        placeholder={copy['form.phone.hint']}
+        defaultValue={accountUser?.phone}
+        inputClassName={fieldClass}
+        source="enquiry-page"
+        onTokenChange={setOtpToken}
+      />
 
       <Field label={copy['form.email.label']} htmlFor="email">
         <Input

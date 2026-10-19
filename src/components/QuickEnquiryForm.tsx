@@ -10,6 +10,7 @@ import { track } from '@/lib/analytics';
 import { QUALIFICATIONS } from '@/lib/enquiry-fields';
 import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryLocation';
 import { useSiteCopy } from '@/components/providers/site-copy';
+import { MobileOtpField, OTP_ENABLED } from '@/components/MobileOtpField';
 
 export type EnquiryCentre = LocatedCentre;
 
@@ -52,6 +53,7 @@ export function QuickEnquiryForm({
   const { user } = useAccount();
   const [status, setStatus] = useState<QuickEnquiryStatus>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const loc = useEnquiryLocation(centres, {
     state: user?.state,
     city: user?.city,
@@ -75,6 +77,12 @@ export function QuickEnquiryForm({
     const chosen = loc.chosenCentre;
     const phone = String(form.get('phone') ?? '');
 
+    if (OTP_ENABLED && !otpToken) {
+      updateStatus('error');
+      setError(copy['otp.required']);
+      return;
+    }
+
     updateStatus('submitting');
     setError('');
 
@@ -85,6 +93,7 @@ export function QuickEnquiryForm({
         body: JSON.stringify({ ...botFields(),
           name: String(form.get('name') ?? ''),
           phone,
+          otpToken: otpToken ?? undefined,
           state: loc.state || undefined,
           city: loc.city || undefined,
           centre: chosen?.slug,
@@ -148,20 +157,15 @@ export function QuickEnquiryForm({
           />
         </Field>
 
-        <Field label={copy['enquiry.form.mobile.label']} htmlFor={`${id}-phone`} required compact={compact}>
-          <Input
-            id={`${id}-phone`}
-            name="phone"
-            key={`phone-${user?.id ?? 'guest'}`}
-            defaultValue={user?.phone}
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            pattern="[\d\s+\(\)\-]{10,20}"
-            placeholder={copy['enquiry.form.mobile.placeholder']}
-            compact={compact}
-          />
-        </Field>
+        <MobileOtpField
+          key={`phone-${user?.id ?? 'guest'}`}
+          label={copy['enquiry.form.mobile.label']}
+          placeholder={copy['enquiry.form.mobile.placeholder']}
+          defaultValue={user?.phone}
+          compact={compact}
+          source={source}
+          onTokenChange={setOtpToken}
+        />
       </div>
 
       <div className={`grid ${gridGap} sm:grid-cols-2`}>
