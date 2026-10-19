@@ -65,6 +65,22 @@ const CASES = [
     must: ['year', 'month'],
   },
   {
+    q: 'BCA course kitne saal ka hai',
+    types: ['duration', 'overview', 'course'],
+    must: ['year'],
+  },
+  {
+    q: 'how long is the BCA course',
+    types: ['duration'],
+    must: ['3 years'],
+    topMust: ['3 years'],
+  },
+  {
+    q: 'cybersecurty corse duration kitni hai',
+    types: ['duration', 'overview', 'course'],
+    must: ['month', 'year'],
+  },
+  {
     q: 'duration of ethical hacking specialist',
     types: ['duration', 'overview', 'course'],
     must: ['month', 'year'],
@@ -87,6 +103,16 @@ const CASES = [
     q: 'does jetking guarantee placement?',
     types: ['placement', 'faq', 'info', 'overview'],
     must: ['placement', 'job', 'guarantee', 'recruit'],
+  },
+  {
+    q: 'placement milega kya',
+    types: ['placement', 'faq', 'info', 'overview'],
+    must: ['placement', 'job', 'recruit'],
+  },
+  {
+    q: 'mujhe cyber security course ke baare mein batao',
+    types: ['course', 'overview', 'curriculum'],
+    must: ['cyber', 'security'],
   },
   {
     q: 'which companies recruit from jetking?',

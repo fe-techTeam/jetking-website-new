@@ -1,5 +1,7 @@
-import type { Metadata } from 'next';
 import { content } from '@/lib/content';
+import { fill } from '@/lib/content/copy/define';
+import { loadCopy } from '@/lib/content/copy/load';
+import { professionalCopy } from '@/lib/content/copy/pages/professional';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import { JsonLd, type Crumb } from '@/components/ui';
@@ -7,17 +9,26 @@ import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
 import { ProfessionalLanding } from '@/components/professional/ProfessionalLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Working Professional Path — Upskill & Advance | ${siteConfig.name}`,
-    description:
-      'Upgrade your career with Jetking upskilling programmes — cloud, cyber security, DevOps and AI tracks with flexible batches, certifications and career support for working professionals.',
-  },
-  '/professional',
-);
+export async function generateMetadata() {
+  const copy = await loadCopy(professionalCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
+      description: fill(copy['seo.description'], { siteName: siteConfig.name }),
+      // Audience pages are not listed or indexed; the main pages carry their content.
+      noindex: true,
+    },
+    '/professional',
+  );
+}
 
 export default async function ProfessionalPage() {
-  const [courses, home] = await Promise.all([content.listCourses(), loadHomeData()]);
+  const [copy, courses, home, partners] = await Promise.all([
+    loadCopy(professionalCopy),
+    content.listCourses(),
+    loadHomeData(),
+    content.getLogoList('professional-employers'),
+  ]);
 
   const preferred = [
     'cloud-computing-engineer-ai',
@@ -47,7 +58,7 @@ export default async function ProfessionalPage() {
 
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
-    { name: 'Working Professional', path: '/professional' },
+    { name: copy['breadcrumb.name'], path: '/professional' },
   ];
 
   return (
@@ -55,7 +66,9 @@ export default async function ProfessionalPage() {
       <JsonLd data={breadcrumbSchema(trail)} />
       <ScrollDepthTracker />
       <ProfessionalLanding
+        copy={copy}
         courses={professionalCourses}
+        partners={partners.items}
         testimonials={testimonials}
       />
     </>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
 import { AdminTopbar } from './AdminTopbar';
@@ -15,13 +16,52 @@ import { AdminTopbar } from './AdminTopbar';
 export function AdminShell({
   sidebar,
   navItems,
+  user,
+  liveContent,
+  logoutAction,
   children,
 }: {
   sidebar: ReactNode;
   navItems: Array<{ href: Route; label: string; icon: string }>;
+  user: { name: string; role: string };
+  liveContent: boolean;
+  logoutAction: () => void | Promise<void>;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  /** Desktop: the sidebar can be hidden to give the content the full width. Remembered per browser. */
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('jk-admin-sidebar') === 'collapsed') setCollapsed(true); // eslint-disable-line react-hooks/set-state-in-effect
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  /** The hamburger: opens the drawer on phones/tablets, hides or shows the sidebar on desktop. */
+  function toggleMenu() {
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      setCollapsed((c) => {
+        try {
+          localStorage.setItem('jk-admin-sidebar', c ? 'open' : 'collapsed');
+        } catch {
+          /* storage blocked */
+        }
+        return !c;
+      });
+    } else {
+      setOpen((o) => !o);
+    }
+  }
   const pathname = usePathname();
 
   // Closes the off-canvas sidebar after a nav link is followed — the layout
@@ -41,20 +81,28 @@ export function AdminShell({
       <div
         onClick={() => setOpen(false)}
         aria-hidden="true"
-        className={`fixed inset-0 z-30 bg-black/40 transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-30 bg-[#090c15]/60 backdrop-blur-[2px] transition-opacity lg:hidden ${
           open ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
       <div
         className={`fixed inset-y-0 left-0 z-40 transition-transform duration-200 lg:static lg:h-full lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } ${collapsed ? 'lg:hidden' : ''}`}
       >
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          aria-label="Close navigation"
+          className="absolute top-4 right-3 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-[12px] text-white/80 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+        >
+          <X aria-hidden="true" className="h-5 w-5" />
+        </button>
         {sidebar}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopbar items={navItems} onMenuClick={() => setOpen(true)} />
+        <AdminTopbar items={navItems} user={user} liveContent={liveContent} logoutAction={logoutAction} onMenuClick={toggleMenu} menuExpanded={open || !collapsed} />
         {children}
       </div>
     </div>

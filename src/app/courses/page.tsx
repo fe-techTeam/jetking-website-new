@@ -1,31 +1,45 @@
-import type { Metadata } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { content } from '@/lib/content';
-import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { coursesCopy } from '@/lib/content/copy/pages/courses';
+import { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { FlexibleLearning } from '@/components/courses/FlexibleLearning';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
+import { fill } from '@/lib/content/copy/define';
+import { breadcrumbSchema } from '@/lib/seo';
+import { toEnquiryCentres } from '@/lib/enquiry-centres';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
-import { siteConfig } from '@/lib/site';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
+import { AskAiLink } from '@/components/AskAiLink';
+import { Section } from '@/components/kit';
 import { CourseExplorer } from './CourseExplorer';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'IT Courses — Cloud, Cyber Security & DevOps | Jetking',
-    description:
-      'Jetking programmes in cloud, cyber security, DevOps and networking — from a 4-month foundation course to a 3-year BCA degree.',
-  },
-  '/courses',
-);
+export async function generateMetadata() {
+  return pageMetadata(coursesCopy, '/courses');
+}
 
 export default async function CoursesPage() {
-  const [courses, centres] = await Promise.all([content.listCourses(), content.listCentres()]);
+  const [copy, professional] = await Promise.all([loadCopy(coursesCopy), loadCopy(professionalCopy)]);
+  const [courses, centres, cities] = await Promise.all([
+    content.listCourses(),
+    content.listCentres(),
+    content.listCities(),
+  ]);
   const levelCount = new Set(courses.map((c) => c.level)).size;
+  const domains = [
+    copy['hero.domains.0'],
+    copy['hero.domains.1'],
+    copy['hero.domains.2'],
+    copy['hero.domains.3'],
+    copy['hero.domains.4'],
+    copy['hero.domains.5'],
+  ];
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Courses', path: '/courses' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.courses'], path: '/courses' },
   ];
 
   return (
@@ -42,21 +56,21 @@ export default async function CoursesPage() {
         the explorer's sticky filter sidebar can pin, and the orbs move onto a
         self-clipping `.dc-orbs` child.
       */}
-      <div className="dark-canvas no-orbs dc-flow pt-6 pb-16 sm:pt-8 lg:pb-20">
+      <div className="dark-canvas no-orbs dc-flow pt-6 sm:pt-8">
         <span className="dc-orbs" aria-hidden="true" />
 
-        <div className="shell">
+        <div className="shell pb-14 sm:pb-16">
           <Breadcrumbs trail={trail} />
 
           {/* ── Cinematic banner (blog / centres hero language) ───────────── */}
           <section className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[32px] lg:min-h-[480px]">
+            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[28px] lg:min-h-[480px]">
               <Image
-                src="/home/journey-student-v2.jpg"
+                src={copy['hero.image']}
                 alt=""
                 fill
                 priority
-                sizes="100vw"
+                sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
                 className="object-cover object-[center_22%]"
               />
               <div
@@ -65,31 +79,39 @@ export default async function CoursesPage() {
               />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[56%] lg:px-12 lg:py-16 xl:px-14">
-                  <p className="dc-eyebrow label-mono">Programmes</p>
+                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
+                  <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
 
-                  <h1 className="dc-heading-glow mt-4 font-display text-[34px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-[var(--dc-ink)] xs:text-[40px] sm:mt-5 sm:text-[48px] md:text-[52px] lg:text-[54px]">
-                    The Most In-Demand
-                    <span className="dc-accent-glow mt-1 block sm:mt-1.5">Job-Ready Courses.</span>
+                  <h1 className="page-title-hero mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
+                    {copy['hero.title']}
+                    <span className="dc-accent-glow mt-1 block sm:mt-1.5">{copy['hero.titleAccent']}</span>
                   </h1>
 
-                  <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
-                    Cloud, cyber security, DevOps and networking — from a four-month
-                    foundation course to a three-year degree. Sorted by what suits you;
-                    every programme stays listed.
+                  {/* Slide 1 order: the domains first, then the programme line. Plain text for search crawlers. */}
+                  <ul aria-label={copy['hero.domainsLabel']} className="mt-4 flex max-w-[60ch] flex-wrap gap-2 sm:mt-5">
+                    {domains.map((domain) => (
+                      <li
+                        key={domain}
+                        className="rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3 py-1 text-[14px] font-bold text-[var(--dc-ink)]"
+                      >
+                        {domain}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="mt-4 max-w-[60ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:text-[16px]">
+                    {copy['hero.sub']}
                   </p>
 
-                  <p className="mt-6 numeral text-[11.5px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-7">
-                    {siteConfig.name}
-                    {' · '}
-                    {courses.length} programmes
-                    {' · '}
-                    {levelCount} levels
+                  <p className="mt-6 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-7">
+                    {fill(copy['hero.stats'], { courses: courses.length, levels: levelCount })}
                   </p>
+
+                  <AskAiLink className="mt-3 text-[var(--dc-accent-soft)]" />
                 </div>
 
                 <HeroEnquiryCard
-                  centres={centres.map((c) => ({ slug: c.slug, name: c.name, citySlug: c.citySlug, state: c.state }))}
+                  centres={toEnquiryCentres(centres, cities)}
                   source="courses-hero-form"
                   tone="dc"
                   titleId="courses-hero-form-title"
@@ -105,7 +127,7 @@ export default async function CoursesPage() {
             page stays linked. See the contract at the top of CourseExplorer.tsx.
           */}
           <div className="mt-10 lg:mt-12">
-            <CourseExplorer courses={courses} />
+            <CourseExplorer courses={courses} copy={copy} />
           </div>
 
           {/* Persona-adaptive next step, after the list rather than before it, so the programmes come first. */}
@@ -116,62 +138,64 @@ export default async function CoursesPage() {
               tone="dark"
               variants={{
                 student: {
-                  headline: 'Comparing the cloud and cyber tracks?',
-                  body: 'They look similar and suit different people. This explains the difference.',
-                  ctaLabel: 'Read the comparison',
-                  ctaHref: '/blog/cyber-security-vs-cloud-computing',
+                  headline: copy['guidance.student.headline'],
+                  body: copy['guidance.student.body'],
+                  ctaLabel: copy['guidance.student.ctaLabel'],
+                  ctaHref: copy['guidance.student.ctaHref'],
                 },
                 professional: {
-                  headline: 'Changing careers rather than starting one?',
-                  body: 'What transfers from your current role, and what does not.',
-                  ctaLabel: 'Chat with Jetking',
+                  headline: copy['guidance.professional.headline'],
+                  body: copy['guidance.professional.body'],
+                  ctaLabel: copy['guidance.professional.ctaLabel'],
                   ctaAction: 'guide',
                 },
                 parent: {
-                  headline: 'Evaluating on your child’s behalf?',
-                  body: 'Seven questions worth asking any training institute — including us.',
-                  ctaLabel: 'See the checklist',
-                  ctaHref: '/blog/what-parents-should-ask-it-institute',
+                  headline: copy['guidance.parent.headline'],
+                  body: copy['guidance.parent.body'],
+                  ctaLabel: copy['guidance.parent.ctaLabel'],
+                  ctaHref: copy['guidance.parent.ctaHref'],
                 },
                 franchise: {
-                  headline: 'Here about the franchise opportunity?',
-                  body: 'The franchise section covers the operating model.',
-                  ctaLabel: 'Go to franchise',
-                  ctaHref: '/franchise',
+                  headline: copy['guidance.franchise.headline'],
+                  body: copy['guidance.franchise.body'],
+                  ctaLabel: copy['guidance.franchise.ctaLabel'],
+                  ctaHref: copy['guidance.franchise.ctaHref'],
                 },
               }}
             />
           </div>
-
-          {/* ── Closing CTA — the page's one consolidated enquiry prompt ───── */}
-          <section
-            className="mt-16 border-t border-[var(--dc-hairline)] pt-12 sm:mt-20 sm:pt-14"
-            aria-labelledby="courses-cta"
-          >
-            <div className="dc-panel flex flex-col items-start gap-6 rounded-[24px] p-7 sm:flex-row sm:items-center sm:justify-between sm:rounded-[28px] sm:p-9">
-              <div className="max-w-lg">
-                <p className="dc-eyebrow label-mono">Still deciding</p>
-                <h2
-                  id="courses-cta"
-                  className="mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
-                >
-                  Not sure which programme fits?
-                </h2>
-                <p className="mt-2.5 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                  Talk to a counsellor about your goals, eligibility and the right track — no
-                  commitment needed.
-                </p>
-              </div>
-              <Link
-                href="/enquiry"
-                className="dc-cta inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full px-7 text-sm font-bold sm:h-14 sm:px-8 sm:text-base"
-              >
-                Talk to a counsellor
-                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-              </Link>
-            </div>
-          </section>
         </div>
+
+        {/* ── Flexible batches, carried over from the Professional page ───── */}
+        <FlexibleLearning copy={professional} />
+
+        {/* ── Closing CTA: the page's one consolidated enquiry prompt ───── */}
+        <Section tone="plain" labelledBy="courses-cta">
+          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[17rem]">
+              <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+            </div>
+            <div className="p-6 sm:p-10">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
+              <h2 id="courses-cta" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
+                {copy['cta.title']}
+              </h2>
+              <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">{copy['cta.body']}</p>
+              <EnquiryLink
+                source="courses-index"
+                className="group/enq mt-6 inline-flex min-h-12 w-full items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)] sm:w-auto sm:min-w-[16rem]"
+              >
+                <span>{copy['cta.button']}</span>
+                <span
+                  aria-hidden="true"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/enq:translate-x-0.5"
+                >
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                </span>
+              </EnquiryLink>
+            </div>
+          </div>
+        </Section>
       </div>
     </>
   );

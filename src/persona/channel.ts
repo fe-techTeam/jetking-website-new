@@ -26,7 +26,7 @@ const SOCIAL_HOST =
 
 const PAID_MEDIUM = /^(cpc|ppc|paid|paidsearch|paid[_-]?social|sem|display|cpm)$/i;
 
-export function isSearchEngineReferrer(host: string | undefined): boolean {
+function isSearchEngineReferrer(host: string | undefined): boolean {
   return Boolean(host && SEARCH_ENGINE_HOST.test(host));
 }
 

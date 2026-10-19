@@ -1,7 +1,11 @@
+import Image from 'next/image';
 import Link from 'next/link';
+import { Section } from '@/components/kit';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import type { Route } from 'next';
 import { ArrowRight } from 'lucide-react';
 import type { Post } from '@/lib/content/types';
+import type { blogCopy } from '@/lib/content/copy/pages/blog';
 import { BlogHero } from './BlogHero';
 import { BlogIndex } from './BlogIndex';
 
@@ -13,6 +17,7 @@ import { BlogIndex } from './BlogIndex';
  * closing CTA.
  */
 export function BlogLanding({
+  copy,
   allPosts,
   posts,
   categories,
@@ -21,6 +26,7 @@ export function BlogLanding({
   initialQuery = '',
   initialPage = 1,
 }: {
+  copy: typeof blogCopy.defaults;
   allPosts: Post[];
   posts: Post[];
   categories: string[];
@@ -33,6 +39,7 @@ export function BlogLanding({
   return (
     <div className="blog-page relative overflow-hidden">
       <BlogHero
+        copy={copy}
         articleCount={allPosts.length}
         topicCount={categories.length}
         initialQuery={initialQuery}
@@ -40,6 +47,7 @@ export function BlogLanding({
       />
 
       <BlogIndex
+        copy={copy}
         key={`${activeCategory ?? 'all'}:${initialQuery}:${initialPage}`}
         posts={posts}
         categories={categories}
@@ -49,50 +57,41 @@ export function BlogLanding({
         initialPage={initialPage}
       />
 
-      <section className="bg-[var(--blog-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="blog-cta">
-        <div className="shell">
-          <div className="blog-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
-              <div>
-                <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--blog-accent-soft)] uppercase">
-                  Still deciding
-                </p>
-                <h2
-                  id="blog-cta"
-                  className="mt-3 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--blog-ink)] xs:text-[28px] sm:text-[32px]"
-                >
-                  Talk it through with a counsellor
-                </h2>
-                <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--blog-ink-secondary)] sm:text-[15.5px]">
-                  A short conversation about your goals, background and nearest centre — no
-                  obligation, no scripted pitch.
-                </p>
-              </div>
+      <Section tone="plain" labelledBy="blog-cta">
+        <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="p-6 sm:p-10">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
+            <h2 id="blog-cta" className="section-title mt-2.5 text-[var(--k-ink)]">
+              {copy['cta.title']}
+            </h2>
+            <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">{copy['cta.body']}</p>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-                <Link
-                  href={'/enquiry' as Route}
-                  className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--blog-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-[var(--blog-accent-soft)] xs:text-[15px]"
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <EnquiryLink
+                source="blog-landing"
+                className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
+              >
+                <span>{copy['cta.primary.label']}</span>
+                <span
+                  aria-hidden="true"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/book:translate-x-0.5"
                 >
-                  <span>Enquire now</span>
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
-                  >
-                    <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                  </span>
-                </Link>
-                <Link
-                  href={'/courses' as Route}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--blog-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--blog-ink)] transition-colors hover:border-[var(--blog-accent-soft)] hover:bg-[var(--blog-accent-tint)] xs:text-[15px]"
-                >
-                  Browse programmes
-                </Link>
-              </div>
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                </span>
+              </EnquiryLink>
+              <Link
+                href={copy['cta.secondary.href'] as Route}
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--k-line-strong)] px-6 py-3 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]"
+              >
+                {copy['cta.secondary.label']}
+              </Link>
             </div>
           </div>
+
+          <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
+            <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+          </div>
         </div>
-      </section>
-    </div>
+      </Section>      </div>
   );
 }

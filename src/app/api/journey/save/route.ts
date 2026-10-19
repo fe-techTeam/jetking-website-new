@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
+import { leadForLog, safeError } from '@/lib/pii';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -67,8 +68,9 @@ export async function POST(request: Request) {
 
   const endpoint = process.env.CRM_ENDPOINT;
 
-  if (!endpoint) {
-    console.warn('[journey:soft-save:unrouted]', JSON.stringify(payload));
+  // The Smartrain CRM only accepts complete enquiries (email, state, city, centre); a soft-save is not one.
+  if (!endpoint || process.env.CRM_PROVIDER === 'smartrain') {
+    console.warn('[journey:soft-save:unrouted]', leadForLog(payload));
     return NextResponse.json({ ok: true, routed: false });
   }
 
@@ -85,7 +87,7 @@ export async function POST(request: Request) {
     if (!response.ok) throw new Error(`CRM returned ${response.status}`);
     return NextResponse.json({ ok: true, routed: true });
   } catch (error) {
-    console.error('[journey:soft-save:crm-failed]', JSON.stringify(payload), error);
+    console.error('[journey:soft-save:crm-failed]', leadForLog(payload), safeError(error));
     return NextResponse.json({ ok: true, routed: false });
   }
 }

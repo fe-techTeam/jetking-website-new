@@ -1,5 +1,8 @@
 import 'server-only';
 import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/db/client';
+import { chatbotUnanswered } from '@/lib/db/schema';
+import { safeError } from '@/lib/pii';
 
 export interface UnansweredEntry {
   /** The visitor's own message text, verbatim. */
@@ -35,6 +38,21 @@ export async function logUnanswered(entry: UnansweredEntry): Promise<void> {
     '[jetking-ai:unanswered]',
     JSON.stringify({ ...entry, at: new Date().toISOString() }),
   );
+
+  // The admin's "Unanswered questions" screen reads this table.
+  const db = getDb();
+  if (db) {
+    try {
+      await db.insert(chatbotUnanswered).values({
+        question: entry.question.slice(0, 2000),
+        intent: entry.intent,
+        reason: entry.reason,
+        topScore: entry.topScore ?? null,
+      });
+    } catch (error) {
+      console.warn('[jetking-ai:unanswered] database insert failed:', safeError(error));
+    }
+  }
 
   const supabase = getSupabase();
   if (!supabase) return;

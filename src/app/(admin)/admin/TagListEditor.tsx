@@ -27,14 +27,14 @@ export function TagListEditor({
           {value.map((tag, i) => (
             <span
               key={`${tag}-${i}`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1 text-xs text-foreground"
+              className="inline-flex items-center gap-1 rounded-full bg-surface py-1 pr-1 pl-3 text-xs font-medium text-foreground ring-1 ring-border"
             >
               {tag}
               <button
                 type="button"
                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
                 aria-label={`Remove ${tag}`}
-                className="cursor-pointer text-foreground-muted hover:text-[var(--color-error-600)]"
+                className="tap grid h-6 w-6 cursor-pointer place-items-center rounded-full text-base leading-none text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318]"
               >
                 ×
               </button>
@@ -53,12 +53,12 @@ export function TagListEditor({
             }
           }}
           placeholder={placeholder}
-          className="admin-input h-8 flex-1 py-0 text-xs"
+          className="admin-input flex-1 py-0 text-sm"
         />
         <button
           type="button"
           onClick={add}
-          className="shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border px-3 text-xs font-semibold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          className="min-h-11 shrink-0 cursor-pointer rounded-[var(--admin-radius)] border border-border-medium bg-background px-4 text-sm font-bold text-foreground-secondary transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent-ink)]"
         >
           Add
         </button>

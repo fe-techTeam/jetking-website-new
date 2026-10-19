@@ -1,84 +1,81 @@
 import Image from 'next/image';
+import { FaqList, Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 import Link from 'next/link';
+import type { Route } from 'next';
 import {
   ArrowRight,
   Award,
-  Building2,
+  BadgeCheck,
+  Briefcase,
   CheckCircle2,
+  ClipboardList,
   Download,
-  FileText,
+  GraduationCap,
   Handshake,
   Headphones,
+  HeartHandshake,
+  Landmark,
   LineChart,
   Mail,
   Megaphone,
+  Network,
   Rocket,
   Settings2,
-  Shield,
   ShieldCheck,
-  TrendingUp,
   Users,
-  UsersRound,
+  Workflow,
 } from 'lucide-react';
 import type { Faq, Testimonial } from '@/lib/content/types';
 import { siteConfig } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
+import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 import { FranchiseTestimonialSliderLight } from './FranchiseTestimonialSliderLight';
 import { FranchiseEnquiryFormLight } from './FranchiseEnquiryFormLight';
-import { Disclosure } from '@/components/Disclosure';
-import { COURSES, JUMP_START, LAUNCH_STEPS, MARKET_STATS, WHY_STATS } from './data';
+import { HeroOrbit } from '@/components/HeroOrbit';
 
 // Icons paired with ./data's arrays by index — kept here, not in the shared
 // data file, since lucide-react's icon components use React context
 // internals unavailable when scripts/export-site-corpus.mts imports that
 // data file under Node's `--conditions=react-server`.
-const WHY_STATS_ICONS = [Users, UsersRound, Building2, Award, ShieldCheck];
+const WHY_STATS_ICONS = [Workflow, Rocket, Network, Landmark, Award];
 const JUMP_START_ICONS = [Users, Settings2, Megaphone, Rocket];
-const LAUNCH_STEPS_ICONS = [FileText, Rocket, Users, Handshake];
-const COURSES_ICONS = [Shield, Award, TrendingUp];
+const LAUNCH_STEPS_ICONS = [ClipboardList, Rocket, GraduationCap, HeartHandshake];
+const COURSES_ICONS = [Briefcase, GraduationCap, BadgeCheck];
 
-const PARTNER_AVATARS = [
-  '/franchise/partner-avatar-1.png',
-  '/franchise/partner-avatar-2.png',
-  '/franchise/partner-avatar-3.png',
-  '/franchise/hero-partner.png',
+const PARTNER_AVATAR_KEYS = [
+  'hero.avatars.0.avatar',
+  'hero.avatars.1.avatar',
+  'hero.avatars.2.avatar',
+  'hero.avatars.3.avatar',
 ] as const;
 
-const ORBIT = [
-  {
-    label: 'Brand',
-    detail: '78+ years of trust',
-    icon: Award,
-    className: 'top-[6%] left-0 sm:left-[-4%] lg:left-[-8%]',
-  },
-  {
-    label: 'Support',
-    detail: 'End-to-end ops help',
-    icon: Handshake,
-    className: 'top-[4%] right-0 sm:right-[-2%] lg:right-[-6%]',
-  },
-  {
-    label: 'Growth',
-    detail: 'Local marketing push',
-    icon: Megaphone,
-    className: 'bottom-[10%] left-0 sm:left-[-2%] lg:left-[-10%]',
-  },
-  {
-    label: 'Returns',
-    detail: 'Attractive ROI path',
-    icon: LineChart,
-    className: 'bottom-[8%] right-0 sm:right-[-2%] lg:right-[-8%]',
-  },
+// Orbit chips: icon + position are layout; their words come from the page copy (`orbit.N.*`).
+const ORBIT_LAYOUT = [
+  { icon: Award, className: 'top-[6%] left-0 sm:left-[-4%] lg:left-[-8%]' },
+  { icon: Handshake, className: 'top-[4%] right-0 sm:right-[-2%] lg:right-[-6%]' },
+  { icon: Megaphone, className: 'bottom-[10%] left-0 sm:left-[-2%] lg:left-[-10%]' },
+  { icon: LineChart, className: 'bottom-[8%] right-0 sm:right-[-2%] lg:right-[-8%]' },
 ] as const;
 
 export function FranchiseLandingLight({
+  copy,
   testimonials,
   faqs,
 }: {
+  copy: typeof franchiseCopy.defaults;
   testimonials?: Testimonial[];
   faqs?: Faq[];
 }) {
   const phone = siteConfig.phone || '8422055373';
   const telPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+  // Indexed copy fields (`why.0.value`, `jump.2.title`…): the item count is fixed by the layout.
+  const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
+  const orbit = ORBIT_LAYOUT.map((item, i) => ({
+    ...item,
+    label: k(`orbit.${i}.label`),
+    detail: k(`orbit.${i}.detail`),
+  }));
+  const bands = [0, 1, 2].map((i) => k(`investment.band.${i}`));
 
   return (
     <div
@@ -86,7 +83,7 @@ export function FranchiseLandingLight({
         'student-page relative flex flex-col overflow-hidden',
         /* Bleed the page's own gradient background up behind the sticky,
            transparent header instead of stopping in a hard line at its
-           bottom edge — see the matching fix in home/v2/HomeV2.tsx. Offsets
+           bottom edge — see the matching fix in home/hero/HomeHero.tsx. Offsets
            must match SiteHeader's height breakpoints (72/80/88/96). */
         '-mt-[72px] pt-[72px]',
         'xs:-mt-[80px] xs:pt-[80px]',
@@ -96,171 +93,134 @@ export function FranchiseLandingLight({
     >
       {/* ── Hero (student orbit pattern) ───────────────────────────────── */}
       <section className="shell relative pt-8 pb-6 xs:pt-10 sm:pt-12 lg:pt-14 lg:pb-8">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-        />
 
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-6 xl:gap-10">
+        <div className="grid items-center gap-10 min-[880px]:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] min-[880px]:gap-6 xl:gap-10">
           <div>
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
-              Become A Franchise Partner
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
+              {copy['hero.eyebrow']}
             </p>
 
-            <h1 className="mt-5 font-display text-[36px] leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--stu-ink)] xs:text-[42px] sm:mt-6 sm:text-[48px] md:text-[52px] lg:text-[50px] xl:text-[58px]">
-              Transform youth with a Jetking Franchise in your{' '}
-              <span className="text-[var(--stu-accent-soft)]">City</span>
+            <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+              {copy['hero.title.prefix']}{' '}
+              <span className="text-[var(--dc-accent-soft)]">{copy['hero.title.accent']}</span>
             </h1>
 
-            <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
-              Join India&rsquo;s trusted IT training network. Proven model, end-to-end
-              support, and a path to build lasting local impact — and wealth.
+            <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
+              {copy['hero.sub']}
             </p>
 
-            <div className="mt-7 flex flex-col items-start gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="mt-7 flex flex-row flex-wrap items-center gap-2 sm:mt-8 sm:gap-4">
               <Link
-                href="#enquire"
-                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+                href={copy['hero.cta.href'] as Route}
+                className="group/cta inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--dc-accent)] py-2.5 pr-2.5 pl-4 text-[13px] font-bold text-white transition-colors hover:bg-jk-700 sm:min-h-12 sm:gap-3 sm:py-3 sm:pr-3 sm:pl-6 sm:text-[15px]"
               >
-                Enquire Now
+                {copy['hero.cta.label']}
                 <span
                   aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                  className="grid h-7 w-7 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5 sm:h-9 sm:w-9"
                 >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                  <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2.25} />
                 </span>
               </Link>
 
               <Link
-                href="#enquire"
-                className="group/path inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] bg-transparent px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+                href={copy['hero.secondary.href'] as Route}
+                className="group/path inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[var(--dc-accent)] bg-transparent px-3.5 py-2 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)] sm:min-h-12 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-[15px]"
               >
-                <Download className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-                Download Brochure
+                <Download className="h-3.5 w-3.5 sm:h-4 sm:w-4" strokeWidth={2} aria-hidden="true" />
+                {copy['hero.secondary.label']}
               </Link>
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2.5 sm:mt-10">
               <div className="flex items-center gap-3">
                 <span aria-hidden="true" className="flex -space-x-2.5">
-                  {PARTNER_AVATARS.map((src) => (
+                  {PARTNER_AVATAR_KEYS.map((key) => (
                     <span
-                      key={src}
-                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--stu-card)] shadow-sm"
+                      key={key}
+                      className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)] shadow-sm"
                     >
-                      <Image src={src} alt="" fill sizes="36px" className="object-cover" />
+                      <Image src={copy[key]} alt="" fill sizes="36px" className="object-cover" />
                     </span>
                   ))}
                 </span>
-                <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                  100+ partners across India
+                <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
+                  {copy['hero.partners']}
                 </span>
               </div>
               <span
-                className="hidden h-4 w-px shrink-0 bg-[var(--stu-hairline)] min-[720px]:block"
+                className="hidden h-4 w-px shrink-0 bg-[var(--dc-hairline-strong)] min-[720px]:block"
                 aria-hidden="true"
               />
-              <span className="inline-flex items-center gap-2 whitespace-nowrap text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
+              <span className="inline-flex items-center gap-2 whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                 <ShieldCheck
-                  className="h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]"
+                  className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
                   strokeWidth={2.25}
                   aria-hidden="true"
                 />
-                Capacity from ₹50L
+                {copy['hero.capacity']}
               </span>
             </div>
 
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-muted)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="tap mt-3 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-muted)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-              Prefer to talk? Call franchise manager
+              {copy['hero.call']}
             </a>
           </div>
 
-          <div className="stu-hero-glow relative mx-auto w-full max-w-[540px] lg:max-w-none">
-            <div className="relative mx-auto aspect-square w-[min(100%,440px)] lg:w-full lg:max-w-[500px]">
-              <div
-                aria-hidden="true"
-                className="stu-orbit-ring absolute inset-[10%] rounded-full"
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-[16%] rounded-full border border-dashed border-[rgb(232_36_43/0.28)]"
-              />
-
-              <div className="absolute inset-[20%] overflow-hidden rounded-full bg-[linear-gradient(160deg,var(--card),var(--surface-sunken),var(--card))] shadow-[0_28px_70px_rgb(0_0_0/0.55)]">
-                <Image
-                  src="/franchise/hero-building.png"
-                  alt="Modern Jetking franchise training centre building"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 380px, 75vw"
-                  className="object-cover object-center"
-                />
-              </div>
-
-              {ORBIT.map((item) => (
-                <div
-                  key={item.label}
-                  className={`stu-float absolute z-10 flex max-w-[158px] items-start gap-2.5 rounded-2xl p-3 sm:max-w-[172px] sm:p-3.5 ${item.className}`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-                  >
-                    <item.icon className="h-4 w-4" strokeWidth={1.75} />
-                  </span>
-                  <span className="min-w-0 pt-0.5">
-                    <span className="block text-[13px] font-extrabold text-[var(--stu-ink)]">
-                      {item.label}
-                    </span>
-                    <span className="mt-0.5 block text-[12px] leading-snug text-[var(--stu-ink-secondary)]">
-                      {item.detail}
-                    </span>
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HeroOrbit
+            src={copy['hero.image']}
+            alt={copy['hero.image.alt']}
+            items={orbit}
+          />
         </div>
       </section>
 
       {/* ── Why Franchise (student Why panel) ──────────────────────────── */}
-      <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="fra-why"
-      >
-        <div className="shell">
-          <div className="stu-why overflow-hidden rounded-[28px] px-6 py-10 text-[var(--stu-ink)] xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="plain" labelledBy="fra-why">
+          <div>
             <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
+                <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['why.eyebrow']}</p>
                 <h2
                   id="fra-why"
-                  className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
                 >
-                  Why Partners Choose{' '}
-                  <span className="text-[var(--stu-accent-soft)]">{siteConfig.name}</span>
+                  {copy['why.title.prefix']}{' '}
+                  <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
                 </h2>
 
-                <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-x-3">
-                  {WHY_STATS.map((stat, i) => {
-                    const Icon = WHY_STATS_ICONS[i]!;
+                <p className="mt-3 max-w-md text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+                  {copy['why.lede']}
+                </p>
+
+                {/* Wraps into as many rows as the width allows; each row's tiles grow to fill it. */}
+                <dl className="mt-7 flex flex-wrap gap-3 sm:gap-4 lg:gap-3 xl:gap-4">
+                  {WHY_STATS_ICONS.map((Icon, i) => {
+                    const stat = { value: k(`why.${i}.value`), label: k(`why.${i}.label`) };
                     return (
-                    <div key={stat.label} className="text-center sm:text-left lg:text-center">
-                      <Icon
-                        className="mx-auto h-6 w-6 text-[var(--stu-accent-soft)] sm:mx-0 lg:mx-auto"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
+                    <div
+                      key={stat.label}
+                      className="kit kit-card @container min-w-0 flex-[1_1_136px] p-4"
+                    >
                       <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="mt-2.5 block font-display text-[20px] leading-none font-extrabold sm:text-[22px]">
-                          {stat.value}
+                      <dd className="flex h-full flex-col items-start gap-3 @[200px]:flex-row @[200px]:items-center @[200px]:gap-3.5">
+                        <span
+                          aria-hidden="true"
+                          className="kit-iconwell !h-10 !w-10"
+                        >
+                          <Icon className="h-5 w-5" strokeWidth={1.9} />
                         </span>
-                        <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--stu-ink-secondary)]">
-                          {stat.label}
+                        <span className="min-w-0">
+                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--dc-ink)] sm:text-[22px]">
+                            {stat.value}
+                          </span>
+                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13px]">
+                            {stat.label}
+                          </span>
                         </span>
                       </dd>
                     </div>
@@ -269,48 +229,86 @@ export function FranchiseLandingLight({
                 </dl>
               </div>
 
-              <FranchiseTestimonialSliderLight testimonials={testimonials} />
+              <FranchiseTestimonialSliderLight copy={copy} testimonials={testimonials} />
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
+
+      {/* ── Market opportunity + image ─────────────────────────────────── */}
+      <Section tone="tint" id="opportunity">
+          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
+            <div className="kit kit-card relative overflow-hidden lg:col-span-5">
+              <Image
+                src={copy['market.image']}
+                alt={copy['market.image.alt']}
+                width={1200}
+                height={900}
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
+              />
+            </div>
+
+            <div className="lg:col-span-7">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['market.eyebrow']}</p>
+              <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+                {copy['market.title']}
+              </h2>
+              <p className="mt-3 max-w-[54ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+                {copy['market.lede']}
+              </p>
+
+              <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
+                {[0, 1, 2, 3].map((i) => (
+                  <li key={i} className="kit kit-card p-3.5 sm:p-5">
+                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
+                      {k(`market.${i}.value`)}
+                    </p>
+                    <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
+                      {k(`market.${i}.label`)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Section>
 
       {/* ── Partner benefits (student Benefits pattern) ────────────────── */}
-      <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="fra-benefits"
-      >
-        <div className="shell">
+      <Section tone="plain" labelledBy="fra-benefits">
           <div className="grid gap-6 xs:gap-7 sm:gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10">
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['jump.eyebrow']}</p>
               <h2
                 id="fra-benefits"
-                className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[26px] sm:text-[28px] lg:text-[30px]"
+                className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
               >
-                Jump-start your centre
+                {copy['jump.title']}
               </h2>
-              <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-                What you get when you partner with Jetking.
+              <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+                {copy['jump.lede']}
               </p>
             </div>
 
             <ul className="grid grid-cols-1 gap-3 xs:gap-3.5 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:row-start-2 xl:col-span-8">
-              {JUMP_START.map((item, i) => {
-                const Icon = JUMP_START_ICONS[i]!;
+              {JUMP_START_ICONS.map((Icon, i) => {
+                const item = { title: k(`jump.${i}.title`), detail: k(`jump.${i}.detail`) };
                 return (
                 <li key={item.title} className="min-w-0">
-                  <article className="stu-card flex h-full gap-3.5 rounded-[18px] p-4 xs:gap-4 xs:rounded-[20px] xs:p-5 sm:flex-col sm:gap-0">
+                  <article className="kit kit-card flex h-full gap-3.5 p-4 xs:gap-4 xs:p-5 sm:flex-col sm:gap-0">
                     <span
                       aria-hidden="true"
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
+                      className="kit-iconwell"
                     >
-                      <Icon className="h-5 w-5" strokeWidth={1.75} />
+                      <Icon className="h-5 w-5" strokeWidth={1.9} />
                     </span>
                     <div className="min-w-0 sm:mt-4">
-                      <h3 className="text-[15px] font-extrabold text-[var(--stu-ink)] xs:text-[16px]">
+                      <h3 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
                         {item.title}
                       </h3>
-                      <p className="mt-1 text-[13px] leading-snug text-[var(--stu-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
+                      <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 sm:leading-relaxed">
                         {item.detail}
                       </p>
                     </div>
@@ -321,257 +319,182 @@ export function FranchiseLandingLight({
             </ul>
 
             <div className="min-w-0 lg:col-span-5 lg:row-start-2 lg:self-stretch xl:col-span-4">
-              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
+              <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[var(--k-r)] bg-jk-600 p-6 text-white xs:p-7 sm:p-8 lg:p-7 xl:p-8">
                 <span
                   aria-hidden="true"
-                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] shadow-[0_8px_20px_rgb(196_30_36/0.2)] xs:h-12 xs:w-12"
+                  className="relative grid h-11 w-11 place-items-center rounded-2xl bg-white/15 text-white xs:h-12 xs:w-12"
                 >
-                  <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} />
+                  <CheckCircle2 className="h-5 w-5" strokeWidth={1.9} />
                 </span>
 
-                <h2 className="relative mt-4 font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:mt-5 xs:text-[24px] sm:text-[26px]">
-                  Ready to partner?
+                <h2 className="subsection-title relative mt-4 font-display !text-white xs:mt-5">
+                  {copy['cta.title']}
                 </h2>
-                <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] xs:mt-3 xs:text-[15px]">
-                  Tell us your preferred city and investment capacity — our franchise team
-                  replies within 24 hours.
+                <p className="relative mt-2.5 text-[14px] leading-relaxed text-white/85 xs:mt-3 xs:text-[15px]">
+                  {copy['cta.body']}
                 </p>
 
                 <a
-                  href="#enquire"
-                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--stu-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
+                  href={copy['cta.button.href']}
+                  className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-white py-3 pr-3 pl-5 text-[14.5px] font-bold text-jk-700 transition-colors hover:bg-white/90 xs:mt-7 xs:text-[15px]"
                 >
-                  <span>Start franchise enquiry</span>
+                  <span>{copy['cta.button.label']}</span>
                   <span
                     aria-hidden="true"
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-jk-600 text-white transition-transform duration-200 group-hover/book:translate-x-0.5"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                   </span>
                 </a>
 
-                <p className="relative mt-4 text-[12.5px] text-[var(--stu-ink-muted)]">
-                  Capacity bands: UPTO 50 L · UPTO 1 CR · UPTO 3 CR
+                <p className="relative mt-4 text-[14px] text-white/75">
+                  {fill(copy['cta.bands'], { bands: bands.join(' · ') })}
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
-      <section id="journey" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
+      <Section tone="tint" id="journey">
           <div className="max-w-xl">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
-              Launch Plan
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['launch.eyebrow']}</p>
+            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+              {copy['launch.title']}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-              A clear path from territory selection to day-to-day operations.
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+              {copy['launch.lede']}
             </p>
           </div>
 
-          <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-            {LAUNCH_STEPS.map((step, i) => {
-              const Icon = LAUNCH_STEPS_ICONS[i]!;
-              return (
-              <li key={step.step}>
-                <article className="stu-card flex h-full flex-col rounded-[20px] p-5 sm:p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-                    >
-                      <Icon className="h-5 w-5" strokeWidth={1.75} />
-                    </span>
-                    <span className="font-display text-[22px] font-extrabold text-[var(--stu-accent-soft)]/70">
-                      {step.step}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--stu-ink)]">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
-                    {step.body}
-                  </p>
-                </article>
-              </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
-
-      {/* ── Market opportunity + image ─────────────────────────────────── */}
-      <section id="opportunity" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
-            <div className="relative overflow-hidden rounded-[24px] border border-[var(--stu-hairline)] lg:col-span-5">
-              <Image
-                src="/franchise/centre-interior.png"
-                alt="Students learning in a modern Jetking-style IT training classroom"
-                width={1200}
-                height={900}
-                className="aspect-[4/3] w-full object-cover"
+          <div className="mt-10">
+            <Reveal>
+              <StepPath
+                steps={LAUNCH_STEPS_ICONS.map((icon, i) => ({
+                  icon,
+                  label: k(`launch.${i}.step`),
+                  title: k(`launch.${i}.title`),
+                  body: <p className="lg:max-w-[13rem]">{k(`launch.${i}.body`)}</p>,
+                }))}
               />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.55)] via-transparent to-transparent"
-              />
-            </div>
-
-            <div className="lg:col-span-7">
-              <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
-                The opportunity is real
-              </h2>
-              <p className="mt-2 max-w-[54ch] text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-                Skill gaps in cloud, cyber and emerging tech create lasting demand for
-                job-ready training centres in every city.
-              </p>
-
-              <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-                {MARKET_STATS.map((stat) => (
-                  <li key={stat.label} className="stu-card rounded-[18px] p-4 sm:p-5">
-                    <p className="font-display text-[26px] font-extrabold leading-none text-[var(--stu-accent-soft)]">
-                      {stat.value}
-                    </p>
-                    <p className="mt-2 text-[13px] leading-snug text-[var(--stu-ink-secondary)]">
-                      {stat.label}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            </Reveal>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Courses ────────────────────────────────────────────────────── */}
-      <section id="courses" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
-        <div className="shell">
+      <Section tone="plain" id="courses">
           <div className="max-w-xl">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
-              Courses your centre will deliver
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['courses.eyebrow']}</p>
+            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+              {copy['courses.title']}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--stu-ink-muted)] sm:text-[15px]">
-              Proven programmes parents trust and employers recognise.
+            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+              {copy['courses.lede']}
             </p>
           </div>
 
-          <ul className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
-            {COURSES.map((course, i) => {
-              const Icon = COURSES_ICONS[i]!;
+          <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div className="relative isolate min-h-[200px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] sm:min-h-[260px] lg:min-h-full">
+            <Image src={copy['courses.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="-z-10 object-cover" />
+          </div>
+          <ul className="grid gap-3 sm:gap-4">
+            {COURSES_ICONS.map((Icon, i) => {
+              const course = { title: k(`courses.${i}.title`), body: k(`courses.${i}.body`) };
               return (
-              <li key={course.title}>
-                <article className="stu-card flex h-full flex-col rounded-[20px] p-5 sm:p-6">
+              <li key={i}>
+                <article className="kit kit-card flex h-full items-start gap-4 p-5">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-xl border border-[var(--stu-accent-soft)]/40 bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="kit-iconwell"
                   >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                    <Icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
-                  <h3 className="mt-4 text-[16px] font-extrabold text-[var(--stu-ink)]">
-                    {course.title}
-                  </h3>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--stu-ink-muted)]">
-                    {course.body}
-                  </p>
+                  <div className="min-w-0">
+                    <h3 className="text-[16px] font-extrabold text-[var(--dc-ink)]">{course.title}</h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">{course.body}</p>
+                  </div>
                 </article>
               </li>
               );
             })}
           </ul>
-        </div>
-      </section>
+          </div>
+        </Section>
 
       {/* ── FAQs ───────────────────────────────────────────────────────── */}
       {faqs?.length ? (
-        <section id="faqs" className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14">
-          <div className="shell">
-            <h2 className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[30px]">
-              Frequently Asked Questions
-            </h2>
-            <div className="fra-faq mt-8 space-y-3">
-              {faqs.map((faq) => (
-                <Disclosure key={faq.id} summary={faq.question}>
-                  <p className="text-[14.5px] leading-relaxed text-[var(--stu-ink-secondary)]">
-                    {faq.answer}
-                  </p>
-                </Disclosure>
-              ))}
-            </div>
-          </div>
-        </section>
+        <Section tone="tint" labelledBy="fra-faq">
+          <SectionHeader id="fra-faq" eyebrow={copy['faq.eyebrow']} title={copy['faq.title']} />
+          <FaqList items={faqs} />
+        </Section>
       ) : null}
 
       {/* ── Enquire ────────────────────────────────────────────────────── */}
-      <section id="enquire" className="bg-[var(--stu-surface)] py-14 sm:py-16 lg:py-20">
-        <div className="shell">
-          <div className="stu-card overflow-hidden rounded-[28px]">
+      <Section tone="tint" id="enquire">
+          <div className="kit kit-card overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
-                  src="/franchise/hero-building.png"
-                  alt="Modern Jetking franchise centre exterior"
+                  src={copy['enquire.image']}
+                  alt={copy['enquire.image.alt']}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.88)] via-[rgb(7_7_12/0.35)] to-transparent lg:bg-gradient-to-r" />
+                <div className="absolute inset-0 bg-gradient-to-t from-scrim/88 via-scrim/35 to-transparent lg:bg-gradient-to-r" />
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
                   <p className="font-display text-[22px] font-extrabold leading-snug tracking-[-0.02em] text-white sm:text-[26px]">
-                    Be your own boss. Build lasting wealth with a trusted brand.
+                    {copy['enquire.tagline']}
                   </p>
                   <p className="mt-3 text-[14px] text-white/75">
-                    Our franchise team gets back within 24 hours.
+                    {copy['enquire.note']}
                   </p>
                 </div>
               </div>
 
               <div className="p-6 sm:p-8 lg:p-10">
-                <FranchiseEnquiryFormLight />
+                <FranchiseEnquiryFormLight copy={copy} />
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Contact bar ────────────────────────────────────────────────── */}
-      <footer className="border-t border-[var(--stu-hairline)] bg-[var(--stu-surface)] py-5">
+      <footer className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-5">
         <div className="shell">
-          <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:flex-wrap sm:gap-8">
+          <div className="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:flex-wrap sm:gap-8">
             <a
               href={`tel:${telPhone.replace(/\s/g, '')}`}
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Headphones
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              Speak to Franchise Manager: +91 {phone}
+              {fill(copy['contact.call'], { phone })}
             </a>
             <a
-              href="mailto:franchise@jetking.com"
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              href={`mailto:${copy['contact.email']}`}
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Mail
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              franchise@jetking.com
+              {copy['contact.email']}
             </a>
             <Link
-              href="/franchise"
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)] transition-colors hover:text-[var(--stu-accent-soft)]"
+              href={copy['contact.web.href'] as Route}
+              className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)] transition-colors hover:text-[var(--dc-accent-soft)]"
             >
               <Download
-                className="h-4 w-4 text-[var(--stu-accent-soft)]"
+                className="h-4 w-4 text-[var(--dc-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              www.jetking.com/franchise
+              {copy['contact.web.label']}
             </Link>
           </div>
         </div>

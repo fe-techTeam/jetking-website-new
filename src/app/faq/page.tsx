@@ -1,4 +1,5 @@
 import type { Metadata, Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -8,31 +9,19 @@ import {
   GraduationCap,
   MapPin,
   MessageCircle,
-  Plus,
   Wallet,
   type LucideIcon,
 } from 'lucide-react';
 import { content } from '@/lib/content';
-import { breadcrumbSchema, buildMetadata, faqSchema } from '@/lib/seo';
+import { breadcrumbSchema, faqSchema } from '@/lib/seo';
+import { faqCopy } from '@/lib/content/copy/pages/faq';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
+import { FaqList, Section, SectionHeader } from '@/components/kit';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Frequently Asked Questions | Jetking',
-    description:
-      'Answers about Jetking admissions, eligibility, fees policy, course durations, centres and placement support.',
-  },
-  '/faq',
-);
-
-const TOPIC_LABELS: Record<string, string> = {
-  admissions: 'Admissions',
-  courses: 'Courses',
-  fees: 'Fees',
-  placement: 'Placement',
-  centres: 'Centres',
-  franchise: 'Franchise',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(faqCopy, '/faq');
+}
 
 const TOPIC_ICONS: Record<string, LucideIcon> = {
   admissions: GraduationCap,
@@ -42,11 +31,6 @@ const TOPIC_ICONS: Record<string, LucideIcon> = {
   centres: MapPin,
   franchise: Building2,
 };
-
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'FAQ', path: '/faq' },
-];
 
 /**
  * FAQ — built on the same dark-canvas language as /placements, /investors and /about-us:
@@ -58,38 +42,51 @@ const trail: Crumb[] = [
  * absent — while collapsed.
  */
 export default async function FaqPage() {
-  const faqs = await content.listFaqs();
+  const copy = await loadCopy(faqCopy);
+  const trail: Crumb[] = [
+    { name: 'Home', path: '/' },
+    { name: copy['breadcrumb.label'], path: '/faq' },
+  ];
+  const TOPIC_LABELS: Record<string, string> = {
+    admissions: copy['topics.admissions'],
+    courses: copy['topics.courses'],
+    fees: copy['topics.fees'],
+    placement: copy['topics.placement'],
+    centres: copy['topics.centres'],
+    franchise: copy['topics.franchise'],
+  };
+  // Franchise questions are answered on the Franchise page; this page is for students and families.
+  const faqs = (await content.listFaqs()).filter((f) => f.topic !== 'franchise');
   const topics = [...new Set(faqs.map((f) => f.topic))];
 
   return (
     <>
       <JsonLd data={[faqSchema(faqs), breadcrumbSchema(trail)]} />
 
-      <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
+      <div className="dark-canvas">
         {/* ── Banner ────────────────────────────────────────────────────── */}
         <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
           <Breadcrumbs trail={trail} />
 
           <div className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[260px] overflow-hidden rounded-[24px] xs:min-h-[280px] xs:rounded-[28px] sm:min-h-[320px] sm:rounded-[32px] lg:min-h-[360px]">
+            <div className="dc-banner relative min-h-[260px] overflow-hidden rounded-[24px] xs:min-h-[280px] xs:rounded-[28px] sm:min-h-[320px] sm:rounded-[28px] lg:min-h-[360px]">
               <Image
-                src="/home/journey-explore-v2.jpg"
+                src={copy['hero.image']}
                 alt=""
                 fill
                 priority
-                sizes="100vw"
+                sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
                 className="object-cover object-[center_28%]"
               />
               <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
               <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:justify-center sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
-                <p className="dc-eyebrow label-mono">FAQ</p>
-                <h1 className="dc-heading-glow mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
-                  Questions people <span className="dc-accent-glow">ask us most</span>
+                <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
+                <h1 className="page-title mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
+                  {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
                 </h1>
                 <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
-                  These answers are also what the Jetking Guide draws on — it answers from this
-                  content, not from general knowledge.
+                  {copy['hero.body']}
                 </p>
               </div>
             </div>
@@ -97,7 +94,7 @@ export default async function FaqPage() {
         </section>
 
         {/* ── Topic jump links ──────────────────────────────────────────── */}
-        <nav aria-label="FAQ topics" className="shell relative mt-8 sm:mt-10">
+        <nav aria-label={copy['topics.navLabel']} className="shell relative mt-8 sm:mt-10">
           <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
             {topics.map((topic) => {
               const Icon = TOPIC_ICONS[topic] ?? MessageCircle;
@@ -118,98 +115,57 @@ export default async function FaqPage() {
           </ul>
         </nav>
 
-        {/* ── Questions by topic ────────────────────────────────────────── */}
-        <div className="shell relative mt-10 space-y-6 sm:mt-12 sm:space-y-8">
-          {topics.map((topic) => {
+        {/* ── Questions by topic: one section per topic, tones alternating ─ */}
+        <div className="mt-10 sm:mt-12">
+          {topics.map((topic, i) => {
             const topicFaqs = faqs.filter((f) => f.topic === topic);
-            const Icon = TOPIC_ICONS[topic] ?? MessageCircle;
             const label = TOPIC_LABELS[topic] ?? topic;
             return (
-              <section
+              <Section
                 key={topic}
+                tone={i % 2 === 0 ? 'plain' : 'tint'}
                 id={`faq-${topic}`}
-                aria-labelledby={`faq-${topic}-heading`}
-                className="dc-panel mx-auto max-w-[56rem] scroll-mt-28 rounded-[24px] px-5 py-7 xs:rounded-[28px] sm:px-8 sm:py-9"
+                labelledBy={`faq-${topic}-heading`}
+                className="scroll-mt-28"
               >
-                <div className="flex items-center gap-4">
-                  <span
-                    aria-hidden="true"
-                    className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                  >
-                    <Icon className="h-6 w-6" strokeWidth={1.75} />
-                  </span>
-                  <div>
-                    <h2
-                      id={`faq-${topic}-heading`}
-                      className="dc-heading-glow font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
-                    >
-                      {label}
-                    </h2>
-                    <p className="dc-eyebrow label-mono mt-1">
-                      {topicFaqs.length} {topicFaqs.length === 1 ? 'question' : 'questions'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 space-y-3">
-                  {topicFaqs.map((faq) => (
-                    <details
-                      key={faq.id}
-                      className="group rounded-[14px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] transition-colors hover:border-[var(--dc-hairline-strong)] open:border-[var(--dc-accent-soft)]/50 open:bg-[var(--dc-accent-tint)]"
-                    >
-                      <summary className="flex cursor-pointer list-none items-center gap-4 rounded-[14px] px-4 py-4 text-left marker:hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:px-5 [&::-webkit-details-marker]:hidden">
-                        <span className="min-w-0 flex-1 text-[15px] leading-snug font-bold text-[var(--dc-ink)] sm:text-[16px]">
-                          {faq.question}
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[var(--dc-hairline-strong)] text-[var(--dc-accent-soft)] transition-transform duration-200 group-open:rotate-45 motion-reduce:transition-none"
-                        >
-                          <Plus className="h-4 w-4" strokeWidth={2.25} />
-                        </span>
-                      </summary>
-                      <p className="px-4 pb-5 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:px-5 sm:text-[15px]">
-                        {faq.answer}
-                      </p>
-                    </details>
-                  ))}
-                </div>
-              </section>
+                <SectionHeader id={`faq-${topic}-heading`} title={label} />
+                <FaqList items={topicFaqs} />
+              </Section>
             );
           })}
         </div>
 
         {/* ── Still have a question ─────────────────────────────────────── */}
-        <section className="shell relative mt-10 sm:mt-12" aria-labelledby="faq-more">
-          <div className="dc-panel mx-auto flex max-w-[56rem] flex-col gap-6 rounded-[24px] px-6 py-8 xs:rounded-[28px] sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10">
-            <div>
-              <p className="dc-eyebrow label-mono">Need more help?</p>
-              <h2
-                id="faq-more"
-                className="dc-heading-glow mt-2 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[28px]"
-              >
-                Still have a <span className="dc-accent-glow">question?</span>
+        <Section tone="plain" labelledBy="faq-more">
+          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <div className="p-6 sm:p-10 lg:p-12">
+              <p className="k-eyebrow">{copy['more.eyebrow']}</p>
+              <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
+                {copy['more.title']}
               </h2>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                A counsellor can answer what depends on your background and nearest centre.
+              <p className="mt-3 max-w-xl text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+                {copy['more.body']}
               </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <EnquiryLink
+                  source="faq"
+                  className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
+                >
+                  {copy['more.cta.label']}
+                </EnquiryLink>
+                <Link
+                  href={copy['more.chat.href'] as Route}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
+                >
+                  {copy['more.chat.label']}
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={'/enquiry' as Route}
-                className="dc-cta inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold"
-              >
-                Talk to a counsellor
-              </Link>
-              <Link
-                href={'/chatbot' as Route}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
-              >
-                Ask Jetking AI
-              </Link>
+            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
+              <Image src={copy['more.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
             </div>
           </div>
-        </section>
+        </Section>
       </div>
     </>
   );

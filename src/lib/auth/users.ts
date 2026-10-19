@@ -1,5 +1,5 @@
 import 'server-only';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { getDb, isDatabaseConfigured } from '@/lib/db/client';
 import { adminUsers, type AdminUser } from '@/lib/db/schema';
 import { hashPassword } from './password';
@@ -73,7 +73,22 @@ export async function updateUser(
 export async function resetUserPassword(id: string, newPassword: string): Promise<void> {
   const db = requireDb();
   const passwordHash = await hashPassword(newPassword);
-  await db.update(adminUsers).set({ passwordHash, updatedAt: new Date() }).where(eq(adminUsers.id, id));
+  // A new password signs the user out of every other session (their old cookies carry the old version).
+  await db
+    .update(adminUsers)
+    .set({ passwordHash, updatedAt: new Date(), sessionVersion: sql`${adminUsers.sessionVersion} + 1` })
+    .where(eq(adminUsers.id, id));
+}
+
+/** Invalidates every session cookie the user holds; returns the new version (or null if the user is gone). */
+export async function revokeUserSessions(id: string): Promise<number | null> {
+  const db = requireDb();
+  const [row] = await db
+    .update(adminUsers)
+    .set({ sessionVersion: sql`${adminUsers.sessionVersion} + 1` })
+    .where(eq(adminUsers.id, id))
+    .returning({ sessionVersion: adminUsers.sessionVersion });
+  return row ? row.sessionVersion : null;
 }
 
 export async function deleteUser(id: string): Promise<void> {
@@ -84,10 +99,4 @@ export async function deleteUser(id: string): Promise<void> {
 export async function touchLastActive(id: string): Promise<void> {
   const db = requireDb();
   await db.update(adminUsers).set({ lastActiveAt: new Date() }).where(eq(adminUsers.id, id));
-}
-
-export async function countUsers(): Promise<number> {
-  const db = requireDb();
-  const rows = await db.select({ id: adminUsers.id }).from(adminUsers);
-  return rows.length;
 }

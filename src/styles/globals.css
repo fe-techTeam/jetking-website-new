@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import './dark-canvas.css';
+@import './course-page.css';
+@import './kit.css';
 @import './about.css';
 /* Scoped skin for the homepage lead. Every rule in it is namespaced
    under `.home-lead` and cannot affect the system defined below. */
@@ -79,13 +81,30 @@
   --color-signal-600: #b54708;
   --color-signal-50: #fffaeb;
 
+  /* ── Media & brand utilities ───────────────────────────────────────────── */
+  /* Photo overlay base: use with opacity (`from-scrim/55`) so text on images stays legible in both themes. */
+  --color-scrim: #07070c;
+  /* Tile behind logos drawn in white ink. */
+  --color-tile-dark: #14141f;
+  --color-whatsapp: #25d366;
+  /* Solid track hues for circles behind white icons; identical in both themes. */
+  --color-track-cyber: #c7141c;
+  --color-track-cloud: #c7141c;
+  --color-track-network: #c7141c;
+  --color-track-ai: #c7141c;
+
   /* ── Typography ────────────────────────────────────────────────────────── */
-  --font-display: var(--font-display-src), 'Segoe UI', system-ui, sans-serif;
-  --font-body: var(--font-body-src), 'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', monospace;
+  /* One straight typeface across every page (client guideline: no per-page fonts). Fira Sans is chosen to sit
+     with the Jetking wordmark; Arial / Helvetica is the fallback while it loads.
+     The display and mono tokens are kept so existing `font-display` / `label-mono` classes still resolve,
+     but all three now share the same family. */
+  --font-sans: var(--font-fira), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: var(--font-sans);
 
   /* Body sizes hold a reading line-height; display sizes hold a tight one. */
-  --text-2xs: 0.6875rem;
+  --text-2xs: 0.75rem;
   --text-2xs--line-height: 1.45;
   --text-xs: 0.75rem;
   --text-xs--line-height: 1.5;
@@ -125,7 +144,18 @@
     0 4px 12px rgb(16 24 40 / 0.07), 0 2px 4px rgb(16 24 40 / 0.04);
   --shadow-lg:
     0 12px 32px rgb(16 24 40 / 0.1), 0 4px 8px rgb(16 24 40 / 0.04);
-  --shadow-accent: 0 6px 20px rgb(199 20 28 / 0.22);
+  --shadow-accent: 0 6px 16px rgb(16 24 40 / 0.14);
+  --shadow-xl: 0 24px 60px rgb(16 24 40 / 0.18);
+  /* Bottom-docked bars cast upward. */
+  --shadow-bar: 0 -8px 24px rgb(16 24 40 / 0.12);
+  /* Right-side drawers cast leftward; add `shadow-black/55` on dark canvases. */
+  --shadow-drawer: -18px 0 40px rgb(16 24 40 / 0.12);
+  /* Large hero imagery floating on a dark canvas. */
+  --shadow-media: 0 28px 70px rgb(0 0 0 / 0.5);
+  /* Hairline ring around white logo tiles. */
+  --shadow-logo: 0 0 0 1px rgb(0 0 0 / 0.06);
+  /* Glow under solid brand-red buttons and badges. */
+  --shadow-brand: 0 6px 18px rgb(199 20 28 / 0.27);
 
   /* ── Motion ────────────────────────────────────────────────────────────── */
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
@@ -233,7 +263,7 @@
   --accent-ink: var(--color-jk-600); /* red used AS text or under white text */
   --accent-hover: var(--color-jk-500);
   --accent-active: var(--color-jk-700);
-  --accent-soft: var(--color-jk-50);
+  --accent-soft: #f4f5f7;
   --accent-border: var(--color-jk-200);
 
   --focus-ring: var(--color-jk-600);
@@ -241,7 +271,7 @@
   --glass-blur: 14px;
 
   /* Crest stroke — the shield-mark logo's outline/fill. Recurs verbatim across
-     every header that draws the crest inline (SiteHeader, FranchiseHeader). */
+     every header that draws the crest inline (e.g. SiteHeader). */
   --color-brand-crest: #d81f26;
 
   /* ── Scrollbars (slim + editorial) ────────────────────────────────────── */
@@ -254,9 +284,11 @@
   /* ── Global Theme Colors (for all pages) ────────────────────────────────── */
   /* Canvas & Surfaces */
   --theme-canvas: #ffffff;
+  /* Neutral surfaces: red is the one accent, so bands and cards stay white / off-white and
+     separate with hairlines rather than a brand-tinted wash. */
   --theme-surface: #f8f9fb;
-  --theme-card: #f1f3f7;
-  --theme-card-warm: #faf5f0;
+  --theme-card: #ffffff;
+  --theme-card-warm: #f8f9fb;
   --theme-elevated: #ffffff;
 
   /* Text Colors */
@@ -267,11 +299,11 @@
   --theme-ink-muted: #5f6b7d;
 
   /* Accent & Highlights */
-  --theme-accent: #ea1c24;
-  --theme-accent-hover: #c7141c;
+  --theme-accent: var(--color-jk-600);
+  --theme-accent-hover: var(--color-jk-700);
   --theme-accent-soft: #f97066;
   --theme-accent-soft-light: #fda29b;
-  --theme-accent-tint: #fef3f2;
+  --theme-accent-tint: #f4f5f7; /* neutral, not pink: red stays the accent, surfaces stay white/grey */
   --theme-eyebrow: #fda29b;
 
   /* Lines & Borders */
@@ -281,26 +313,29 @@
 
   /* Shadows & Glows */
   --theme-shadow: 0 4px 12px rgb(60 50 90 / 0.08);
-  --theme-shadow-hover: 0 8px 24px rgb(60 50 90 / 0.12);
-  --theme-glow: 0 0 16px rgb(234 28 36 / 0.2);
+  --theme-shadow-hover: 0 8px 24px rgb(16 24 40 / 0.1);
+  --theme-glow: 0 4px 12px rgb(16 24 40 / 0.12);
 
   /* Persona & Track Colors (Light Mode) */
-  --theme-student-ink: #5f3aa8;
-  --theme-student-tint: #eee8ff;
-  --theme-parent-ink: #17683b;
-  --theme-parent-tint: #e8f7ed;
-  --theme-professional-ink: #2454a6;
-  --theme-professional-tint: #dde7fb;
-  --theme-franchise-ink: #b34c11;
-  --theme-franchise-tint: #fde7d4;
-  --theme-cyber-ink: #5f3aa8;
-  --theme-cyber-tint: #eee8ff;
-  --theme-cloud-ink: #2454a6;
-  --theme-cloud-tint: #dde7fb;
-  --theme-network-ink: #17683b;
-  --theme-network-tint: #e8f7ed;
-  --theme-ai-ink: #b34c11;
-  --theme-ai-tint: #fde7d4;
+  --theme-student-ink: #c7141c;
+  --theme-student-tint: #f3f4f6;
+  --theme-parent-ink: #c7141c;
+  --theme-parent-tint: #f3f4f6;
+  --theme-professional-ink: #c7141c;
+  --theme-professional-tint: #f3f4f6;
+  --theme-franchise-ink: #c7141c;
+  --theme-franchise-tint: #f3f4f6;
+  /* One quiet scheme for all four category hues: Jetking red on a neutral grey tint. Per-category
+     purple / blue / green / orange read as unprofessional next to the brand red, so the "hue" API
+     is kept (callers still pick cyber / cloud / network / ai) but every hue resolves identically. */
+  --theme-cyber-ink: #c7141c;
+  --theme-cyber-tint: #f3f4f6;
+  --theme-cloud-ink: #c7141c;
+  --theme-cloud-tint: #f3f4f6;
+  --theme-network-ink: #c7141c;
+  --theme-network-tint: #f3f4f6;
+  --theme-ai-ink: #c7141c;
+  --theme-ai-tint: #f3f4f6;
 }
 
 /*
@@ -371,7 +406,7 @@
   --theme-canvas: #07070c;
   --theme-surface: #0c0c12;
   --theme-card: #14141c;
-  --theme-card-warm: #1a1210;
+  --theme-card-warm: #16161e;
   --theme-elevated: #101828;
 
   /* Text Colors */
@@ -380,43 +415,42 @@
   --theme-ink-muted: #9a9aa8;
 
   /* Accent & Highlights */
-  /* #e8242b measured 4.45:1 for white text — just under the 4.5 AA floor for
-     normal-size text (e.g. solid CTA button labels). Darkened slightly to
-     clear it; the shift is imperceptible next to the original brand red. */
-  --theme-accent: #e01e25;
-  --theme-accent-hover: #c41e24;
+  /* Solid fill under white text (CTA labels): brighter reds such as #e8242b
+     fall just under the 4.5:1 AA floor. Text-coloured red uses the -soft tokens. */
+  --theme-accent: var(--color-jk-600);
+  --theme-accent-hover: var(--color-jk-700);
   --theme-accent-soft: #ff6b70;
   --theme-accent-soft-light: #ff8a90;
   --theme-accent-tint: #3a181c;
   --theme-eyebrow: #ff8a90;
 
   /* Lines & Borders */
-  --theme-hairline: rgb(255 100 105 / 0.4);
-  --theme-hairline-medium: rgb(255 100 105 / 0.55);
-  --theme-hairline-strong: rgb(255 100 105 / 0.65);
+  --theme-hairline: rgb(255 255 255 / 0.12);
+  --theme-hairline-medium: rgb(255 255 255 / 0.18);
+  --theme-hairline-strong: rgb(255 255 255 / 0.26);
 
   /* Shadows & Glows */
   --theme-shadow: 0 8px 28px rgb(0 0 0 / 0.45);
-  --theme-shadow-hover: 0 0 36px rgb(232 36 43 / 0.35);
-  --theme-glow: 0 0 22px rgb(232 36 43 / 0.5);
+  --theme-shadow-hover: 0 14px 36px rgb(0 0 0 / 0.5);
+  --theme-glow: 0 8px 20px rgb(0 0 0 / 0.35);
 
   /* Persona & Track Colors (Dark Mode) */
-  --theme-student-ink: #c4a8ff;
-  --theme-student-tint: #2a2240;
-  --theme-parent-ink: #7ddea0;
-  --theme-parent-tint: #1a2e22;
-  --theme-professional-ink: #8eb6ff;
-  --theme-professional-tint: #1a2438;
-  --theme-franchise-ink: #ffb07a;
-  --theme-franchise-tint: #2e1c14;
-  --theme-cyber-ink: #c4a8ff;
-  --theme-cyber-tint: #2a2240;
-  --theme-cloud-ink: #8eb6ff;
-  --theme-cloud-tint: #1a2438;
-  --theme-network-ink: #7ddea0;
-  --theme-network-tint: #1a2e22;
-  --theme-ai-ink: #ffb07a;
-  --theme-ai-tint: #2e1c14;
+  --theme-student-ink: #ff6b70;
+  --theme-student-tint: #1b1c24;
+  --theme-parent-ink: #ff6b70;
+  --theme-parent-tint: #1b1c24;
+  --theme-professional-ink: #ff6b70;
+  --theme-professional-tint: #1b1c24;
+  --theme-franchise-ink: #ff6b70;
+  --theme-franchise-tint: #1b1c24;
+  --theme-cyber-ink: #ff6b70;
+  --theme-cyber-tint: #1b1c24;
+  --theme-cloud-ink: #ff6b70;
+  --theme-cloud-tint: #1b1c24;
+  --theme-network-ink: #ff6b70;
+  --theme-network-tint: #1b1c24;
+  --theme-ai-ink: #ff6b70;
+  --theme-ai-tint: #1b1c24;
 
   background: var(--color-background);
   color: var(--color-foreground);
@@ -472,7 +506,7 @@
   --accent: var(--color-jk-500);
   --accent-hover: var(--color-jk-600);
   --accent-active: var(--color-jk-700);
-  --accent-soft: var(--color-jk-50);
+  --accent-soft: #f4f5f7;
   --accent-border: var(--color-jk-200);
   --accent-ink: var(--color-jk-600);
   --focus-ring: var(--color-jk-600);
@@ -542,6 +576,33 @@
 @media (min-width: 2560px) {
   :root {
     --gutter: 120px;
+  }
+}
+
+/*
+ * Invisible 44×44px minimum hit area for compact text links, pills and
+ * breadcrumbs, without changing their visual size. Not for elements that are
+ * already absolutely positioned or that use ::before themselves.
+ */
+@utility tap {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -818,6 +879,14 @@
     box-shadow: 0 0 0 2px rgb(from var(--focus-ring) r g b / 0.25);
   }
 
+  /* WCAG 2.2 target size (2.5.8): standalone links/buttons are never shorter than 24px.
+     Only flex/block-level ones — links inside running text stay inline and are exempt. */
+  a,
+  button,
+  .dc-filter-group-trigger {
+    min-height: 1.5rem;
+  }
+
   .link-underline {
     background-image: linear-gradient(currentColor, currentColor);
     background-position: 0 100%;
@@ -949,3 +1018,182 @@
     animation: none !important;
   }
 }
+
+/* ── No decorative glow orbs in the light theme ─────────────────────────────
+   Every page skin paints blurred red radial "orbs" behind its content. They suit the dark
+   theme, but on the white theme they read as pink smudges. Switched off there only (the
+   dark theme keeps them). Placed last so it wins over each skin's own rules. */
+html:not(.dark) :is(.dark-canvas, .blog-page, .centres-page, .professional-page, .student-page, .home-v2, .dc-orbs, .v2-hero-stage)::before,
+html:not(.dark) :is(.dark-canvas, .blog-page, .centres-page, .professional-page, .student-page, .home-v2, .dc-orbs, .v2-hero-stage)::after {
+  content: none !important;
+}
+
+
+/* ── Alternate white / blush bands on the persona landing pages (light theme) ─────────────
+   Student, parent, franchise and professional stack full-width sections that all use the
+   blush surface, which read as one endless pink slab now that the page canvas is white.
+   Every second top-level block goes back to white so bands alternate like the homepage.
+   (Cards inside keep their own white fill + hairline border, so they stay legible.) */
+html:not(.dark) :is(.student-page, .professional-page) > :nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* ── iOS zoom-on-focus floor ──────────────────────────────────────────────────
+   iOS Safari zooms the viewport when a focused field's computed font-size is
+   under 16px. `.is-ios-webkit` is set by `iosInputZoomGuardScript` (see
+   src/lib/ios-input-zoom-guard.ts, run beforeInteractive in the root layout)
+   ONLY on real iOS/iPadOS WebKit — Android and desktop never get this class, so
+   their form fields keep whatever smaller size `fieldControl` actually declares.
+   Do not widen the selector to a plain touch/width media query in place of the
+   class: that would also flatten Android Chrome's fields to 16px, which has no
+   zoom-on-focus behavior to guard against and would just override its own
+   responsive type scale for nothing. */
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  html.is-ios-webkit
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']):not([type='button']):not([type='submit']):not([type='reset']):not([type='hidden']),
+  html.is-ios-webkit select,
+  html.is-ios-webkit textarea {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
+/* ── Bottom sheet (FilterSheet and other phone dialogs) ─────────────────── */
+.filter-sheet[data-state='open'] {
+  animation: sheet-in var(--duration-nudge) var(--ease-out-soft) both;
+}
+
+.filter-sheet-overlay[data-state='open'] {
+  animation: sheet-fade-in var(--duration-base) ease both;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+
+/* Phone bottom sheets slide up; on sm+ the same panel is a centred modal. */
+@media (max-width: 639.98px) {
+  .sheet-up {
+    animation: sheet-in var(--duration-nudge) var(--ease-out-soft) both;
+  }
+}
+
+/* ── Shared heading scale ────────────────────────────────────────────────────
+   Page titles and section headings were re-declared per component at drifting sizes (an h1 of 52, 54, 56
+   or 58px; section headings of 24 / 26 / 28 / 30 / 32 / 36 / 40px). One scale, used by every public page.
+   Unlayered on purpose so it wins over any leftover utility sizes. */
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.page-title-sm {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1.15rem + 1.3vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.subsection-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+/* Hero variant of the page title for two-column heroes (Home, Professional): capped at 46px while the
+   text column is narrow (up to 1535px), then steps up on large monitors where the column widens. */
+.page-title-hero {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 1.35rem + 2.9vw, 2.875rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 1536px) {
+  .page-title-hero { font-size: 3.625rem; }
+}
+@media (min-width: 1920px) {
+  .page-title-hero { font-size: 3.875rem; }
+}
+@media (min-width: 2560px) {
+  .page-title-hero { font-size: 4.25rem; }
+}
+
+/*
+ * Phones: every text field is 16px. Below that, iOS Safari zooms the page when a field gets focus, and it is
+ * hard to read in any case. Unlayered on purpose, so it wins over per-component text-size utilities.
+ */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='submit']):not([type='button']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 1em;
+  }
+}
+
+/*
+ * Blog and centre panels share the course card's light-theme surface.
+ * `.blog-card` / `.centres-card` were written against the dark canvas: a 1px --dc-hairline-strong outline (a heavy
+ * grey in light mode) plus a resting drop shadow. The course card (`.dc-card-shell`) is a flat, near-invisible
+ * hairline that turns red on hover, and the design system's rule is "no resting shadow". Same values as
+ * `.dc-card-shell` in light mode. Lives here, after every imported skin, so source order settles the specificity tie.
+ */
+:where(html:not(.dark)) :is(.blog-card, .centres-card) {
+  border-color: rgb(16 24 40 / 0.1);
+  box-shadow: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(html:not(.dark)) :is(.blog-card-interactive, .centres-card-interactive):hover {
+    border-color: rgb(199 20 28 / 0.45);
+    box-shadow: 0 8px 20px rgb(16 24 40 / 0.08);
+  }
+}
+:where(html:not(.dark)) :is(.blog-card-interactive, .centres-card-interactive):focus-within {
+  border-color: rgb(199 20 28 / 0.45);
+  box-shadow: 0 8px 20px rgb(16 24 40 / 0.08);
+}
+
+/* No decorative pink/red glow orbs behind pages: the section backgrounds stay flat. */
+html .centres-page::before,
+html .centres-page::after,
+html .blog-page::before,
+html .blog-page::after,
+html .student-page::before,
+html .student-page::after,
+html .professional-page::before,
+html .professional-page::after,
+html .dark-canvas::before,
+html .dark-canvas::after {
+  background: none !important;
+}
+
+/* Rich FAQ answers (written in the admin's editor). */
+.faq-rich > * + * { margin-top: 0.75rem; }
+.faq-rich ul { list-style: disc; padding-left: 1.25rem; }
+.faq-rich ol { list-style: decimal; padding-left: 1.25rem; }
+.faq-rich li + li { margin-top: 0.35rem; }
+.faq-rich a { color: var(--k-red); text-decoration: underline; text-underline-offset: 3px; }
+.faq-rich strong { color: var(--k-ink); font-weight: 700; }

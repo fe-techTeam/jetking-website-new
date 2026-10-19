@@ -13,10 +13,32 @@ import {
 } from '@/lib/cms/store';
 import { publishContent } from '@/lib/cms/publish';
 import { createRateLimiter } from '@/lib/rate-limit';
-import { CMS_COLLECTIONS, validateCmsRecord } from '@/lib/cms/schemas';
-import { isDatabaseConfigured, getUserByEmail, getUserById, touchLastActive, type Role } from '@/lib/auth/users';
-import { verifyPassword } from '@/lib/auth/password';
+import { clientIpFromHeaders } from '@/lib/client-ip';
+import {
+  ADMIN_COOKIE,
+  SESSION_COOKIE_OPTIONS,
+  SESSION_MAX_AGE_SECONDS,
+  hmacSign,
+  setUserSessionCookie,
+  timingSafeEqual,
+  verifyMultiUserSession,
+} from '@/lib/auth/session';
+import { CMS_COLLECTIONS, CMS_ID_PATTERN, findUnsafeContent, validateCmsRecord } from '@/lib/cms/schemas';
+import { CMS_ID_KEYS } from '@/lib/cms/id-keys';
+import {
+  isDatabaseConfigured,
+  getUserByEmail,
+  getUserById,
+  revokeUserSessions,
+  touchLastActive,
+  type Role,
+} from '@/lib/auth/users';
+import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
+import { htmlToBlocks, sanitizeRichHtml } from '@/lib/rich/html';
+import { isRichHtml } from '@/lib/rich/text';
+import { getRevision, listDeleted, listRevisions } from '@/lib/cms/revisions';
+import { collectionByKey } from './registry';
 
 /** `CmsCollection` is compile-time only — a raw call to this action (bypassing the
  *  generated client stub) could otherwise pass any string through to the store. */
@@ -26,10 +48,21 @@ function assertKnownCollection(collection: CmsCollection): void {
   }
 }
 
-const ADMIN_COOKIE = 'jk_admin_session';
-/** Matches the cookie's own maxAge below — both must agree or a still-fresh cookie
- *  could be rejected early, or a stale one accepted late. */
-const SESSION_MAX_AGE_SECONDS = 60 * 60 * 12; // 12 hours
+/** Who may touch a collection — the legal pages are admin-only, everything else admin + editor. Enforced
+ *  here, not just by hiding the sidebar link, because these server actions can be called directly. */
+function rolesFor(collection: CmsCollection): Role[] {
+  assertKnownCollection(collection);
+  return collectionByKey(collection).roles ?? ['admin', 'editor'];
+}
+
+/** The id field is a property of the collection, never of the caller: a raw action call passing e.g.
+ *  `idKey: 'status'` would otherwise make delete/rename match (and wipe) every row sharing a value. */
+function assertIdKey(collection: CmsCollection, idKey: string): void {
+  if (CMS_ID_KEYS[collection] !== idKey) throw new Error(`Invalid id field "${idKey}" for ${collection}.`);
+}
+
+/** Upper bound on one saved record (JSON text) — the biggest real article is far below this. */
+const MAX_RECORD_JSON_CHARS = 2_000_000;
 
 export interface CurrentUser {
   id: string;
@@ -40,7 +73,7 @@ export interface CurrentUser {
 }
 
 /** The pre-multi-user single shared password, used only when `DATABASE_URL`
- *  is unset — see the module doc below `signMultiUserSession`. */
+ *  is unset — see `@/lib/auth/session` for the multi-user cookie. */
 function adminPassword(): string {
   const value = process.env.ADMIN_PASSWORD;
   if (!value) {
@@ -52,62 +85,20 @@ function adminPassword(): string {
   return value;
 }
 
-/** Signs multi-user session cookies — independent of any user's password, so
- *  resetting one person's password doesn't invalidate everyone else's session,
- *  and rotating it revokes every session at once (same property the legacy
- *  scheme got for free from `ADMIN_PASSWORD` doubling as its signing key). */
-function sessionSecret(): string {
-  const value = process.env.ADMIN_SESSION_SECRET;
-  if (!value) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('ADMIN_SESSION_SECRET must be set in production.');
-    }
-    return 'dev-only-insecure-session-secret';
-  }
-  return value;
-}
-
-function toBase64Url(bytes: Uint8Array): string {
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-async function hmacSign(key: string, message: string): Promise<string> {
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    new TextEncoder().encode(key),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign'],
-  );
-  const sig = await crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message));
-  return toBase64Url(new Uint8Array(sig));
-}
-
-/** Constant-time comparison — a fast-exit compare here leaks signature/password bytes. */
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
 async function signLegacySession(issuedAt: number): Promise<string> {
   return `${issuedAt}.${await hmacSign(adminPassword(), String(issuedAt))}`;
 }
 
-async function signMultiUserSession(userId: string, issuedAt: number): Promise<string> {
-  return `${userId}.${issuedAt}.${await hmacSign(sessionSecret(), `${userId}.${issuedAt}`)}`;
+/** Client identity for the login rate limiter (no Request object in a server action): proxy-controlled headers only. */
+async function loginKey(): Promise<string> {
+  return clientIpFromHeaders(await headers());
 }
 
-/** Best-effort client identity for the login rate limiter (no Request object in a server action). */
-async function loginKey(): Promise<string> {
-  const h = await headers();
-  const forwarded = h.get('x-forwarded-for');
-  return (
-    forwarded?.split(',')[0]?.trim() ?? h.get('x-real-ip') ?? h.get('cf-connecting-ip') ?? 'anonymous'
-  );
+let dummyHashPromise: Promise<string> | undefined;
+/** A throwaway hash verified against when the email is unknown (timing-equalisation). */
+function dummyHash(): Promise<string> {
+  dummyHashPromise ??= hashPassword('not-a-real-password');
+  return dummyHashPromise;
 }
 
 /** Deliberately tight — a real admin fails a password rarely; this is a brute-force brake. */
@@ -132,23 +123,13 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!session) return null;
 
   if (isDatabaseConfigured()) {
-    const parts = session.split('.');
-    if (parts.length !== 3) return null;
-    const [userId, issuedAtRaw, signature] = parts;
-    const issuedAt = Number(issuedAtRaw);
-    if (!userId || !signature || !Number.isFinite(issuedAt)) return null;
-    if (Date.now() - issuedAt > SESSION_MAX_AGE_SECONDS * 1000) return null;
+    const verified = await verifyMultiUserSession(session);
+    if (!verified) return null;
 
-    let expected: string;
-    try {
-      expected = await hmacSign(sessionSecret(), `${userId}.${issuedAt}`);
-    } catch {
-      return null;
-    }
-    if (!timingSafeEqual(signature, expected)) return null;
-
-    const user = await getUserById(userId);
+    const user = await getUserById(verified.userId);
     if (!user || user.status !== 'active') return null;
+    // A cookie issued before the last sign-out / password change carries an older version: revoked.
+    if (user.sessionVersion !== verified.version) return null;
     return {
       id: user.id,
       name: user.name,
@@ -210,22 +191,25 @@ export async function adminLogin(_prevState: LoginState, formData: FormData): Pr
   if (isDatabaseConfigured()) {
     const email = String(formData.get('email') ?? '').trim();
     const user = email ? await getUserByEmail(email) : undefined;
-    const validPassword = user ? await verifyPassword(password, user.passwordHash) : false;
+    // Always run one PBKDF2 verification, even for an unknown email, so response time doesn't reveal
+    // which emails have accounts.
+    const validPassword = await verifyPassword(password, user ? user.passwordHash : await dummyHash());
     if (!user || user.status !== 'active' || !validPassword) {
+      // The audit trail (admin-only) records why; the visitor always sees the same message.
+      const why = !user ? 'unknown email' : user.status !== 'active' ? 'account disabled' : 'wrong password';
+      void recordAudit(
+        { id: user?.id ?? 'anonymous', name: user?.name ?? (email.slice(0, 120) || 'unknown') },
+        'auth.login_failed',
+        'session',
+        user?.id ?? null,
+        `Failed sign-in for ${email.slice(0, 120) || 'no email'} (${why})`,
+      );
       return { error: 'Incorrect email or password.' };
     }
 
-    const issuedAt = Date.now();
-    const session = await signMultiUserSession(user.id, issuedAt);
-    const jar = await cookies();
-    jar.set(ADMIN_COOKIE, session, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: SESSION_MAX_AGE_SECONDS,
-    });
-    void touchLastActive(user.id);
+    await setUserSessionCookie(user.id, user.sessionVersion);
+    void touchLastActive(user.id).catch(() => {});
+    void recordAudit(user, 'auth.login', 'session', user.id, `${user.name} signed in`);
     redirect('/admin' as Route);
   }
 
@@ -236,24 +220,20 @@ export async function adminLogin(_prevState: LoginState, formData: FormData): Pr
   const issuedAt = Date.now();
   const session = await signLegacySession(issuedAt);
   const jar = await cookies();
-  jar.set(ADMIN_COOKIE, session, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: SESSION_MAX_AGE_SECONDS,
-  });
+  jar.set(ADMIN_COOKIE, session, { ...SESSION_COOKIE_OPTIONS, secure: process.env.NODE_ENV === 'production' });
   redirect('/admin' as Route);
 }
 
 export async function adminLogout(): Promise<void> {
+  // Signing out revokes every session cookie the user holds (not just this browser's), so a copied cookie dies too.
+  const me = await getCurrentUser();
+  if (me && isDatabaseConfigured()) {
+    await revokeUserSessions(me.id).catch((e) => console.error('Failed to revoke sessions on logout:', e));
+    void recordAudit(me, 'auth.logout', 'session', me.id, `${me.name} signed out`);
+  }
   const jar = await cookies();
   jar.delete(ADMIN_COOKIE);
   redirect('/admin/login' as Route);
-}
-
-export async function requireAdmin(): Promise<void> {
-  if (!(await isAdminAuthenticated())) redirect('/admin/login' as Route);
 }
 
 export async function saveCollectionItem(
@@ -265,12 +245,48 @@ export async function saveCollectionItem(
    *  a genuinely new record. */
   previousId?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
+  const user = await requireRole(rolesFor(collection));
   try {
-    const record = JSON.parse(json) as Record<string, unknown>;
+    assertIdKey(collection, idKey);
+    if (typeof json !== 'string' || json.length > MAX_RECORD_JSON_CHARS) return { ok: false, error: 'This record is too large to save.' };
+    const parsed: unknown = JSON.parse(json);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return { ok: false, error: 'The record must be a JSON object.' };
+    const record = parsed as Record<string, unknown>;
     if (!record[idKey]) return { ok: false, error: `Missing ${idKey}` };
+    if (typeof record[idKey] !== 'string' || !CMS_ID_PATTERN.test(record[idKey] as string)) {
+      return { ok: false, error: `${idKey}: use letters, numbers, "-", "_" or "." only (no spaces or slashes).` };
+    }
+    if (previousId !== undefined && (typeof previousId !== 'string' || !CMS_ID_PATTERN.test(previousId))) {
+      return { ok: false, error: 'Invalid previous id.' };
+    }
     if (!record.status) record.status = 'published';
+
+    // An optional image the editor left empty ({ url: '', alt: '' }) means "no image", not an invalid one.
+    for (const [key, value] of Object.entries(record)) {
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const v = value as Record<string, unknown>;
+        if (v.url === '' && 'alt' in v && Object.keys(v).every((k) => k === 'url' || k === 'alt') && !String(v.alt ?? '').trim()) delete record[key];
+      }
+    }
+
+    // FAQ answers written in the rich editor: sanitised here, so the public pages can render them as-is.
+    const cleanAnswer = (v: unknown) => (typeof v === 'string' && isRichHtml(v) ? sanitizeRichHtml(v) : v);
+    if (collection === 'faqs') record.answer = cleanAnswer(record.answer);
+    if ((collection === 'courses' || collection === 'centres') && Array.isArray(record.faqs)) {
+      record.faqs = (record.faqs as Array<Record<string, unknown>>).map((f) => ({ ...f, answer: cleanAnswer(f.answer) }));
+    }
+
+    // Rich article: clean the HTML, and derive the plain structured body from it so search, the chatbot index
+    // and anything that reads `body` stay in step with what the article shows.
+    if (collection === 'posts') {
+      const html = typeof record.bodyHtml === 'string' ? sanitizeRichHtml(record.bodyHtml) : '';
+      if (html) {
+        record.bodyHtml = html;
+        record.body = htmlToBlocks(html);
+      } else {
+        delete record.bodyHtml;
+      }
+    }
 
     // Validated for pass/fail only — the schema isn't a perfectly exhaustive
     // mirror of every field content/types.ts allows, and zod's default `strip`
@@ -278,10 +294,11 @@ export async function saveCollectionItem(
     // record is what gets saved.
     const validated = validateCmsRecord(collection, record);
     if (!validated.ok) return { ok: false, error: validated.error };
+    const unsafe = findUnsafeContent(record);
+    if (unsafe) return { ok: false, error: unsafe };
 
-    await upsertRecord(collection, record, idKey, previousId);
+    await upsertRecord(collection, record, idKey, previousId, user.name);
     await publishContent();
-    void triggerIngest();
     const recordId = String(record[idKey]);
     void recordAudit(
       user,
@@ -302,41 +319,100 @@ export async function removeCollectionItem(
   idKey: string,
   id: string,
 ): Promise<void> {
-  const user = await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
-  await deleteRecord(collection, idKey, id);
+  const user = await requireRole(rolesFor(collection));
+  assertIdKey(collection, idKey);
+  await deleteRecord(collection, idKey, id, user.name);
   await publishContent();
-  void triggerIngest();
   void recordAudit(user, 'cms.delete', collection, id, `Deleted ${collection} "${id}"`);
 }
 
 export async function seedCmsFromFixtures(): Promise<void> {
-  const user = await requireRole(['admin', 'editor']);
+  // Admin only: it wipes every collection (including the admin-only legal pages), so an editor must not be able to.
+  const user = await requireRole(['admin']);
   await resetCmsStoreFromFixtures();
   await publishContent();
   void recordAudit(user, 'cms.reset_fixtures', 'cms', null, 'Reset all CMS content from fixtures');
 }
 
 export async function getAdminCollection(collection: CmsCollection) {
-  await requireRole(['admin', 'editor']);
-  assertKnownCollection(collection);
+  await requireRole(rolesFor(collection));
   return listCollection(collection);
 }
 
-async function triggerIngest(): Promise<void> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-  const secret = process.env.REVALIDATE_SECRET;
-  try {
-    await fetch(`${base}/api/ingest`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...(secret ? { authorization: `Bearer ${secret}` } : {}),
-      },
-      body: JSON.stringify({ reason: 'cms-publish' }),
-      signal: AbortSignal.timeout(10_000),
+export interface HistoryEntry {
+  id: string;
+  action: 'save' | 'delete' | 'restore';
+  actorName: string;
+  createdAt: string;
+  /** The record id the entry belongs to — differs from the open record only in the trash list. */
+  recordId: string;
+}
+
+/** Version history of one record, newest first. Empty without a database (history needs somewhere durable to live). */
+export async function getRecordHistory(collection: CmsCollection, recordId: string): Promise<HistoryEntry[]> {
+  await requireRole(rolesFor(collection));
+  const rows = await listRevisions(collection, recordId);
+  return rows.map((r) => ({
+    id: r.id,
+    action: r.action as HistoryEntry['action'],
+    actorName: r.actorName,
+    createdAt: r.createdAt.toISOString(),
+    recordId: r.recordId,
+  }));
+}
+
+/** Records deleted from this collection and not currently present — what can be brought back. */
+export async function getDeletedRecords(collection: CmsCollection, idKey: string): Promise<HistoryEntry[]> {
+  await requireRole(rolesFor(collection));
+  assertIdKey(collection, idKey);
+  const [deleted, live] = await Promise.all([listDeleted(collection), listCollection(collection)]);
+  const liveIds = new Set((live as unknown as Record<string, unknown>[]).map((r) => String(r[idKey])));
+  const seen = new Set<string>();
+  const out: HistoryEntry[] = [];
+  for (const r of deleted) {
+    if (liveIds.has(r.recordId) || seen.has(r.recordId)) continue;
+    seen.add(r.recordId);
+    out.push({
+      id: r.id,
+      action: 'delete',
+      actorName: r.actorName,
+      createdAt: r.createdAt.toISOString(),
+      recordId: r.recordId,
     });
-  } catch {
-    // best-effort
+  }
+  return out;
+}
+
+/** The record as it was at a revision — loaded into the editor as an unsaved draft, never applied directly. */
+export async function getRevisionRecord(
+  collection: CmsCollection,
+  revisionId: string,
+): Promise<{ ok: true; record: Record<string, unknown> } | { ok: false; error: string }> {
+  await requireRole(rolesFor(collection));
+  const revision = await getRevision(revisionId);
+  if (!revision || revision.collection !== collection) return { ok: false, error: 'That version no longer exists.' };
+  return { ok: true, record: revision.data };
+}
+
+/** Flip one record between Published and Draft without opening it. */
+export async function setRecordStatus(
+  collection: CmsCollection,
+  idKey: string,
+  id: string,
+  status: 'published' | 'draft',
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const user = await requireRole(rolesFor(collection));
+  try {
+    assertIdKey(collection, idKey);
+    if (status !== 'published' && status !== 'draft') return { ok: false, error: 'Invalid status.' };
+    const rows = (await listCollection(collection)) as unknown as Record<string, unknown>[];
+    const current = rows.find((r) => r[idKey] === id);
+    if (!current) return { ok: false, error: 'Record not found.' };
+    await upsertRecord(collection, { ...current, status }, idKey, id, user.name);
+    await publishContent();
+    void recordAudit(user, 'cms.status', collection, id, `${status === 'published' ? 'Published' : 'Unpublished'} ${collection} "${id}"`);
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Update failed' };
   }
 }

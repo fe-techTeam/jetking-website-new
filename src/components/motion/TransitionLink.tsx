@@ -51,7 +51,11 @@ export function TransitionLink({ href, onClick, children, ...props }: Transition
 
     const startViewTransition = (
       document as Document & {
-        startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+        startViewTransition?: (callback: () => void) => {
+          ready: Promise<void>;
+          updateCallbackDone: Promise<void>;
+          finished: Promise<void>;
+        };
       }
     ).startViewTransition;
 
@@ -60,9 +64,18 @@ export function TransitionLink({ href, onClick, children, ...props }: Transition
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     event.preventDefault();
-    startViewTransition.call(document, () => {
+    const transition = startViewTransition.call(document, () => {
       router.push(href as Route);
     });
+
+    // A transition is legitimately skipped — and its promises reject with
+    // `AbortError: Transition was skipped` — whenever it is superseded before
+    // it can run, e.g. a second TransitionLink clicked while the first is
+    // still animating, or the tab going hidden mid-transition. That's normal
+    // browser behaviour, not an app error; left uncaught it surfaces as an
+    // "Uncaught (in promise) AbortError" in the console/error overlay.
+    transition.ready.catch(() => {});
+    transition.finished.catch(() => {});
   }
 
   return (

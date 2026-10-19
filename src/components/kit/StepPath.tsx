@@ -1,0 +1,69 @@
+import { ArrowRight } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { IconSlot, type IconInput } from './IconSlot';
+
+export interface PathStep {
+  icon: IconInput;
+  title: string;
+  body: ReactNode;
+  /** Overrides the 1, 2, 3 badge (e.g. when the source data carries its own step number). */
+  label?: string;
+}
+
+/**
+ * A journey in steps: a large icon disc per step with a number badge, joined by arrows on desktop
+ * and a vertical rail on phones. The markup is an ordinary ordered list; the arrows and rail are
+ * decorative.
+ */
+export function StepPath({ steps }: { steps: PathStep[] }) {
+  return (
+    <ol
+      className="kit grid gap-9 sm:[grid-template-columns:repeat(var(--m),minmax(0,1fr))] sm:gap-x-8 lg:[grid-template-columns:repeat(var(--n),minmax(0,1fr))] lg:gap-x-14"
+      style={{ '--n': steps.length, '--m': steps.length === 4 ? 2 : Math.min(steps.length, 3) } as React.CSSProperties}
+    >
+      {steps.map(({ icon, title, body, label }, i) => {
+        const last = i === steps.length - 1;
+        return (
+          <li key={title} className="relative flex gap-5 sm:flex-col sm:items-center sm:gap-6 sm:text-center">
+            <div className="relative shrink-0">
+              <span
+                aria-hidden="true"
+                className="grid h-[4.5rem] w-[4.5rem] place-items-center rounded-full border border-[color-mix(in_srgb,var(--k-red-fill)_22%,transparent)] bg-[var(--k-red-wash)] text-[var(--k-red)] shadow-[0_8px_20px_-10px_color-mix(in_srgb,var(--k-red-fill)_55%,transparent)] sm:h-24 sm:w-24"
+              >
+                <IconSlot icon={icon} className="h-8 w-8 sm:h-10 sm:w-10" strokeWidth={1.6} />
+              </span>
+              <span
+                aria-hidden="true"
+                className="absolute -top-1 -right-1 grid h-7 w-7 place-items-center rounded-full bg-[var(--k-red-fill)] text-[13px] font-extrabold text-white ring-4 ring-[var(--k-bg)]"
+              >
+                {label ?? i + 1}
+              </span>
+            </div>
+
+            <div className="min-w-0 pt-1 sm:pt-0">
+              <h3 className="text-[16px] font-extrabold tracking-[0.06em] text-[var(--k-ink)] uppercase sm:text-[17px]">{title}</h3>
+              <div className="mt-2 text-[15px] leading-relaxed text-[var(--k-ink-2)] sm:mx-auto sm:w-fit sm:text-center">{body}</div>
+            </div>
+
+            {!last ? (
+              <>
+                {/* phone: rail down to the next disc (sm+ stacks each step in a grid cell) */}
+                <span
+                  aria-hidden="true"
+                  className="absolute top-[4.9rem] bottom-[-2.3rem] left-9 w-px -translate-x-1/2 bg-[var(--k-line-strong)] sm:hidden"
+                />
+                {/* desktop: arrow in the gap */}
+                <span
+                  aria-hidden="true"
+                  className="absolute top-12 -right-[2.1rem] z-10 hidden h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[var(--k-red)] lg:grid"
+                >
+                  <ArrowRight className="h-6 w-6" strokeWidth={2.25} />
+                </span>
+              </>
+            ) : null}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}

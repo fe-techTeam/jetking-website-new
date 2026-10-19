@@ -6,6 +6,8 @@
  * experimentation.
  */
 
+import { readUtmClient, utmToFlat } from '@/lib/utm';
+
 export type EventName =
   | 'persona_classified'
   | 'persona_changed'
@@ -27,11 +29,6 @@ export type EventName =
   | 'nudge_clicked'
   | 'nudge_dismissed'
   | 'adaptive_slot_rendered'
-  | 'guide_opened'
-  | 'guide_message'
-  | 'guide_cited'
-  | 'guide_refused'
-  | 'guide_handoff'
   | 'enquiry_started'
   | 'enquiry_submitted'
   | 'exit_intent_shown'
@@ -65,7 +62,8 @@ const isDev = process.env.NODE_ENV === 'development';
 export function track(event: EventName, props: EventProps = {}): void {
   if (typeof window === 'undefined') return;
 
-  const payload = { ...props, ts: Date.now() };
+  // Campaign attribution (utm_source / medium / campaign / content) on every event.
+  const payload = { ...utmToFlat(readUtmClient()), ...props, ts: Date.now() };
 
   // A broken vendor stub (ad-blocker leftovers, a half-loaded GTM script) throwing
   // here must not propagate: several call sites (e.g. Guide.tsx's ask()) call
@@ -84,15 +82,4 @@ export function track(event: EventName, props: EventProps = {}): void {
   } catch (err) {
     if (isDev) console.warn('[track] failed', event, err);
   }
-}
-
-/**
- * Page-level context helper. Called by route components so behavioural signals and
- * analytics stay in step — one call records both.
- */
-export function trackPageContext(
-  event: Extract<EventName, 'course_viewed' | 'centre_viewed' | 'article_viewed'>,
-  props: EventProps,
-): void {
-  track(event, props);
 }

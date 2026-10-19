@@ -1,3 +1,5 @@
+import { findRedirect } from '@/lib/redirects/lookup';
+import { UTM_COOKIE, UTM_MAX_AGE, encodeUtm, utmFromParams } from '@/lib/utm';
 import { NextResponse, type NextRequest } from 'next/server';
 import { classify } from '@/persona/classify';
 import {
@@ -8,6 +10,7 @@ import {
   payloadToSignals,
 } from '@/persona/cookie';
 import { VISITOR_COOKIE, VISITOR_MAX_AGE, resolveVisitorId } from '@/persona/visitor';
+import { ADAPTIVE_PERSONALISATION } from '@/persona/mode';
 import { RULES_VERSION, type FirstTouchInput } from '@/persona/types';
 
 /**
@@ -83,6 +86,17 @@ function setVisitorCookie(response: NextResponse, req: NextRequest): void {
 }
 
 export async function proxy(req: NextRequest) {
+  // Redirects managed in the admin (/admin/redirects) apply to everyone, crawlers included — that is the
+  // point of a 301. Never to the admin itself, so a bad rule can't lock editors out.
+  if (!req.nextUrl.pathname.startsWith('/admin')) {
+    const rule = await findRedirect(req.nextUrl.pathname);
+    if (rule) {
+      const target = rule.destination.startsWith('/') ? new URL(rule.destination, req.url) : new URL(rule.destination);
+      if (rule.destination.startsWith('/')) target.search = req.nextUrl.search;
+      return NextResponse.redirect(target, rule.permanent ? 308 : 307);
+    }
+  }
+
   const response = NextResponse.next();
 
   if (isCrawler(req.headers.get('user-agent'))) return response;
@@ -94,6 +108,28 @@ export async function proxy(req: NextRequest) {
   const params = url.searchParams;
   const geo = readGeo(req);
   const now = new Date();
+
+  // Campaign attribution: remember utm_source / medium / campaign / content for the lead forms
+  // and analytics (see src/lib/utm.ts). Only overwritten when new UTM parameters arrive.
+  const utm = utmFromParams(params, url.pathname);
+  if (utm) {
+    response.cookies.set(UTM_COOKIE, encodeUtm(utm), {
+      httpOnly: false, // read back by track() in the browser
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: UTM_MAX_AGE,
+    });
+  }
+
+  // Explicit personalisation (the default): no first-touch classification and no persona cookie. A cookie
+  // left by an earlier adaptive deploy is removed so it can't keep steering anyone.
+  if (!ADAPTIVE_PERSONALISATION) {
+    if (req.cookies.get(PERSONA_COOKIE)) {
+      response.cookies.set(PERSONA_COOKIE, '', { path: '/', maxAge: 0 });
+    }
+    return response;
+  }
 
   const firstTouch: FirstTouchInput = {
     path: url.pathname,
@@ -152,6 +188,6 @@ export const config = {
      * API routes are excluded because they never need classification at the edge —
      * they read the cookie directly when they need it.
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|css|js|woff2?)$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|llms.txt|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|pdf|css|js|woff2?)$).*)',
   ],
 };

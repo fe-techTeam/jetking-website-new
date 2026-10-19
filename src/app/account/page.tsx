@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import { AccountView } from './AccountView';
 
-export const metadata: Metadata = buildMetadata(
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(
   {
     title: 'Your Jetking Account',
     description: 'Your Jetking details and saved Jetking AI chats.',
@@ -10,12 +11,13 @@ export const metadata: Metadata = buildMetadata(
     noindex: true,
   },
   '/account',
-);
+  );
+}
 
 export default function AccountPage() {
   return (
     <section className="shell pt-12 pb-20 sm:pt-16">
-      <h1 className="font-display text-[30px] font-extrabold tracking-[-0.02em] text-foreground sm:text-[36px]">
+      <h1 className="page-title-sm font-display text-foreground">
         Your account
       </h1>
       <AccountView />

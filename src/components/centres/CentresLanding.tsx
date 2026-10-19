@@ -1,7 +1,13 @@
+import Image from 'next/image';
 import Link from 'next/link';
+import { EnquiryLink } from '@/components/EnquirySheet';
+import { Section } from '@/components/kit';
 import type { Route } from 'next';
 import { ArrowRight, Building2, MessageCircle, Phone } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
+import { toEnquiryCentres } from '@/lib/enquiry-centres';
+import { fill } from '@/lib/content/copy/define';
+import type { centresCopy } from '@/lib/content/copy/pages/centres';
 import { CentresHero } from './CentresHero';
 import { CentresIndex } from './CentresIndex';
 
@@ -17,96 +23,81 @@ type CentreSummary = {
   phone?: string;
 };
 
-const ENQUIRY_PHONE = {
-  display: '07666830000',
-  tel: 'tel:07666830000',
-} as const;
-
-function CentresBottomCta() {
+function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
   return (
-    <section className="bg-[var(--centres-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="centres-cta">
-      <div className="shell">
-        <div className="centres-cta-band overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-center lg:gap-12">
-            <div>
-              <p className="text-[12px] font-bold tracking-[0.14em] text-[var(--centres-accent-soft)] uppercase">
-                Need help choosing?
-              </p>
-              <h2
-                id="centres-cta"
-                className="mt-3 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--centres-ink)] xs:text-[28px] sm:text-[32px]"
-              >
-                Talk to a counsellor about your nearest centre
-              </h2>
-              <p className="mt-3 max-w-[46ch] text-[14.5px] leading-relaxed text-[var(--centres-ink-secondary)] sm:text-[15.5px]">
-                A short conversation about your goals, background and nearest {siteConfig.name} centre
-                — no obligation, no scripted pitch.
-              </p>
-              <ul className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3">
-                <li>
-                  <a
-                    href={ENQUIRY_PHONE.tel}
-                    className="flex items-center gap-2 text-[13px] font-semibold text-[var(--centres-ink-secondary)] transition-colors hover:text-[var(--centres-ink)]"
-                  >
-                    <Phone
-                      className="h-4 w-4 text-[var(--centres-accent-soft)]"
-                      strokeWidth={2}
-                      aria-hidden="true"
-                    />
-                    {ENQUIRY_PHONE.display}
-                  </a>
-                </li>
-                <li className="flex items-center gap-2 text-[13px] font-semibold text-[var(--centres-ink-secondary)]">
-                  <MessageCircle
-                    className="h-4 w-4 text-[var(--centres-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  Free career counselling
-                </li>
-                <li className="flex items-center gap-2 text-[13px] font-semibold text-[var(--centres-ink-secondary)]">
-                  <Building2
-                    className="h-4 w-4 text-[var(--centres-accent-soft)]"
-                    strokeWidth={2}
-                    aria-hidden="true"
-                  />
-                  Centre visits arranged on request
-                </li>
-              </ul>
-            </div>
+    <Section tone="plain" labelledBy="centres-cta">
+      <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[22rem]">
+          <Image
+            src={copy['directoryCta.image']}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            className="object-cover object-center"
+          />
+        </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
-              <Link
-                href={'/enquiry' as Route}
-                className="group/enq inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--centres-accent)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:text-[15px]"
+        <div className="p-6 sm:p-10">
+          <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['directoryCta.eyebrow']}</p>
+          <h2 id="centres-cta" className="section-title mt-2.5 text-[var(--k-ink)]">
+            {copy['directoryCta.title']}
+          </h2>
+          <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+            {fill(copy['directoryCta.body'], { brand: siteConfig.name })}
+          </p>
+
+          <ul className="mt-5 flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:gap-x-6">
+            <li>
+              <a
+                href={copy['directoryCta.phoneHref']}
+                className="tap flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-ink)]"
               >
-                <span>Enquire now</span>
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/enq:translate-x-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
-              </Link>
-              <Link
-                href={'/courses' as Route}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--centres-hairline)] px-6 py-3 text-[14.5px] font-bold text-[var(--centres-ink)] transition-colors hover:border-[var(--centres-accent-soft)]/60 hover:bg-[var(--centres-accent-tint)] xs:text-[15px]"
+                <Phone className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                {copy['directoryCta.phoneLabel']}
+              </a>
+            </li>
+            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+              <MessageCircle className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+              {copy['directoryCta.point1']}
+            </li>
+            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+              <Building2 className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+              {copy['directoryCta.point2']}
+            </li>
+          </ul>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <EnquiryLink
+              source="centres-cta"
+              className="group/enq inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
+            >
+              <span>{copy['directoryCta.enquire']}</span>
+              <span
+                aria-hidden="true"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/enq:translate-x-0.5"
               >
-                Browse programmes
-              </Link>
-            </div>
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+              </span>
+            </EnquiryLink>
+            <Link
+              href={copy['directoryCta.browseHref'] as Route}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--k-line-strong)] px-6 py-3 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]"
+            >
+              {copy['directoryCta.browse']}
+            </Link>
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
-
 export function CentresLanding({
   cities,
   centres,
   initialQuery = '',
+  copy,
 }: {
+  copy: typeof centresCopy.defaults;
   cities: CitySummary[];
   centres: CentreSummary[];
   initialQuery?: string;
@@ -114,20 +105,16 @@ export function CentresLanding({
   return (
     <div className="centres-page relative">
       <CentresHero
+        copy={copy}
         cityCount={cities.length}
         centreCount={centres.length}
-        centres={centres.map((c) => ({
-          slug: c.slug,
-          name: c.name,
-          citySlug: c.citySlug,
-          state: c.state,
-        }))}
+        centres={toEnquiryCentres(centres, cities)}
         initialQuery={initialQuery}
       />
 
-      <CentresIndex cities={cities} centres={centres} initialQuery={initialQuery} />
+      <CentresIndex cities={cities} centres={centres} initialQuery={initialQuery} copy={copy} />
 
-      <CentresBottomCta />
+      <CentresBottomCta copy={copy} />
     </div>
   );
 }

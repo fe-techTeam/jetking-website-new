@@ -11,7 +11,7 @@ export interface LegacyRedirect {
 }
 
 /** Navigation and section aliases that differ on the live site. */
-export const legacyNavRedirects: LegacyRedirect[] = [
+const legacyNavRedirects: LegacyRedirect[] = [
   { source: '/our-courses', destination: '/courses', permanent: true },
   { source: '/our-courses/:path*', destination: '/courses/:path*', permanent: true },
   { source: '/contact-us', destination: '/enquiry', permanent: true },
@@ -28,7 +28,7 @@ export const legacyNavRedirects: LegacyRedirect[] = [
  * Root-level course landing pages from the live site.
  * Each maps to the nearest equivalent programme in the new catalogue.
  */
-export const legacyCourseLandings: LegacyRedirect[] = [
+const legacyCourseLandings: LegacyRedirect[] = [
   {
     source: '/diploma-in-cloud-computing-and-cyber-security',
     destination: '/courses/cloud-cyber-security-professional',
@@ -84,7 +84,7 @@ const permanent = (pairs: [string, string][]): LegacyRedirect[] =>
  * Live-site landing pages (some are ClickFunnels brochure sign-up funnels) that map cleanly to a
  * programme in the new catalogue. Found by requesting every URL in the live sitemap.
  */
-export const legacyProgrammeLandings: LegacyRedirect[] = permanent([
+const legacyProgrammeLandings: LegacyRedirect[] = permanent([
   ['/bca-degree-in-cloud-computing-cyber-security', '/courses/bca-cloud-cyber-security'],
   ['/bca-cloud-computing-cyber-security-brochure-signup', '/courses/bca-cloud-cyber-security'],
   ['/bca-cloud-computing-cyber-security-brochure-mumbai-signup', '/courses/bca-cloud-cyber-security'],
@@ -120,7 +120,7 @@ export const legacyProgrammeLandings: LegacyRedirect[] = permanent([
 ]);
 
 /** Company and utility pages that exist under another name on the new site. */
-export const legacyCompanyPages: LegacyRedirect[] = permanent([
+const legacyCompanyPages: LegacyRedirect[] = permanent([
   ['/franchise-opportunities', '/franchise'],
   ['/core-plus', '/franchise'],
   ['/coreplus-brochure-signup', '/franchise'],
@@ -135,7 +135,7 @@ export const legacyCompanyPages: LegacyRedirect[] = permanent([
  * The live blog had category archives at `/blog/{category}`. The new blog filters by category on
  * `/blog` instead, so those URLs go to the blog index (never to the homepage).
  */
-export const legacyBlogArchives: LegacyRedirect[] = [
+const legacyBlogArchives: LegacyRedirect[] = [
   'uncategorized',
   'blockchain',
   'cloud-computing',
@@ -150,7 +150,7 @@ export const legacyBlogArchives: LegacyRedirect[] = [
  * `/centres/prayagraj` was a real centre page on the live site. The centre's slug here is
  * `allahabad`, and `prayagraj` alone would otherwise be read as a city and sent to a search.
  */
-export const legacyCentres: LegacyRedirect[] = [
+const legacyCentres: LegacyRedirect[] = [
   { source: '/centres/prayagraj', destination: '/centres/allahabad', permanent: true },
 ];
 

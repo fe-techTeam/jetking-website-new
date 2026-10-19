@@ -10,14 +10,14 @@
    USAGE
      • Add `.dark-canvas` to a page/section root to opt into the theme. It sets
        the canvas background, base ink colour, the `--dc-*` tokens and an
-       isolated stacking context, and paints two animated glow orbs behind the
-       content. Add `.no-orbs` to suppress the orbs. `--dc-*` already resolves
+       isolated stacking context, and paints two faint, static colour washes
+       behind the content. Add `.no-orbs` to suppress the orbs. `--dc-*` already resolves
        through `--theme-*`, which the site's global light/dark toggle flips via
        `.dark` on `<html>` — so a bare `.dark-canvas` page already tracks the
        toggle on its own; no extra class is needed for that.
      • Compose content with the primitives below (`dc-card-shell` / `dc-card`,
        `dc-panel`, `dc-banner`, `dc-glass`, `dc-cta`, `dc-chip`, `dc-filter-row`,
-       `dc-heading-glow`, …) or reference the tokens directly in Tailwind
+       …) or reference the tokens directly in Tailwind
        arbitrary values, e.g. `text-[var(--dc-ink)]`.
      • Do NOT pair `.dark-canvas` with `.surface-inverse` on the same root to
        "make breadcrumbs/cards read on dark" — `.surface-inverse` forces the
@@ -31,8 +31,7 @@
        `--color-*` tokens the same way it flips `--dc-*`.
        `.surface-inverse` is still the right call for a section that should stay
        dark *regardless* of the page's own theme — e.g. the admin shell, a
-       `.home-v2` page that never opts into `.home-v2-themeable` (see
-       `FranchiseLanding.tsx`), or a single `<Section tone="inverse">` block
+       `.home-v2` page that never opts into `.home-v2-themeable`, or a single `<Section tone="inverse">` block
        inside an otherwise light page. `SiteFooter.tsx` used to be an example
        here too, but the footer is meant to track the site's own toggle like
        any other section, so it now just uses `bg-surface`.
@@ -43,7 +42,11 @@
    these tokens incrementally.
    ══════════════════════════════════════════════════════════════════════════ */
 
-.dark-canvas {
+/* ── The one set of page tokens ────────────────────────────────────────────
+   Every page group (dark-canvas, student, professional, centres, blog) reads these `--dc-*` tokens.
+   They used to be re-declared per page under `--stu-`, `--pro-`, `--centres-` and `--blog-` prefixes with
+   identical values; one definition here keeps the pages from drifting apart. */
+:is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
   /* Use global theme colors */
   /* ── Canvas & surfaces ─────────────────────────────────────────────── */
   --dc-canvas: var(--theme-canvas);
@@ -72,10 +75,45 @@
   --dc-shadow-hover: var(--theme-shadow-hover);
   --dc-glow-red: var(--theme-glow);
 
+  --dc-navy: var(--theme-accent);
+
+  /* ── Category / track accents (one scheme: see --theme-*-ink in globals.css) ── */
+  --dc-cyber: var(--theme-cyber-ink);
+  --dc-cloud: var(--theme-cloud-ink);
+  --dc-network: var(--theme-network-ink);
+  --dc-ai: var(--theme-ai-ink);
+  --dc-cyber-tint: var(--theme-cyber-tint);
+  --dc-cloud-tint: var(--theme-cloud-tint);
+  --dc-network-tint: var(--theme-network-tint);
+  --dc-ai-tint: var(--theme-ai-tint);
+
   /* ── Card corner radius (matches `.dc-panel`'s rounded corners) ──────── */
   --dc-cut: 20px;
   --dc-cut-inner: 18px;
+}
 
+@media (min-width: 640px) {
+  :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
+    --dc-cut: 24px;
+    --dc-cut-inner: 22px;
+  }
+}
+
+/* Same radii as a root-level default. `.dc-card-shell` / `.dc-card` are shared (CourseCard), but the variables only
+   existed on the page scopes above — so on pages built from the newer `.kit` / `.cp` layouts (centre detail, course
+   detail) the cards silently fell back to square corners. A scope's own value still wins inside its subtree. */
+:root {
+  --dc-cut: 20px;
+  --dc-cut-inner: 18px;
+}
+@media (min-width: 640px) {
+  :root {
+    --dc-cut: 24px;
+    --dc-cut-inner: 22px;
+  }
+}
+
+.dark-canvas {
   background: var(--dc-canvas);
   color: var(--dc-ink);
   position: relative;
@@ -83,15 +121,8 @@
   overflow: hidden;
 }
 
-@media (min-width: 640px) {
-  .dark-canvas {
-    --dc-cut: 24px;
-    --dc-cut-inner: 22px;
-  }
-}
-
 /* Light mode overrides — when .dark class is NOT on html element */
-:where(html:not(.dark)) .dark-canvas {
+:where(html:not(.dark)) :is(.dark-canvas, .student-page, .professional-page, .centres-page, .blog-page, .centres-detail-hero) {
   /* Override to use light mode global variables */
   --dc-canvas: var(--theme-canvas);
   --dc-surface: var(--theme-surface);
@@ -107,7 +138,7 @@
    * .dark-canvas's near-black background — reused as-is here they fail AA
    * text contrast against this light card/canvas (~2.5:1 / ~1.8:1). Fixed
    * dark red instead, matching the same light-mode fix already applied to
-   * --stu-accent-soft (student.css) and --v2-accent-soft/--v2-eyebrow
+   * --dc-accent-soft (student.css) and --v2-accent-soft/--v2-eyebrow
    * (professional.css, home.css).
    */
   --dc-accent-soft: #a50d13;
@@ -135,9 +166,9 @@
  * order in the intended direction instead of the wrong one.
  */
 
-/* ── Ambient glow orbs ──────────────────────────────────────────────────
-   Two blurred radial gradients that drift behind the content. Purely
-   decorative and pointer-inert. Suppress with `.dark-canvas.no-orbs`. */
+/* ── Ambient washes ─────────────────────────────────────────────────────
+   Two faint, static radial gradients behind the content — atmosphere, not a
+   glow. Pointer-inert. Suppress with `.dark-canvas.no-orbs`. */
 .dark-canvas::before,
 .dark-canvas::after {
   content: '';
@@ -146,7 +177,6 @@
   z-index: 0;
   border-radius: 50%;
   filter: blur(90px);
-  animation: dc-orb-pulse 6.5s var(--ease-out-soft) infinite alternate;
 }
 
 .dark-canvas.no-orbs::before,
@@ -159,7 +189,7 @@
   right: -8%;
   width: min(720px, 70vw);
   height: min(720px, 70vw);
-  background: radial-gradient(circle, rgb(232 36 43 / 0.38) 0%, transparent 68%);
+  background: none;
 }
 
 .dark-canvas::after {
@@ -167,32 +197,13 @@
   left: -12%;
   width: min(640px, 65vw);
   height: min(640px, 65vw);
-  background: radial-gradient(circle, rgb(200 24 48 / 0.28) 0%, transparent 70%);
-  animation-delay: -3.2s;
-}
-
-@keyframes dc-orb-pulse {
-  from {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.06);
-  }
+  background: radial-gradient(circle, rgb(120 120 160 / 0.08) 0%, transparent 70%);
 }
 
 /* Lift real content above the orbs. */
 .dark-canvas > * {
   position: relative;
   z-index: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dark-canvas::before,
-  .dark-canvas::after {
-    animation: none;
-  }
 }
 
 /* ── Flow modifier + decoupled orbs ─────────────────────────────────────────
@@ -203,7 +214,7 @@
 
    For a page that carries sticky chrome: add `.dc-flow` to opt out of the clip,
    `.no-orbs` to suppress the built-in orbs, and drop a `.dc-orbs` element in as
-   the first child. `.dc-orbs` clips itself, so the glow is preserved without
+   the first child. `.dc-orbs` clips itself, so the wash is preserved without
    constraining the content column. */
 .dark-canvas.dc-flow {
   overflow: visible;
@@ -227,7 +238,6 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(90px);
-  animation: dc-orb-pulse 6.5s var(--ease-out-soft) infinite alternate;
 }
 
 .dc-orbs::before {
@@ -235,7 +245,7 @@
   right: -8%;
   width: min(720px, 70vw);
   height: min(720px, 70vw);
-  background: radial-gradient(circle, rgb(232 36 43 / 0.38) 0%, transparent 68%);
+  background: none;
 }
 
 .dc-orbs::after {
@@ -243,15 +253,7 @@
   left: -12%;
   width: min(640px, 65vw);
   height: min(640px, 65vw);
-  background: radial-gradient(circle, rgb(200 24 48 / 0.28) 0%, transparent 70%);
-  animation-delay: -3.2s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dc-orbs::before,
-  .dc-orbs::after {
-    animation: none;
-  }
+  background: radial-gradient(circle, rgb(120 120 160 / 0.08) 0%, transparent 70%);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -259,7 +261,7 @@
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Rounded card ───────────────────────────────────────────────────────
-   Outer shell = gradient rim; inner fill uses a slightly smaller radius so the
+   Outer shell = hairline rim (accent on hover/selected); inner fill uses a slightly smaller radius so the
    border reads evenly (same relationship `.dc-panel` uses) — same corner
    radius as `.dc-panel` (the stat-card style), via the same `--dc-cut` /
    `--dc-cut-inner` tokens this design system already tracks responsively.
@@ -267,15 +269,32 @@
    inside `.dc-card-shell`; add `.dc-card-interactive` to the shell for
    hover/focus lift. */
 .dc-card-shell {
+  /* Self-contained colour tokens, the same `--dc-* → --theme-*` mapping the page scopes use. The course card is
+     shared across every page, but those tokens only existed on the dark-canvas-style page wrappers — so on the
+     newer `.kit` (centre pages) and `.cp` (course detail, which aliases `--dc-*` to its own palette) layouts the
+     same card came out with a transparent body, different badge/ink/link colours, etc. Declared on the card
+     itself so it looks identical on every page, and `--theme-*` still flips with the light/dark toggle. */
+  --dc-card: var(--theme-card);
+  --dc-ink: var(--theme-ink);
+  --dc-ink-secondary: var(--theme-ink-secondary);
+  --dc-ink-muted: var(--theme-ink-muted);
+  --dc-accent: var(--theme-accent);
+  --dc-accent-hover: var(--theme-accent-hover);
+  --dc-accent-soft: var(--theme-accent-soft);
+  --dc-accent-tint: var(--theme-accent-tint);
+  --dc-eyebrow: var(--theme-eyebrow);
+  --dc-hairline: var(--theme-hairline);
+  --dc-hairline-strong: var(--theme-hairline-strong);
+  --dc-shadow: var(--theme-shadow);
+  --dc-shadow-hover: var(--theme-shadow-hover);
+  --dc-glow-red: var(--theme-glow);
   display: block;
   height: 100%;
   padding: 1.5px;
-  background: linear-gradient(180deg, rgb(255 107 112 / 0.55) 0%, rgb(139 0 20 / 0.4) 100%);
+  background: var(--dc-hairline-strong);
   border-radius: var(--dc-cut);
   overflow: hidden;
-  filter:
-    drop-shadow(0 8px 24px rgb(0 0 0 / 0.3))
-    drop-shadow(0 0 18px rgb(232 36 43 / 0.07));
+  filter: drop-shadow(0 8px 24px rgb(0 0 0 / 0.3));
   transition:
     filter var(--duration-base) var(--ease-out-soft),
     transform var(--duration-base) var(--ease-out-soft),
@@ -291,46 +310,36 @@
   overflow: hidden;
 }
 
+/* Light theme: the same AA fix every page scope applies (see the `:where(html:not(.dark)) :is(.dark-canvas, …)` block
+   above) — the raw `--theme-accent-soft` / `--theme-eyebrow` salmon tints are tuned for a near-black canvas and fail
+   text contrast (~2.5:1) on a light card. Must sit after `.dc-card-shell`'s own token block so it wins the tie. */
+:where(html:not(.dark)) .dc-card-shell {
+  --dc-accent-soft: #a50d13;
+  --dc-eyebrow: #a50d13;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .dc-card-interactive:hover {
-    background: linear-gradient(180deg, rgb(255 130 135 / 0.6) 0%, rgb(180 20 40 / 0.5) 100%);
-    filter:
-      drop-shadow(0 14px 32px rgb(0 0 0 / 0.35))
-      drop-shadow(0 0 28px rgb(232 36 43 / 0.22));
+    background: rgb(232 36 43 / 0.6);
+    filter: drop-shadow(0 14px 32px rgb(0 0 0 / 0.35));
     transform: translateY(-3px);
   }
 }
 
 .dc-card-interactive:focus-within {
-  background: linear-gradient(180deg, rgb(255 130 135 / 0.6) 0%, rgb(180 20 40 / 0.5) 100%);
-  filter:
-    drop-shadow(0 14px 32px rgb(0 0 0 / 0.35))
-    drop-shadow(0 0 28px rgb(232 36 43 / 0.22));
+  background: rgb(232 36 43 / 0.6);
+  filter: drop-shadow(0 14px 32px rgb(0 0 0 / 0.35));
 }
 
 /* Selected/active shell — persistent red rim without the lift. */
 .dc-card-selected {
-  background: linear-gradient(180deg, rgb(255 130 135 / 0.6) 0%, rgb(180 20 40 / 0.55) 100%);
-  filter:
-    drop-shadow(0 12px 30px rgb(0 0 0 / 0.35))
-    drop-shadow(0 0 26px rgb(232 36 43 / 0.24));
+  background: rgb(232 36 43 / 0.7);
+  filter: drop-shadow(0 12px 30px rgb(0 0 0 / 0.35));
 }
 
 /* Media plate for cards without imagery. */
 .dc-card-media {
   background: linear-gradient(145deg, #2a1618 0%, #14141c 55%, #1a1218 100%);
-}
-
-/* ── Quote ──────────────────────────────────────────────────────────────────
-   Testimonial card: fixed dark red gradient (never flips with the theme), same
-   vocabulary as `.stu-quote`/`.centres-quote`. Text inside must use fixed
-   white/white-opacity, never a flipping ink token. */
-.dc-quote {
-  border-radius: 22px;
-  background: linear-gradient(145deg, #c41e24 0%, #8b1519 100%);
-  box-shadow:
-    0 0 28px rgb(196 30 36 / 0.35),
-    0 20px 44px rgb(0 0 0 / 0.45);
 }
 
 /* ── Panel ──────────────────────────────────────────────────────────────────
@@ -339,7 +348,7 @@
    in-place detail, tables, media that bleeds. Same ink + red-bloom vocabulary
    as `.dc-card`, minus the clip. Hairline rim, red bloom on hover/focus, and a
    persistent red rim for the selected/active state.
-     • `.dc-panel-interactive` → hover/focus lift + glow
+     • `.dc-panel-interactive` → hover/focus lift + accent rim
      • `.dc-panel-selected`    → persistent red rim, no lift */
 .dc-panel {
   background: var(--dc-card);
@@ -396,7 +405,7 @@
     linear-gradient(to top, rgb(7 7 12 / 0.55) 0%, transparent 42%);
 }
 
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .dc-banner-wash {
     background:
       linear-gradient(to top, rgb(7 7 12 / 0.94) 0%, rgb(7 7 12 / 0.72) 42%, rgb(7 7 12 / 0.35) 100%),
@@ -410,6 +419,7 @@
 .dc-filter-row {
   cursor: pointer;
   display: flex;
+  min-height: 2.75rem;
   width: 100%;
   align-items: center;
   justify-content: space-between;
@@ -447,6 +457,7 @@
    desktop. Closed until the visitor opens one. */
 .dc-filter-group-trigger {
   display: flex;
+  min-height: 2.75rem;
   width: 100%;
   cursor: pointer;
   align-items: center;
@@ -520,30 +531,24 @@
   border-color: var(--dc-hairline);
 }
 
-/* ── Text glow ──────────────────────────────────────────────────────────
-   Subtle red bloom on display headings and the accent word. */
+/* ── Accent text ────────────────────────────────────────────────────────
+   Colour only — the old red text bloom is gone (`-glow` is a legacy name). */
 .dc-eyebrow {
   color: var(--dc-eyebrow);
-  text-shadow: 0 0 18px rgb(255 107 112 / 0.35);
-}
-
-.dc-heading-glow {
-  text-shadow: 0 0 32px rgb(232 36 43 / 0.18);
 }
 
 .dc-accent-glow {
   color: var(--dc-accent-soft);
-  text-shadow: 0 0 26px rgb(232 36 43 / 0.45);
 }
 
 /* ── CTA button ─────────────────────────────────────────────────────────
-   Accent fill with the signature red glow. Compose sizing/shape with
-   utilities; this only owns colour + glow. */
+   Accent fill with a plain elevation. Compose sizing/shape with
+   utilities; this only owns colour + shadow. */
 /* Fill is jk-600 (#c7141c), not `--dc-accent` (#ea1c24 / #e01e25): light text on the brand
-   red measures 4.36:1 and fails WCAG AA (4.5:1); jk-600 measures 5.9:1 in either theme. */
+   red measures 4.36:1 and fails WCAG AA (4.5:1); jk-600 with white text measures 5.9:1 in either theme (the old `--dc-ink` text turns dark in the light theme). */
 .dc-cta {
   background: #c7141c;
-  color: var(--dc-ink);
+  color: #fff;
   box-shadow: var(--dc-glow-red);
   transition:
     background-color var(--duration-base) var(--ease-out-soft),
@@ -553,10 +558,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .dc-cta:hover {
-    background: var(--dc-accent-hover);
-    box-shadow:
-      0 0 30px rgb(232 36 43 / 0.6),
-      0 10px 30px rgb(232 36 43 / 0.3);
+    background: var(--color-jk-700, #a50d13);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-1px);
   }
 }
@@ -567,6 +570,7 @@
 .dc-chip {
   cursor: pointer;
   display: inline-flex;
+  min-height: 2.75rem;
   align-items: center;
   border-radius: 9999px;
   border: 1px solid var(--dc-hairline);
@@ -591,7 +595,6 @@
   background: var(--dc-accent);
   border-color: transparent;
   color: var(--dc-ink);
-  box-shadow: 0 0 18px rgb(196 30 36 / 0.35);
 }
 
 /* ── Search / text input ────────────────────────────────────────────────
@@ -629,50 +632,26 @@
    ══════════════════════════════════════════════════════════════════════════ */
 
 :where(html:not(.dark)) .dc-card-shell {
-  background: linear-gradient(
-    180deg,
-    rgba(234, 28, 36, 0.15) 0%,
-    rgba(234, 28, 36, 0.08) 100%
-  );
-  filter:
-    drop-shadow(0 4px 12px rgb(60 50 90 / 0.06))
-    drop-shadow(0 0 8px rgb(234 28 36 / 0.04));
+  background: rgb(16 24 40 / 0.1);
+  filter: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   :where(html:not(.dark)) .dc-card-interactive:hover {
-    background: linear-gradient(
-      180deg,
-      rgba(234, 28, 36, 0.2) 0%,
-      rgba(234, 28, 36, 0.12) 100%
-    );
-    filter:
-      drop-shadow(0 8px 20px rgb(60 50 90 / 0.1))
-      drop-shadow(0 0 12px rgb(234 28 36 / 0.1));
+    background: rgb(199 20 28 / 0.45);
+    filter: drop-shadow(0 8px 20px rgb(16 24 40 / 0.08));
     transform: translateY(-2px);
   }
 }
 
 :where(html:not(.dark)) .dc-card-interactive:focus-within {
-  background: linear-gradient(
-    180deg,
-    rgba(234, 28, 36, 0.2) 0%,
-    rgba(234, 28, 36, 0.12) 100%
-  );
-  filter:
-    drop-shadow(0 8px 20px rgb(60 50 90 / 0.1))
-    drop-shadow(0 0 12px rgb(234 28 36 / 0.1));
+  background: rgb(199 20 28 / 0.45);
+  filter: drop-shadow(0 8px 20px rgb(16 24 40 / 0.08));
 }
 
 :where(html:not(.dark)) .dc-card-selected {
-  background: linear-gradient(
-    180deg,
-    rgba(234, 28, 36, 0.25) 0%,
-    rgba(234, 28, 36, 0.15) 100%
-  );
-  filter:
-    drop-shadow(0 6px 18px rgb(60 50 90 / 0.1))
-    drop-shadow(0 0 10px rgb(234 28 36 / 0.08));
+  background: rgb(199 20 28 / 0.6);
+  filter: none;
 }
 
 :where(html:not(.dark)) .dc-card-media {
@@ -707,6 +686,15 @@
       rgba(255, 255, 255, 0.55) 0%,
       transparent 42%
     );
+}
+
+/* Phones and tablets (mobile-first; the copy column is full-width below lg): the copy sits at the bottom over the photo, so scrim from the bottom
+   up — the left-to-right desktop fade above leaves the body text half over the image. */
+@media (max-width: 1023px) {
+  :where(html:not(.dark)) .dc-banner-wash {
+    background:
+      linear-gradient(to top, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.9) 55%, rgba(255, 255, 255, 0.55) 100%);
+  }
 }
 
 /* ── Logo marquee ─────────────────────────────────────────────────────────────
@@ -763,3 +751,4 @@
     display: none;
   }
 }
+

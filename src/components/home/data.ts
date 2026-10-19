@@ -2,11 +2,21 @@ import 'server-only';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { content } from '@/lib/content';
-import type { City, Course, HomepageVariant, Post, TrustSignal } from '@/lib/content/types';
+import type {
+  AboutPageContent,
+  City,
+  Course,
+  Faq,
+  HomepageVariant,
+  LogoItem,
+  PlacementsPageContent,
+  Post,
+  TrustSignal,
+} from '@/lib/content/types';
 
 /**
- * One content read, shared by the hero (`HomeV2`) and the section stack below it
- * (`HomeSections`, `v3/`).
+ * One content read, shared by the hero (`HomeHero`) and the section stack below it
+ * (`HomeSections`, `sections/`).
  *
  * The hero itself only ever needed counts — this is why the doc comment used to say
  * "the leads never iterate the catalogue." That stopped being true once the homepage
@@ -15,6 +25,10 @@ import type { City, Course, HomepageVariant, Post, TrustSignal } from '@/lib/con
  * not the whole of it and not arbitrary iteration.
  */
 export interface HomeData {
+  /** About page copy — reused by Explore. */
+  about: AboutPageContent;
+  /** Placements page copy (stories, disclaimer, figures) — `PlacementProof`, Explore. */
+  placements: PlacementsPageContent;
   counts: { courses: number; centres: number; cities: number };
   /** Verified signals only — unverified claims never leave the content source. */
   trust: TrustSignal[];
@@ -25,8 +39,12 @@ export interface HomeData {
   courses: Course[];
   /** Sorted by name — `CentreNetwork` shows a curated slice. */
   cities: City[];
+  /** A handful of the most common questions across topics — `HomeFaq`. */
+  faqs: Faq[];
   /** Most recent posts, already limited — `BlogTeaser`. */
   posts: Post[];
+  /** Editable logo rows (CMS `logo_lists`) — `CredibilityMarquee`. */
+  logos: { certifications: LogoItem[]; employers: LogoItem[] };
   /** Slim centre records for the map — `CentreNetwork`. */
   centres: Array<{ slug: string; name: string; citySlug: string; locality: string }>;
 }
@@ -56,19 +74,36 @@ function droppedImage(basename: string): string | undefined {
 
 const heroPortrait = droppedImage('hero');
 
+/** One question per topic a visitor asks before enrolling, then more of the same until there are six. Franchise questions have their own page. */
+const FAQ_TOPICS: Faq['topic'][] = ['admissions', 'fees', 'placement', 'courses', 'centres'];
+
+function pickHomeFaqs(all: Faq[]): Faq[] {
+  const eligible = all.filter((f) => f.topic !== 'franchise');
+  const firstPerTopic = FAQ_TOPICS.map((topic) => eligible.find((f) => f.topic === topic)).filter((f): f is Faq => Boolean(f));
+  const rest = eligible.filter((f) => !firstPerTopic.includes(f));
+  return [...firstPerTopic, ...rest].slice(0, 6);
+}
+
 export async function loadHomeData(): Promise<HomeData> {
-  const [courses, cities, centres, trust, variants, posts] = await Promise.all([
+  const [courses, cities, centres, trust, variants, posts, about, placements, allFaqs, certLogos, employerLogos] = await Promise.all([
     content.listCourses(),
     content.listCities(),
     content.listCentres(),
     content.listTrustSignals(),
     content.listHomepageVariants(),
-    content.listPosts({ limit: 3 }),
+    content.listPosts({ limit: 4 }),
+    content.getAboutPage(),
+    content.getPlacementsPage(),
+    content.listFaqs(),
+    content.getLogoList('home-certifications'),
+    content.getLogoList('home-employers'),
   ]);
 
   const defaultVariant = variants.find((v) => v.id === 'default') ?? variants[0];
 
   return {
+    about,
+    placements,
     counts: { courses: courses.length, centres: centres.length, cities: cities.length },
     trust,
     variants,
@@ -76,6 +111,8 @@ export async function loadHomeData(): Promise<HomeData> {
     courses,
     cities,
     posts,
+    faqs: pickHomeFaqs(allFaqs),
+    logos: { certifications: certLogos.items, employers: employerLogos.items },
     centres: centres.map((c) => ({ slug: c.slug, name: c.name, citySlug: c.citySlug, locality: c.locality })),
   };
 }

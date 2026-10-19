@@ -129,7 +129,7 @@ export function Carousel<T>({
       onFocusCapture={() => setHoverPaused(true)}
       onBlurCapture={() => setHoverPaused(false)}
     >
-      <div id={viewportId} className={cx('overflow-hidden', classNames?.viewport)}>
+      <div id={viewportId} className={cx('overflow-x-clip', classNames?.viewport)}>
         <div
           className={cx(
             'flex items-stretch',
@@ -172,8 +172,8 @@ export function Carousel<T>({
                   aria-current={i === safeIndex ? 'true' : undefined}
                   aria-controls={viewportId}
                   onClick={() => setIndex(i)}
-                  /* The button is 24×24 for WCAG 2.5.8; the visible dot is the span. */
-                  className="grid h-6 w-6 cursor-pointer place-items-center rounded-full"
+                  /* The button is the touch target (44×44 on phones, 24×24 from sm); the visible dot is the span. */
+                  className="grid h-11 w-11 cursor-pointer place-items-center rounded-full sm:h-6 sm:w-6"
                 >
                   <span
                     aria-hidden="true"
@@ -196,7 +196,7 @@ export function Carousel<T>({
                 onClick={() => setUserPaused((p) => !p)}
                 aria-label={userPaused ? `Resume ${label} rotation` : `Pause ${label} rotation`}
                 className={cx(
-                  'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                  'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                   classNames?.button ??
                     'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
                 )}
@@ -214,7 +214,7 @@ export function Carousel<T>({
               aria-controls={viewportId}
               onClick={() => go(-1)}
               className={cx(
-                'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                 classNames?.button ??
                   'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
               )}
@@ -227,7 +227,7 @@ export function Carousel<T>({
               aria-controls={viewportId}
               onClick={() => go(1)}
               className={cx(
-                'grid h-9 w-9 cursor-pointer place-items-center rounded-full border',
+                'grid h-11 w-11 cursor-pointer place-items-center rounded-full border',
                 classNames?.button ??
                   'border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20',
               )}

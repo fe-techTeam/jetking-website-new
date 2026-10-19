@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { LEGAL_LINKS, type LegalBlock, type LegalDoc } from '@/lib/legal';
+import type { legalCopy } from '@/lib/content/copy/pages/legal';
 
 const slugify = (s: string) =>
   s
@@ -23,7 +24,9 @@ function Inline({ text }: { text: string }) {
         const bold = part.match(/^\*\*([^*]+)\*\*$/);
         if (bold) return <strong key={i} className="font-bold text-[var(--dc-ink)]">{bold[1]}</strong>;
         const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-        const href = link ? link[2] : /^https?:\/\//.test(part) ? part : null;
+        const rawHref = link ? link[2] : /^https?:\/\//.test(part) ? part : null;
+        // Only web, mail, phone and site-relative links: a `[x](javascript:...)` in a legal document stays inert text.
+        const href = rawHref && /^(?:https?:|mailto:|tel:|\/(?!\/))/i.test(rawHref.trim()) ? rawHref.trim() : null;
         if (href) {
           return (
             <a
@@ -43,13 +46,22 @@ function Inline({ text }: { text: string }) {
   );
 }
 
-function Block({ block, id }: { block: LegalBlock; id?: string }) {
+function Block({
+  block,
+  id,
+  tableFallback,
+}: {
+  block: LegalBlock;
+  id?: string;
+  /** Accessible name of a table that has no caption. */
+  tableFallback: string;
+}) {
   switch (block.t) {
     case 'h2':
       return (
         <h2
           id={id}
-          className="dc-heading-glow mt-10 scroll-mt-28 font-display text-[21px] leading-snug font-extrabold tracking-[-0.015em] text-[var(--dc-ink)] first:mt-0 sm:text-[24px]"
+          className="subsection-title mt-10 scroll-mt-28 font-display leading-snug text-[var(--dc-ink)] first:mt-0"
         >
           {block.text}
         </h2>
@@ -62,13 +74,13 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       );
     case 'p':
       return (
-        <p className="mt-4 text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <p className="mt-4 max-w-[85ch] text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           <Inline text={block.text} />
         </p>
       );
     case 'ul':
       return (
-        <ul className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ul className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="relative pl-5">
               <span aria-hidden="true" className="absolute top-[0.72em] left-0.5 h-1.5 w-1.5 rounded-full bg-[var(--dc-accent-soft)]" />
@@ -81,7 +93,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       // The source's own numbering ("a.", "3.") is kept as text, so cross-references
       // such as "clause 3.1(b)" still read the way the document says.
       return (
-        <ol role="list" className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ol role="list" className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-1">
               <span aria-hidden="true" className="font-semibold text-[var(--dc-ink-muted)] tabular-nums">
@@ -96,7 +108,12 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
       );
     case 'table':
       return (
-        <div className="mt-5 overflow-x-auto rounded-[14px] border border-[var(--dc-hairline-strong)]">
+        <div
+          role="region"
+          aria-label={block.caption || tableFallback}
+          tabIndex={0}
+          className="mt-5 overflow-x-auto rounded-[12px] border border-[var(--dc-hairline-strong)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
+        >
           <table className="w-full min-w-[28rem] border-collapse text-left text-[14px] text-[var(--dc-ink-secondary)]">
             {block.caption ? (
               <caption className="border-b border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-4 py-2.5 text-left text-[12.5px] font-bold tracking-wide text-[var(--dc-ink)] uppercase">
@@ -132,7 +149,7 @@ function Block({ block, id }: { block: LegalBlock; id?: string }) {
     case 'img':
       return (
         // Screenshots of forms and tables drawn on white: keep a white ground in dark mode too.
-        <figure className="mt-5 flex justify-center rounded-[14px] border border-[var(--dc-hairline-strong)] bg-white p-2 sm:p-3">
+        <figure className="mt-5 flex justify-center rounded-[12px] border border-[var(--dc-hairline-strong)] bg-white p-2 sm:p-3">
           <Image
             src={block.src}
             alt={block.alt}
@@ -155,11 +172,13 @@ export function LegalDocument({
   trail,
   intro,
   path,
+  copy,
 }: {
   doc: LegalDoc;
   trail: Crumb[];
   intro: string;
   path: string;
+  copy: typeof legalCopy.defaults;
 }) {
   const seen = new Map<string, number>();
   const idFor = (text: string) => {
@@ -176,8 +195,8 @@ export function LegalDocument({
       <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
         <Breadcrumbs trail={trail} />
         <div className="mt-6 sm:mt-8">
-          <p className="dc-eyebrow label-mono">Legal</p>
-          <h1 className="dc-heading-glow mt-3 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-[42px] lg:text-[48px]">
+          <p className="k-hero-eyebrow">{copy['labels.eyebrow']}</p>
+          <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
             {doc.title}
           </h1>
           <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[16px]">{intro}</p>
@@ -187,19 +206,19 @@ export function LegalDocument({
       <div className="shell relative mt-8 space-y-6 sm:mt-10">
         <article className="dc-panel rounded-[24px] px-5 py-8 xs:rounded-[28px] sm:px-10 sm:py-11">
           {doc.blocks.map((block, i) => (
-            <Block key={i} block={block} id={ids[i]} />
+            <Block key={i} block={block} id={ids[i]} tableFallback={copy['labels.tableFallback']} />
           ))}
         </article>
 
-        <nav aria-label="Other legal pages" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
-          <span className="dc-eyebrow label-mono">Also read</span>
+        <nav aria-label={copy['labels.otherPagesNav']} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
+          <span className="dc-eyebrow label-mono">{copy['labels.alsoRead']}</span>
           {others.map((l) => (
-            <Link key={l.href} href={l.href as Route} className="font-semibold text-[var(--dc-accent-soft)] hover:underline">
+            <Link key={l.href} href={l.href as Route} className="tap font-semibold text-[var(--dc-accent-soft)] hover:underline">
               {l.label}
             </Link>
           ))}
-          <Link href={'/enquiry' as Route} className="font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
-            Questions? Talk to a counsellor
+          <Link href={'/enquiry' as Route} className="tap font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
+            {copy['labels.talkToCounsellor']}
           </Link>
         </nav>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -15,78 +16,92 @@ import {
   FileText,
   GraduationCap,
   IndianRupee,
+  Laptop,
   MessageCircle,
   Phone,
   Shield,
   ShieldCheck,
   Sparkles,
-  Users,
+  Trophy,
+  UserCheck,
+  Wrench,
 } from 'lucide-react';
 import type { Course, Testimonial } from '@/lib/content/types';
-import { openGuide } from '@/components/Guide';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
 import { siteConfig } from '@/lib/site';
+import { fill } from '@/lib/content/copy/define';
+import type { ParentCopy } from '@/lib/content/copy/pages/parent';
+import { FOUNDED_YEAR, SINCE_FOUNDED, type NetworkCounts } from '@/lib/brand-facts';
+import { Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 import { ParentTestimonialSlider } from './ParentTestimonialSlider';
 
-const HERO_FEATURES = [
-  { label: 'Industry Relevant Courses', icon: BookOpen },
-  { label: 'Practical Learning', icon: Sparkles },
-  { label: 'Placement Assistance', icon: Briefcase },
-  { label: 'Trusted by Parents', icon: ShieldCheck },
-] as const;
+function heroFeatures(copy: ParentCopy) {
+  return [
+    { label: copy['features.0.label'], icon: BookOpen },
+    { label: copy['features.1.label'], icon: Sparkles },
+    { label: copy['features.2.label'], icon: Briefcase },
+    { label: copy['features.3.label'], icon: ShieldCheck },
+  ] as const;
+}
 
-const TRUST_STATS = [
-  { icon: Users, value: '75,000+', label: 'Students Trained Successfully' },
-  { icon: Briefcase, value: '90%', label: 'Placement Assistance' },
-  { icon: GraduationCap, value: 'Industry', label: 'Aligned Curriculum' },
-  { icon: Award, value: 'Since 1947', label: 'Trusted Brand Legacy' },
-] as const;
+function trustStats(counts: NetworkCounts, copy: ParentCopy) {
+  return [
+    { icon: Building2, value: `${counts.centres}`, label: copy['trust.0.label'] },
+    { icon: Briefcase, value: copy['trust.1.value'], label: copy['trust.1.label'] },
+    { icon: GraduationCap, value: copy['trust.2.value'], label: copy['trust.2.label'] },
+    { icon: Award, value: SINCE_FOUNDED, label: copy['trust.3.label'] },
+  ] as const;
+}
 
-const JOURNEY_STEPS = [
-  { title: 'Career Guidance', detail: '& Counselling', icon: MessageCircle },
-  { title: 'Choose the', detail: 'Right Course', icon: BookOpen },
-  { title: 'Hands-on Training', detail: '& Projects', icon: Sparkles },
-  { title: 'Placement', detail: 'Support', icon: Briefcase },
-  { title: 'Successful', detail: 'Career', icon: GraduationCap },
-] as const;
+function journeySteps(copy: ParentCopy) {
+  return [
+    { title: copy['journey.0.title'], detail: copy['journey.0.detail'], icon: MessageCircle },
+    { title: copy['journey.1.title'], detail: copy['journey.1.detail'], icon: BookOpen },
+    { title: copy['journey.2.title'], detail: copy['journey.2.detail'], icon: Wrench },
+    { title: copy['journey.3.title'], detail: copy['journey.3.detail'], icon: Briefcase },
+    { title: copy['journey.4.title'], detail: copy['journey.4.detail'], icon: Trophy },
+  ] as const;
+}
 
-const HELP_LINKS = [
-  { label: 'Talk to Parent Advisor', href: '/enquiry', icon: Phone },
-  { label: 'Download Course Brochure', href: '/enquiry', icon: Download },
-  { label: 'Visit Nearest Centre', href: '/centres', icon: Building2 },
-  { label: 'Fee & Scholarship Options', href: '/enquiry', icon: IndianRupee },
-] as const;
+function helpLinks(copy: ParentCopy) {
+  return [
+    { label: copy['help.0.label'], href: '/enquiry', icon: Phone },
+    { label: copy['help.1.label'], href: '/enquiry', icon: Download },
+    { label: copy['help.2.label'], href: '/enquiry', icon: Building2 },
+    { label: copy['help.3.label'], href: '/enquiry', icon: IndianRupee },
+  ] as const;
+}
 
-const PARENT_LOVES = [
-  { label: 'Safe & Secure Learning Environment', icon: Shield },
-  { label: 'Dedicated Mentors', icon: Users },
-  { label: 'Hands-on Labs', icon: Sparkles },
-  { label: 'Career Counselling', icon: MessageCircle },
-  { label: 'Trusted Legacy Since 1947', icon: Award },
-] as const;
-
-const STORY_AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
-] as const;
+function parentLoves(copy: ParentCopy) {
+  return [
+    { label: copy['loves.0.label'], icon: Shield },
+    { label: copy['loves.1.label'], icon: UserCheck },
+    { label: copy['loves.2.label'], icon: Laptop },
+    { label: copy['loves.3.label'], icon: MessageCircle },
+    { label: fill(copy['loves.4.label'], { since: SINCE_FOUNDED }), icon: Award },
+  ] as const;
+}
 
 export function ParentLanding({
   courses,
   counts,
   testimonials,
+  copy,
 }: {
   courses: Course[];
-  counts: { courses: number; centres: number; cities: number };
+  counts: NetworkCounts;
   testimonials?: Testimonial[];
+  copy: ParentCopy;
 }) {
+  const stats = trustStats(counts, copy);
+  const storyAvatars = [copy['stories.avatar.0'], copy['stories.avatar.1'], copy['stories.avatar.2']];
   return (
     <div
       className={[
         'student-page relative flex flex-col overflow-hidden',
         /* Bleed the page's own gradient background up behind the sticky,
            transparent header instead of stopping in a hard line at its
-           bottom edge — see the matching fix in home/v2/HomeV2.tsx. Offsets
+           bottom edge — see the matching fix in home/hero/HomeHero.tsx. Offsets
            must match SiteHeader's height breakpoints (72/80/88/96). */
         '-mt-[72px] pt-[72px]',
         'xs:-mt-[80px] xs:pt-[80px]',
@@ -96,40 +111,35 @@ export function ParentLanding({
     >
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-8 pb-10 xs:pt-10 sm:pt-12 sm:pb-12 lg:pt-14 lg:pb-14">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-60px] right-[8%] h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(232_36_43/0.22),transparent_68%)]"
-        />
 
-        <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-8 xl:gap-10">
-          <div className="lg:col-span-7 xl:col-span-7">
-            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[13px] font-bold text-[var(--stu-accent-soft)]">
-              Welcome Parent!
+        <div className="grid items-start gap-8 min-[880px]:grid-cols-12 min-[880px]:gap-8 xl:gap-10">
+          <div className="min-[880px]:col-span-7 xl:col-span-7">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]">
+              {copy['hero.eyebrow']}
             </p>
 
-            <h1 className="mt-5 font-display text-[34px] leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--stu-ink)] xs:text-[40px] sm:mt-6 sm:text-[46px] md:text-[50px] lg:text-[48px] xl:text-[54px]">
-              Your Child&rsquo;s Future Starts with the{' '}
-              <span className="text-[var(--stu-accent-soft)]">Right Education</span> Today
+            <h1 className="page-title-hero mt-5 font-display text-[var(--dc-ink)] sm:mt-6">
+              {copy['hero.title']}{' '}
+              <span className="text-[var(--dc-accent-soft)]">{copy['hero.titleAccent']}</span> {copy['hero.titleEnd']}
             </h1>
 
-            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--stu-ink-secondary)] xs:text-[16px] sm:mt-6">
-              Help your child build a future-ready IT career with industry-aligned programmes,
-              practical labs, and placement support — with fee clarity before you commit.
+            <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[16px] sm:mt-6">
+              {copy['hero.body']}
             </p>
 
             <ul className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-4 sm:gap-4">
-              {HERO_FEATURES.map((item) => (
+              {heroFeatures(copy).map((item) => (
                 <li
                   key={item.label}
                   className="flex flex-col items-start gap-2 sm:items-center sm:text-center"
                 >
                   <span
                     aria-hidden="true"
-                    className="grid h-10 w-10 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="grid h-10 w-10 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
                     <item.icon className="h-4 w-4" strokeWidth={1.85} />
                   </span>
-                  <span className="text-[12px] leading-snug font-semibold text-[var(--stu-ink-secondary)] sm:text-[12.5px]">
+                  <span className="text-[12px] leading-snug font-semibold text-[var(--dc-ink-secondary)] sm:text-[12.5px]">
                     {item.label}
                   </span>
                 </li>
@@ -138,10 +148,10 @@ export function ParentLanding({
 
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
               <Link
-                href="#courses"
-                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
+                href={copy['hero.cta.href'] as Route}
+                className="group/cta inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[15px] font-bold text-white transition-colors hover:bg-jk-700"
               >
-                Explore Courses for Your Child
+                {copy['hero.cta.label']}
                 <span
                   aria-hidden="true"
                   className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
@@ -150,22 +160,22 @@ export function ParentLanding({
                 </span>
               </Link>
 
-              <Link
-                href={'/enquiry' as Route}
-                className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--stu-accent)] px-5 py-3 text-[15px] font-bold text-[var(--stu-accent-soft)] transition-colors hover:bg-[var(--stu-accent-tint)]"
+              <EnquiryLink
+                source="parent"
+                className="inline-flex min-h-12 items-center gap-2.5 rounded-full border-2 border-[var(--dc-accent)] px-5 py-3 text-[15px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:bg-[var(--dc-accent-tint)]"
               >
-                Book Free Career Guidance
-              </Link>
+                {copy['hero.guidance.label']}
+              </EnquiryLink>
             </div>
           </div>
 
-          <div className="relative lg:col-span-5 xl:col-span-5">
+          <div className="relative min-[880px]:col-span-5 xl:col-span-5">
             {/* Extra bottom/side room so the trust card can hang off the photo */}
             <div className="relative pb-6 sm:pb-8 lg:pb-10 lg:pr-4 xl:pr-6">
-              <div className="relative overflow-hidden rounded-[28px] border border-[var(--stu-hairline)] shadow-[var(--stu-shadow)]">
+              <div className="relative overflow-hidden rounded-[28px] border border-[var(--dc-hairline-strong)] shadow-[var(--dc-shadow)]">
                 <Image
-                  src="/parent/hero.jpg"
-                  alt="Parent and student exploring career options together"
+                  src={copy['hero.image']}
+                  alt={copy['hero.imageAlt']}
                   width={900}
                   height={720}
                   priority
@@ -173,7 +183,7 @@ export function ParentLanding({
                 />
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.55)] via-transparent to-transparent"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-scrim/55 via-transparent to-transparent"
                 />
               </div>
 
@@ -189,27 +199,27 @@ export function ParentLanding({
                    * unconditionally; the "hanging off the photo" overlay look
                    * only turns on from sm: up, where there's enough room.
                    */
-                  'sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-2 sm:z-10 sm:mt-0 sm:w-[min(92%,268px)] sm:rounded-[22px] sm:p-5',
+                  'sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-2 sm:z-10 sm:mt-0 sm:w-[min(92%,268px)] sm:rounded-[24px] sm:p-5',
                   'lg:right-0 lg:bottom-0 xl:-right-3',
                 ].join(' ')}
               >
-                <h2 className="font-display text-[15px] font-extrabold text-[var(--stu-ink)] sm:text-[16px]">
-                  Why Parents Trust {siteConfig.name}
+                <h2 className="font-display text-[15px] font-extrabold text-[var(--dc-ink)] sm:text-[16px]">
+                  {fill(copy['trust.title'], { siteName: siteConfig.name })}
                 </h2>
                 <ul className="mt-3 space-y-2.5 sm:mt-3.5 sm:space-y-3">
-                  {TRUST_STATS.map((stat) => (
+                  {stats.map((stat) => (
                     <li key={stat.label} className="flex items-start gap-2.5 sm:gap-3">
                       <span
                         aria-hidden="true"
-                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:h-8 sm:w-8"
+                        className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:h-8 sm:w-8"
                       >
                         <stat.icon className="h-3.5 w-3.5" strokeWidth={2} />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[13px] font-extrabold text-[var(--stu-ink)] sm:text-[13.5px]">
+                        <span className="block text-[13px] font-extrabold text-[var(--dc-ink)] sm:text-[13.5px]">
                           {stat.value}
                         </span>
-                        <span className="block text-[11.5px] leading-snug text-[var(--stu-ink-muted)] sm:text-[12px]">
+                        <span className="block text-[12px] leading-snug text-[var(--dc-ink-muted)] sm:text-[12px]">
                           {stat.label}
                         </span>
                       </span>
@@ -223,266 +233,218 @@ export function ParentLanding({
       </section>
 
       {/* ── Journey steps ────────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-journey">
-        <div className="shell">
-          <div className="overflow-hidden rounded-[24px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] px-5 py-7 sm:rounded-[28px] sm:px-8 sm:py-8 lg:px-10">
-            <div className="flex flex-wrap items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="grid h-10 w-10 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
-              >
-                <ShieldCheck className="h-5 w-5" strokeWidth={1.85} />
-              </span>
-              <h2
-                id="par-journey"
-                className="font-display text-[18px] font-extrabold text-[var(--stu-ink)] sm:text-[20px]"
-              >
-                We&rsquo;re with you at every step
-              </h2>
-            </div>
-
-            <ol className="relative mt-8 grid grid-cols-2 gap-x-4 gap-y-7 xs:gap-6 sm:grid-cols-3 lg:grid-cols-5 lg:gap-3">
-              <div
-                aria-hidden="true"
-                className="par-journey-line absolute top-[22px] right-[10%] left-[10%] hidden lg:block"
-              />
-              {JOURNEY_STEPS.map((step, index) => (
-                <li
-                  key={step.title}
-                  className={[
-                    'relative z-10 flex flex-col items-center text-center',
-                    // On the 2-col mobile grid, 5 items leave a lone last item in
-                    // its own row — span both columns so it centers instead of
-                    // sitting left-aligned. Not needed at sm:/lg: (3/5 columns).
-                    index === JOURNEY_STEPS.length - 1 ? 'col-span-2 sm:col-span-1' : '',
-                  ].join(' ')}
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full border-2 border-[var(--stu-accent-soft)] bg-[var(--stu-card)] text-[var(--stu-accent-soft)]"
-                  >
-                    <step.icon className="h-5 w-5" strokeWidth={1.85} />
-                  </span>
-                  <span className="mt-3 text-[13px] leading-snug font-extrabold text-[var(--stu-ink)] sm:text-[13.5px]">
-                    {step.title}
-                  </span>
-                  <span className="text-[12px] text-[var(--stu-ink-muted)]">{step.detail}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
+      <Section tone="plain" deco="grid" labelledBy="par-journey">
+        <SectionHeader id="par-journey" title={copy['journey.title']} />
+        <Reveal>
+          <StepPath
+            steps={journeySteps(copy).map((step) => ({
+              icon: step.icon,
+              title: `${step.title} ${step.detail}`,
+              body: null,
+            }))}
+          />
+        </Reveal>
+      </Section>
 
       {/* ── Courses (student RecommendedCourses pattern) ─────────────────── */}
-      <div id="courses" className="scroll-mt-24 bg-[var(--stu-surface)]">
-        <RecommendedCourses
-          courses={courses}
-          headingId="par-courses"
-          title="Top Career Options Your Child Can Build"
-          description="Proven programmes parents compare — labs, certifications, and support."
-        />
-      </div>
+      <RecommendedCourses
+        id="courses"
+        className="scroll-mt-24"
+        tone="tint"
+        courses={courses}
+        headingId="par-courses"
+        title={copy['courses.title']}
+        description={copy['courses.description']}
+        viewAllLabel={copy['courses.viewAll.label']}
+        viewAllHref={copy['courses.viewAll.href']}
+        badgeLabel={copy['courses.badge']}
+        trackLabel={copy['courses.trackLabel']}
+      />
 
       {/* ── Let us help you ──────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="par-help">
-        <div className="shell">
+      <Section tone="plain" labelledBy="par-help">
           <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
-            <div className="rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] p-5 sm:p-6 lg:col-span-8">
+            <div className="kit kit-card p-5 sm:p-6 lg:col-span-8">
               <h2
                 id="par-help"
-                className="font-display text-[18px] font-extrabold text-[var(--stu-ink)] sm:text-[20px]"
+                className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
               >
-                Let Us Help You
+                {copy['help.title']}
               </h2>
               <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-                {HELP_LINKS.map((item) => (
+                {helpLinks(copy).map((item) => (
                   <li key={item.label}>
-                    <Link
-                      href={item.href as Route}
+                    <EnquiryLink
+                      source="parent-help"
                       className="par-help-row flex items-center gap-3 rounded-2xl border px-3.5 py-3"
                     >
                       <span
                         aria-hidden="true"
-                        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                        className="kit-iconwell !h-9 !w-9 !rounded-xl"
                       >
-                        <item.icon className="h-4 w-4" strokeWidth={1.85} />
+                        <item.icon className="h-5 w-5" strokeWidth={1.9} />
                       </span>
-                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--stu-ink)]">
+                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--dc-ink)]">
                         {item.label}
                       </span>
                       <ChevronRight
-                        className="h-4 w-4 shrink-0 text-[var(--stu-ink-muted)]"
+                        className="h-4 w-4 shrink-0 text-[var(--dc-ink-muted)]"
                         strokeWidth={2.25}
                         aria-hidden="true"
                       />
-                    </Link>
+                    </EnquiryLink>
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[12.5px] text-[var(--stu-ink-muted)]">
-                50+ centres across {counts.cities}+ cities — visit before you decide.
+              <p className="mt-4 text-[14px] text-[var(--dc-ink-muted)]">
+                {fill(copy['help.centres'], { centres: counts.centres, cities: counts.cities })}
               </p>
             </div>
 
-            <div className="flex flex-col justify-center rounded-[22px] border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] p-5 sm:p-6 lg:col-span-4">
-              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--stu-ink-secondary)]">
+            <div className="kit kit-card flex flex-col justify-center bg-[var(--k-red-wash)] p-5 sm:p-6 lg:col-span-4">
+              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                 <FileText
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--stu-accent-soft)]"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
-                Have questions? We&rsquo;re here to help you!
+                {copy['help.question']}
               </p>
-              <button
-                type="button"
-                onClick={() => openGuide('parent-help')}
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--stu-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
+              <Link
+                href={copy['help.chat.href'] as Route}
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--dc-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-                Chat with Us
-              </button>
+                {copy['help.chat.label']}
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Success stories ──────────────────────────────────────────────── */}
-      <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="par-stories"
-      >
-        <div className="shell">
-          <div className="stu-why rounded-[28px] px-6 py-10 text-[var(--stu-ink)] xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+      <Section tone="tint" deco="glow" labelledBy="par-stories">
+          <div>
             <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
               <div>
                 <h2
                   id="par-stories"
-                  className="font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] xs:text-[28px] sm:text-[32px]"
+                  className="section-title font-display text-[var(--dc-ink)]"
                 >
-                  Real Success Stories.{' '}
-                  <span className="text-[var(--stu-accent-soft)]">Real Parents.</span> Real Results.
+                  {copy['stories.title']}{' '}
+                  <span className="text-[var(--dc-accent-soft)]">{copy['stories.titleAccent']}</span> {copy['stories.titleEnd']}
                 </h2>
 
                 <div className="mt-8 flex flex-wrap items-end gap-8">
                   <div>
-                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--stu-accent-soft)] sm:text-[56px]">
-                      90%
+                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--dc-accent-soft)] sm:text-[56px]">
+                      {FOUNDED_YEAR}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">
-                      Placement assistance
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
+                      {copy['stories.foundedLabel']}
                     </p>
                   </div>
                   <div>
-                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--stu-ink)] sm:text-[36px]">
-                      75,000+
+                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--dc-ink)] sm:text-[36px]">
+                      {counts.cities}
                     </p>
-                    <p className="mt-2 text-[13.5px] font-semibold text-[var(--stu-ink-secondary)]">Happy students</p>
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">{copy['stories.citiesLabel']}</p>
                   </div>
                 </div>
 
                 <div className="mt-6 flex items-center gap-3">
                   <span aria-hidden="true" className="flex -space-x-2.5">
-                    {STORY_AVATARS.map((src) => (
+                    {storyAvatars.map((src) => (
                       <span
                         key={src}
-                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--stu-card)]"
+                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)]"
                       >
                         <Image src={src} alt="" fill sizes="36px" className="object-cover" />
                       </span>
                     ))}
                   </span>
-                  <span className="text-[13px] font-semibold text-[var(--stu-ink-secondary)]">
-                    Parents &amp; learners across India
+                  <span className="text-[13px] font-semibold text-[var(--dc-ink-secondary)]">
+                    {copy['stories.caption']}
                   </span>
                 </div>
               </div>
 
-              <ParentTestimonialSlider testimonials={testimonials} />
+              <ParentTestimonialSlider testimonials={testimonials} copy={copy} />
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Things parents love ──────────────────────────────────────────── */}
-      <section
-        className="bg-[var(--stu-surface)] py-10 sm:py-12 lg:py-14"
-        aria-labelledby="par-loves"
-      >
-        <div className="shell">
+      <Section tone="plain" labelledBy="par-loves">
           <h2
             id="par-loves"
-            className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[26px]"
+            className="section-title font-display text-[var(--dc-ink)]"
           >
-            Things Parents Love About {siteConfig.name}
+            {fill(copy['loves.title'], { siteName: siteConfig.name })}
           </h2>
 
-          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
-            {PARENT_LOVES.map((item) => (
-              <li key={item.label}>
-                <article className="stu-card flex h-full flex-col items-start gap-3 rounded-[18px] p-4 sm:items-center sm:p-5 sm:text-center">
+          <ul className="mt-6 flex flex-wrap gap-3 lg:gap-4">
+            {parentLoves(copy).map((item) => (
+              <li key={item.label} className="@container min-w-0 flex-[1_1_140px]">
+                <article className="kit kit-card flex h-full flex-col items-start gap-3 p-4 max-sm:@[260px]:flex-row max-sm:@[260px]:items-center sm:items-center sm:p-5 sm:text-center">
                   <span
                     aria-hidden="true"
-                    className="grid h-11 w-11 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)]"
+                    className="kit-iconwell"
                   >
-                    <item.icon className="h-5 w-5" strokeWidth={1.75} />
+                    <item.icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
-                  <span className="text-[13px] leading-snug font-bold text-[var(--stu-ink-secondary)] sm:text-[13.5px]">
+                  <span className="text-[13px] leading-snug font-bold text-[var(--dc-ink-secondary)] sm:text-[13.5px]">
                     {item.label}
                   </span>
                 </article>
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </Section>
 
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <section className="bg-[var(--stu-surface)] py-14 sm:py-16 lg:py-20" aria-labelledby="par-cta">
-        <div className="shell">
-          <div className="rounded-[28px] border border-[var(--stu-hairline)] bg-[var(--stu-card)] xs:rounded-[32px]">
-            <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 lg:grid-cols-12 lg:gap-8 lg:p-10 xl:gap-12">
-              <div className="flex min-w-0 flex-col items-start lg:col-span-7">
+      <Section tone="wash" labelledBy="par-cta">
+          <div className="kit kit-card">
+            <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 min-[880px]:grid-cols-12 min-[880px]:gap-8 lg:p-10 xl:gap-12">
+              <div className="flex min-w-0 flex-col items-start min-[880px]:col-span-7">
                 <h2
                   id="par-cta"
-                  className="max-w-[22ch] font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[28px] lg:text-[32px]"
+                  className="section-title max-w-[22ch] font-display text-[var(--dc-ink)]"
                 >
-                  Not sure which course is right for your child?
+                  {copy['cta.title']}
                 </h2>
-                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--stu-ink-secondary)] sm:text-[15px]">
-                  Book a free counselling session with a parent advisor. Compare tracks, fees, and
-                  centres — no pressure to enrol.
+                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+                  {copy['cta.body']}
                 </p>
 
-                <Link
-                  href={'/enquiry' as Route}
-                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--stu-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
+                <EnquiryLink
+                  source="parent"
+                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
                 >
-                  Book Free Career Counselling
+                  {copy['cta.label']}
                   <span
                     aria-hidden="true"
                     className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
                   </span>
-                </Link>
+                </EnquiryLink>
 
-                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-accent-tint)] px-3.5 py-1.5 text-[12.5px] font-bold text-[var(--stu-ink-secondary)] sm:text-[13px]">
+                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-ink-secondary)]">
                   <CheckCircle2
-                    className="h-3.5 w-3.5 shrink-0 text-[var(--stu-accent-soft)]"
+                    className="h-3.5 w-3.5 shrink-0 text-[var(--dc-accent-soft)]"
                     strokeWidth={2.5}
                     aria-hidden="true"
                   />
-                  No obligation · 100% free
+                  {copy['cta.badge']}
                 </p>
               </div>
 
-              <div className="relative mx-auto w-full max-w-[340px] lg:col-span-5 lg:mx-0 lg:ml-auto lg:max-w-[360px]">
+              <div className="relative mx-auto w-full max-w-[340px] min-[880px]:col-span-5 min-[880px]:mx-0 min-[880px]:ml-auto lg:max-w-[360px]">
                 <div className="relative aspect-square w-full">
-                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--stu-hairline)] bg-[linear-gradient(160deg,var(--stu-card),var(--stu-surface),var(--stu-card))] shadow-[0_28px_70px_rgb(0_0_0/0.45)]">
+                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--dc-hairline-strong)] bg-[linear-gradient(160deg,var(--dc-card),var(--dc-surface),var(--dc-card))] shadow-media">
                     <Image
-                      src="/parent/hero.jpg"
-                      alt={`Parent researching ${siteConfig.name} career guidance for their child`}
+                      src={copy['cta.image']}
+                      alt={fill(copy['cta.imageAlt'], { siteName: siteConfig.name })}
                       fill
                       sizes="360px"
                       className="object-cover object-center opacity-90"
@@ -491,19 +453,19 @@ export function ParentLanding({
 
                   <div
                     aria-hidden="true"
-                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-accent-soft)] shadow-[var(--stu-shadow)]"
+                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-accent-soft)] shadow-[var(--dc-shadow)]"
                   >
                     <GraduationCap className="h-5 w-5" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-cyber)] shadow-[var(--stu-shadow)]"
+                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cyber)] shadow-[var(--dc-shadow)]"
                   >
                     <Sparkles className="h-4 w-4" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-cloud)] shadow-[var(--stu-shadow)]"
+                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cloud)] shadow-[var(--dc-shadow)]"
                   >
                     <Briefcase className="h-4 w-4" strokeWidth={1.85} />
                   </div>
@@ -511,8 +473,7 @@ export function ParentLanding({
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </Section>
     </div>
   );
 }

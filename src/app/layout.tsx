@@ -1,45 +1,49 @@
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from 'next/font/google';
 import Script from 'next/script';
+import { Fira_Sans } from 'next/font/google';
 import { PersonaProvider } from '@/persona/PersonaProvider';
 import { SilentPersonaInfer } from '@/persona/SilentPersonaInfer';
 import { SiteChrome, FooterChrome } from '@/components/SiteShell';
-import { SiteHeader } from '@/components/SiteHeader';
+import { SiteHeaderServer } from '@/components/SiteHeaderServer';
+import { AnnouncementBarServer } from '@/components/AnnouncementBarServer';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PersonaInspector } from '@/components/PersonaInspector';
-import { Guide } from '@/components/Guide';
 import { ExitIntentPopup } from '@/components/ExitIntentPopup';
+import { MobileContactBar } from '@/components/MobileContactBar';
+import { EnquirySheetServer } from '@/components/EnquirySheetServer';
 import { AccountProvider } from '@/components/account/AccountProvider';
 import { JsonLd } from '@/components/ui';
 import { AppProviders } from '@/components/providers/app-providers';
 import { themeScript } from '@/components/providers/theme-script';
-import { organizationSchema } from '@/lib/seo';
+import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
+import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
+import { content } from '@/lib/content';
+import { loadCopy } from '@/lib/content/copy/load';
+import { siteCopy } from '@/lib/content/copy/pages/site';
+import { SiteCopyProvider } from '@/components/providers/site-copy';
 import '@/styles/globals.css';
 
-const display = Bricolage_Grotesque({
-  subsets: ['latin'],
-  variable: '--font-display-src',
-  display: 'swap',
-});
-
-const body = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-body-src',
-  display: 'swap',
-});
-
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  formatDetection: { telephone: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(siteCopy);
+  const seo = await content.getSeoSettings();
+  return {
+    verification: {
+      ...(seo.googleVerification ? { google: seo.googleVerification } : {}),
+      ...(seo.bingVerification ? { other: { 'msvalidate.01': seo.bingVerification } } : {}),
+    },
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: copy['seo.title'],
+      template: copy['seo.titleTemplate'],
+    },
+    description: copy['seo.description'],
+    formatDetection: { telephone: true },
+  };
+}
 
 export const viewport: Viewport = {
+  // Browser chrome can't resolve CSS variables: keep in sync with --color-background and --color-ink-950.
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#0B111E' },
@@ -47,16 +51,31 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   colorScheme: 'light dark',
+  // `maximum-scale` is deliberately NOT set here — it would apply to every browser,
+  // and on Android it genuinely blocks pinch-zoom (unlike iOS 10+, which ignores it
+  // for the user's own gesture). It's instead added at runtime, iOS-only, by
+  // `iosInputZoomGuardScript` below — see src/lib/ios-input-zoom-guard.ts.
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/** The one site typeface: chosen to sit with the Jetking wordmark (humanist sans, double-storey g, flat stroke cuts). */
+const fira = Fira_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-fira',
+});
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const copy = await loadCopy(siteCopy);
+  const seoSettings = await content.getSeoSettings();
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
 
   return (
     <html
       lang="en-IN"
-      className={`${display.variable} ${body.variable}`}
+      className={fira.variable}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body>
@@ -65,32 +84,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
+        <Script
+          id="jetking-ios-zoom-guard"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: iosInputZoomGuardScript }}
+        />
         <AppProviders>
-          <JsonLd data={organizationSchema()} />
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-          >
-            Skip to content
-          </a>
+          <SiteCopyProvider copy={copy}>
+            <JsonLd data={[organizationSchema(seoSettings.organization), websiteSchema()]} />
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+            >
+              {copy['a11y.skipToContent']}
+            </a>
 
-          <PersonaProvider>
-            <AccountProvider>
-              <SilentPersonaInfer />
-              <SiteChrome>
-                <SiteHeader />
-              </SiteChrome>
-              <main id="main">{children}</main>
-              <FooterChrome>
-                <SiteFooter />
-              </FooterChrome>
-              <SiteChrome>
-                <Guide />
-                <ExitIntentPopup />
-                {showInspector ? <PersonaInspector /> : null}
-              </SiteChrome>
-            </AccountProvider>
-          </PersonaProvider>
+            <PersonaProvider>
+              <AccountProvider>
+                <EnquirySheetServer>
+                  <SilentPersonaInfer />
+                  <SiteChrome>
+                    <AnnouncementBarServer />
+                    <SiteHeaderServer />
+                  </SiteChrome>
+                  <main id="main">{children}</main>
+                  <FooterChrome>
+                    <SiteFooter />
+                  </FooterChrome>
+                  <SiteChrome>
+                    <MobileContactBar />
+                    <ExitIntentPopup />
+                    {showInspector ? <PersonaInspector /> : null}
+                  </SiteChrome>
+                </EnquirySheetServer>
+              </AccountProvider>
+            </PersonaProvider>
+          </SiteCopyProvider>
         </AppProviders>
       </body>
     </html>

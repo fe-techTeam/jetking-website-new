@@ -1,63 +1,57 @@
-import Link from 'next/link';
-import type { Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
+import { Section } from '@/components/kit';
 import { ArrowRight } from 'lucide-react';
-import { BOTTOM_CTA_FEATURES } from './data';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { BOTTOM_CTA_FEATURE_ICONS } from './data';
 
-export function ProfessionalBottomCta() {
+export function ProfessionalBottomCta({ copy }: { copy: typeof professionalCopy.defaults }) {
   return (
-    <section className="pro-bottom-cta py-10 sm:py-12 lg:py-14" aria-labelledby="pro-cta-heading">
-      <div className="shell">
+    <Section tone="wash" labelledBy="pro-cta-heading">
         <div
           className={[
             'flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10',
-            /* The quick-action rail (ActionRail) goes `fixed` to the viewport's
-               right edge from lg2 (1200px) — this row's button is
-               right-aligned via `justify-between`, so without this gutter it
-               sits under the rail; same fix as ProfessionalHero's grid. */
-            'lg2:pr-[130px] 2xl:pr-[160px]',
           ].join(' ')}
         >
           <div className="max-w-2xl">
             <h2
               id="pro-cta-heading"
-              className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[24px] sm:text-[26px] lg:text-[28px]"
+              className="section-title font-display text-[var(--dc-ink)]"
             >
-              Ready to take the next step in your career?
+              {copy['cta.title']}
             </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
-              Book a free career upgrade session with our experts.
+            <p className="mt-3 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+              {copy['cta.lede']}
             </p>
             <ul className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-3">
-              {BOTTOM_CTA_FEATURES.map((item) => (
+              {BOTTOM_CTA_FEATURE_ICONS.map((Icon, i) => (
                 <li
-                  key={item.label}
-                  className="flex items-center gap-2 text-[13px] font-semibold text-[var(--pro-ink-secondary)]"
+                  key={i}
+                  className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]"
                 >
-                  <item.icon
-                    className="h-4 w-4 text-[var(--pro-accent-soft)]"
+                  <Icon
+                    className="h-4 w-4 text-[var(--dc-accent-soft)]"
                     strokeWidth={2}
                     aria-hidden="true"
                   />
-                  {item.label}
+                  {copy[`cta.features.${i}` as 'cta.features.0']}
                 </li>
               ))}
             </ul>
           </div>
 
-          <Link
-            href={'/enquiry' as Route}
-            className="group/cta inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[var(--pro-navy)] py-3.5 pr-3 pl-7 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[16px] lg:self-center"
+          <EnquiryLink
+            source="professional-bottom-cta"
+            className="group/cta inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[var(--dc-navy)] py-3.5 pr-3 pl-7 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[16px] lg:self-center"
           >
-            Book My Session Now
+            {copy['cta.button.label']}
             <span
               aria-hidden="true"
               className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
             >
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
             </span>
-          </Link>
+          </EnquiryLink>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

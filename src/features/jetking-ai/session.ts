@@ -39,7 +39,7 @@ export const EMPTY_SESSION: CounsellingSession = {
   turnCount: 0,
 };
 
-export interface PlannerProfileUpdates {
+interface PlannerProfileUpdates {
   educationLevel?: string;
   stream?: string;
   careerGoal?: string;

@@ -4,28 +4,20 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { Play, X } from 'lucide-react';
 import { Carousel } from '@/components/Carousel';
-import {
-  TESTIMONIALS as PLACEMENT_TESTIMONIALS,
-  VIDEO_TESTIMONIALS,
-  type Testimonial,
-  type VideoTestimonial,
-} from '@/components/placements/data';
+import type { PlacementTestimonial as Testimonial, VideoTestimonial } from '@/lib/content/types';
+import { fill } from '@/lib/content/copy/define';
+import type { exploreCopy } from '@/lib/content/copy/pages/explore';
 
-const AVATARS = [
-  '/student/avatar-1.png',
-  '/student/avatar-2.png',
-  '/student/avatar-3.png',
-  '/student/testimonial.png',
+const AVATAR_KEYS = [
+  'slider.avatars.0.avatar',
+  'slider.avatars.1.avatar',
+  'slider.avatars.2.avatar',
+  'slider.avatars.3.avatar',
 ] as const;
 
 type Slide =
   | { kind: 'quote'; key: string; data: Testimonial }
   | { kind: 'video'; key: string; data: VideoTestimonial };
-
-const SLIDES: Slide[] = [
-  ...PLACEMENT_TESTIMONIALS.map((t): Slide => ({ kind: 'quote', key: t.name, data: t })),
-  ...VIDEO_TESTIMONIALS.map((v): Slide => ({ kind: 'video', key: v.name, data: v })),
-];
 
 function embedSrc(video: VideoTestimonial): string {
   return video.provider === 'youtube'
@@ -33,7 +25,7 @@ function embedSrc(video: VideoTestimonial): string {
     : `https://player.vimeo.com/video/${video.videoId}?autoplay=1`;
 }
 
-function VideoSlide({ video }: { video: VideoTestimonial }) {
+function VideoSlide({ video, copy }: { video: VideoTestimonial; copy: typeof exploreCopy.defaults }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -45,11 +37,11 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
   }, [open]);
 
   return (
-    <div className="stu-quote relative flex h-full min-h-[220px] flex-col overflow-hidden p-0 sm:min-h-[240px]">
+    <div className="kit kit-card relative flex h-full min-h-[220px] flex-col overflow-hidden p-0 sm:min-h-[240px]">
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`Play video: ${video.title}, ${video.name}`}
+        aria-label={fill(copy['slider.play'], { title: video.title, name: video.name })}
         className="group/play relative flex h-full min-h-[220px] w-full cursor-pointer items-end sm:min-h-[240px]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- external YouTube/Vimeo thumbnail */}
@@ -60,17 +52,17 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.85)] via-[rgb(7_7_12/0.15)] to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-scrim/85 via-scrim/15 to-transparent"
         />
         <span
           aria-hidden="true"
-          className="absolute top-1/2 left-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink-900 shadow-[0_8px_24px_rgb(0_0_0/0.4)] transition-transform duration-200 group-hover/play:scale-110"
+          className="absolute top-1/2 left-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink-900 shadow-lg shadow-black/40 transition-transform duration-200 group-hover/play:scale-110"
         >
           <Play className="h-6 w-6 fill-current" strokeWidth={0} />
         </span>
         <footer className="relative z-10 flex items-center gap-3 p-6 text-left sm:p-7">
           <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
-            <Image src={AVATARS[3]} alt="" fill sizes="48px" className="object-cover" />
+            <Image src={copy[AVATAR_KEYS[3]]} alt="" fill sizes="48px" className="object-cover" />
           </span>
           <span>
             <span className="block text-[14.5px] font-bold text-white">{video.name}</span>
@@ -89,7 +81,7 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
           <button
             type="button"
             onClick={() => setOpen(false)}
-            aria-label="Close video"
+            aria-label={copy['slider.close']}
             className="absolute top-3 right-3 z-10 grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
           >
             <X className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
@@ -109,39 +101,52 @@ function VideoSlide({ video }: { video: VideoTestimonial }) {
   );
 }
 
-export function ExploreTestimonialSlider() {
+export function ExploreTestimonialSlider({
+  testimonials,
+  videos,
+  copy,
+}: {
+  testimonials: Testimonial[];
+  videos: VideoTestimonial[];
+  copy: typeof exploreCopy.defaults;
+}) {
+  const slides: Slide[] = [
+    ...testimonials.map((t): Slide => ({ kind: 'quote', key: t.name, data: t })),
+    ...videos.map((v): Slide => ({ kind: 'video', key: v.name, data: v })),
+  ];
+  if (slides.length === 0) return null;
+
   return (
     <Carousel
-      items={SLIDES}
-      label="Placement stories"
+      items={slides}
+      label={copy['slider.label']}
       itemKey={(slide) => slide.key}
-      itemLabel={(slide) => (slide.kind === 'video' ? `${slide.data.name}, video` : `${slide.data.name}, ${slide.data.role}`)}
+      itemLabel={(slide) => (slide.kind === 'video' ? fill(copy['slider.videoLabel'], { name: slide.data.name }) : `${slide.data.name}, ${slide.data.role}`)}
       classNames={{
-        viewport: 'rounded-[24px]',
-        dotActive: 'bg-[var(--stu-accent-soft)]',
-        dotIdle: 'bg-[var(--stu-ink-muted)]/40',
+        dotActive: 'bg-[var(--dc-accent-soft)]',
+        dotIdle: 'bg-[var(--dc-ink-muted)]/40',
         button:
-          'border-[var(--stu-hairline)] bg-[var(--stu-card)] text-[var(--stu-ink)] transition-colors hover:border-[var(--stu-accent-soft)] hover:text-[var(--stu-accent-soft)]',
+          'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]',
       }}
     >
       {(slide, i) =>
         slide.kind === 'video' ? (
-          <VideoSlide video={slide.data} />
+          <VideoSlide video={slide.data} copy={copy} />
         ) : (
-          <blockquote className="stu-quote flex h-full min-h-[220px] flex-col p-6 text-white sm:min-h-[240px] sm:p-7">
+          <blockquote className="kit kit-card flex h-full min-h-[220px] flex-col p-6 sm:min-h-[240px] sm:p-7">
             <span
               aria-hidden="true"
-              className="font-display text-[56px] leading-none font-extrabold text-white/30"
+              className="font-display text-[56px] leading-none font-extrabold text-[var(--k-red)] opacity-40"
             >
               &ldquo;
             </span>
-            <p className="-mt-5 flex-1 text-[15.5px] leading-relaxed font-medium sm:text-[16.5px]">
+            <p className="-mt-5 flex-1 text-[15.5px] leading-relaxed font-medium text-[var(--k-ink-2)] sm:text-[16.5px]">
               {slide.data.quote}
             </p>
             <footer className="mt-6 flex items-center gap-3">
-              <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
+              <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                 <Image
-                  src={AVATARS[i % AVATARS.length] ?? AVATARS[0]}
+                  src={copy[AVATAR_KEYS[i % AVATAR_KEYS.length] ?? AVATAR_KEYS[0]]}
                   alt=""
                   fill
                   sizes="48px"
@@ -149,8 +154,8 @@ export function ExploreTestimonialSlider() {
                 />
               </span>
               <cite className="not-italic">
-                <span className="block text-[14.5px] font-bold">{slide.data.name}</span>
-                <span className="mt-0.5 block text-[13px] text-white">{slide.data.role}</span>
+                <span className="block text-[14.5px] font-bold text-[var(--k-ink)]">{slide.data.name}</span>
+                <span className="mt-0.5 block text-[13px] text-[var(--k-ink-3)]">{slide.data.role}</span>
               </cite>
             </footer>
           </blockquote>

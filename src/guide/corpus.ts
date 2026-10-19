@@ -1,4 +1,5 @@
 import { content } from '@/lib/content';
+import { plainText } from '@/lib/rich/text';
 import { centrePath } from '@/lib/centre-path';
 import type { BodyBlock } from '@/lib/content/types';
 import type { Chunk } from './types';
@@ -55,7 +56,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       url: `/courses/${course.slug}`,
       sourceSlug: course.slug,
       text: [
-        `Programme: ${course.title}.`,
+        `Course: ${course.title}.`,
         `Level: ${course.level}. Duration: ${course.duration}.`,
         `Eligibility: ${course.eligibility}`,
         course.summary,
@@ -76,7 +77,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       type: 'faq',
       title: faq.question,
       url: '/faq',
-      text: `Question: ${faq.question} Answer: ${faq.answer}`,
+      text: `Question: ${faq.question} Answer: ${plainText(faq.answer)}`,
     });
   }
 
@@ -149,7 +150,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       title: centre.name,
       url: centrePath(centre.slug),
       sourceSlug: centre.slug,
-      text: `${centre.name} is a Jetking centre in ${joinPlace(centre.locality, cityName, centre.state)}. It offers these programmes: ${centre.coursesOffered.join(', ')}.`,
+      text: `${centre.name} is a Jetking centre in ${joinPlace(centre.locality, cityName, centre.state)}. It offers these courses: ${centre.coursesOffered.join(', ')}.`,
     });
   }
 
@@ -205,9 +206,4 @@ export async function buildCorpus(): Promise<Chunk[]> {
 
   cache = { chunks, builtAt: Date.now() };
   return chunks;
-}
-
-/** Called by the CMS webhook once content changes. */
-export function invalidateCorpus(): void {
-  cache = null;
 }

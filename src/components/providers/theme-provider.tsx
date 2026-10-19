@@ -22,7 +22,7 @@ import {
   type ThemePreference,
 } from '@/components/providers/theme-store';
 
-export type { ResolvedTheme, ThemePreference };
+export type {  ThemePreference };
 
 interface ThemeContextValue {
   /** What the user chose, including "follow the OS". */

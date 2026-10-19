@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
+import { leadForLog, safeError } from '@/lib/pii';
+import { content } from '@/lib/content';
+import { crmIdsForCentre, sendToCrm, toCrmPayload } from '@/lib/crm/smartrain';
 import { getSessionUser } from '@/lib/chatbot/session';
-import { createLead, isDatabaseConfigured } from '@/lib/leads/store';
-import type { LEAD_PERSONAS, LEAD_SOURCES } from '@/lib/leads/schema';
+import { QUALIFICATION_VALUES } from '@/lib/enquiry-fields';
+import { saveEnquiry, setCrmStatus } from '@/lib/leads/intake';
+import { UTM_COOKIE, cookieValue, decodeUtm, utmToFlat } from '@/lib/utm';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,29 +23,7 @@ export const dynamic = 'force-dynamic';
  * dropped. Losing a lead is the single worst failure this site can have, so the
  * no-CRM path must still succeed from the visitor's perspective and leave a durable
  * server-side record to reconcile.
- *
- * Independently of the CRM forward above, every enquiry is also written to the
- * `leads` table (when `DATABASE_URL` is set) so it shows up in the Admin Panel's
- * Leads board immediately — that board is staff's day-to-day view and must not
- * depend on an external CRM being configured.
  */
-
-/** Every form on the site posts its own free-text label (`'franchise-landing'`,
- *  `'jetking-ai-chat'`, …) so submissions stay distinguishable in logs/CRM. The
- *  leads table only tracks three broad channels — collapse into those for the
- *  `source` column, and keep the original label in the lead's notes. */
-function toLeadSource(raw: string): (typeof LEAD_SOURCES)[number] {
-  const s = raw.toLowerCase();
-  if (s.includes('chat')) return 'chatbot';
-  if (s.includes('centre') || s.includes('center')) return 'centre';
-  return 'form';
-}
-
-function toLeadPersona(persona: string): (typeof LEAD_PERSONAS)[number] | undefined {
-  return persona === 'student' || persona === 'parent' || persona === 'professional' || persona === 'franchise'
-    ? persona
-    : undefined;
-}
 
 const EnquirySchema = z.object({
   name: z.string().min(2).max(120),
@@ -56,15 +38,14 @@ const EnquirySchema = z.object({
   state: z.string().max(120).optional(),
   /** Slug of the centre the visitor picked within their city. */
   centre: z.string().max(120).optional(),
+  /** Highest qualification: `10+2` or `graduate` (graduate and above). */
+  qualification: z.enum(QUALIFICATION_VALUES).optional(),
   courseSlug: z.string().max(120).optional(),
   message: z.string().max(2000).optional(),
   /** Context attached by the client so counsellors see how the lead arrived. */
   persona: z.enum(['student', 'professional', 'parent', 'franchise', 'unknown']).default('unknown'),
   confidence: z.number().min(0).max(1).default(0),
   source: z.string().max(200).default('website'),
-  /** Guide conversation summary when the lead came from the AI Guide handoff. */
-  guideSummary: z.string().max(4000).optional(),
-  guideReason: z.string().max(80).optional(),
   /**
    * Anonymous first-party visitor ID (`JK_…`). CRM should store this so a later
    * mobile/email match can reconnect browsing history to the lead.
@@ -77,16 +58,59 @@ const EnquirySchema = z.object({
   journeyStage: z.enum(['discover', 'explore', 'compare', 'counsel', 'admit']).optional(),
   /** Locked or inferred career/topic intent label. */
   intent: z.string().max(120).optional(),
+  /** Bot trap: a hidden field real visitors never fill (see components/BotTrap). */
+  hp: z.string().max(500).optional(),
+  /** Milliseconds since the visitor's first interaction on the page; 0/absent for scripted posts. */
+  ft: z.number().min(0).max(1e10).optional(),
 });
 
 /**
- * Looser than the Guide's limit — a genuine visitor may legitimately submit two or
+ * The centre the CRM should receive the lead under: the one the visitor picked, or — when they only gave a
+ * city — the first centre in that city that has a CRM branch mapping.
+ */
+async function centreForCrm(centreSlug: string | undefined, city: string | undefined): Promise<string | undefined> {
+  if (centreSlug && crmIdsForCentre(centreSlug)) return centreSlug;
+  const key = city?.trim().toLowerCase();
+  if (!key) return centreSlug;
+  const cities = await content.listCities();
+  const match = cities.find((c) => c.slug === key || c.name.toLowerCase() === key);
+  if (!match) return centreSlug;
+  const centres = await content.listCentres({ citySlug: match.slug });
+  return centres.find((c) => crmIdsForCentre(c.slug))?.slug ?? centreSlug;
+}
+
+/** Faster than a person can read a form and fill it in. */
+const MIN_HUMAN_MS = 600;
+
+/**
+ * A post that carries no interaction signal at all (a script, or a visitor who typed before the page
+ * finished loading) is still accepted — losing a genuine lead is the worst outcome — but from the same
+ * connection only twice per window.
+ */
+const noSignalLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 2 });
+
+/**
+ * Loose enough that a genuine visitor may legitimately submit two or
  * three enquiries (different courses, a correction) — but tight enough that this
  * public endpoint cannot be used to flood counsellors with junk leads.
  */
 const limiter = createRateLimiter({ windowMs: 10 * 60_000, max: 5 });
 
 export async function POST(request: Request) {
+  // A browser tells us when a request comes from another site's page; the form on our own pages is same-origin.
+  const fetchSite = request.headers.get('sec-fetch-site');
+  const origin = request.headers.get('origin');
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  let originHost: string | null = null;
+  try {
+    originHost = origin && origin !== 'null' ? new URL(origin).host : null;
+  } catch {
+    originHost = null;
+  }
+  if (fetchSite === 'cross-site' || (originHost && host && originHost !== host)) {
+    return NextResponse.json({ ok: false, error: 'Forbidden.' }, { status: 403 });
+  }
+
   const limit = await limiter.check(clientKey(request));
 
   if (!limit.allowed) {
@@ -115,50 +139,95 @@ export async function POST(request: Request) {
     );
   }
 
+  // Bot trap. A filled honeypot, or a post with no (or an impossibly short) human interaction before it,
+  // is dropped quietly: the response looks like success so a bot learns nothing, and nothing reaches the CRM.
+  const { hp, ft, ...lead } = parsed.data;
+  const tooFast = ft !== undefined && ft > 0 && ft < MIN_HUMAN_MS;
+  if (hp || tooFast) {
+    console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: hp ? 'honeypot' : 'too-fast', ft: ft ?? null }));
+    return NextResponse.json({ ok: true, routed: false });
+  }
+  if (!ft) {
+    const strict = await noSignalLimiter.check(clientKey(request));
+    if (!strict.allowed) {
+      console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: 'no-signal-limit' }));
+      return NextResponse.json({ ok: true, routed: false });
+    }
+  }
+
   // Tie the lead to the signed-in account, if any, so a counsellor can see it is a known user.
   // Best-effort: a lookup failure must never cost the visitor their enquiry.
   const account = await getSessionUser().catch(() => null);
 
+  // Campaign attribution stored by the proxy (utm_source / utm_medium / utm_campaign /
+  // utm_content + landing page) rides along on every lead, whichever form sent it.
+  const attribution = utmToFlat(decodeUtm(cookieValue(request.headers.get('cookie'), UTM_COOKIE)));
+
   const enquiry = {
-    ...parsed.data,
+    ...lead,
+    ...attribution,
     accountId: account?.id,
     receivedAt: new Date().toISOString(),
   };
 
-  if (isDatabaseConfigured()) {
-    const notesParts = [
-      parsed.data.message,
-      parsed.data.state ? `State: ${parsed.data.state}` : null,
-      parsed.data.centre ? `Centre: ${parsed.data.centre}` : null,
-      parsed.data.guideSummary ? `Guide summary: ${parsed.data.guideSummary}` : null,
-      `Origin: ${parsed.data.source}`,
-    ].filter((part): part is string => Boolean(part));
-
-    try {
-      await createLead({
-        name: parsed.data.name,
-        phone: parsed.data.phone,
-        email: parsed.data.email || undefined,
-        courseInterest: parsed.data.courseSlug,
-        city: parsed.data.city,
-        source: toLeadSource(parsed.data.source),
-        persona: toLeadPersona(parsed.data.persona),
-        notes: notesParts.join('\n') || undefined,
-      });
-    } catch (error) {
-      // Same durability rule as the CRM forward below: a lead already logged via
-      // console.warn/console.error must never be lost, and a DB hiccup here must
-      // never cost the visitor their enquiry.
-      console.error('[enquiry:leads-write-failed]', JSON.stringify(enquiry), error);
-    }
+  // Durable record first, in our own database — before any CRM call, so an outage there can't lose the lead.
+  // Best-effort: if storing fails the CRM hand-off below (and the log line) still carry it.
+  let leadId: string | null = null;
+  try {
+    const saved = await saveEnquiry({
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email || undefined,
+      city: lead.city,
+      state: lead.state,
+      centre: lead.centre,
+      qualification: lead.qualification,
+      courseSlug: lead.courseSlug,
+      message: lead.message,
+      persona: lead.persona,
+      source: lead.source,
+      visitorId: lead.visitorId,
+      journeyStage: lead.journeyStage,
+      intent: lead.intent,
+      accountId: account?.id,
+      utm: decodeUtm(cookieValue(request.headers.get('cookie'), UTM_COOKIE)),
+    });
+    if (saved?.duplicate) return NextResponse.json({ ok: true, routed: false });
+    leadId = saved?.id ?? null;
+  } catch (error) {
+    console.error('[enquiry:store-failed]', leadForLog(enquiry), safeError(error));
   }
 
   const endpoint = process.env.CRM_ENDPOINT;
 
+  // Provider adapter: the Smartrain CRM wants its own numeric ids and different field names, and reports
+  // failures in the response body (see src/lib/crm/smartrain.ts), so it gets its own hand-off path.
+  if (endpoint && process.env.CRM_PROVIDER === 'smartrain') {
+    const centreSlug = await centreForCrm(lead.centre, lead.city);
+    const built = toCrmPayload({
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email || undefined,
+      centreSlug,
+    });
+    if (!built.ok) {
+      // Not sent, and not invented: the lead is already stored here for a counsellor to handle.
+      console.warn('[enquiry:crm-skipped]', built.reason);
+      if (leadId) await setCrmStatus(leadId, 'skipped').catch(() => {});
+      return NextResponse.json({ ok: true, routed: false });
+    }
+    const outcome = await sendToCrm(endpoint, built.payload);
+    if (outcome.status === 'failed' || outcome.status === 'rejected') {
+      console.error('[enquiry:crm-failed]', outcome.status, outcome.detail);
+    }
+    if (leadId) await setCrmStatus(leadId, outcome.status).catch(() => {});
+    return NextResponse.json({ ok: true, routed: outcome.status === 'routed' });
+  }
+
   if (!endpoint) {
     // No CRM wired yet. Log with a distinctive marker so these are greppable and
     // reconcilable once the integration lands.
-    console.warn('[enquiry:unrouted]', JSON.stringify(enquiry));
+    console.warn('[enquiry:unrouted]', leadForLog(enquiry));
     return NextResponse.json({ ok: true, routed: false });
   }
 
@@ -177,11 +246,13 @@ export async function POST(request: Request) {
 
     if (!response.ok) throw new Error(`CRM returned ${response.status}`);
 
+    if (leadId) await setCrmStatus(leadId, 'routed').catch(() => {});
     return NextResponse.json({ ok: true, routed: true });
   } catch (error) {
     // The visitor must not be told to re-submit — we have their details, and a
     // duplicate submission is worse than a delayed hand-off. Log loudly instead.
-    console.error('[enquiry:crm-failed]', JSON.stringify(enquiry), error);
+    console.error('[enquiry:crm-failed]', leadForLog(enquiry), safeError(error));
+    if (leadId) await setCrmStatus(leadId, 'failed').catch(() => {});
     return NextResponse.json({ ok: true, routed: false });
   }
 }

@@ -68,6 +68,7 @@ const STOP_WORDS = new Set([
   'so',
   'some',
   'such',
+  'take',
   'tell',
   'than',
   'that',
@@ -103,6 +104,63 @@ const STOP_WORDS = new Set([
   'would',
   'you',
   'your',
+  // Hinglish function words. Without them a question like "BCA course kitne saal
+  // ka hai" matches only half its terms, and lexical coverage gates it out.
+  'aap',
+  'apna',
+  'apne',
+  'aur',
+  'baare',
+  'bare',
+  'bata',
+  'batao',
+  'bataiye',
+  'bataye',
+  'bhi',
+  'chahiye',
+  'ha',
+  'hai',
+  'hain',
+  'ho',
+  'hoga',
+  'hogi',
+  'ji',
+  'ka',
+  'kab',
+  'kahan',
+  'kaisa',
+  'kaise',
+  'kaisi',
+  'kar',
+  'karna',
+  'karne',
+  'ke',
+  'ki',
+  'kitna',
+  'kitne',
+  'kitni',
+  'ko',
+  'kya',
+  'liye',
+  'mein',
+  'mera',
+  'meri',
+  'mere',
+  'milega',
+  'milegi',
+  'mujhe',
+  'muje',
+  'na',
+  'nahi',
+  'pe',
+  'par',
+  'sakta',
+  'sakte',
+  'se',
+  'toh',
+  'wala',
+  'wali',
+  'ya',
 ]);
 
 /**
@@ -136,6 +194,28 @@ const SYNONYMS: Record<string, readonly string[]> = {
   cloud: ['aws', 'azure', 'cloud'],
   degree: ['bca', 'mca', 'graduation', 'university'],
   contact: ['phone', 'email', 'address', 'reach'],
+  son: ['parent'],
+  daughter: ['parent'],
+  child: ['parent'],
+  genuine: ['trust', 'trusted'],
+};
+
+/**
+ * Hinglish content words, replaced (not supplemented) by the site's English
+ * vocabulary: the Hindi word never occurs in the corpus, so keeping it as a
+ * query term would only dilute lexical coverage.
+ */
+const HINGLISH: Record<string, readonly string[]> = {
+  saal: ['year', 'duration'],
+  sal: ['year', 'duration'],
+  mahine: ['month', 'duration'],
+  mahina: ['month', 'duration'],
+  naukri: ['job', 'placement'],
+  naukari: ['job', 'placement'],
+  kharcha: ['fee', 'cost'],
+  paisa: ['fee', 'cost'],
+  padhai: ['course', 'study'],
+  yogyata: ['eligibility', 'qualification'],
 };
 
 /**
@@ -165,20 +245,28 @@ export function tokenize(text: string): string[] {
     .map(stem);
 }
 
-/** Tokenize a user query and fold in domain synonyms. */
-export function tokenizeQuery(query: string): string[] {
+/**
+ * One term group per distinct word the user typed: the word itself plus its
+ * synonyms or translations. A document covers the word when it contains any
+ * term in the group, so expansion widens recall without diluting coverage.
+ */
+export function tokenizeQueryGroups(query: string): string[][] {
   const base = query
     .toLowerCase()
     .replace(/[^a-z0-9+#.\s]/g, ' ')
     .split(/\s+/)
-    .filter((word) => word.length > 1 && !STOP_WORDS.has(word));
+    .filter((word) => word.length > 1 && !STOP_WORDS.has(word) && !STOP_WORDS.has(stem(word)));
 
-  const expanded = new Set<string>();
+  const groups = new Map<string, string[]>();
 
-  for (const word of base) {
-    expanded.add(stem(word));
-    for (const synonym of SYNONYMS[word] ?? []) expanded.add(stem(synonym));
+  for (const word of new Set(base)) {
+    const translated = HINGLISH[word];
+    const terms = translated
+      ? translated.map(stem)
+      : [stem(word), ...(SYNONYMS[word] ?? []).map(stem)];
+    const key = translated ? word : stem(word);
+    groups.set(key, [...new Set([...(groups.get(key) ?? []), ...terms])]);
   }
 
-  return [...expanded];
+  return [...groups.values()];
 }

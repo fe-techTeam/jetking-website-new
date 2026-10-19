@@ -8,7 +8,7 @@ The original website implementation is preserved, and the original chatbot
 features, local knowledge base, embeddings, assets, scripts, and model setup
 now run inside the same application and dependency graph.
 
-**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel; Guide = OpenAI embeddings + pgvector/BM25 hybrid + GPT-4o; analytics via `track()` → GA4/GTM + PostHog.
+**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel; AI assistant = Jetking AI at `/chatbot` (local embeddings + BM25, Ollama or OpenAI); analytics via `track()` → GA4/GTM + PostHog.
 
 ```bash
 npm install
@@ -26,7 +26,6 @@ npm run dev          # http://localhost:3000
 | `npm run verify:seo -- --base <url>` | The SEO gate. Requires a running server |
 | `npm run crawl:legacy -- --base <url>` | Inventory the existing site → `data/legacy-urls.json` |
 | `npm run build:redirects` | Propose a redirect map from that inventory |
-| `npm run ingest:embeddings` | Chunk CMS content → OpenAI embed → pgvector / local store |
 | `npm run migrate:cms` | Seed Admin CMS store from local fixtures |
 | `npm run sync:chatbot-content` | Refresh the assistant knowledge content |
 | `npm run check:chatbot-answers` | Verify grounded assistant answers |
@@ -86,18 +85,19 @@ Personalising server-rendered HTML would mean serving different content to Googl
 src/
 ├─ proxy.ts                  Edge persona classification
 ├─ persona/                  Adaptive engine + CMS rule matcher + return-visit profile
-├─ guide/                    RAG Guide (BM25 + pgvector hybrid, GPT-4o, guardrails)
+├─ guide/                    Content corpus builder used by `npm run build:chatbot-index`
 ├─ lib/
 │  ├─ content/               CMS-agnostic ContentSource
 │  ├─ cms/                   Admin file/Postgres store + publish hooks
 │  ├─ supabase.ts            Thin Supabase client
 │  ├─ analytics.ts           Vendor-neutral track()
 │  ├─ seo.ts
-│  └─ site.ts                Site constants, mainNav, coursesMenu
+│  └─ site.ts                Site constants, mainNav
+│  ├─ course-categories.ts   Course category rules (header menu, homepage tabs)
 ├─ components/home/          Homepage: v2 hero, v3 section stack (see Homepage)
 ├─ app/
 │  ├─ (admin)/admin/         Staff CMS
-│  ├─ api/{guide,enquiry,revalidate,ingest}/
+│  ├─ api/{chat,chatbot,enquiry,revalidate,…}/
 │  └─ …                      Public routes
 └─ supabase/migrations/      Schema + pgvector
 ```
@@ -108,39 +108,41 @@ src/
 
 The homepage is a hero followed by a section stack, ending in the normal site footer.
 `src/app/page.tsx` loads one `loadHomeData()` (`src/components/home/data.ts`) and renders
-`HomeV2` (hero) then `HomeSections` (everything below).
+`HomeHero` (the hero) then `HomeSections` (everything below).
 
-| Order | Section | Component (`src/components/home/v3/`) | Data |
+| Order | Section | Component (`src/components/home/sections/`) | Data |
 |---|---|---|---|
-| 0 | Hero: persona chooser, action bar, quick-action rail | `../v2/HomeV2.tsx` | static |
-| 1 | Trust stats | `TrustStats.tsx` | catalogue counts + verified trust signals (`figures.ts`) |
-| 2 | Certification and hiring-partner logos | `CredibilityMarquee.tsx` | `public/logos/`, `HIRING_PARTNERS` |
-| 3 | Programmes carousel with level tabs | `ProgramShowcase.tsx`, `CardTrack.tsx` | `content.listCourses()` |
-| 4 | Career paths | `CareerPaths.tsx` | static (`v3/data.ts`), links to `/courses?tech=` |
-| 5 | Placements slider | `PlacementProof.tsx` | published testimonials in `placements/data.ts` |
-| 6 | Recognition | `Recognitions.tsx` | About timeline and course fixtures |
-| 7 | India centre map | `CentreNetwork.tsx`, `india-map.ts` | centres and cities; city coordinates in `india-map.ts` |
-| 8 | Why Jetking (4 cards) | `WhyJetking.tsx` | static |
-| 9 | How it works | `HowItWorks.tsx` | static |
-| 10 | Blog teaser | `BlogTeaser.tsx` | latest 3 posts |
-| 11 | Franchise band | `FranchiseBand.tsx` | static |
-| 12 | Inline callback form | `FinalCta.tsx` | `QuickEnquiryForm` to `/api/enquiry` |
+| 0 | Hero: headline, persona chooser, action bar (Get Skills / Get a Degree / 100% Placement) | `../hero/HomeHero.tsx` | website copy, static |
+| 1 | "Trusted by top companies": certification and hiring-partner logos | `CredibilityMarquee.tsx` | `public/logos/`, `HIRING_PARTNERS` |
+| 2 | Explore our programmes: technology tabs and carousel | `ProgramShowcase.tsx`, `../../CardTrack.tsx` | `content.listCourses()` |
+| 3 | Build your career, step by step (Learn / Practice / Get certified / Placement support) | `HowItWorks.tsx` | `placements/data.ts`, `explore/content.ts`, course certifications |
+| 4 | "Our learners, our pride" red banner with testimonial carousel | `PlacementProof.tsx` | published testimonials in `placements/data.ts` |
+| 5 | Recognition and university partners | `Recognitions.tsx` | About timeline, course fixtures, `explore/content.ts` |
+| 6 | India centre map with "Find a centre near you" search | `CentreNetwork.tsx`, `india-map.ts` | centres and cities; city coordinates in `india-map.ts` |
+| 7 | What makes Jetking different? | `WhyJetking.tsx` | the live site's "reasons" in `explore/content.ts` |
+| 8 | Blog teaser | `BlogTeaser.tsx` | latest 3 posts |
+| 9 | Franchise band | `FranchiseBand.tsx` | static |
+| 10 | Inline callback form | `FinalCta.tsx` | `QuickEnquiryForm` to `/api/enquiry` |
 
-Backgrounds alternate grey (`--dc-surface`) and white section by section; keep that when
+The layout follows the approved design mock and the copy comes from content already on the site (`explore/content.ts` is shared with `/explore`). Claims in the mock that the data does not back
+up (for example NASSCOM membership, "100% job guarantee", star ratings) are deliberately
+not shown.
+
+Sections are all white in the light theme and are divided by a single thin brand-red line (`.home-sections` in `dark-canvas.css`); keep that when
 adding or reordering sections.
 
 **Design language.** Sections use the shared `.dark-canvas` token layer (`--dc-*`, in
 `src/styles/dark-canvas.css`) with `.no-orbs`, and the four global category hues
-(`--theme-network|cloud|cyber|ai-ink/tint`, exposed as `HUE_VARS` in `v3/data.ts`) for
+(`--theme-network|cloud|cyber|ai-ink/tint`, exposed as `HUE_VARS` in `sections/data.ts`) for
 per-card icon chips. The hero keeps its own `.home-v2` skin (`src/styles/home.css`).
 
 **Rules specific to this page**
 - No unverified numbers or invented quotes. Stats come from `buildFigures()`; the placement
   slider uses only Jetking's own published testimonials and always shows the placement
   disclaimer. There is no placement guarantee claim in the new sections.
-- The quick-action rail (`ActionRail`) is `position: fixed`. It is contained to the hero by
-  the `[transform:translateZ(0)] overflow-hidden` wrapper around `HomeV2` in `page.tsx`, so
-  it scrolls away with the hero. Do not reserve a right-hand gutter in the sections.
+- There is no floating quick-action rail any more (the `ActionRail` component was removed from every page).
+- Light-theme canvas is pure white (`--theme-canvas`); blush (`#fff5f4`) is the surface/band colour. Landing pages alternate white/blush bands (see the last rule in `globals.css`), so do not stack two blush sections back to back.
+- Logos: `public/logos/brands/` (certification/tool marks), `public/logos/employers/` (big-brand recruiters, vector) and `public/logos/partners/` (fetched from each company's own site or Wikimedia Commons). A company with no verifiable logo renders as a plain name tile, never a guessed mark. The `/explore` partner grid is driven by `src/components/explore/partners.ts`.
 - The India map outline (`india-map.ts`) is the Datameet `india-composite` boundary
   simplified to one SVG path (islands omitted). The content model has no coordinates, so
   pins use per-city coordinates in `CITY_COORDS`; add an entry when a new city gets a
@@ -149,8 +151,10 @@ per-card icon chips. The hero keeps its own `.home-v2` skin (`src/styles/home.cs
   design-gaming, marketing, hardware-os) and `?level=`. Links must use `tech`, not `technology`.
 
 **Header.** From 1024px the header shows About Us, Courses, Centres and Placements as a
-link row. Courses has a category dropdown (`src/components/CoursesMenu.tsx`, entries in
-`coursesMenu` in `src/lib/site.ts`) that marks the current filter. The full nav stays in the
+link row. Courses opens a mega menu (`src/components/CoursesMenu.tsx`): categories on the left, the real
+courses in the highlighted category on the right, like a typical edtech course menu. Courses are
+loaded by `SiteHeaderServer.tsx`; category rules live in `src/lib/course-categories.ts` (shared
+with the homepage programme tabs). The current category and course are marked. The full nav stays in the
 drawer at every width.
 
 ---
@@ -159,7 +163,7 @@ drawer at every width.
 
 Target: WCAG 2.2 AA. The public routes were scanned with axe-core (tags `wcag2a`, `wcag2aa`,
 `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`) at 1280px and 375px wide, with no
-violations and no horizontal overflow (also checked at 320, 768 and 1024px on `/`).
+violations and no horizontal overflow (also checked at 320, 768 and 1024px on `/`). The homepage supports both light and dark themes: use theme tokens (`bg-background`, `text-foreground`, `--dc-*`), never hard-coded white.
 
 Conventions that keep it that way:
 - Brand red under light text uses `#c7141c` (5.9:1); `#ea1c24` is 4.36:1 and fails. `.dc-cta`
@@ -185,7 +189,7 @@ See `.env.example`. Critical keys:
 
 - `NEXT_PUBLIC_SITE_URL` — baked into canonicals at build time
 - `PERSONA_COOKIE_SECRET` — HMAC for `jk_persona`
-- `OPENAI_API_KEY` — Guide + embeddings (absent → degraded citation-only answers)
+- `OPENAI_API_KEY` — `/api/chat` hosted-model fallback and persona inference (absent → local Ollama only)
 - `CONTENT_SOURCE=admin` — read published CMS data
 - `REVALIDATE_SECRET` — protect publish webhooks
 - `ADMIN_PASSWORD` — simple staff gate when Supabase Auth is unset
@@ -198,3 +202,23 @@ See `.env.example`. Critical keys:
 1. **Fees are never model-generated** — structured CMS lookup or counsellor handoff only.
 2. **`AdaptiveList` reorders, never filters** — indexable links stay in the DOM.
 3. **Unverified trust claims cannot render** — filtered at the content source.
+
+## Campaign tracking (UTM)
+
+Landing pages accept the four standard campaign parameters:
+
+| Parameter | Example | Meaning |
+| --- | --- | --- |
+| `utm_source` | `google`, `facebook`, `newsletter` | Where the click came from |
+| `utm_medium` | `cpc`, `paid_social`, `email` | Channel type |
+| `utm_campaign` | `bca-admissions-2026` | Campaign name |
+| `utm_content` | `ad-a`, `video-1` | Ad / creative variant |
+
+Example: `https://jetking-panel.vercel.app/student?utm_source=google&utm_medium=cpc&utm_campaign=bca-admissions-2026&utm_content=ad-a`
+
+How it works (`src/lib/utm.ts`, `src/proxy.ts`):
+
+- `proxy.ts` stores the parameters in the readable first-party `jk_utm` cookie (30 days) on the first request — before any client script runs — together with the landing path. A visit with new UTM parameters replaces the stored set (last campaign click wins); a visit without any leaves it alone. Crawlers are skipped. Values are trimmed and capped at 100 characters.
+- `/api/enquiry` merges `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `landing_page` into **every** lead from the cookie, whichever form sent it, and forwards them to the CRM (`CRM_ENDPOINT`) or the `[enquiry:unrouted]` log. No per-form wiring is needed.
+- `track()` (`src/lib/analytics.ts`) adds the same keys to every analytics event (GA4 dataLayer / PostHog).
+- The persona classifier still reads the same parameters to choose an acquisition channel (`src/persona/channel.ts`) — that is independent of this attribution store.

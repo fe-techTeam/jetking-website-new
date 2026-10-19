@@ -1,80 +1,69 @@
 'use client';
 
+import { EnquiryLink } from '@/components/EnquirySheet';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
-import { HERO_FEATURES } from './data';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { fill } from '@/lib/content/copy/define';
+import { HERO_FEATURE_ICONS } from './data';
 
-export function ProfessionalHero() {
+export function ProfessionalHero({ copy }: { copy: typeof professionalCopy.defaults }) {
   return (
     <div
       className={[
         'grid items-start gap-8',
         'xs:gap-9 sm:gap-10 md:gap-12',
-        'lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-8',
+        'min-[880px]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] min-[880px]:gap-8',
         'xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] xl:gap-8',
-        /* The quick-action rail (ActionRail) goes `fixed` to the viewport's right
-           edge from lg2 (1200px) — see its own breakpoint. Reserve the same
-           gutter HomeV2's hero does so the rail never overlaps the photo. */
-        'lg2:pr-[130px]',
-        '2xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] 2xl:gap-10 2xl:pr-[160px]',
+        '2xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] 2xl:gap-10',
         '3xl:grid-cols-[minmax(0,1.4fr)_minmax(0,0.6fr)] 3xl:gap-12',
       ].join(' ')}
-      aria-labelledby="pro-hero-heading"
+      role="group" aria-labelledby="pro-hero-heading"
     >
       <div className="flex flex-col justify-start">
-        <p className="v2-eyebrow-glow text-[11px] font-bold tracking-[0.16em] text-[var(--v2-eyebrow)] uppercase xs:text-[12px] sm:text-[13px] sm:tracking-[0.18em]">
-          For Working Professionals
+        <p className="k-hero-eyebrow">
+          {copy['hero.eyebrow']}
         </p>
 
         <h1
           id="pro-hero-heading"
-          className={[
-            'v2-heading-glow mt-4 font-display leading-[1.08] font-extrabold tracking-[-0.035em] text-[var(--v2-ink)]',
-            'text-[36px] xs:mt-5 xs:text-[40px]',
-            'sm:text-[44px] md:text-[48px]',
-            'lg:mt-6 lg:text-[48px]',
-            'xl:text-[52px]',
-            '2xl:text-[58px]',
-            '3xl:text-[62px] 4xl:text-[68px]',
-          ].join(' ')}
+          className="page-title-hero mt-4 text-[var(--v2-ink)] xs:mt-5 lg:mt-6"
         >
-          Upgrade Your Career.
+          {copy['hero.title.line1']}
           <br />
-          <span className="v2-accent-glow text-[var(--v2-accent)]">Double</span> Your
-          <br />
-          Impact.
+          <span className="text-[var(--v2-accent)]">{copy['hero.title.accent']}</span> {copy['hero.title.rest']}
         </h1>
 
         <p className="mt-5 max-w-[42ch] text-[15px] leading-[1.6] text-[var(--v2-ink-secondary)] xs:mt-6 xs:text-[15.5px] sm:text-[16px] lg:text-[17px] 3xl:text-[18px]">
-          Industry-relevant skills. Hands-on learning.
-          <br className="hidden sm:inline" /> Real career growth.
+          {copy['hero.sub.line1']}
+          <br className="hidden sm:inline" /> {copy['hero.sub.line2']}
         </p>
 
         <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2.5 xs:mt-6 sm:gap-x-6">
-          {HERO_FEATURES.map((item) => (
+          {HERO_FEATURE_ICONS.map((Icon, i) => (
             <li
-              key={item.label}
-              className="flex items-center gap-2 text-[12.5px] font-semibold text-[var(--v2-ink-secondary)] sm:text-[13px]"
+              key={i}
+              className="flex items-center gap-2 text-[14px] font-semibold text-[var(--v2-ink-secondary)]"
             >
-              <item.icon
+              <Icon
                 className="h-4 w-4 shrink-0 text-[var(--v2-accent-soft)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              {item.label}
+              {copy[`hero.features.${i}` as 'hero.features.0']}
             </li>
           ))}
         </ul>
 
         <div className="mt-6 flex flex-col items-start gap-5 xs:mt-7 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-5 lg:mt-8 2xl:mt-[34px]">
           <Link
-            href={'/courses' as Route}
+            href={copy['hero.cta.href'] as Route}
             className="v2-cta-glow group/explore inline-flex min-h-12 items-center gap-5 rounded-full py-3.5 pr-5 pl-6 text-[15px] font-bold text-white transition-[background-color,box-shadow] duration-200 sm:gap-6 sm:py-4 sm:pr-5.5 sm:pl-7 sm:text-[16px]"
           >
-            Explore Programs
+            {copy['hero.cta.label']}
             <ArrowRight
               className="h-5 w-5 transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/explore:translate-x-0.5"
               strokeWidth={2}
@@ -83,21 +72,21 @@ export function ProfessionalHero() {
           </Link>
         </div>
 
-        <Link
-          href={'/enquiry' as Route}
-          className="mt-5 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-6"
+        <EnquiryLink
+          source="professional-hero"
+          className="tap mt-3 inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[var(--v2-ink-muted)] transition-colors hover:text-[var(--v2-accent-soft)] sm:mt-4"
         >
-          Book a free career upgrade session
+          {copy['hero.link.label']}
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-        </Link>
+        </EnquiryLink>
       </div>
 
       <div className="v2-hero-stage relative flex flex-col items-center justify-start">
         <div className="relative mx-auto w-full max-w-[360px] lg:max-w-[400px] xl:max-w-[420px] 2xl:max-w-[440px]">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] shadow-[0_28px_70px_rgb(0_0_0/0.55)] sm:rounded-[28px] lg:aspect-[5/6]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] border border-[var(--v2-hairline)] bg-[var(--v2-card)] shadow-media sm:rounded-[28px] lg:aspect-[5/6]">
             <Image
-              src="/professional/hero.png"
-              alt={`${siteConfig.name} working professional upskilling for career growth`}
+              src={copy['hero.image']}
+              alt={fill(copy['hero.image.alt'], { siteName: siteConfig.name })}
               fill
               priority
               sizes="(min-width: 1024px) 420px, 85vw"

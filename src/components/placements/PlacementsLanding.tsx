@@ -1,28 +1,14 @@
-import { Fragment } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import type { Route } from 'next';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Phone } from 'lucide-react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
+import { EnquiryLink } from '@/components/EnquirySheet';
+import { Reveal, Section, SectionHeader, StepPath } from '@/components/kit';
 import { OfferLetterSlider } from './OfferLetterSlider';
 import { PlacementsTestimonialSlider } from './PlacementsTestimonialSlider';
 import { RecruiterMarquee } from './RecruiterMarquee';
-import {
-  PLACEMENTS_HERO,
-  OFFER_LETTER_SAMPLES,
-  PLACEMENT_DISCLAIMER,
-  PROCESS_STEPS,
-  RECRUITERS,
-  RECRUITERS_DISCLAIMER,
-  STUDENT_BENEFITS,
-  TESTIMONIALS,
-  PLACEMENTS_CONTACT,
-} from './data';
-
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Placements', path: '/placements' },
-];
+import type { PlacementsPageContent } from '@/lib/content/types';
+import { fill } from '@/lib/content/copy/define';
+import type { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 /**
  * Icon glyphs from the Placements source-asset pack (kept as plain <img>,
@@ -31,57 +17,71 @@ const trail: Crumb[] = [
  * nothing else here asks for).
  */
 function IconGlyph({ src, className }: { src: string; className?: string }) {
+  // A mask, not an <img>, so the glyph takes the surrounding text colour (red in light, soft red in dark)
+  // exactly like the Lucide icons used on every other page.
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- local SVG icon, not optimized
-    <img src={src} alt="" aria-hidden="true" className={className ?? 'h-5 w-5'} />
+    <span
+      aria-hidden="true"
+      className={`inline-block bg-current ${className ?? 'h-5 w-5'}`}
+      style={{
+        maskImage: `url(${src})`,
+        WebkitMaskImage: `url(${src})`,
+        maskRepeat: 'no-repeat',
+        WebkitMaskRepeat: 'no-repeat',
+        maskPosition: 'center',
+        WebkitMaskPosition: 'center',
+        maskSize: 'contain',
+        WebkitMaskSize: 'contain',
+      }}
+    />
   );
 }
 
-const ICONS = {
-  hiringPartners: '/placements/icons/01_hiring_partners.svg',
-  placementSupport: '/placements/icons/02_placement_support.svg',
-  realworldPreparation: '/placements/icons/03_realworld_preparation.svg',
-  completeTraining: '/placements/icons/04_complete_training.svg',
-  biodataPreparation: '/placements/icons/05_biodata_preparation.svg',
-  mockInterviews: '/placements/icons/06_mock_interviews.svg',
-  studentInterviews: '/placements/icons/07_student_interviews.svg',
-  appointmentLetter: '/placements/icons/08_appointment_letter.svg',
-  learnPractically: '/placements/icons/09_learn_practically.svg',
-  englishSpeaking: '/placements/icons/10_english_speaking.svg',
-  interviewSkills: '/placements/icons/11_interview_skills.svg',
-  getJobs: '/placements/icons/12_get_jobs.svg',
-  mockInterviewsFeature: '/placements/icons/13_mock_interviews_feature.svg',
-  aiBotInterviews: '/placements/icons/14_ai_bot_interviews.svg',
-  presentation: '/placements/icons/15_presentation.svg',
-  personalisedGuidance: '/placements/icons/16_personalised_guidance.svg',
-  centreInformation: '/placements/icons/17_centre_information.svg',
-  quickResponse: '/placements/icons/18_quick_response.svg',
-  processArrow: '/placements/icons/25_process_arrow.svg',
+const ICON_KEYS = {
+  hiringPartners: 'icons.0.image',
+  placementSupport: 'icons.1.image',
+  realworldPreparation: 'icons.2.image',
+  completeTraining: 'icons.3.image',
+  biodataPreparation: 'icons.4.image',
+  mockInterviews: 'icons.5.image',
+  studentInterviews: 'icons.6.image',
+  appointmentLetter: 'icons.7.image',
+  learnPractically: 'icons.8.image',
+  englishSpeaking: 'icons.9.image',
+  interviewSkills: 'icons.10.image',
+  getJobs: 'icons.11.image',
+  mockInterviewsFeature: 'icons.12.image',
+  aiBotInterviews: 'icons.13.image',
+  presentation: 'icons.14.image',
+  personalisedGuidance: 'icons.15.image',
+  centreInformation: 'icons.16.image',
+  quickResponse: 'icons.17.image',
+  processArrow: 'icons.18.image',
 } as const;
 
 const PROCESS_STEP_ICONS = [
-  ICONS.completeTraining,
-  ICONS.biodataPreparation,
-  ICONS.mockInterviews,
-  ICONS.studentInterviews,
-  ICONS.appointmentLetter,
+  ICON_KEYS.completeTraining,
+  ICON_KEYS.biodataPreparation,
+  ICON_KEYS.mockInterviews,
+  ICON_KEYS.studentInterviews,
+  ICON_KEYS.appointmentLetter,
 ];
 
 const BENEFIT_ICON_SRCS = [
-  ICONS.learnPractically,
-  ICONS.englishSpeaking,
-  ICONS.interviewSkills,
-  ICONS.getJobs,
-  ICONS.mockInterviewsFeature,
-  ICONS.aiBotInterviews,
-  ICONS.presentation,
+  ICON_KEYS.learnPractically,
+  ICON_KEYS.englishSpeaking,
+  ICON_KEYS.interviewSkills,
+  ICON_KEYS.getJobs,
+  ICON_KEYS.mockInterviewsFeature,
+  ICON_KEYS.aiBotInterviews,
+  ICON_KEYS.presentation,
 ];
 
 const CTA_FEATURES = [
-  { label: 'Personalised guidance', icon: ICONS.personalisedGuidance },
-  { label: 'Centre-wise information', icon: ICONS.centreInformation },
-  { label: 'Quick response', icon: ICONS.quickResponse },
-];
+  { labelKey: 'cta.features.0', iconKey: ICON_KEYS.personalisedGuidance },
+  { labelKey: 'cta.features.1', iconKey: ICON_KEYS.centreInformation },
+  { labelKey: 'cta.features.2', iconKey: ICON_KEYS.quickResponse },
+] as const;
 
 /**
  * Qualitative only — no headline counts here. A specific figure like "500+
@@ -89,92 +89,106 @@ const CTA_FEATURES = [
  * codebase's content backs one, so these stay descriptive.
  */
 const HERO_HIGHLIGHTS = [
-  { label: 'Hiring partner network', icon: ICONS.hiringPartners },
-  { label: 'Real-world interview prep', icon: ICONS.realworldPreparation },
-  { label: 'Dedicated placement support', icon: ICONS.placementSupport },
-];
+  { labelKey: 'hero.highlights.0', iconKey: ICON_KEYS.hiringPartners },
+  { labelKey: 'hero.highlights.1', iconKey: ICON_KEYS.realworldPreparation },
+  { labelKey: 'hero.highlights.2', iconKey: ICON_KEYS.placementSupport },
+] as const;
 
-const HERO_CHECKLIST = ['Industry connected', 'Personalised support', 'Real career opportunities'];
+const HERO_CHECKLIST_KEYS = ['hero.checklist.0', 'hero.checklist.1', 'hero.checklist.2'] as const;
 
-export function PlacementsLanding() {
+export function PlacementsLanding({ placements, copy }: { placements: PlacementsPageContent; copy: typeof placementsCopy.defaults }) {
+  const trail: Crumb[] = [
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.placements'], path: '/placements' },
+  ];
+  const {
+    hero: PLACEMENTS_HERO,
+    offerLetters: OFFER_LETTER_SAMPLES,
+    disclaimer: PLACEMENT_DISCLAIMER,
+    processSteps: PROCESS_STEPS,
+    recruiters: RECRUITERS,
+    recruitersDisclaimer: RECRUITERS_DISCLAIMER,
+    studentBenefits: STUDENT_BENEFITS,
+    testimonials: TESTIMONIALS,
+    contact: PLACEMENTS_CONTACT,
+  } = placements;
+
   return (
-    <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
+    <div className="dark-canvas">
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
         <Breadcrumbs trail={trail} />
 
         <div className="relative mt-5 sm:mt-6">
-          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[32px] lg:min-h-[520px]">
+          <div className="dc-banner relative min-h-[min(78vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[400px] xs:rounded-[28px] sm:min-h-[460px] sm:rounded-[28px] lg:min-h-[520px]">
+            <div className="absolute inset-x-0 top-0 h-52 xs:h-60 sm:inset-0 sm:h-auto">
             <Image
-              src="/placements/photos/hero-male.png"
+              src={copy['hero.image']}
               alt=""
               fill
               priority
-              sizes="100vw"
+              sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
               className="object-cover object-[center_22%]"
             />
-            <div
-              aria-hidden="true"
-              className="dc-banner-wash pointer-events-none absolute inset-0"
-            />
+            </div>
+            <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0 hidden sm:block" />
 
-            <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 py-10 xs:px-8 xs:py-12 sm:max-w-[62%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
-              <p className="dc-eyebrow label-mono">{PLACEMENTS_HERO.eyebrow}</p>
+            <div className="relative z-[1] flex h-full min-h-[inherit] max-w-full flex-col justify-end px-6 pt-60 pb-8 xs:px-8 xs:pt-72 xs:pb-10 sm:max-w-[68%] sm:justify-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 xl:px-14">
+              <p className="k-hero-eyebrow">{PLACEMENTS_HERO.eyebrow}</p>
 
-              <h1 className="dc-heading-glow mt-4 font-display text-[32px] leading-[1.08] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] xs:text-[38px] sm:mt-5 sm:text-[44px] md:text-[48px] lg:text-[52px]">
-                {PLACEMENTS_HERO.titleLead}{' '}
-                <span className="dc-accent-glow">{PLACEMENTS_HERO.titleAccent}</span>
+              <h1 className="page-title-hero mt-4 font-display text-balance text-[var(--dc-ink)] sm:mt-5">
+                {PLACEMENTS_HERO.titleLead} <span className="dc-accent-glow">{PLACEMENTS_HERO.titleAccent}</span>
               </h1>
 
-              <p className="mt-4 max-w-[46ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
+              <p className="mt-4 max-w-[54ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-5 sm:text-[16px]">
                 {PLACEMENTS_HERO.lede}
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
-                <Link
-                  href={'/enquiry' as Route}
-                  className="dc-cta inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold sm:h-14 sm:px-7 sm:text-base"
+              <div className="mt-7 flex flex-wrap gap-2 sm:mt-8 sm:gap-3">
+                <EnquiryLink
+                  source="placements-hero"
+                  className="dc-cta inline-flex h-11 grow items-center justify-center rounded-full px-4 text-[13px] font-bold whitespace-nowrap sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
-                  Talk to a counsellor
-                </Link>
+                  {copy['hero.cta.label']}
+                </EnquiryLink>
                 <a
                   href={PLACEMENTS_CONTACT.tel}
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:px-7 sm:text-base"
+                  aria-label={fill(copy['hero.call.ariaLabel'], {
+                    phone: PLACEMENTS_CONTACT.phone,
+                  })}
+                  className="inline-flex h-11 grow items-center justify-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[13px] font-bold whitespace-nowrap text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] sm:h-14 sm:grow-0 sm:px-5 sm:text-base lg:px-7"
                 >
-                  Call {PLACEMENTS_CONTACT.phone}
+                  <Phone className="h-4 w-4 text-[var(--dc-accent-soft)] lg:hidden" aria-hidden="true" />
+                  <span className="lg:hidden">{copy['hero.call.shortLabel']}</span>
+                  <span className="hidden lg:inline">
+                    {fill(copy['hero.call.longLabel'], {
+                      phone: PLACEMENTS_CONTACT.phone,
+                    })}
+                  </span>
                 </a>
               </div>
 
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
-                {HERO_CHECKLIST.map((label) => (
-                  <li
-                    key={label}
-                    className="flex items-center gap-2 text-[12.5px] font-semibold text-[var(--dc-ink-secondary)]"
-                  >
+                {HERO_CHECKLIST_KEYS.map((key) => (
+                  <li key={key} className="flex items-center gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
                     <Check className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]" strokeWidth={2.5} aria-hidden="true" />
-                    {label}
+                    {copy[key]}
                   </li>
                 ))}
               </ul>
-
             </div>
 
             {/* Floating highlight cards — qualitative value props, no invented figures */}
             <div className="pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-[36%] flex-col justify-center gap-3 p-6 lg:flex xl:w-[32%] xl:gap-4 xl:p-8">
               {HERO_HIGHLIGHTS.map((item) => (
-                <div
-                  key={item.label}
-                  className="dc-panel pointer-events-auto flex items-center gap-3 rounded-2xl px-4 py-3.5"
-                >
+                <div key={item.labelKey} className="dc-panel pointer-events-auto flex items-center gap-3 rounded-2xl px-4 py-3.5">
                   <span
                     aria-hidden="true"
                     className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
                   >
-                    <IconGlyph src={item.icon} className="h-5 w-5" />
+                    <IconGlyph src={copy[item.iconKey]} className="h-5 w-5" />
                   </span>
-                  <span className="text-[13px] leading-tight font-bold text-[var(--dc-ink)]">
-                    {item.label}
-                  </span>
+                  <span className="text-[13px] leading-tight font-bold text-[var(--dc-ink)]">{copy[item.labelKey]}</span>
                 </div>
               ))}
             </div>
@@ -183,207 +197,176 @@ export function PlacementsLanding() {
       </section>
 
       {/* ── Honest disclaimer — load-bearing, not decorative ─────────────── */}
-      <section className="shell relative mt-8 sm:mt-10">
-        <div className="dc-panel rounded-[18px] px-5 py-5 sm:rounded-[20px] sm:px-6 sm:py-6">
-          <p className="text-[13.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">
-            {PLACEMENT_DISCLAIMER}
-          </p>
+      <section className="shell relative mt-8 pb-12 sm:mt-10 sm:pb-14 lg:pb-16">
+        <div className="kit kit-card px-5 py-5 sm:px-6 sm:py-6">
+          <p className="max-w-[110ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[14.5px]">{PLACEMENT_DISCLAIMER}</p>
         </div>
-      </section>
-
-      {/* ── Process ───────────────────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-process">
-        <p className="dc-eyebrow label-mono">How it works</p>
-        <h2
-          id="placements-process"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
-        >
-          Five steps from <span className="dc-accent-glow">classroom to offer</span>
-        </h2>
-
-        <ol className="mt-10 flex flex-col items-center gap-2 sm:mt-12 lg:flex-row lg:items-start lg:justify-center lg:gap-0">
-          {PROCESS_STEPS.map((item, index) => {
-            const isLast = index === PROCESS_STEPS.length - 1;
-            return (
-              <Fragment key={item.step}>
-                <li className="flex flex-col items-center text-center lg:w-[172px] lg:shrink-0">
-                  <span className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[var(--dc-accent-tint)]">
-                    <IconGlyph src={PROCESS_STEP_ICONS[index] ?? ICONS.completeTraining} className="h-7 w-7" />
-                    {/* Darkened a touch from the raw accent token — white text at 11px needs
-                        4.5:1 for WCAG AA and the plain accent red only clears ~4.48:1. */}
-                    <span className="absolute -top-1.5 -left-1.5 grid h-6 w-6 place-items-center rounded-full border-2 border-[var(--dc-canvas)] bg-[color-mix(in_srgb,var(--dc-accent)_88%,black)] font-display text-[11px] font-extrabold text-white">
-                      {item.step}
-                    </span>
-                  </span>
-                  <h3 className="mt-3 max-w-[9rem] font-display text-[14px] font-extrabold tracking-[-0.01em] text-[var(--dc-ink)] sm:text-[14.5px]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1.5 max-w-[10rem] text-[12px] leading-snug text-[var(--dc-ink-muted)] sm:text-[12.5px]">
-                    {item.description}
-                  </p>
-                </li>
-                {!isLast ? (
-                  <li aria-hidden="true" className="flex shrink-0 items-center justify-center py-1 lg:h-16 lg:w-10 lg:py-0">
-                    <ArrowRight
-                      className="h-5 w-5 rotate-90 text-[var(--dc-accent-soft)]/55 lg:hidden"
-                      strokeWidth={2}
-                    />
-                    <IconGlyph src={ICONS.processArrow} className="hidden h-6 w-6 lg:block" />
-                  </li>
-                ) : null}
-              </Fragment>
-            );
-          })}
-        </ol>
       </section>
 
       {/* ── Recruiters ────────────────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-recruiters">
-        <div className="text-center">
-          <p className="dc-eyebrow label-mono">Our recruiters</p>
-          <h2
-            id="placements-recruiters"
-            className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
-          >
-            Brands that are our <span className="dc-accent-glow">placement partners</span>
-          </h2>
-        </div>
-
-        <RecruiterMarquee items={RECRUITERS} />
-
-        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[13px]">
-          {RECRUITERS_DISCLAIMER}
-        </p>
-      </section>
-
-      {/* ── Student benefits ─────────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-benefits">
-        <div className="dc-panel relative overflow-hidden rounded-[24px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="dc-eyebrow label-mono">What you build</p>
-              <h2
-                id="placements-benefits"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
-              >
-                What placement preparation covers
-              </h2>
-            </div>
-            <p className="text-[13.5px] font-semibold text-[var(--dc-ink-muted)]">
-              More than training — a complete career readiness program.
-            </p>
-          </div>
-
-          <ul className="relative mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            {STUDENT_BENEFITS.map((benefit, index) => (
-              <li
-                key={benefit.title}
-                className="h-full rounded-[16px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] p-5"
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[var(--dc-accent-tint)]"
-                >
-                  <IconGlyph src={BENEFIT_ICON_SRCS[index] ?? ICONS.learnPractically} className="h-5 w-5" />
-                </span>
-                <p className="mt-3 text-[14px] font-extrabold text-[var(--dc-ink)]">{benefit.title}</p>
-                <p className="mt-1 text-[12.5px] leading-relaxed text-[var(--dc-ink-muted)]">
-                  {benefit.description}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ── Sample offer letters ──────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-offers">
-        <p className="dc-eyebrow label-mono">What an offer looks like</p>
-        <h2
-          id="placements-offers"
-          className="dc-heading-glow mt-3 font-display text-[28px] font-extrabold tracking-[-0.03em] text-[var(--dc-ink)] xs:text-[32px] sm:text-[36px]"
-        >
-          Sample <span className="dc-accent-glow">offer letters</span>
-        </h2>
-        <p className="mt-3 max-w-[42rem] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-          Illustrative samples across sectors and roles. They show the shape of a typical offer —
-          not a promise of any employer, role or package.
-        </p>
-
-        <div className="mt-6">
-          <OfferLetterSlider items={OFFER_LETTER_SAMPLES} label="Offer letter samples, carousel" />
-        </div>
-      </section>
+      <Section tone="plain" labelledBy="placements-recruiters">
+        <SectionHeader
+          id="placements-recruiters"
+          align="center"
+          eyebrow={copy['recruiters.eyebrow']}
+          title={
+            <>
+              {copy['recruiters.titleLead']} <span className="text-[var(--k-red)]">{copy['recruiters.titleAccent']}</span>
+            </>
+          }
+        />
+        <RecruiterMarquee items={RECRUITERS} copy={copy} />
+        <p className="mx-auto mt-6 max-w-[48rem] text-center text-[14px] leading-relaxed text-[var(--k-ink-3)]">{RECRUITERS_DISCLAIMER}</p>
+      </Section>
 
       {/* ── Testimonials ──────────────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-testimonials">
-        <div className="dc-panel overflow-hidden rounded-[24px] px-6 py-10 xs:rounded-[28px] sm:px-10 sm:py-12">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="dc-eyebrow label-mono">In their words</p>
-              <h2
-                id="placements-testimonials"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] xs:text-[28px] sm:text-[32px]"
-              >
-                What placed learners <span className="dc-accent-glow">say</span>
-              </h2>
-            </div>
-          </div>
+      <Section tone="tint" labelledBy="placements-testimonials">
+        <SectionHeader
+          id="placements-testimonials"
+          eyebrow={copy['testimonials.eyebrow']}
+          title={
+            <>
+              {copy['testimonials.titleLead']} <span className="text-[var(--k-red)]">{copy['testimonials.titleAccent']}</span>
+            </>
+          }
+        />
+        <PlacementsTestimonialSlider testimonials={TESTIMONIALS} copy={copy} />
+      </Section>
 
-          <div className="mt-8 sm:mt-10">
-            <PlacementsTestimonialSlider testimonials={TESTIMONIALS} />
+      {/* ── Process ───────────────────────────────────────────────────────── */}
+      <Section tone="plain" labelledBy="placements-process">
+        <SectionHeader
+          id="placements-process"
+          eyebrow={copy['process.eyebrow']}
+          title={
+            <>
+              {copy['process.titleLead']} <span className="text-[var(--k-red)]">{copy['process.titleAccent']}</span>
+            </>
+          }
+        />
+        <Reveal>
+          <StepPath
+            steps={PROCESS_STEPS.map((item, index) => ({
+              icon: <IconGlyph src={copy[PROCESS_STEP_ICONS[index] ?? ICON_KEYS.completeTraining]} className="h-8 w-8 lg:h-10 lg:w-10" />,
+              title: item.title,
+              label: String(item.step),
+              body: <p className="lg:max-w-[12rem]">{item.description}</p>,
+            }))}
+          />
+        </Reveal>
+      </Section>
+
+      {/* ── Student benefits ─────────────────────────────────────────────── */}
+      <Section tone="tint" labelledBy="placements-benefits">
+        <SectionHeader
+          id="placements-benefits"
+          eyebrow={copy['benefits.eyebrow']}
+          title={copy['benefits.title']}
+          lede={copy['benefits.lede']}
+        />
+        <Reveal>
+          <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div className="relative isolate min-h-[240px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[300px] lg:min-h-full">
+              <Image
+                src={copy['benefits.image']}
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="-z-10 object-cover object-center"
+              />
+            </div>
+            <ul aria-label={copy['benefits.railLabel']} className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+              {STUDENT_BENEFITS.map((benefit, index) => (
+                <li
+                  key={benefit.title}
+                  className="kit kit-card kit-card-lift flex items-start gap-3.5 p-4 sm:last:odd:col-span-2"
+                >
+                  <span className="kit-iconwell">
+                    <IconGlyph src={copy[BENEFIT_ICON_SRCS[index] ?? ICON_KEYS.learnPractically]} className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-[17px] leading-snug font-extrabold text-[var(--k-ink)]">{benefit.title}</h3>
+                    <p className="mt-1 text-[14px] leading-snug text-[var(--k-ink-2)]">{benefit.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </section>
+        </Reveal>
+      </Section>
+
+      {/* ── Sample offer letters ──────────────────────────────────────────── */}
+      <Section tone="plain" labelledBy="placements-offers">
+        <SectionHeader
+          id="placements-offers"
+          eyebrow={copy['offers.eyebrow']}
+          title={
+            <>
+              {copy['offers.titleLead']} <span className="text-[var(--k-red)]">{copy['offers.titleAccent']}</span>
+            </>
+          }
+          lede={copy['offers.lede']}
+        />
+        <OfferLetterSlider items={OFFER_LETTER_SAMPLES} label={copy['offers.carouselLabel']} copy={copy} />
+      </Section>
 
       {/* ── Close CTA ─────────────────────────────────────────────────────── */}
-      <section className="shell relative mt-16 sm:mt-20 lg:mt-24" aria-labelledby="placements-cta">
-        <div className="dc-panel overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[32px]">
-          <div className="flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-10 xl:px-12">
-            <div className="max-w-2xl">
-              <p className="dc-eyebrow label-mono">Next step</p>
+      <section aria-labelledby="placements-cta" className="kit bg-[var(--k-bg)]">
+        <div className="shell py-10 sm:py-14">
+          <div className="relative grid overflow-hidden rounded-[28px] bg-jk-600 text-white lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full border border-white/15"
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-12 -right-4 h-48 w-48 rounded-full border border-white/20"
+            />
+            <div className="relative order-2 p-6 sm:p-10 lg:order-1">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-white/80 uppercase">{copy['cta.eyebrow']}</p>
               <h2
                 id="placements-cta"
-                className="dc-heading-glow mt-3 font-display text-[24px] font-extrabold tracking-[-0.025em] text-[var(--dc-ink)] xs:text-[26px] sm:text-[30px]"
+                className="mt-2.5 font-display text-[28px] leading-[1.1] font-extrabold tracking-[-0.025em] !text-white sm:text-[36px]"
               >
-                Ask about a <span className="dc-accent-glow">specific centre</span>
+                {copy['cta.titleLead']} {copy['cta.titleAccent']}
               </h2>
-              <p className="mt-3 text-[14.5px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
-                A counsellor can tell you what your nearest centre has actually achieved — not a
-                sitewide average.
-              </p>
+              <p className="mt-3 text-[16px] leading-relaxed text-white/85">{copy['cta.body']}</p>
               <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
                 {CTA_FEATURES.map((feature) => (
-                  <li
-                    key={feature.label}
-                    className="flex items-center gap-2 text-[13px] font-semibold text-[var(--dc-ink-muted)]"
-                  >
-                    <IconGlyph src={feature.icon} className="h-4 w-4" />
-                    {feature.label}
+                  <li key={feature.labelKey} className="flex items-center gap-2 text-[14px] font-semibold text-white/90">
+                    <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+                    {copy[feature.labelKey]}
                   </li>
                 ))}
               </ul>
-            </div>
 
-            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-              <a
-                href={`mailto:${PLACEMENTS_CONTACT.email}`}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--dc-hairline-strong)] px-6 text-sm font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)]"
-              >
-                {PLACEMENTS_CONTACT.email}
-              </a>
-              <Link
-                href={'/enquiry' as Route}
-                className="group/cta dc-cta inline-flex min-h-12 items-center justify-center gap-3 rounded-full py-3.5 pr-3 pl-7 text-[15px] font-bold sm:text-[16px]"
-              >
-                Talk to a counsellor
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/cta:translate-x-0.5"
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={`mailto:${PLACEMENTS_CONTACT.email}`}
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-white/60 px-6 text-[14.5px] font-bold text-white transition-colors hover:bg-white/10"
                 >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
-              </Link>
+                  {PLACEMENTS_CONTACT.email}
+                </a>
+                <EnquiryLink
+                  source="placements-cta"
+                  className="group/cta inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-white py-3 pr-3 pl-7 text-[15px] font-bold text-jk-700 transition-colors hover:bg-white/90"
+                >
+                  {copy['cta.primary.label']}
+                  <span
+                    aria-hidden="true"
+                    className="grid h-9 w-9 place-items-center rounded-full bg-jk-600 text-white transition-transform duration-200 group-hover/cta:translate-x-0.5"
+                  >
+                    <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                  </span>
+                </EnquiryLink>
+              </div>
+            </div>
+            <div className="relative order-1 min-h-[180px] lg:order-2 lg:min-h-full">
+              <Image src={copy['centre.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-b from-transparent to-jk-600/60 lg:bg-gradient-to-r lg:from-jk-600 lg:to-transparent"
+              />
             </div>
           </div>
         </div>

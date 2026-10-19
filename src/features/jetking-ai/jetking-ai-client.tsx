@@ -43,7 +43,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { JetkingShield } from '@/components/brand/jetking-shield';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -198,7 +198,7 @@ function BrandLockup() {
         src="/brand/jetking-wordmark.png"
         alt="Jetking"
         draggable={false}
-        className="block h-6 max-w-full min-w-0 shrink select-none object-contain object-left drop-shadow-[0_0_12px_#ea1c2444] min-[360px]:h-7 sm:h-9"
+        className="block h-6 max-w-full min-w-0 shrink select-none object-contain object-left min-[360px]:h-7 sm:h-9"
       />
     </div>
   );
@@ -207,7 +207,7 @@ function BrandLockup() {
 function ReactorMark() {
   return (
     <div className="grid place-items-center py-1">
-      <span className="block drop-shadow-[0_0_18px_#ea1c2466]" style={{ height: 40 }}>
+      <span className="block" style={{ height: 40 }}>
         {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
         <img
           src="/brand/jetking-wordmark.png"
@@ -222,7 +222,7 @@ function ReactorMark() {
 
 function ChatAvatar() {
   return (
-    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white shadow-[0_1px_4px_#0000001f] ring-1 ring-black/5">
+    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white shadow-sm ring-1 ring-black/5">
       <span className="block h-[18px] w-[18px]">
         <JetkingShield id="jk-avatar" className="h-full w-full" />
       </span>
@@ -259,7 +259,7 @@ function ChipRow({ chips, onChip }: { chips: Chip[]; onChip: (chip: Chip) => voi
         <button
           key={chip.label}
           onClick={() => onChip(chip)}
-          className="rounded-full border border-brand-border bg-brand-soft px-3 py-1.5 text-[12.5px] font-medium text-brand transition-colors hover:border-brand hover:bg-brand hover:text-white"
+          className="min-h-11 rounded-full border border-brand-border bg-brand-soft px-3.5 py-2 text-[12.5px] font-medium text-brand-text transition-colors hover:border-brand hover:bg-brand hover:text-white"
         >
           {chip.label}
         </button>
@@ -272,7 +272,7 @@ function AssistantRow({ children }: { children: React.ReactNode }) {
   return (
     <div className="jk-msg-in flex items-start gap-2.5">
       <ChatAvatar />
-      <div className="w-full max-w-[min(88%,42rem)] min-w-0 rounded-2xl rounded-tl-md border border-line bg-surface px-4 py-3.5 shadow-[0_2px_10px_#10182810]">
+      <div className="w-full max-w-[min(88%,42rem)] min-w-0 rounded-2xl rounded-tl-md border border-line bg-surface px-4 py-3.5 shadow-sm">
         {children}
       </div>
     </div>
@@ -436,7 +436,7 @@ function ThinkingSteps() {
               {complete ? (
                 <Check className="size-3.5 shrink-0 text-emerald-500" />
               ) : (
-                <Loader2 className="size-3.5 shrink-0 animate-spin text-jk-500" />
+                <Loader2 className="size-3.5 shrink-0 animate-spin text-brand-text" />
               )}
               <span className={complete ? 'text-ink-subtle' : 'text-ink-muted'}>
                 {active ? typed : s}
@@ -457,14 +457,14 @@ function Thoughts({ steps }: { steps: string[] }) {
     <div className="jk-msg-in mt-3">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 text-[11px] font-medium text-ink-subtle transition-colors hover:text-ink-muted"
+        className="flex items-center gap-1.5 text-[12px] font-medium text-ink-subtle transition-colors hover:text-ink-muted"
       >
-        <BrainCircuit className="size-3.5 text-jk-500" />
+        <BrainCircuit className="size-3.5 text-brand-text" />
         {open ? 'Hide thinking' : 'Show thinking'}
         <ChevronDown className={cn('size-3 transition-transform', open && 'rotate-180')} />
       </button>
       {open ? (
-        <ol className="mt-2 flex list-decimal flex-col gap-1.5 border-l border-line pl-6 text-[12.5px] leading-relaxed text-ink-muted marker:text-[10px]">
+        <ol className="mt-2 flex list-decimal flex-col gap-1.5 border-l border-line pl-6 text-[12.5px] leading-relaxed text-ink-muted marker:text-[12px]">
           {steps.map((s, i) => (
             <li key={i} className="jk-step-in" style={{ animationDelay: `${i * 50}ms` }}>
               {s}
@@ -505,8 +505,8 @@ function AssistantTextBubble({
         onDone={() => setReady(true)}
       />
       {ready && msg.source ? (
-        <div className="jk-msg-in mt-3 flex items-center gap-1.5 border-t border-line pt-2.5 text-[11px] text-ink-subtle">
-          <Sparkles className="size-3 text-jk-500" />
+        <div className="jk-msg-in mt-3 flex items-center gap-1.5 border-t border-line pt-2.5 text-[12px] text-ink-subtle">
+          <Sparkles className="size-3 text-brand-text" />
           {msg.source === 'llm'
             ? 'Jetking AI · grounded in the knowledge base'
             : 'From the Jetking knowledge base'}
@@ -538,18 +538,18 @@ function FollowUps({
 }) {
   return (
     <div className="mt-3.5 border-t border-line pt-3">
-      <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-ink-subtle uppercase">
-        <Sparkles className="size-3 text-jk-500" /> Continue exploring
+      <p className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold tracking-wide text-ink-subtle uppercase">
+        <Sparkles className="size-3 text-brand-text" /> Continue exploring
       </p>
       <div className="flex flex-wrap gap-2">
         {items.map((f) => (
           <button
             key={f.label}
             onClick={() => onAsk(f.query)}
-            className="group flex items-center gap-1 rounded-full border border-line bg-canvas px-3 py-1.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:border-jk-300 hover:bg-brand-soft hover:text-brand"
+            className="group flex items-center gap-1 rounded-full border border-line bg-canvas px-3 py-1.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:border-jk-300 hover:bg-brand-soft hover:text-brand-text"
           >
             {f.label}
-            <ChevronRight className="-ml-0.5 size-3.5 text-jk-500 opacity-0 transition-all group-hover:ml-0 group-hover:opacity-100" />
+            <ChevronRight className="-ml-0.5 size-3.5 text-brand-text opacity-0 transition-all group-hover:ml-0 group-hover:opacity-100" />
           </button>
         ))}
       </div>
@@ -592,14 +592,14 @@ function LeftSidebar({
       <div className="flex flex-col items-center px-6 pt-6 pb-4">
         <ReactorMark />
         <p className="mt-3 font-display text-base font-extrabold tracking-wide">JETKING AI</p>
-        <p className="mt-0.5 text-[11.5px] text-ink-subtle">Your Learning Assistant</p>
+        <p className="mt-0.5 text-[12px] text-ink-subtle">Your Learning Assistant</p>
       </div>
 
       <nav className="flex scrollbar-subtle flex-1 flex-col gap-0.5 overflow-y-auto px-3 pb-3">
         {MENU_GROUPS.map((group) => (
           <div key={group.heading ?? 'main'} className="mb-1">
             {group.heading ? (
-              <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold tracking-[0.18em] text-ink-subtle uppercase">
+              <p className="px-3 pt-3 pb-1.5 text-[12px] font-semibold tracking-[0.18em] text-ink-subtle uppercase">
                 {group.heading}
               </p>
             ) : null}
@@ -613,7 +613,7 @@ function LeftSidebar({
                   className={cn(
                     'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors',
                     active
-                      ? 'bg-jk-500 text-white shadow-[0_6px_18px_#ea1c2440]'
+                      ? 'bg-brand text-white shadow-brand'
                       : 'text-ink-muted hover:bg-surface-hover hover:text-ink',
                   )}
                 >
@@ -627,7 +627,7 @@ function LeftSidebar({
 
         {account.user ? (
           <div className="mb-1">
-            <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold tracking-[0.18em] text-ink-subtle uppercase">
+            <p className="px-3 pt-3 pb-1.5 text-[12px] font-semibold tracking-[0.18em] text-ink-subtle uppercase">
               Recent chats
             </p>
             {account.history.length === 0 ? (
@@ -656,7 +656,7 @@ function LeftSidebar({
                       <button
                         onClick={() => account.onDeleteChat(chat.id)}
                         aria-label={`Delete chat: ${chat.title}`}
-                        className="absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-ink-subtle opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-surface-active hover:text-jk-500 focus-visible:opacity-100 max-md:opacity-100"
+                        className="absolute top-1/2 right-2 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-ink-subtle opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-surface-active hover:text-brand-text focus-visible:opacity-100 max-md:opacity-100"
                       >
                         <Trash2 className="size-[15px]" />
                       </button>
@@ -672,7 +672,7 @@ function LeftSidebar({
       <div className="flex flex-col gap-2 border-t border-line p-3">
         <button
           onClick={() => onIntent('enquire')}
-          className="flex items-center justify-center gap-2 rounded-xl bg-jk-500 px-3 py-2.5 text-[13px] font-bold tracking-wide text-white shadow-[0_6px_18px_#ea1c2444] transition-colors hover:bg-jk-600"
+          className="flex items-center justify-center gap-2 rounded-xl bg-brand px-3 py-2.5 text-[13px] font-bold tracking-wide text-white shadow-brand transition-colors hover:bg-brand-hover"
         >
           <Zap className="size-4 fill-current" /> Enquire Now
         </button>
@@ -682,7 +682,7 @@ function LeftSidebar({
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-xl border border-line px-3 py-2.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:border-[#25D366]/60 hover:text-[#25D366]"
+            className="flex items-center justify-center gap-2 rounded-xl border border-line px-3 py-2.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:border-whatsapp/60 hover:text-whatsapp"
           >
             <MessageCircle className="size-4" /> WhatsApp
           </a>
@@ -700,7 +700,7 @@ function LeftSidebar({
           <div className="flex items-center gap-3 rounded-xl border border-line px-3 py-2.5">
             <span
               aria-hidden="true"
-              className="grid size-8 shrink-0 place-items-center rounded-full bg-jk-500 text-[13px] font-bold text-white"
+              className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-[13px] font-bold text-white"
             >
               {account.user.name.trim().charAt(0).toUpperCase() || '?'}
             </span>
@@ -708,13 +708,13 @@ function LeftSidebar({
               <span className="block truncate text-[12.5px] font-semibold text-ink">
                 {account.user.name}
               </span>
-              <span className="block truncate text-[11px] text-ink-subtle">{account.user.email}</span>
+              <span className="block truncate text-[12px] text-ink-subtle">{account.user.email}</span>
             </span>
             <button
               onClick={account.onLogout}
               aria-label="Log out"
               title="Log out"
-              className="grid size-8 shrink-0 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-surface-hover hover:text-jk-500"
+              className="grid size-8 shrink-0 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-surface-hover hover:text-brand-text"
             >
               <LogOut className="size-4" />
             </button>
@@ -731,7 +731,7 @@ function LeftSidebar({
             </span>
             <span className="leading-tight">
               <span className="block text-[12.5px] font-semibold text-ink">Log in / Sign up</span>
-              <span className="block text-[11px] text-ink-subtle">Save your chats</span>
+              <span className="block text-[12px] text-ink-subtle">Save your chats</span>
             </span>
           </button>
         )}
@@ -742,7 +742,7 @@ function LeftSidebar({
 
 function InfoCard({ children }: { children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-line bg-surface p-5 shadow-[0_2px_12px_#10182810]">
+    <section className="rounded-2xl border border-line bg-surface p-5 shadow-sm">
       {children}
     </section>
   );
@@ -759,11 +759,11 @@ function CardTitle({
 }) {
   return (
     <div className="mb-3 flex items-center justify-between">
-      <h3 className="font-display text-[15px] font-extrabold tracking-wide text-jk-500">{title}</h3>
+      <h3 className="font-display text-[15px] font-extrabold tracking-wide text-brand-text">{title}</h3>
       {action ? (
         <button
           onClick={onAction}
-          className="text-[11px] font-bold tracking-wide text-jk-500 hover:underline"
+          className="text-[12px] font-bold tracking-wide text-brand-text hover:underline"
         >
           {action}
         </button>
@@ -783,11 +783,11 @@ function RightSidebar({ onIntent, onQuery }: Omit<SidebarProps, 'activeKey'>) {
             <li key={q.label}>
               <button
                 onClick={() => (q.intent ? onIntent(q.intent) : onQuery(q.query!, q.label))}
-                className="group flex w-full items-center gap-3 py-2.5 text-[13.5px] text-ink transition-colors hover:text-jk-500"
+                className="group flex w-full items-center gap-3 py-2.5 text-[13.5px] text-ink transition-colors hover:text-brand-text"
               >
-                <q.icon className="size-[18px] shrink-0 text-jk-500" />
+                <q.icon className="size-[18px] shrink-0 text-brand-text" />
                 <span className="font-medium">{q.label}</span>
-                <ChevronRight className="ml-auto size-4 text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-jk-500" />
+                <ChevronRight className="ml-auto size-4 text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-brand-text" />
               </button>
               {i < QUICK_LINKS.length - 1 ? <div className="border-t border-line" /> : null}
             </li>
@@ -816,11 +816,11 @@ function RightSidebar({ onIntent, onQuery }: Omit<SidebarProps, 'activeKey'>) {
                 onClick={() => onQuery(c.query, c.title)}
                 className="group flex w-full items-center gap-3 text-left"
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-[linear-gradient(135deg,#3d0a0a,#ea1c24)]">
+                <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-linear-135 from-jk-950 to-jk-600">
                   <GraduationCap className="size-5 text-white/90" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[13.5px] font-bold text-ink transition-colors group-hover:text-jk-500">
+                  <span className="block truncate text-[13.5px] font-bold text-ink transition-colors group-hover:text-brand-text">
                     {c.title}
                   </span>
                   <span className="block text-[12px] text-ink-subtle">Duration: {c.duration}</span>
@@ -831,16 +831,16 @@ function RightSidebar({ onIntent, onQuery }: Omit<SidebarProps, 'activeKey'>) {
         </ul>
       </InfoCard>
 
-      <section className="relative overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#ea1c24,#b30f16)] p-5 text-white shadow-[0_10px_30px_#ea1c2440]">
+      <section className="relative overflow-hidden rounded-2xl bg-linear-135 from-jk-600 to-jk-800 p-5 text-white shadow-brand">
         <h3 className="font-display text-[17px] leading-tight font-extrabold">
-          READY TO KICKSTART YOUR IT CAREER?
+          Ready to kickstart your IT career?
         </h3>
         <p className="mt-1.5 text-[13px] text-white/85">Join Jetking and build a better life.</p>
         <button
           onClick={() => onIntent('enquire')}
-          className="mt-4 rounded-md bg-black px-4 py-2.5 text-[12px] font-bold tracking-wide text-white transition-transform hover:-translate-y-0.5"
+          className="mt-4 min-h-10 rounded-full bg-black px-5 text-[13px] font-bold text-white transition-transform hover:-translate-y-0.5"
         >
-          ENQUIRE NOW
+          Enquire now
         </button>
       </section>
     </div>
@@ -851,7 +851,21 @@ function RightSidebar({ onIntent, onQuery }: Omit<SidebarProps, 'activeKey'>) {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-export function JetkingAiClient() {
+/** What an editor controls from the admin (Chatbot → Assistant settings). Absent = the built-in wording. */
+export interface ChatbotUiConfig {
+  welcomeMessage: string;
+  welcomeChips: { label: string; query: string }[];
+  inputPlaceholder: string;
+}
+
+export function JetkingAiClient({ config }: { config?: ChatbotUiConfig }) {
+  const welcome = useMemo(
+    () =>
+      config
+        ? { message: config.welcomeMessage, chips: config.welcomeChips.map((c) => ({ label: c.label, query: c.query })) as Chip[] }
+        : STARTERS.welcome,
+    [config],
+  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [draft, setDraft] = useState('');
@@ -876,11 +890,6 @@ export function JetkingAiClient() {
   const [authOpen, setAuthOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
-  /** Set once the visitor closes (or completes) the login prompt that greets them on arrival. */
-  const [promptDismissed, setPromptDismissed] = useState(false);
-  // Greet a guest with the login dialog once the intro loader is out of the way and we
-  // know they aren't already signed in. Derived rather than an effect, so there is no flash.
-  const autoPrompt = boot === 'gone' && account.ready && !account.user && !promptDismissed;
   /**
    * Id this chat is saved under. Created lazily on the first save, and replaced by
    * "new chat" / opening a saved one. The state copy only drives the sidebar highlight.
@@ -917,14 +926,27 @@ export function JetkingAiClient() {
       id: 'm0',
       role: 'assistant',
       kind: 'text',
-      text: STARTERS.welcome.message,
-      chips: STARTERS.welcome.chips,
+      text: welcome.message,
+      chips: welcome.chips,
     },
   ]);
 
   useEffect(() => {
-    const fade = setTimeout(() => setBoot('fade'), 2100);
-    const gone = setTimeout(() => setBoot('gone'), 2650);
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem('jk-ai-intro') === '1';
+    } catch {
+      // Storage can be blocked (private mode); the intro then simply plays every time.
+    }
+    const fade = setTimeout(() => setBoot('fade'), seen ? 0 : 750);
+    const gone = setTimeout(() => {
+      setBoot('gone');
+      try {
+        sessionStorage.setItem('jk-ai-intro', '1');
+      } catch {
+        // See above.
+      }
+    }, seen ? 0 : 1100);
     return () => {
       clearTimeout(fade);
       clearTimeout(gone);
@@ -976,8 +998,8 @@ export function JetkingAiClient() {
         id: nextId(),
         role: 'assistant',
         kind: 'text',
-        text: STARTERS.welcome.message,
-        chips: STARTERS.welcome.chips,
+        text: welcome.message,
+        chips: welcome.chips,
       },
     ]);
   }, []);
@@ -1106,7 +1128,7 @@ export function JetkingAiClient() {
       return;
     }
     awaitingCityRef.current = key === 'locations';
-    const starter = STARTERS[key];
+    const starter = key === 'welcome' ? welcome : STARTERS[key];
     setMessages((m) => [
       ...m,
       {
@@ -1138,6 +1160,21 @@ export function JetkingAiClient() {
     },
     [runLocal],
   );
+
+  // `/chatbot?q=…` asks that question on arrival; the param is then dropped so a
+  // reload doesn't ask it twice.
+  const initialAskedRef = useRef(false);
+  useEffect(() => {
+    if (initialAskedRef.current) return;
+    initialAskedRef.current = true;
+    const url = new URL(window.location.href);
+    const q = url.searchParams.get('q')?.trim().slice(0, 500);
+    if (!q) return;
+    url.searchParams.delete('q');
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    ask(q);
+  }, [ask]);
 
   /**
    * The "📌 Use my current location" chip — asks the browser's Geolocation
@@ -1249,7 +1286,7 @@ export function JetkingAiClient() {
       {boot !== 'gone' ? (
         <div
           className={cn(
-            'transition-opacity duration-500',
+            'transition-opacity duration-300',
             boot === 'fade' && 'pointer-events-none opacity-0',
           )}
         >
@@ -1259,7 +1296,7 @@ export function JetkingAiClient() {
 
       <header className="flex h-14 shrink-0 items-center gap-1 border-b border-line bg-surface px-1.5 min-[360px]:h-[62px] min-[360px]:gap-2 min-[360px]:px-2.5 sm:h-[68px] sm:gap-4 sm:px-6">
         <button
-          className="grid size-8 shrink-0 place-items-center rounded-lg text-ink hover:bg-surface-hover min-[360px]:size-9"
+          className="grid size-10 shrink-0 place-items-center rounded-lg text-ink hover:bg-surface-hover min-[360px]:size-11"
           onClick={() => {
             setInfoOpen(false);
             setDrawerOpen(true);
@@ -1272,7 +1309,7 @@ export function JetkingAiClient() {
         <div className="ml-auto flex shrink-0 items-center gap-1 min-[360px]:gap-1.5 sm:gap-3">
           <Link
             href="/"
-            className="inline-flex size-8 shrink-0 items-center justify-center gap-2 rounded-full border border-line text-ink transition-colors hover:bg-surface-hover min-[360px]:size-9 sm:h-10 sm:w-auto sm:px-3"
+            className="inline-flex size-10 shrink-0 items-center justify-center gap-2 rounded-full border border-line text-ink transition-colors hover:bg-surface-hover min-[360px]:size-11 sm:w-auto sm:px-3"
             aria-label="Switch to Jetking website"
           >
             <Globe2 className="size-[15px] min-[360px]:size-4" />
@@ -1280,9 +1317,9 @@ export function JetkingAiClient() {
           </Link>
           <button
             onClick={() => onIntent('enquire')}
-            className="shrink-0 rounded-md bg-jk-500 px-1.5 py-2 text-[8px] font-bold tracking-normal whitespace-nowrap text-white transition-colors hover:bg-jk-600 min-[360px]:px-2 min-[360px]:text-[9px] sm:px-5 sm:py-2.5 sm:text-[12px] sm:tracking-wide"
+            className="min-h-10 shrink-0 rounded-full bg-jk-600 px-3 min-[360px]:min-h-11 text-[12px] font-bold whitespace-nowrap text-white transition-colors hover:bg-jk-700 sm:px-5 sm:text-[13px]"
           >
-            ENQUIRE NOW
+            Enquire now
           </button>
           <button
             onClick={() => {
@@ -1293,12 +1330,12 @@ export function JetkingAiClient() {
                 setAuthOpen(true);
               }
             }}
-            className="grid size-8 shrink-0 place-items-center rounded-full border border-line text-ink hover:bg-surface-hover min-[360px]:size-9 sm:size-10"
+            className="grid size-10 shrink-0 place-items-center rounded-full border border-line text-ink hover:bg-surface-hover min-[360px]:size-11"
             aria-label={account.user ? `Account: ${account.user.name}` : 'Log in or sign up'}
             title={account.user ? account.user.name : 'Log in or sign up'}
           >
             {account.user ? (
-              <span className="text-[13px] font-bold text-jk-500 sm:text-[14px]">
+              <span className="text-[13px] font-bold text-brand-text sm:text-[14px]">
                 {account.user.name.trim().charAt(0).toUpperCase() || '?'}
               </span>
             ) : (
@@ -1316,7 +1353,7 @@ export function JetkingAiClient() {
               onClick={() => setDrawerOpen(false)}
               aria-hidden
             />
-            <div className="absolute inset-y-0 left-0 flex w-[min(100%,300px)] [animation:jk-slide_0.24s_var(--ease-out-soft)_both] flex-col shadow-[8px_0_32px_#00000055]">
+            <div className="absolute inset-y-0 left-0 flex w-[min(100%,300px)] [animation:jk-slide_0.24s_var(--ease-out-soft)_both] flex-col shadow-lg shadow-black/35">
               <button
                 className="absolute top-4 right-3 z-10 grid size-8 place-items-center rounded-lg text-ink-muted hover:bg-surface-hover"
                 onClick={() => setDrawerOpen(false)}
@@ -1353,7 +1390,7 @@ export function JetkingAiClient() {
               onClick={() => setInfoOpen(false)}
               aria-hidden
             />
-            <div className="absolute inset-y-0 right-0 flex w-[min(100%,360px)] [animation:jk-slide-right_0.24s_var(--ease-out-soft)_both] flex-col border-line bg-surface-sunken shadow-[-8px_0_32px_#10182822]">
+            <div className="absolute inset-y-0 right-0 flex w-[min(100%,360px)] [animation:jk-slide-right_0.24s_var(--ease-out-soft)_both] flex-col border-line bg-surface-sunken shadow-drawer">
               <div className="flex shrink-0 items-center justify-between border-b border-line px-5 py-4">
                 <h2 className="font-display text-[15px] font-extrabold tracking-wide text-ink">
                   Quick info
@@ -1373,11 +1410,12 @@ export function JetkingAiClient() {
           </div>
         ) : null}
 
-        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        {/* A div, not <main>: the root layout's <main id="main"> already wraps this page. */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <div className="flex items-center gap-4 border-b border-line px-5 py-4 sm:px-8">
             <div className="min-w-0">
               <h1 className="font-display text-[19px] font-extrabold tracking-tight text-ink sm:text-[21px]">
-                CHAT WITH JETKING AI
+                Chat with Jetking AI
               </h1>
               <p className="mt-0.5 text-[13px] text-ink-subtle">
                 {account.user
@@ -1392,7 +1430,7 @@ export function JetkingAiClient() {
                   setDrawerOpen(false);
                   setInfoOpen(true);
                 }}
-                className="grid size-10 shrink-0 place-items-center rounded-full border border-line text-ink-muted transition-colors hover:border-jk-300 hover:bg-brand-soft hover:text-jk-500"
+                className="grid size-11 shrink-0 place-items-center rounded-full border border-line text-ink-muted transition-colors hover:border-jk-300 hover:bg-brand-soft hover:text-brand-text"
                 aria-label="Open quick info"
                 title="Quick info"
               >
@@ -1407,9 +1445,9 @@ export function JetkingAiClient() {
               if (msg.role === 'user') {
                 return (
                   <div key={msg.id} className="jk-msg-in flex items-end justify-end gap-2.5">
-                    <div className="max-w-[80%] rounded-2xl rounded-br-md bg-jk-500 px-4 py-3 text-white shadow-[0_4px_14px_#ea1c2433]">
+                    <div className="max-w-[80%] rounded-2xl rounded-br-md bg-brand px-4 py-3 text-white shadow-brand">
                       <p className="text-[14px] leading-relaxed">{msg.text}</p>
-                      <div className="mt-1 flex items-center justify-end gap-1 text-[11px] text-white/75">
+                      <div className="mt-1 flex items-center justify-end gap-1 text-[12px] text-white/75">
                         {'11:30 AM'} <CheckCheck className="size-3.5" />
                       </div>
                     </div>
@@ -1447,7 +1485,7 @@ export function JetkingAiClient() {
                 <button
                   type="button"
                   onClick={() => setAuthOpen(true)}
-                  className="shrink-0 rounded-lg bg-jk-500 px-3 py-1.5 text-[12px] font-bold text-white transition-colors hover:bg-jk-600"
+                  className="min-h-11 shrink-0 rounded-lg bg-brand px-3.5 text-[12px] font-bold text-white transition-colors hover:bg-brand-hover"
                 >
                   Log in
                 </button>
@@ -1455,7 +1493,7 @@ export function JetkingAiClient() {
                   type="button"
                   onClick={() => setNudgeDismissed(true)}
                   aria-label="Dismiss"
-                  className="grid size-7 shrink-0 place-items-center rounded-lg text-ink-subtle transition-colors hover:bg-surface-hover hover:text-ink"
+                  className="grid size-11 shrink-0 place-items-center rounded-lg text-ink-subtle transition-colors hover:bg-surface-hover hover:text-ink"
                 >
                   <X className="size-4" />
                 </button>
@@ -1463,19 +1501,20 @@ export function JetkingAiClient() {
             ) : null}
             <form
               onSubmit={onSubmit}
-              className="flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-2 shadow-[0_2px_10px_#10182814] focus-within:border-jk-300 focus-within:shadow-[0_2px_16px_#ea1c2422] min-[360px]:gap-2.5 min-[360px]:px-4 min-[360px]:py-2.5 sm:gap-3"
+              className="flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-2 shadow-sm focus-within:border-jk-300 focus-within:shadow-md focus-within:shadow-jk-500/15 min-[360px]:gap-2.5 min-[360px]:px-4 min-[360px]:py-2.5 sm:gap-3"
             >
               <input
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="Ask Jetking AI… English or Hinglish"
-                className="min-w-0 flex-1 bg-transparent text-[12px] text-ink outline-none placeholder:text-[10px] placeholder:text-ink-subtle min-[360px]:text-[13px] min-[360px]:placeholder:text-[11px] sm:text-[14.5px] sm:placeholder:text-[14.5px]"
+                aria-label="Ask Jetking AI"
+                placeholder={config?.inputPlaceholder || "Ask Jetking AI… English or Hinglish"}
+                className="h-10 min-w-0 flex-1 bg-transparent text-[12px] text-ink min-[360px]:h-11 outline-none placeholder:text-[12px] placeholder:text-ink-subtle min-[360px]:text-[13px] min-[360px]:placeholder:text-[12px] sm:text-[14.5px] sm:placeholder:text-[14.5px]"
                 disabled={busy}
               />
               <button
                 type="submit"
                 disabled={busy || !draft.trim()}
-                className="grid size-9 shrink-0 place-items-center rounded-full bg-jk-500 text-white shadow-[0_4px_14px_#ea1c2444] transition-colors hover:bg-jk-600 disabled:opacity-45 min-[360px]:size-10"
+                className="grid size-10 shrink-0 place-items-center rounded-full bg-brand text-white shadow-brand transition-colors hover:bg-brand-hover disabled:opacity-45 min-[360px]:size-11"
                 aria-label={busy ? 'Thinking' : 'Send'}
               >
                 {busy ? (
@@ -1485,23 +1524,20 @@ export function JetkingAiClient() {
                 )}
               </button>
             </form>
-            <div className="mt-2.5 flex items-start justify-center gap-1.5 px-1 text-center text-[11px] leading-4 text-ink-subtle sm:items-center sm:text-[12px]">
+            <div className="mt-2.5 flex items-start justify-center gap-1.5 px-1 text-center text-[13.5px] leading-5 text-ink-subtle sm:items-center sm:text-[13.5px]">
               <Bot className="mt-px size-3.5 shrink-0 sm:mt-0" />
               <p className="max-w-full min-w-0 text-balance">
-                Powered by <span className="font-semibold text-jk-500">Jetking AI</span> · answers
+                Powered by <span className="font-semibold text-brand-text">Jetking AI</span> · answers
                 from the Jetking knowledge base
               </p>
             </div>
           </div>
-        </main>
+        </div>
       </div>
 
       <AuthDialog
-        open={authOpen || autoPrompt}
-        onOpenChange={(open) => {
-          setAuthOpen(open);
-          if (!open) setPromptDismissed(true);
-        }}
+        open={authOpen}
+        onOpenChange={setAuthOpen}
         account={account}
       />
       <ConfirmDialog

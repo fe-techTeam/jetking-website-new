@@ -1,14 +1,20 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { Route } from 'next';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { usePersona } from '@/persona/PersonaProvider';
 import { linkVisitorIdentity } from '@/persona/visitor';
-import { clearHandoff, readHandoff, type GuideHandoffPayload } from '@/guide/handoff';
 import { track } from '@/lib/analytics';
 import { siteConfig } from '@/lib/site';
 import { useAccount } from '@/components/account/AccountProvider';
 import { Button, Field, Input, Notice, Select, Textarea } from '@/components/ui';
+import { QUALIFICATIONS } from '@/lib/enquiry-fields';
+import { useEnquiryLocation, type LocatedCentre } from '@/components/useEnquiryLocation';
+import { fill } from '@/lib/content/copy/define';
+import type { enquiryCopy } from '@/lib/content/copy/pages/enquiry';
 
 /**
  * Enquiry form.
@@ -17,8 +23,7 @@ import { Button, Field, Input, Notice, Select, Textarea } from '@/components/ui'
  * arrived and what it was reading — that context is the practical payoff of the
  * whole persona engine, and it is what "the AI warms the lead" means in the proposal.
  *
- * When the visitor arrives from the Guide handoff, conversation summary is prefilled
- * into the message and sent as `guideSummary` for CRM routing.
+ * `/enquiry?course=…&city=…` preselects those fields.
  */
 
 interface Option {
@@ -44,85 +49,23 @@ type Status = 'idle' | 'submitting' | 'done' | 'error';
  * the 3:1 WCAG 1.4.11 needs for a field boundary.
  */
 const fieldClass =
-  'stu-field bg-[var(--stu-card)] text-[var(--stu-ink)] placeholder:text-[var(--stu-ink-muted)]';
-
-const INTRO: Record<string, string> = {
-  student: 'Tell us where you are in your studies and we will point you to the right track.',
-  professional: 'Tell us your current role and what you want to move into.',
-  parent: 'Tell us a little about your child’s situation and what you would like to know.',
-  franchise: 'Tell us which territory you are interested in and we will connect you with the franchise team.',
-  unknown: 'Tell us what you are looking for.',
-};
-
-/**
- * Deliberately never reads `readHandoff()` (localStorage) — this must return
- * the same thing on the server and on the client's first render, or React
- * flags a hydration mismatch (confirmed live: it did, every time a stored
- * Guide handoff existed). The localStorage-derived half is applied
- * separately, after mount — see `useGuidePrefill` below.
- */
-function resolveGuidePrefill(searchParams: URLSearchParams): {
-  course: string;
-  city: string;
-  message: string;
-} {
-  if (searchParams.get('from') === 'guide') {
-    return {
-      course: searchParams.get('course') ?? '',
-      city: searchParams.get('city') ?? '',
-      message: '',
-    };
-  }
-
-  return { course: '', city: '', message: '' };
-}
-
-/**
- * Layers the sessionStorage-only Guide handoff on top of the SSR-safe,
- * URL-derived prefill from `resolveGuidePrefill` — `handoff` starts `null`
- * (matching the server) and is populated in an effect, which only ever runs
- * client-side, after hydration has already reconciled against the server's
- * markup. A genuine external-source sync, not derived state: sessionStorage
- * does not exist during SSR, so reading it in a lazy initialiser would
- * reintroduce the same hydration mismatch this exists to avoid.
- */
-function useGuidePrefill(searchParams: URLSearchParams) {
-  const base = useMemo(() => resolveGuidePrefill(searchParams), [searchParams]);
-  const [handoff, setHandoff] = useState<GuideHandoffPayload | null>(null);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHandoff(readHandoff());
-  }, []);
-
-  return useMemo(() => {
-    if (!handoff) return { handoff: null, ...base };
-    return {
-      handoff,
-      course: handoff.courseSlug ?? '',
-      city: handoff.citySlug ?? '',
-      message: `I was chatting with the Jetking Guide and would like a counsellor to follow up.\n\n${
-        handoff.lastQuestion ? `Last question: ${handoff.lastQuestion}` : handoff.summary.slice(0, 500)
-      }`,
-    };
-  }, [handoff, base]);
-}
-
-interface CentreOption {
-  slug: string;
-  name: string;
-  citySlug: string;
-}
+  'stu-field bg-[var(--dc-card)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)]';
 
 export function EnquiryForm({
   courses,
-  cities,
   centres,
+  copy,
 }: {
   courses: Option[];
-  cities: Option[];
-  centres: CentreOption[];
+  centres: LocatedCentre[];
+  copy: typeof enquiryCopy.defaults;
 }) {
+  const INTRO: Record<string, string> = {
+    student: copy['form.intro.student'],
+    professional: copy['form.intro.professional'],
+    parent: copy['form.intro.parent'],
+    unknown: copy['form.intro.unknown'],
+  };
   const { classification, visitor, profile, record } = usePersona();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>('idle');
@@ -131,24 +74,20 @@ export function EnquiryForm({
   const successRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
-  const prefill = useGuidePrefill(searchParams);
+  const prefill = useMemo(
+    () => ({ course: searchParams.get('course') ?? '', city: searchParams.get('city') ?? '' }),
+    [searchParams],
+  );
   const account = useAccount();
   const accountUser = account.user;
 
-  // City is controlled so the centre list can follow it. `null` means "the visitor
-  // has not touched it", which lets the Guide/URL prefill (resolved after mount) show
-  // through without an effect; once they pick a city their choice wins.
-  // Defaults, in order: the Guide/URL handoff, then the signed-in account's saved location.
-  const [cityChoice, setCityChoice] = useState<string | null>(null);
-  const [centreChoice, setCentreChoice] = useState<string | null>(null);
-  const city = cityChoice ?? (prefill.city || accountUser?.city || '');
-  const cityCentres = useMemo(
-    () => (city ? centres.filter((c) => c.citySlug === city) : []),
-    [centres, city],
-  );
-  // A centre only stays selected while it belongs to the chosen city.
-  const wantedCentre = centreChoice ?? accountUser?.centre ?? '';
-  const centre = cityCentres.some((c) => c.slug === wantedCentre) ? wantedCentre : '';
+  // State → City → Centre. Defaults, in order: the URL prefill, then the signed-in
+  // account's saved location; once the visitor picks, their choice wins.
+  const loc = useEnquiryLocation(centres, {
+    state: accountUser?.state,
+    city: prefill.city || accountUser?.city,
+    centre: accountUser?.centre,
+  });
 
   // Move the reading position onto whichever outcome panel just appeared.
   useEffect(() => {
@@ -159,12 +98,9 @@ export function EnquiryForm({
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
-    track('enquiry_started', {
-      persona: classification.persona,
-      from_guide: Boolean(prefill.handoff) || searchParams.get('from') === 'guide',
-    });
+    track('enquiry_started', { persona: classification.persona });
     record({ kind: 'form', formId: 'enquiry', status: 'started' });
-  }, [classification.persona, record, prefill.handoff, searchParams]);
+  }, [classification.persona, record]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -178,19 +114,19 @@ export function EnquiryForm({
       const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
           email: form.get('email') || undefined,
-          city: form.get('city') || undefined,
-          centre: form.get('centre') || undefined,
+          state: loc.state || undefined,
+          city: loc.city || undefined,
+          centre: loc.centre || undefined,
+          qualification: form.get('qualification') || undefined,
           courseSlug: form.get('courseSlug') || undefined,
           message: form.get('message') || undefined,
           persona: classification.persona,
           confidence: classification.confidence,
-          source: prefill.handoff ? 'guide-handoff' : window.location.pathname,
-          guideSummary: prefill.handoff?.summary,
-          guideReason: prefill.handoff?.reason,
+          source: window.location.pathname,
           visitorId: visitor.id || undefined,
           // Rich profile context for CRM / counsellor routing.
           journeyStage: profile.stage,
@@ -202,7 +138,7 @@ export function EnquiryForm({
 
       if (!response.ok || !data.ok) {
         setStatus('error');
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setError(data.error ?? copy['form.error']);
         return;
       }
 
@@ -222,13 +158,11 @@ export function EnquiryForm({
       }
 
       setStatus('done');
-      clearHandoff();
       track('enquiry_submitted', {
         persona: classification.persona,
         confidence: classification.confidence,
         has_course: Boolean(form.get('courseSlug')),
         has_centre: Boolean(form.get('centre')),
-        from_guide: Boolean(prefill.handoff),
         visitor_id: visitor.id,
         stage: profile.stage,
         intent: profile.intent ?? '',
@@ -236,7 +170,7 @@ export function EnquiryForm({
       record({ kind: 'form', formId: 'enquiry', status: 'completed' });
     } catch {
       setStatus('error');
-      setError('We could not send that. Please check your connection and try again.');
+      setError(copy['form.errorNetwork']);
     }
   }
 
@@ -250,10 +184,9 @@ export function EnquiryForm({
        * announces it (WCAG 3.3.1, 4.1.3).
        */
       <div ref={successRef} tabIndex={-1} role="status" className="focus:outline-none">
-        <Notice tone="success" title="Thank you — that has reached us.">
+        <Notice tone="success" title={copy['form.thanks.title']}>
           <p>
-            A counsellor from your nearest centre will be in touch, usually within one
-            working day.
+            {copy['form.thanks.body']}
           </p>
           {siteConfig.whatsappNumber ? (
             <a
@@ -263,9 +196,9 @@ export function EnquiryForm({
               onClick={() => track('whatsapp_clicked', { persona: classification.persona })}
               className="link-underline mt-4 inline-flex items-center gap-1.5 font-semibold text-[var(--accent-ink)]"
             >
-              Prefer WhatsApp? Message us now
+              {copy['form.thanks.whatsapp']}
               <span aria-hidden="true">→</span>
-              <span className="sr-only">(opens in a new tab)</span>
+              <span className="sr-only">{copy['form.thanks.newTab']}</span>
             </a>
           ) : null}
         </Notice>
@@ -282,38 +215,43 @@ export function EnquiryForm({
      * so letting the browser do it restores per-field, per-locale, assistive-tech
      * -aware errors for free (WCAG 3.3.1, 3.3.3).
      */
-    <form onSubmit={handleSubmit} className="space-y-7">
-      <p className="text-base text-[var(--stu-ink-secondary)]">
-        {INTRO[classification.persona] ?? INTRO.unknown}
+    <form onSubmit={handleSubmit} className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:items-start">
+<BotTrap />
+      <p className="max-w-[70ch] text-base text-[var(--dc-ink-secondary)] sm:col-span-2">
+        {classification.persona === 'franchise' ? (
+          <>
+            {copy['form.intro.franchise.lead']}{' '}
+            <Link href={copy['form.intro.franchise.href'] as Route} className="font-semibold text-[var(--accent-ink)] underline underline-offset-4">
+              {copy['form.intro.franchise.link']}
+            </Link>
+            .
+          </>
+        ) : (
+          INTRO.unknown
+        )}
       </p>
 
       {account.ready ? (
         accountUser ? (
-          <p className="text-sm text-[var(--stu-ink-muted)]">
-            Signed in as {accountUser.name} — your details are filled in below.
+          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+            {fill(copy['form.signedIn'], { name: accountUser.name })}
           </p>
         ) : (
-          <p className="text-sm text-[var(--stu-ink-muted)]">
-            Have a Jetking account?{' '}
+          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+            {copy['form.login.lead']}{' '}
             <button
               type="button"
               onClick={() => account.openAuth('login')}
-              className="cursor-pointer font-semibold text-[var(--accent-ink)] underline underline-offset-2"
+              className="tap cursor-pointer font-semibold text-[var(--accent-ink)] underline underline-offset-2"
             >
-              Log in
+              {copy['form.login.button']}
             </button>{' '}
-            to fill in your details.
+            {copy['form.login.trail']}
           </p>
         )
       ) : null}
 
-      {prefill.handoff ? (
-        <Notice tone="accent">
-          Your Guide conversation will be shared with the counsellor so they have context.
-        </Notice>
-      ) : null}
-
-      <Field label="Your name" htmlFor="name" required>
+      <Field label={copy['form.name.label']} htmlFor="name" required>
         <Input
           id="name"
           name="name"
@@ -328,10 +266,9 @@ export function EnquiryForm({
       </Field>
 
       <Field
-        label="Phone number"
+        label={copy['form.phone.label']}
         htmlFor="phone"
         required
-        hint="A counsellor will call or message you on this."
       >
         <Input
           id="phone"
@@ -342,12 +279,13 @@ export function EnquiryForm({
           required
           inputMode="tel"
           autoComplete="tel"
+          placeholder={copy['form.phone.hint']}
           pattern="[\d\s+\(\)\-]{10,20}"
           className={fieldClass}
         />
       </Field>
 
-      <Field label="Email" htmlFor="email" hint="Optional.">
+      <Field label={copy['form.email.label']} htmlFor="email">
         <Input
           id="email"
           name="email"
@@ -356,55 +294,19 @@ export function EnquiryForm({
           type="email"
           maxLength={200}
           autoComplete="email"
+          placeholder={copy['form.email.hint']}
           className={fieldClass}
         />
       </Field>
 
-      <div className="grid gap-7 sm:grid-cols-2">
-        <Field label="Nearest city" htmlFor="city">
-          <Select
-            id="city"
-            name="city"
-            value={city}
-            onChange={(event) => setCityChoice(event.target.value)}
-            className={fieldClass}
-          >
-            <option value="">Select a city</option>
-            {cities.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </Field>
-
-        <Field label="Preferred centre" htmlFor="centre">
-          <Select
-            id="centre"
-            name="centre"
-            value={centre}
-            onChange={(event) => setCentreChoice(event.target.value)}
-            disabled={cityCentres.length === 0}
-            className={fieldClass}
-          >
-            <option value="">{cityCentres.length > 0 ? 'No preference' : 'Select a city first'}</option>
-            {cityCentres.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </Field>
-      </div>
-
-      <Field label="Programme of interest" htmlFor="courseSlug">
+      <Field label={copy['form.course.label']} htmlFor="courseSlug">
         <Select
           id="courseSlug"
           name="courseSlug"
           defaultValue={prefill.course}
           className={fieldClass}
         >
-          <option value="">Not sure yet</option>
+          <option value="">{copy['form.course.none']}</option>
           {courses.map((course) => (
             <option key={course.slug} value={course.slug}>
               {course.title}
@@ -413,24 +315,101 @@ export function EnquiryForm({
         </Select>
       </Field>
 
-      <Field label="Anything you would like to ask?" htmlFor="message">
-        <Textarea
-          id="message"
-          name="message"
-          rows={4}
-          maxLength={2000}
-          defaultValue={prefill.message}
-          key={prefill.message ? 'with-guide' : 'blank'}
-          className={fieldClass}
-        />
-      </Field>
+      <>
+        <Field label={copy['form.state.label']} htmlFor="state" required>
+          <Select
+            id="state"
+            name="state"
+            value={loc.state}
+            required
+            onChange={(event) => loc.onState(event.target.value)}
+            className={fieldClass}
+          >
+            <option value="">{copy['form.state.placeholder']}</option>
+            {loc.states.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </Select>
+        </Field>
+
+        <Field label={copy['form.city.label']} htmlFor="city" required>
+          <Select
+            id="city"
+            name="city"
+            value={loc.city}
+            required
+            onChange={(event) => loc.onCity(event.target.value)}
+            disabled={loc.cities.length === 0}
+            className={fieldClass}
+          >
+            <option value="">{loc.cities.length > 0 ? copy['form.city.placeholder'] : copy['form.city.stateFirst']}</option>
+            {loc.cities.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </>
+
+      <>
+        <Field label={copy['form.centre.label']} htmlFor="centre" required>
+          <Select
+            id="centre"
+            name="centre"
+            value={loc.centre}
+            required
+            onChange={(event) => loc.onCentre(event.target.value)}
+            disabled={loc.centres.length === 0}
+            className={fieldClass}
+          >
+            <option value="">{loc.centres.length > 0 ? copy['form.centre.placeholder'] : copy['form.centre.cityFirst']}</option>
+            {loc.centres.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+
+        <Field label={copy['form.qualification.label']} htmlFor="qualification" required>
+          <Select
+            id="qualification"
+            name="qualification"
+            defaultValue=""
+            required
+            className={fieldClass}
+          >
+            <option value="">{copy['form.qualification.placeholder']}</option>
+            {QUALIFICATIONS.map((q) => (
+              <option key={q.value} value={q.value}>
+                {q.label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </>
+
+      <div className="sm:col-span-2">
+        <Field label={copy['form.message.label']} htmlFor="message">
+          <Textarea
+            id="message"
+            name="message"
+            rows={3}
+            maxLength={2000}
+            className={fieldClass}
+          />
+        </Field>
+      </div>
 
       {error ? (
         <p
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-[var(--radius-input)] border border-jk-200 bg-jk-50 px-4 py-3 text-sm font-medium text-jk-700 focus:outline-none"
+          className="rounded-[var(--radius-input)] border border-jk-200 bg-jk-50 px-4 py-3 text-sm font-medium text-jk-700 focus:outline-none sm:col-span-2"
         >
           {error}
         </p>
@@ -440,13 +419,13 @@ export function EnquiryForm({
         type="submit"
         size="lg"
         disabled={status === 'submitting'}
-        className="w-full bg-[var(--stu-accent)] hover:bg-jk-700"
+        className="w-full bg-[var(--dc-accent)] hover:bg-jk-700 sm:col-span-2"
       >
-        {status === 'submitting' ? 'Sending…' : 'Send enquiry'}
+        {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
       </Button>
 
-      <p className="text-sm text-[var(--stu-ink-muted)]">
-        We use your details only to respond to this enquiry.
+      <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+        {copy['form.privacy']}
       </p>
     </form>
   );

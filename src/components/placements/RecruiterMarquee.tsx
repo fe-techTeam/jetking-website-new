@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
+import { placementsCopy } from '@/lib/content/copy/pages/placements';
 
 export interface Recruiter {
   name: string;
@@ -17,7 +18,17 @@ export interface Recruiter {
  * button, since there is nothing to pause. The second copy of the list is decoration for the
  * seamless loop, so it is `aria-hidden` and screen readers hear each recruiter once.
  */
-export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
+export function RecruiterMarquee({
+  items,
+  copy = placementsCopy.defaults,
+}: {
+  items: readonly Recruiter[];
+  /** The Pause / Play labels — the Placements page passes its loaded copy; other pages get the shipped wording. */
+  copy?: Pick<
+    typeof placementsCopy.defaults,
+    'recruiters.pauseLabel' | 'recruiters.resumeLabel' | 'recruiters.pause' | 'recruiters.play'
+  >;
+}) {
   const [paused, setPaused] = useState(false);
 
   return (
@@ -34,15 +45,15 @@ export function RecruiterMarquee({ items }: { items: readonly Recruiter[] }) {
           type="button"
           onClick={() => setPaused((p) => !p)}
           aria-pressed={paused}
-          aria-label={paused ? 'Resume scrolling recruiter logos' : 'Pause scrolling recruiter logos'}
-          className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
+          aria-label={paused ? copy['recruiters.resumeLabel'] : copy['recruiters.pauseLabel']}
+          className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 text-[12.5px] font-bold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)]"
         >
           {paused ? (
             <Play className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
           ) : (
             <Pause className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />
           )}
-          {paused ? 'Play' : 'Pause'}
+          {paused ? copy['recruiters.play'] : copy['recruiters.pause']}
         </button>
       </div>
     </div>
@@ -60,7 +71,7 @@ function RecruiterList({ items, clone = false }: { items: readonly Recruiter[]; 
         <li
           key={company.name}
           // Logos sit on white tiles in both themes: they are raster artwork drawn for a white ground.
-          className="flex h-24 w-44 shrink-0 items-center justify-center rounded-[16px] border border-[var(--dc-hairline)] bg-white px-5 py-4 shadow-[0_4px_14px_rgb(60_50_90/0.06)] sm:h-28 sm:w-52"
+          className="flex h-24 w-44 shrink-0 items-center justify-center rounded-[16px] border border-[var(--dc-hairline)] bg-white px-5 py-4 shadow-md sm:h-28 sm:w-52"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- small static logos; nothing for the image optimiser to do */}
           <img

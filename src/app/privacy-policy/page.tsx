@@ -1,32 +1,42 @@
 import type { Metadata } from 'next';
 import { LegalDocument } from '@/components/legal/LegalDocument';
 import { JsonLd, type Crumb } from '@/components/ui';
-import { privacyPolicy } from '@/lib/legal';
+import { notFound } from 'next/navigation';
+import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { legalCopy } from '@/lib/content/copy/pages/legal';
+import { loadCopy } from '@/lib/content/copy/load';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Privacy Policy | Jetking',
-    description:
-      'How Jetking Infotrain Limited collects, uses and protects the personal information you share through the Jetking website and services.',
-  },
-  '/privacy-policy',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(legalCopy);
+  return buildMetadata(
+    {
+      title: copy['privacy.seo.title'],
+      description: copy['privacy.seo.description'],
+    },
+    '/privacy-policy',
+  );
+}
 
-const trail: Crumb[] = [
-  { name: 'Home', path: '/' },
-  { name: 'Privacy Policy', path: '/privacy-policy' },
-];
+export default async function PrivacyPolicyPage() {
+  const copy = await loadCopy(legalCopy);
+  const trail: Crumb[] = [
+    { name: copy['labels.breadcrumbHome'], path: '/' },
+    { name: copy['privacy.breadcrumb'], path: '/privacy-policy' },
+  ];
+  // Legal wording is CMS content (`legal_documents`); the in-repo copy is the fallback.
+  const doc = await content.getLegalDocument('privacy-policy');
+  if (!doc) notFound();
 
-export default function PrivacyPolicyPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <LegalDocument
-        doc={privacyPolicy}
+        doc={doc}
         trail={trail}
         path="/privacy-policy"
-        intro="How Jetking collects, uses and protects the information you share with us through this website and our services."
+        intro={copy['privacy.intro']}
+        copy={copy}
       />
     </>
   );

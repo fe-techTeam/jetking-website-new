@@ -146,11 +146,11 @@ const placeholderPosts: Post[] = [
     slug: 'what-parents-should-ask-it-institute',
     title: 'Seven questions parents should ask any IT training institute',
     excerpt:
-      'A checklist for families evaluating technical training — the questions that separate a substantive programme from a well-marketed one.',
+      'A checklist for families evaluating technical training — the questions that separate a substantive course from a well-marketed one.',
     body: [
       {
         type: 'paragraph',
-        text: 'Parents funding a technical programme are making a significant decision with limited technical context. These questions are designed to be answerable by any institute acting in good faith.',
+        text: 'Parents funding a technical course are making a significant decision with limited technical context. These questions are designed to be answerable by any institute acting in good faith.',
       },
       {
         type: 'list',
@@ -168,7 +168,7 @@ const placeholderPosts: Post[] = [
       { type: 'heading', level: 2, text: 'On placement claims' },
       {
         type: 'paragraph',
-        text: 'Ask for the denominator. A placement percentage is only meaningful alongside how many students it was calculated from and whether it counts students who did not complete the programme.',
+        text: 'Ask for the denominator. A placement percentage is only meaningful alongside how many students it was calculated from and whether it counts students who did not complete the course.',
       },
       {
         type: 'paragraph',

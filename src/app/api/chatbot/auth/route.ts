@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
+import { safeError } from '@/lib/pii';
 import { clearSessionHint, endSession, getSessionUser, startSession } from '@/lib/chatbot/session';
 import { DuplicateEmailError, createUser, getUserByEmail, type StoredUser } from '@/lib/chatbot/store';
 import { isConsistentLocation, loadLocationTree } from '@/lib/chatbot/locations';
@@ -129,7 +130,7 @@ export async function POST(request: Request) {
           { status: 409 },
         );
       }
-      console.error('[chatbot:signup-failed]', error);
+      console.error('[chatbot:signup-failed]', safeError(error));
       return NextResponse.json(
         { ok: false, error: 'Could not create your account. Please try again.' },
         { status: 500 },
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
     await startSession(user.id);
     return NextResponse.json({ ok: true, user: publicUser(user) });
   } catch (error) {
-    console.error('[chatbot:login-failed]', error);
+    console.error('[chatbot:login-failed]', safeError(error));
     return NextResponse.json({ ok: false, error: 'Could not log you in. Please try again.' }, { status: 500 });
   }
 }

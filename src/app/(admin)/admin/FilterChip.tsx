@@ -29,10 +29,10 @@ export function FilterChip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${capitalize ? 'capitalize' : ''} ${
+      className={`min-h-11 cursor-pointer rounded-full border px-3.5 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)] sm:min-h-9 ${capitalize ? 'capitalize' : ''} ${
         active
-          ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
-          : 'border-border text-foreground-secondary hover:border-border-medium'
+          ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-ink)]'
+          : 'border-border-medium bg-background text-foreground-secondary hover:border-border-strong hover:text-foreground'
       }`}
     >
       {children}

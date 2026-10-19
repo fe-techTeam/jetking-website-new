@@ -11,7 +11,7 @@ import type { CmsCollection } from './types';
  * a fixed set of choices.
  */
 
-export interface SelectFieldConfig {
+interface SelectFieldConfig {
   label: string;
   options: Array<{ value: string; label: string }>;
 }
@@ -30,6 +30,16 @@ export interface AdminFormConfig {
    *  section, so a config that misses a field can't silently hide it.
    *  Collections without `sections` render as one flat list, unchanged. */
   sections?: Array<{ title: string; fields: string[] }>;
+  /** String-array fields that hold paragraphs (one textarea each) rather than short tags. */
+  paragraphFields?: string[];
+  /** Top-level fields not shown at all — a singleton's fixed `id` means nothing to an editor. */
+  hiddenFields?: string[];
+  /** Text fields edited in the rich-text editor (dotted path, `[]` for list items): `answer`, `faqs[].answer`. */
+  richFields?: string[];
+  /** Fields the site cannot render without — marked * and checked before saving. */
+  requiredFields?: string[];
+  /** Top-level fields shown read-only — identity keys that must not be renamed (a singleton's `id`). */
+  lockedFields?: string[];
 }
 
 const seoBlank = () => ({ title: '', description: '', canonicalPath: '', ogImage: '', noindex: false });
@@ -39,6 +49,8 @@ const personaRelevanceBlank = () => ({ student: 0, professional: 0, parent: 0, f
 const today = () => new Date().toISOString().slice(0, 10);
 
 const courses: AdminFormConfig = {
+  richFields: ['faqs[].answer'],
+  requiredFields: ['slug', 'title', 'shortTitle', 'duration', 'eligibility', 'summary'],
   blank: () => ({
     slug: '',
     title: '',
@@ -65,6 +77,8 @@ const courses: AdminFormConfig = {
     university: '',
     hiringPartners: [],
     certificateImage: imageBlank(),
+    jetkingCertificateImage: imageBlank(),
+    whyNow: { intro: '', headline: '', points: [], demandValue: '', demandLabel: '', demandSource: '' },
     status: 'draft',
   }),
   itemTemplates: {
@@ -97,6 +111,7 @@ const courses: AdminFormConfig = {
         'highlights',
         'tools',
         'careerRoles',
+        'whyNow',
         'phases',
         'curriculum',
         'faqs',
@@ -104,11 +119,12 @@ const courses: AdminFormConfig = {
       ],
     },
     { title: 'Fees & audience', fields: ['fees', 'personaRelevance'] },
-    { title: 'Media & SEO', fields: ['heroImage', 'certificateImage', 'seo', 'updatedAt'] },
+    { title: 'Media & SEO', fields: ['heroImage', 'certificateImage', 'jetkingCertificateImage', 'seo', 'updatedAt'] },
   ],
 };
 
 const cities: AdminFormConfig = {
+  requiredFields: ['slug', 'name', 'state', 'intro'],
   blank: () => ({
     slug: '',
     name: '',
@@ -121,6 +137,8 @@ const cities: AdminFormConfig = {
 };
 
 const centres: AdminFormConfig = {
+  richFields: ['faqs[].answer'],
+  requiredFields: ['slug', 'name', 'citySlug', 'addressLine', 'locality', 'state', 'pincode'],
   blank: () => ({
     slug: '',
     name: '',
@@ -136,9 +154,13 @@ const centres: AdminFormConfig = {
     intro: '',
     body: '',
     featuredProgrammes: [],
+    highlights: { programs: '', placement: '', facility: '', timing: '' },
     eligibility: [],
     journey: [],
+    gallery: [],
+    experiencePhotos: { lab: '', classroom: '', counselling: '', mockInterview: '' },
     faculty: [],
+    updates: [],
     placements: [],
     faqs: [],
     testimonials: [],
@@ -152,7 +174,9 @@ const centres: AdminFormConfig = {
     featuredProgrammes: { title: '', subtitle: '', duration: '', mode: '' },
     eligibility: { title: '', items: [] },
     journey: { title: '', items: [] },
-    faculty: { name: '', title: '', bio: '', photoUrl: '' },
+    gallery: { url: '', caption: '' },
+    faculty: { name: '', title: '', qualification: '', experience: '', specialisation: '', bio: '', photoUrl: '' },
+    updates: { title: '', summary: '', date: today(), category: '', image: '', link: '' },
     placements: { name: '', company: '', package: '', photoUrl: '' },
     faqs: { question: '', answer: '' },
     testimonials: { quote: '', name: '', role: '' },
@@ -176,19 +200,21 @@ const centres: AdminFormConfig = {
     },
     {
       title: 'Content',
-      fields: ['headline', 'intro', 'body', 'featuredProgrammes', 'eligibility', 'journey', 'coursesOffered'],
+      fields: ['headline', 'intro', 'body', 'highlights', 'experiencePhotos', 'featuredProgrammes', 'eligibility', 'journey', 'coursesOffered'],
     },
-    { title: 'People & proof', fields: ['faculty', 'placements', 'testimonials', 'faqs'] },
+    { title: 'People & proof', fields: ['gallery', 'faculty', 'updates', 'placements', 'testimonials', 'faqs'] },
     { title: 'Location & SEO', fields: ['geo', 'seo'] },
   ],
 };
 
 const posts: AdminFormConfig = {
+  requiredFields: ['slug', 'title', 'excerpt', 'author', 'publishedAt'],
   blank: () => ({
     slug: '',
     title: '',
     excerpt: '',
     body: [],
+    bodyHtml: '',
     author: '',
     publishedAt: today(),
     updatedAt: today(),
@@ -201,6 +227,8 @@ const posts: AdminFormConfig = {
     kind: 'blog',
     status: 'draft',
   }),
+  // `body` (the plain structured text) is derived from the rich article on save, so only the rich editor is shown.
+  hiddenFields: ['body'],
   selectFields: {
     kind: {
       label: 'Kind',
@@ -212,12 +240,14 @@ const posts: AdminFormConfig = {
   },
   sections: [
     { title: 'Basics', fields: ['slug', 'title', 'excerpt', 'author', 'publishedAt', 'updatedAt', 'category', 'kind', 'legacyPath'] },
-    { title: 'Content', fields: ['body', 'tags'] },
+    { title: 'Content', fields: ['bodyHtml', 'tags'] },
     { title: 'Audience & SEO', fields: ['personaRelevance', 'heroImage', 'seo'] },
   ],
 };
 
 const faqs: AdminFormConfig = {
+  richFields: ['answer'],
+  requiredFields: ['id', 'question', 'answer'],
   blank: () => ({
     id: '',
     question: '',
@@ -296,6 +326,8 @@ const trust_signals: AdminFormConfig = {
 };
 
 const homepage_variants: AdminFormConfig = {
+  // Only the testimonials are shown on the site; the other fields belong to the retired personalisation feature.
+  hiddenFields: ['banner', 'cta', 'stories', 'video', 'courseBoost', 'centreBoost'],
   blank: () => ({
     id: '',
     label: '',
@@ -351,6 +383,216 @@ const persona_rules: AdminFormConfig = {
   },
 };
 
+/* ── Site pages managed as CMS documents ───────────────────────────────────── */
+
+const about_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'about',
+    hero: { eyebrow: '', titleLead: '', titleAccent: '', lede: '' },
+    purpose: [],
+    values: [],
+    directors: [],
+    managementTeam: [],
+    timeline: [],
+    achievements: [],
+    partnerships: [],
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  paragraphFields: ['bio'],
+  itemTemplates: {
+    purpose: { title: '', body: '' },
+    directors: { name: '', role: '', photoUrl: '', bio: [] },
+    managementTeam: { name: '', role: '', photoUrl: '', bio: [] },
+    timeline: { year: '', title: '', body: '', link: { href: '', label: '' } },
+    achievements: { title: '', body: '', imageSrc: '' },
+    partnerships: { name: '', body: '', logo: '' },
+  },
+  sections: [
+    { title: 'Hero', fields: ['hero'] },
+    { title: 'Vision, mission & values', fields: ['purpose', 'values'] },
+    { title: 'Leadership', fields: ['directors', 'managementTeam'] },
+    { title: 'History', fields: ['timeline'] },
+    { title: 'Recognition & partners', fields: ['achievements', 'partnerships'] },
+  ],
+};
+
+const placements_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'placements',
+    hero: { eyebrow: '', titleLead: '', titleAccent: '', lede: '' },
+    disclaimer: '',
+    processSteps: [],
+    studentBenefits: [],
+    placedCandidates: [],
+    testimonials: [],
+    videoTestimonials: [],
+    contact: { phone: '', email: '' },
+    offerLetters: [],
+    recruiters: [],
+    recruitersDisclaimer: '',
+    stats: { partners: '', learnersPlaced: { value: '', label: '' } },
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  itemTemplates: {
+    processSteps: { step: '', title: '', description: '' },
+    studentBenefits: { title: '', description: '' },
+    placedCandidates: { name: '', company: '' },
+    testimonials: { name: '', role: '', quote: '' },
+    videoTestimonials: { name: '', title: '', provider: 'youtube', videoId: '', thumbnail: '' },
+    offerLetters: { src: '', title: '', sector: '' },
+    recruiters: { name: '', src: '' },
+  },
+  selectFields: {
+    provider: {
+      label: 'Video provider',
+      options: [
+        { value: 'youtube', label: 'YouTube' },
+        { value: 'vimeo', label: 'Vimeo' },
+      ],
+    },
+  },
+  sections: [
+    { title: 'Hero & disclaimer', fields: ['hero', 'disclaimer'] },
+    { title: 'Process & benefits', fields: ['processSteps', 'studentBenefits'] },
+    { title: 'Stories', fields: ['placedCandidates', 'testimonials', 'videoTestimonials'] },
+    { title: 'Recruiters & offer letters', fields: ['recruiters', 'recruitersDisclaimer', 'offerLetters'] },
+    { title: 'Figures & contact', fields: ['stats', 'contact'] },
+  ],
+};
+
+const investors_page: AdminFormConfig = {
+  blank: () => ({
+    id: 'investors',
+    company: { registeredOffice: '', phone: '', email: '', listedAt: '', scripCode: '', tradingSymbol: '' },
+    stockLive: '',
+    latestNews: '',
+    grievanceOfficer: { name: '', phone: '', email: '' },
+    registrar: { name: '', address: '', phone: '', fax: '', email: '', website: '' },
+    kmp: [],
+    syncedAt: today(),
+    sections: [],
+    status: 'draft',
+  }),
+  hiddenFields: ['id'],
+  itemTemplates: {
+    kmp: { name: '', designation: '', phone: '', email: '' },
+    sections: { id: '', title: '', items: [] },
+    items: { label: '', href: '' },
+  },
+  sections: [
+    { title: 'Company & listing', fields: ['company', 'stockLive', 'latestNews'] },
+    { title: 'Investor contacts', fields: ['grievanceOfficer', 'registrar', 'kmp'] },
+    { title: 'Disclosure documents', fields: ['syncedAt', 'sections'] },
+  ],
+};
+
+const legal_documents: AdminFormConfig = {
+  blank: () => ({
+    slug: '',
+    title: '',
+    sourceUrl: '',
+    blocks: [],
+    status: 'draft',
+  }),
+  lockedFields: ['slug'],
+  sections: [
+    { title: 'Document', fields: ['slug', 'title', 'sourceUrl'] },
+    { title: 'Text', fields: ['blocks'] },
+  ],
+};
+
+const logo_lists: AdminFormConfig = {
+  blank: () => ({ id: '', title: '', description: '', items: [], status: 'draft' }),
+  lockedFields: ['id'],
+  itemTemplates: { items: { name: '', file: '', dark: false } },
+  sections: [
+    { title: 'List', fields: ['id', 'title', 'description'] },
+    { title: 'Logos', fields: ['items'] },
+  ],
+};
+
+/** Edited by the dedicated Page text editor, not the generic record form — present only to satisfy the collection map. */
+const page_copy: AdminFormConfig = {
+  blank: () => ({ id: '', entries: {}, status: 'published' }),
+};
+
+const announcements: AdminFormConfig = {
+  requiredFields: ['id', 'message'],
+  blank: () => ({
+    id: '',
+    message: '',
+    linkLabel: '',
+    linkHref: '',
+    tone: 'info',
+    startsAt: '',
+    endsAt: '',
+    dismissible: true,
+    status: 'draft',
+  }),
+  selectFields: {
+    tone: {
+      label: 'Style',
+      options: [
+        { value: 'info', label: 'Info (neutral)' },
+        { value: 'promo', label: 'Promotion (brand red)' },
+        { value: 'alert', label: 'Alert (amber)' },
+      ],
+    },
+  },
+};
+
+const seo_settings: AdminFormConfig = {
+  blank: () => ({
+    id: 'seo',
+    allowIndexing: true,
+    blockAiCrawlers: false,
+    extraDisallow: [],
+    sitemapExclude: [],
+    defaultOgImage: '/og-default.png',
+    twitterHandle: '',
+    googleVerification: '',
+    bingVerification: '',
+    organization: { description: '', logo: '', phone: '', sameAs: [] },
+    status: 'published',
+  }),
+  lockedFields: ['id'],
+  sections: [
+    { title: 'Search engines', fields: ['allowIndexing', 'blockAiCrawlers', 'extraDisallow', 'sitemapExclude'] },
+    { title: 'Sharing & verification', fields: ['defaultOgImage', 'twitterHandle', 'googleVerification', 'bingVerification'] },
+    { title: 'Organization (structured data)', fields: ['organization'] },
+  ],
+};
+
+const chatbot_settings: AdminFormConfig = {
+  requiredFields: ['name', 'welcomeMessage', 'noMatchReply', 'offTopicReply'],
+  blank: () => ({
+    id: 'chatbot',
+    enabled: true,
+    disabledMessage: '',
+    name: 'Jetking AI',
+    welcomeMessage: '',
+    welcomeChips: [],
+    inputPlaceholder: '',
+    noMatchReply: '',
+    offTopicReply: '',
+    status: 'published',
+  }),
+  itemTemplates: { welcomeChips: { label: '', query: '' } },
+  lockedFields: ['id'],
+  sections: [
+    { title: 'Availability', fields: ['enabled', 'disabledMessage'] },
+    { title: 'Greeting', fields: ['name', 'welcomeMessage', 'welcomeChips', 'inputPlaceholder'] },
+    { title: 'When it cannot answer', fields: ['noMatchReply', 'offTopicReply'] },
+  ],
+};
+
+const chatbot_knowledge: AdminFormConfig = {
+  requiredFields: ['id', 'question', 'answer'],
+  blank: () => ({ id: '', question: '', answer: '', link: '', tags: [], status: 'draft' }),
+};
+
 export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   courses,
   cities,
@@ -363,4 +605,14 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   trust_signals,
   homepage_variants,
   persona_rules,
+  about_page,
+  placements_page,
+  investors_page,
+  legal_documents,
+  logo_lists,
+  page_copy,
+  announcements,
+  seo_settings,
+  chatbot_settings,
+  chatbot_knowledge,
 };

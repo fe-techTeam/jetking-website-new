@@ -6,7 +6,7 @@ import { formatIntentLabel } from './profile';
  * Persisted client-side, keyed to visitor ID when available.
  */
 
-export const STUDENT_JOURNEY_STEPS = [
+const STUDENT_JOURNEY_STEPS = [
   'discover',
   'recommend',
   'save',
@@ -31,7 +31,7 @@ export interface StudentDiscovery {
   interest: StudentInterest;
 }
 
-export interface StudentSoftIdentity {
+interface StudentSoftIdentity {
   phone: string;
   name?: string;
   savedAt: string;
@@ -52,7 +52,7 @@ export interface StudentJourneyState {
 
 const STORAGE_KEY = 'jk_student_journey_v1';
 
-export const EMPTY_STUDENT_JOURNEY: StudentJourneyState = {
+const EMPTY_STUDENT_JOURNEY: StudentJourneyState = {
   step: 'discover',
   recommendedSlugs: [],
   updatedAt: '',
@@ -60,10 +60,10 @@ export const EMPTY_STUDENT_JOURNEY: StudentJourneyState = {
 
 export const EDUCATION_OPTIONS: Array<{ id: StudentEducation; label: string; hint: string }> = [
   { id: '10th', label: 'After 10th', hint: 'Foundation & certification tracks' },
-  { id: '12th', label: 'After 12th', hint: 'Diploma & specialist programmes' },
+  { id: '12th', label: 'After 12th', hint: 'Diploma & specialist courses' },
   { id: 'diploma', label: 'Diploma holder', hint: 'Advanced certification paths' },
   { id: 'engineering', label: 'Engineering / B.Tech', hint: 'Degree-aligned tracks' },
-  { id: 'graduate', label: 'Graduate', hint: 'Career-start programmes' },
+  { id: 'graduate', label: 'Graduate', hint: 'Career-start courses' },
 ];
 
 export const INTEREST_OPTIONS: Array<{ id: StudentInterest; label: string; intent: string }> = [
@@ -128,29 +128,8 @@ export function writeStudentJourney(state: StudentJourneyState): void {
   }
 }
 
-export function clearStudentJourney(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // ignore
-  }
-}
-
 export function stepIndex(step: StudentJourneyStep): number {
   return STUDENT_JOURNEY_STEPS.indexOf(step);
-}
-
-export function stepLabel(step: StudentJourneyStep): string {
-  const labels: Record<StudentJourneyStep, string> = {
-    discover: 'Discover',
-    recommend: 'Recommend',
-    save: 'Save',
-    roadmap: 'Roadmap',
-    counsel: 'Counselling',
-    complete: 'Done',
-  };
-  return labels[step];
 }
 
 /**
@@ -253,7 +232,7 @@ export function buildCareerRoadmap(
     {
       title: 'Career launch',
       detail: outcome ?? 'Placement support, mock interviews & hiring partner intros',
-      duration: 'After programme',
+      duration: 'After course',
     },
   ];
 }

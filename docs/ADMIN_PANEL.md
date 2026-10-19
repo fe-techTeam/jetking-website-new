@@ -236,8 +236,8 @@ the **public site** to actually read from this store instead of the repo fixture
 admin layout shows a banner when it isn't set, since saves still succeed locally but won't
 affect the live site.
 
-Every save also fires a best-effort `POST /api/ingest` to re-trigger the chatbot's retrieval
-index.
+Saves don't refresh the chatbot's knowledge automatically — run `npm run build:chatbot-index`
+after content changes.
 
 ---
 
@@ -386,7 +386,7 @@ token overrides.
 | `DATABASE_SSL` | No | Set to `false` for a local Postgres without TLS |
 | `ADMIN_SESSION_SECRET` | With `DATABASE_URL` | Signs multi-user session cookies, independent of any one user's password |
 | `ADMIN_PASSWORD` | Without `DATABASE_URL` | Legacy shared-password gate; defaults to `changeme` outside production |
-| `CONTENT_SOURCE` | No | `admin` makes the **public site** read from this CMS store instead of repo fixtures |
+| `CONTENT_SOURCE` | No (defaults to `admin`) | `admin` makes the **public site** read from this CMS store instead of repo fixtures |
 | `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | No | Optional — CMS content write-through to Supabase tables (unrelated to the Postgres/leads/auth path above) |
 
 See `.env.example` for the full annotated list.
@@ -416,8 +416,30 @@ See `.env.example` for the full annotated list.
 
 ---
 
+## CMS platform (Postgres-backed)
+
+With `DATABASE_URL` set, **every** collection is stored in Postgres (`cms_records`, one jsonb row per
+record; cities/centres keep their own tables) and seeded once per collection from the in-repo defaults.
+Without it the panel falls back to `data/cms/store.json`. Migrations: `npm run db:migrate`.
+
+| Feature | Where |
+| --- | --- |
+| Version history, "Load into editor", Deleted records (restore), Duplicate, one-click Publish/Unpublish | every collection editor (`cms_revisions`) |
+| Media library — validated uploads (PNG/JPG/WebP/GIF/AVIF/PDF, 6 MB) served from `/media/{id}.{ext}`; "Choose image" on image fields and Page text | `/admin/media` |
+| Logos & partners (home, explore, professional marquees) | `/admin/logo-lists` |
+| Investors page (company, contacts, KMP, disclosure documents) — admin only | `/admin/investors-page` |
+| Announcement bar with schedule window, tone, dismissible | `/admin/announcements` |
+| SEO overview — every page/record's title, description, share image, canonical and noindex with length/duplicate checks and a search preview; edit in place | `/admin/seo` |
+| SEO settings — indexing master switch, robots.txt extras, block AI crawlers, sitemap exclusions, default share image, Twitter handle, Google/Bing verification, Organization schema | `/admin/seo-settings` |
+| Chatbot — overview (knowledge size, freshness, rebuild, test console, saved chats), Assistant settings (on/off, greeting, starter questions, no-match and off-topic replies), Custom answers (Q&A the assistant is taught), Unanswered questions (what visitors asked that nothing answers) | `/admin/chatbot`, `/admin/chatbot-settings`, `/admin/chatbot-knowledge`, `/admin/chatbot-questions` |
+| Redirects (301/302 looked up in the proxy, ~30 s to take effect, bulk import, loop check) | `/admin/redirects` |
+| Content search across all collections; `?open=<id>` deep links | `/admin/search` |
+| Dashboard recent edits and open drafts | `/admin` |
+| My account (change own password); audit log filters + pagination | `/admin/account`, `/admin/audit` |
+
+Local dev DB used while building this: `postgres://jetking@localhost:5433/jetking_cms` (start with
+`LC_ALL=en_US.UTF-8 pg_ctl -D ~/.jetking-pg -o "-p 5433 -k /tmp" start`).
+
 ## Known gaps
 
-- No self-service password change or "forgot password" flow — password resets are admin-only,
-  by design, for a small internal staff tool.
-- Audit log has no filtering/search UI yet — it's a plain, newest-first read-only list for now.
+- No "forgot password" email flow — admins reset passwords; signed-in users can change their own at `/admin/account`.

@@ -1,5 +1,5 @@
 import 'server-only';
-import { desc } from 'drizzle-orm';
+import { and, desc, gte, ilike, lt, sql, type SQL } from 'drizzle-orm';
 import { getDb, isDatabaseConfigured } from '@/lib/db/client';
 import { adminAuditLog, type AdminAuditLogEntry } from '@/lib/db/schema';
 
@@ -12,6 +12,8 @@ import { adminAuditLog, type AdminAuditLogEntry } from '@/lib/db/schema';
  * set — same degrade-gracefully rule as leads and team accounts, since there
  * is nowhere to durably keep history without a database.
  */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function recordAudit(
   actor: { id: string; name: string },
   action: string,
@@ -23,7 +25,8 @@ export async function recordAudit(
   if (!db) return;
   try {
     await db.insert(adminAuditLog).values({
-      actorId: actor.id === 'local-admin' ? null : actor.id,
+      // Only real accounts have a uuid; the legacy admin and failed sign-ins by unknown people are recorded by name.
+      actorId: UUID.test(actor.id) ? actor.id : null,
       actorName: actor.name,
       action,
       targetType,
@@ -35,10 +38,60 @@ export async function recordAudit(
   }
 }
 
-export async function listAuditLog(limit = 200): Promise<AdminAuditLogEntry[]> {
+export const AUDIT_GROUPS = ['content', 'leads', 'team', 'media', 'auth'] as const;
+export type AuditGroup = (typeof AUDIT_GROUPS)[number];
+
+/** Action codes are namespaced (`cms.*`, `lead.*`, `team.*`, `media.*`, `auth.*`); the filter groups map to those prefixes. */
+const GROUP_PREFIX: Record<AuditGroup, string> = {
+  content: 'cms.',
+  leads: 'lead.',
+  team: 'team.',
+  media: 'media.',
+  auth: 'auth.',
+};
+
+export interface AuditFilter {
+  group?: AuditGroup;
+  actor?: string;
+  q?: string;
+  /** Inclusive start day, `YYYY-MM-DD`. */
+  from?: string;
+  /** Inclusive end day, `YYYY-MM-DD`. */
+  to?: string;
+  limit?: number;
+  offset?: number;
+}
+
+const escapeLike = (v: string) => v.replace(/[\\%_]/g, (m) => `\\${m}`);
+
+function parseDay(value: string | undefined): Date | null {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const d = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+export async function listAuditLog(
+  filter: AuditFilter = {},
+): Promise<{ entries: AdminAuditLogEntry[]; total: number }> {
   const db = getDb();
-  if (!db) return [];
-  return db.select().from(adminAuditLog).orderBy(desc(adminAuditLog.createdAt)).limit(limit);
+  if (!db) return { entries: [], total: 0 };
+  const { group, actor, q, from, to, limit = 50, offset = 0 } = filter;
+
+  const conds: (SQL | undefined)[] = [];
+  if (group && GROUP_PREFIX[group]) conds.push(ilike(adminAuditLog.action, `${GROUP_PREFIX[group]}%`));
+  if (actor?.trim()) conds.push(ilike(adminAuditLog.actorName, `%${escapeLike(actor.trim())}%`));
+  if (q?.trim()) conds.push(ilike(adminAuditLog.summary, `%${escapeLike(q.trim())}%`));
+  const fromDay = parseDay(from);
+  if (fromDay) conds.push(gte(adminAuditLog.createdAt, fromDay));
+  const toDay = parseDay(to);
+  if (toDay) conds.push(lt(adminAuditLog.createdAt, new Date(toDay.getTime() + 24 * 60 * 60 * 1000)));
+  const where = conds.length ? and(...conds) : undefined;
+
+  const [entries, [count]] = await Promise.all([
+    db.select().from(adminAuditLog).where(where).orderBy(desc(adminAuditLog.createdAt)).limit(limit).offset(offset),
+    db.select({ n: sql<number>`count(*)::int` }).from(adminAuditLog).where(where),
+  ]);
+  return { entries, total: count?.n ?? 0 };
 }
 
 export { isDatabaseConfigured };

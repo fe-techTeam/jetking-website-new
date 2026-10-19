@@ -38,7 +38,7 @@ type FirstTouchRule = {
 /* Marketing owns this table. Adding a campaign is a one-line change.         */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export const CAMPAIGN_PERSONA_MAP: Record<string, KnownPersonaId> = {
+const CAMPAIGN_PERSONA_MAP: Record<string, KnownPersonaId> = {
   'after-12th': 'student',
   'bca-degree': 'student',
   'career-start': 'student',
@@ -65,7 +65,7 @@ const REFERRER_PERSONA_MAP: Array<{ match: RegExp; persona: KnownPersonaId; weig
 /* First-touch rules                                                          */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export const FIRST_TOUCH_RULES: FirstTouchRule[] = [
+const FIRST_TOUCH_RULES: FirstTouchRule[] = [
   // ── Landing path: the strongest first-touch signal available ──────────────
   {
     id: 'path:franchise',
@@ -152,7 +152,7 @@ export const FIRST_TOUCH_RULES: FirstTouchRule[] = [
 /* Lookups                                                                    */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export function lookupCampaign(campaign: string): KnownPersonaId | null {
+function lookupCampaign(campaign: string): KnownPersonaId | null {
   const key = campaign.toLowerCase().trim();
   const direct = CAMPAIGN_PERSONA_MAP[key];
   if (direct) return direct;
@@ -163,7 +163,7 @@ export function lookupCampaign(campaign: string): KnownPersonaId | null {
   return null;
 }
 
-export function lookupReferrer(host: string): { persona: KnownPersonaId; weight: number; label: string } | null {
+function lookupReferrer(host: string): { persona: KnownPersonaId; weight: number; label: string } | null {
   for (const entry of REFERRER_PERSONA_MAP) {
     if (entry.match.test(host)) {
       return { persona: entry.persona, weight: entry.weight, label: entry.label };

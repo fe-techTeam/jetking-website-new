@@ -1,5 +1,6 @@
 'use client';
 
+import { BotTrap, botFields } from '@/components/BotTrap';
 import { useEffect, useRef, useState } from 'react';
 import { CalendarDays, CheckCircle2 } from 'lucide-react';
 import { Field, Input, Textarea } from '@/components/ui';
@@ -10,6 +11,8 @@ import { linkVisitorIdentity } from '@/persona/visitor';
 import type { Course } from '@/lib/content/types';
 import type { StudentDiscovery } from '@/persona/studentJourney';
 import { interestIntent } from '@/persona/studentJourney';
+import { fill } from '@/lib/content/copy/define';
+import type { StudentCopy } from '@/lib/content/copy/pages/student';
 
 export function CounsellingStep({
   course,
@@ -17,12 +20,14 @@ export function CounsellingStep({
   softName,
   softPhone,
   onComplete,
+  copy,
 }: {
   course: Course;
   discovery: StudentDiscovery;
   softName?: string;
   softPhone?: string;
   onComplete: () => void;
+  copy: StudentCopy;
 }) {
   const { classification, visitor, profile, record } = usePersona();
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
@@ -61,7 +66,7 @@ export function CounsellingStep({
       const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
           email: form.get('email') || undefined,
@@ -79,7 +84,7 @@ export function CounsellingStep({
       const data: { ok?: boolean; error?: string } = await response.json();
       if (!response.ok || !data.ok) {
         setStatus('error');
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setError(data.error ?? copy['counsel.error']);
         return;
       }
 
@@ -100,33 +105,33 @@ export function CounsellingStep({
       onComplete();
     } catch {
       setStatus('error');
-      setError('We could not send that. Please check your connection and try again.');
+      setError(copy['counsel.errorNetwork']);
     }
   }
 
   if (status === 'done') {
     return (
       <div className="space-y-6 text-center sm:text-left">
-        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--stu-accent-tint)] text-[var(--stu-accent-soft)] sm:mx-0">
+        <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] sm:mx-0">
           <CheckCircle2 className="h-7 w-7" strokeWidth={2} aria-hidden="true" />
         </span>
         <div>
-          <h2 className="font-display text-[26px] font-extrabold text-[var(--stu-ink)] sm:text-[30px]">
-            You&rsquo;re booked in
+          <h2 className="section-title font-display text-[var(--dc-ink)]">
+            {copy['counsel.done.title']}
           </h2>
-          <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-            A counsellor will reach out about <strong className="text-[var(--stu-ink)]">{course.title}</strong>, usually within one working day.
+          <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
+            {copy['counsel.done.before']} <strong className="text-[var(--dc-ink)]">{course.title}</strong>{copy['counsel.done.after']}
           </p>
           {siteConfig.whatsappNumber ? (
             <a
               href={`https://wa.me/${siteConfig.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex text-[14px] font-bold text-[var(--stu-accent-soft)] underline-offset-2 hover:underline"
+              className="mt-4 inline-flex text-[14px] font-bold text-[var(--dc-accent-soft)] underline-offset-2 hover:underline"
             >
-              Prefer WhatsApp? Message us now
+              {copy['counsel.done.whatsapp']}
               <span aria-hidden="true">→</span>
-              <span className="sr-only">(opens in a new tab)</span>
+              <span className="sr-only">{copy['counsel.done.newTab']}</span>
             </a>
           ) : null}
         </div>
@@ -137,15 +142,14 @@ export function CounsellingStep({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--stu-accent-soft)] uppercase">
-          Step 5 · Book counselling
+        <p className="k-eyebrow">
+          {copy['counsel.eyebrow']}
         </p>
-        <h2 className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--stu-ink)] sm:text-[30px]">
-          Talk to a counsellor about {course.shortTitle}
+        <h2 className="section-title mt-2 font-display text-[var(--dc-ink)]">
+          {fill(copy['counsel.title'], { course: course.shortTitle })}
         </h2>
-        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--stu-ink-secondary)]">
-          Free session — we&rsquo;ll help you confirm the programme, nearest centre, and
-          next steps. No obligation.
+        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
+          {copy['counsel.body']}
         </p>
       </div>
 
@@ -154,7 +158,8 @@ export function CounsellingStep({
         className="stu-card max-w-lg space-y-5 rounded-[24px] p-6 sm:p-7"
         noValidate
       >
-        <Field label="Your name" htmlFor="counsel-name" required>
+<BotTrap />
+        <Field label={copy['counsel.name.label']} htmlFor="counsel-name" required>
           <Input
             id="counsel-name"
             name="name"
@@ -163,15 +168,15 @@ export function CounsellingStep({
             maxLength={120}
             autoComplete="name"
             defaultValue={softName}
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
         <Field
-          label="Mobile number"
+          label={copy['counsel.phone.label']}
           htmlFor="counsel-phone"
           required
-          hint="A counsellor will call or message you on this number."
+          hint={copy['counsel.phone.hint']}
         >
           <Input
             id="counsel-phone"
@@ -182,34 +187,34 @@ export function CounsellingStep({
             autoComplete="tel"
             pattern="[\d\s+\(\)\-]{10,20}"
             defaultValue={softPhone}
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
-        <Field label="Email" htmlFor="counsel-email" hint="Optional.">
+        <Field label={copy['counsel.email.label']} htmlFor="counsel-email" hint={copy['counsel.email.hint']}>
           <Input
             id="counsel-email"
             name="email"
             type="email"
             maxLength={200}
             autoComplete="email"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
-        <Field label="Anything you would like to ask?" htmlFor="counsel-message">
+        <Field label={copy['counsel.message.label']} htmlFor="counsel-message">
           <Textarea
             id="counsel-message"
             name="message"
             rows={3}
             maxLength={2000}
-            placeholder="e.g. weekend batches, nearest centre in Mumbai…"
-            className="border-[var(--stu-hairline)] bg-[var(--stu-surface)] text-[var(--stu-ink)]"
+            placeholder={copy['counsel.message.placeholder']}
+            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
           />
         </Field>
 
         {error ? (
-          <p role="alert" className="text-sm font-medium text-[var(--stu-accent-soft)]">
+          <p role="alert" className="text-sm font-medium text-[var(--dc-accent-soft)]">
             {error}
           </p>
         ) : null}
@@ -217,14 +222,14 @@ export function CounsellingStep({
         <button
           type="submit"
           disabled={status === 'submitting'}
-          className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--stu-navy)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-[var(--dc-navy)] py-3 text-[15px] font-bold text-white transition-colors hover:bg-jk-700 disabled:opacity-60"
         >
           <CalendarDays className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-          {status === 'submitting' ? 'Sending…' : 'Book free counselling'}
+          {status === 'submitting' ? copy['counsel.submitting'] : copy['counsel.submit']}
         </button>
 
-        <p className="text-[12.5px] text-[var(--stu-ink-muted)]">
-          We use your details only to arrange this counselling session.
+        <p className="text-[14px] text-[var(--dc-ink-muted)]">
+          {copy['counsel.privacy']}
         </p>
       </form>
     </div>

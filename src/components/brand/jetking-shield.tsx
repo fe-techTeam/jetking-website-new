@@ -53,9 +53,9 @@ function ShieldPlate({ gradId, className }: { gradId: string; className?: string
     <svg viewBox="0 0 80 66" className={cn('h-full w-full', className)} aria-hidden>
       <defs>
         <linearGradient id={gradId} x1="18%" y1="0%" x2="82%" y2="100%">
-          <stop offset="0%" stopColor="#f0434a" />
-          <stop offset="40%" stopColor="#c7141c" />
-          <stop offset="100%" stopColor="#5c0a0e" />
+          <stop offset="0%" style={{ stopColor: 'var(--color-jk-500)' }} />
+          <stop offset="40%" style={{ stopColor: 'var(--color-jk-600)' }} />
+          <stop offset="100%" style={{ stopColor: 'var(--color-jk-900)' }} />
         </linearGradient>
       </defs>
       <path

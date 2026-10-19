@@ -1,61 +1,73 @@
 'use client';
 
+import { Section, SectionHeader } from '@/components/kit';
 import Image from 'next/image';
 import { Carousel } from '@/components/Carousel';
 import { ProfessionalPartnerMarquee } from './ProfessionalPartnerMarquee';
+import type { LogoItem } from '@/lib/content/types';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { fill } from '@/lib/content/copy/define';
 import { SUCCESS_STORIES } from './data';
 
-export function ProfessionalSocialProof() {
+export function ProfessionalSocialProof({
+  copy,
+  partners,
+}: {
+  copy: typeof professionalCopy.defaults;
+  partners: LogoItem[];
+}) {
+  const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
+  // Story text comes from the page copy (`stories.N.*`); the id stays with the code.
+  const stories = SUCCESS_STORIES.map((story, i) => ({
+    ...story,
+    from: k(`stories.${i}.from`),
+    to: k(`stories.${i}.to`),
+    quote: k(`stories.${i}.quote`),
+    name: k(`stories.${i}.name`),
+    hike: k(`stories.${i}.hike`),
+    avatar: k(`stories.${i}.avatar`),
+  }));
   return (
-    <section className="bg-[var(--pro-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-stories-heading">
-      <div className="shell">
-        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+    <Section tone="tint" labelledBy="pro-stories-heading">
+        <div>
           <div className="flex flex-col gap-12 lg:gap-14">
             <div>
-              <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
-                Success stories
-              </p>
-              <h2
+              <SectionHeader
                 id="pro-stories-heading"
-                className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[28px] sm:text-[32px]"
-              >
-                Real career transitions
-              </h2>
-              <p className="mt-2 text-[14px] text-[var(--pro-ink-secondary)] sm:text-[15px]">
-                Working professionals like you who upskilled without quitting their day job.
-              </p>
+                eyebrow={copy['stories.eyebrow']}
+                title={copy['stories.title']}
+                lede={copy['stories.lede']}
+              />
 
               <Carousel
-                items={SUCCESS_STORIES}
-                label="Success stories"
-                className="mt-6 sm:mt-8"
+                items={stories}
+                label={copy['stories.carousel.label']}
                 itemKey={(story) => story.id}
-                itemLabel={(story) => `${story.name}, ${story.from} to ${story.to}`}
+                itemLabel={(story) => fill(copy['stories.slideLabel'], { name: story.name, from: story.from, to: story.to })}
                 classNames={{
-                  viewport: 'rounded-[24px]',
-                  dotActive: 'bg-[var(--pro-accent-soft)]',
-                  dotIdle: 'bg-[var(--pro-ink-muted)]/40',
+                  dotActive: 'bg-[var(--dc-accent-soft)]',
+                  dotIdle: 'bg-[var(--dc-ink-muted)]/40',
                   button:
-                    'border-[var(--pro-hairline)] bg-[var(--pro-card)] text-[var(--pro-ink)] transition-colors hover:border-[var(--pro-accent-soft)] hover:text-[var(--pro-accent-soft)]',
+                    'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]',
                 }}
               >
                 {(story) => (
-                  <article className="pro-quote p-6 text-white sm:p-7">
-                    <p className="text-[12px] font-bold tracking-[0.06em] text-white/70 uppercase">
-                      From {story.from} to {story.to}
+                  <article className="kit kit-card p-6 sm:p-7">
+                    <p className="text-[12px] font-bold tracking-[0.06em] text-[var(--k-ink-3)] uppercase">
+                      {fill(copy['stories.kicker'], { from: story.from, to: story.to })}
                     </p>
                     <span
                       aria-hidden="true"
-                      className="mt-4 block font-display text-[56px] leading-none font-extrabold text-white/30"
+                      className="mt-4 block font-display text-[56px] leading-none font-extrabold text-[var(--k-red)] opacity-40"
                     >
                       &ldquo;
                     </span>
-                    <p className="-mt-5 text-[15.5px] leading-relaxed font-medium sm:text-[16.5px]">
+                    <p className="-mt-5 text-[15.5px] leading-relaxed font-medium text-[var(--k-ink-2)] sm:text-[16.5px]">
                       {story.quote}
                     </p>
-                    <footer className="mt-6 flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/40">
+                    <footer className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[var(--k-line-strong)]">
                           <Image
                             src={story.avatar}
                             alt=""
@@ -65,14 +77,14 @@ export function ProfessionalSocialProof() {
                           />
                         </span>
                         <cite className="not-italic">
-                          <span className="block text-[14.5px] font-bold">{story.name}</span>
-                          <span className="mt-0.5 block text-[13px] text-white/85">
-                            {story.from} → {story.to}
+                          <span className="block text-[14.5px] font-bold text-[var(--k-ink)]">{story.name}</span>
+                          <span className="mt-0.5 block text-[14px] text-[var(--k-ink-3)]">
+                            {fill(copy['stories.route'], { from: story.from, to: story.to })}
                           </span>
                         </cite>
                       </div>
-                      <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-[12px] font-extrabold text-jk-600">
-                        {story.hike} Salary Hike
+                      <span className="shrink-0 rounded-full bg-[var(--k-red-wash)] px-3 py-1.5 text-[12px] font-extrabold text-[var(--k-red)]">
+                        {fill(copy['stories.hike.label'], { hike: story.hike })}
                       </span>
                     </footer>
                   </article>
@@ -80,21 +92,19 @@ export function ProfessionalSocialProof() {
               </Carousel>
             </div>
 
-            <div className="border-t border-[var(--pro-hairline)] pt-10 lg:pt-12">
-              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[26px]">
-                Our Hiring Partners
+            <div className="border-t border-[var(--dc-hairline-strong)] pt-10 lg:pt-12">
+              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]">
+                {copy['partners.title']}
               </h3>
-              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--pro-ink-secondary)] sm:text-[15px]">
-                Recruiters featured on jetking.com. Placements are subject to recruitment norms —
-                Jetking does not guarantee placement in any organisation.
+              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
+                {copy['partners.note']}
               </p>
               <div className="mt-7 sm:mt-8">
-                <ProfessionalPartnerMarquee />
+                <ProfessionalPartnerMarquee copy={copy} partners={partners} />
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 }

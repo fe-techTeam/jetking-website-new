@@ -1,4 +1,4 @@
-import type { HomepageVariant, PersonaRule, RuleCondition } from '@/lib/content/types';
+import type { PersonaRule, RuleCondition } from '@/lib/content/types';
 import type { PersonaId } from '@/persona/types';
 
 /**
@@ -99,16 +99,4 @@ export function selectHomepageVariantId(
     if (matchRule(ctx, rule)) return rule.homepageVariantId;
   }
   return fallbackId;
-}
-
-export function resolveHomepageVariant(
-  ctx: RuleContext,
-  rules: PersonaRule[],
-  variants: HomepageVariant[],
-): HomepageVariant {
-  const id = selectHomepageVariantId(ctx, rules);
-  return variants.find((v) => v.id === id) ?? variants.find((v) => v.id === 'default') ?? {
-    id: 'default',
-    label: 'Default',
-  };
 }

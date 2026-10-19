@@ -6,6 +6,7 @@
 
 .about-tl-tab {
   display: inline-flex;
+  min-height: 2.75rem;
   width: auto;
   align-items: center;
   border-radius: 999px;

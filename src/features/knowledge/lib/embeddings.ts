@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 import type { FeatureExtractionPipeline } from '@xenova/transformers';
@@ -137,7 +137,7 @@ function titleCoverage(query: string, title?: string): number {
   return acronymMatch ? Math.max(lexicalCoverage, 1) : lexicalCoverage;
 }
 
-export interface IndexItem {
+interface IndexItem {
   type: string;
   text: string;
   /** Site-relative source path, when the item came from a structured record. */
@@ -151,7 +151,23 @@ export interface IndexItem {
    * is treated the same as 1 so this is backward compatible without a rebuild.
    */
   authority?: number;
+  source?: string;
 }
+
+/** Source of the clean per-programme records generated from the site's own content. */
+const STRUCTURED_SOURCE = 'website-content-source';
+
+/**
+ * Words visitors use for a facet that its structured record never says.
+ *
+ * "How long is BCA…? …runs for 3 years." is the exact answer to "how long is
+ * the BCA course", yet it lacks "course", so lexical coverage ranked it below
+ * scraped pages that repeat the word. Indexed alongside the record only.
+ */
+const FACET_VOCABULARY: Record<string, string> = {
+  course: 'course',
+  duration: 'course duration long',
+};
 
 interface Store {
   dim: number;
@@ -163,6 +179,9 @@ interface Store {
 }
 
 let store: Store | null = null;
+/** Which index file `store` was built from and when it last changed — a rebuild from the admin is picked up without a restart. */
+let storeFile: { path: string; mtimeMs: number; checkedAt: number } | null = null;
+const RELOAD_CHECK_MS = 5_000;
 /**
  * Locates and reads the embedding index.
  *
@@ -172,7 +191,7 @@ let store: Store | null = null;
  * with the paths that were actually attempted, turns a silent "no answers"
  * into something diagnosable from a log line.
  */
-function readIndexFile(): string {
+function readIndexFile(): { raw: string; path: string } {
   const relative = path.join('src', 'content', 'jetking-embeddings.json');
   const candidates = [
     ...(serverEnv.indexPath ? [serverEnv.indexPath] : []),
@@ -183,7 +202,7 @@ function readIndexFile(): string {
 
   for (const candidate of candidates) {
     try {
-      return readFileSync(candidate, 'utf8');
+      return { raw: readFileSync(candidate, 'utf8'), path: candidate };
     } catch {
       // Try the next location.
     }
@@ -197,9 +216,19 @@ function readIndexFile(): string {
 }
 
 function getStore(): Store {
+  if (store && storeFile && Date.now() - storeFile.checkedAt > RELOAD_CHECK_MS) {
+    storeFile.checkedAt = Date.now();
+    try {
+      if (statSync(storeFile.path).mtimeMs !== storeFile.mtimeMs) store = null;
+    } catch {
+      // Keep serving the loaded index if the file cannot be stat'ed for a moment (a rebuild is writing it).
+    }
+  }
   if (store) return store;
 
-  const raw = JSON.parse(readIndexFile()) as {
+  const file = readIndexFile();
+  storeFile = { path: file.path, mtimeMs: statSync(file.path).mtimeMs, checkedAt: Date.now() };
+  const raw = JSON.parse(file.raw) as {
     dim: number;
     items: IndexItem[];
     vectors: string;
@@ -215,10 +244,12 @@ function getStore(): Store {
     const newline = item.text.indexOf('\n');
     const heading = newline > 0 ? item.text.slice(0, newline) : '';
     const body = newline > 0 ? item.text.slice(newline + 1) : item.text;
+    const facet = item.source === STRUCTURED_SOURCE ? (FACET_VOCABULARY[item.type] ?? '') : '';
     lexical.add(String(i), [
       { text: heading, boost: 3 },
       { text: item.title ?? '', boost: 2 },
       { text: body, boost: 1 },
+      { text: facet, boost: 1 },
     ]);
   });
 
@@ -247,7 +278,7 @@ function citiesIn(query: string, cityRows: Map<string, number[]>): number[] {
   return rows;
 }
 
-export interface SemanticHit {
+interface SemanticHit {
   type: string;
   text: string;
   /**
@@ -266,7 +297,7 @@ export interface SemanticHit {
   title?: string;
 }
 
-export type RetrievalMode = 'dense' | 'lexical';
+type RetrievalMode = 'dense' | 'lexical';
 
 export interface SemanticResult {
   /** Which path produced this result — useful for diagnosing a deployment. */
@@ -292,6 +323,12 @@ export interface SemanticResult {
  */
 function saturate(score: number): number {
   return score <= 0 ? 0 : score / (score + LEXICAL_SATURATION);
+}
+
+/** Loads the index and sentence model ahead of the first question, which otherwise pays ~30s for both. */
+export async function warmRetrieval(): Promise<void> {
+  getStore();
+  await getExtractor();
 }
 
 export async function semanticSearch(query: string, k = 6): Promise<SemanticResult> {

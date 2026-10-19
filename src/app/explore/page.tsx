@@ -5,34 +5,55 @@ import { siteConfig } from '@/lib/site';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
+import { toEnquiryCentres } from '@/lib/enquiry-centres';
+import { exploreCopy } from '@/lib/content/copy/pages/explore';
+import { fill } from '@/lib/content/copy/define';
+import { loadCopy } from '@/lib/content/copy/load';
 import { ExploreLanding } from '@/components/explore/ExploreLanding';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: `Explore ${siteConfig.name} — Courses, Centres & Placements`,
-    description:
-      'Browse Jetking programmes, placement stories and centres across India — no commitment needed, just explore at your own pace.',
-  },
-  '/explore',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await loadCopy(exploreCopy);
+  return buildMetadata(
+    {
+      title: fill(copy['seo.title'], { brand: siteConfig.name }),
+      description: fill(copy['seo.description'], { brand: siteConfig.name }),
+      // Audience pages are not listed or indexed; the main pages carry their content.
+      noindex: true,
+    },
+    '/explore',
+  );
+}
 
 export default async function ExplorePage() {
-  const [courses, home, posts] = await Promise.all([
+  const copy = await loadCopy(exploreCopy);
+  const [courses, home, posts, centres, cities, partners] = await Promise.all([
     content.listCourses(),
     loadHomeData(),
     content.listPosts({ limit: 3 }),
+    content.listCentres(),
+    content.listCities(),
+    content.getLogoList('explore-partners'),
   ]);
 
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
-    { name: 'Explore', path: '/explore' },
+    { name: copy['breadcrumb.label'], path: '/explore' },
   ];
 
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <ScrollDepthTracker />
-      <ExploreLanding courses={courses} counts={home.counts} posts={posts} />
+      <ExploreLanding
+        courses={courses}
+        counts={home.counts}
+        about={home.about}
+        placements={home.placements}
+        posts={posts}
+        partners={partners.items}
+        enquiryCentres={toEnquiryCentres(centres, cities)}
+        copy={copy}
+      />
     </>
   );
 }

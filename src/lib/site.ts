@@ -5,7 +5,7 @@ export const siteConfig = {
   legalName: 'Jetking Infotrain Limited',
   tagline: 'India\'s trusted IT training brand',
   description:
-    'Jetking offers degree, diploma and certification programmes in cloud computing, cyber security and IT infrastructure, with centres across India and placement support.',
+    'Jetking offers degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure, with centres across India and placement support.',
   locale: 'en_IN',
   /**
    * Must be an absolute origin in production — canonical URLs and OG tags depend on
@@ -22,7 +22,15 @@ export const siteConfig = {
    * button on an education site costs more than one extra click.
    */
   phone: process.env.NEXT_PUBLIC_PHONE ?? '',
+  /** National toll-free helpline, as published on Investors and the enrollment terms. */
+  helpline: '07666830000',
 } as const;
+
+/** WhatsApp only renders once a real number is configured, never the env placeholder. */
+export const whatsappHref =
+  siteConfig.whatsappNumber && !/^91?9{9,}$/.test(siteConfig.whatsappNumber)
+    ? `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, '')}`
+    : null;
 
 export function absoluteUrl(path: string): string {
   const normalised = path.startsWith('/') ? path : `/${path}`;
@@ -37,21 +45,4 @@ export const mainNav = [
   { label: 'Franchise', href: '/franchise' },
   { label: 'Investors', href: '/investors' },
   { label: 'Blog', href: '/blog' },
-] as const;
-
-/**
- * Courses dropdown in the desktop header. Each entry is a real filter on /courses
- * (`?tech=` / `?level=`, the same params `CourseExplorer` reads), so the menu
- * can never link to a category the page does not understand.
- */
-export const coursesMenu = [
-  { label: 'All courses', href: '/courses', params: {} },
-  { label: 'Degree programmes', href: '/courses?level=degree', params: { level: 'degree' } },
-  { label: 'Cloud computing', href: '/courses?tech=cloud', params: { tech: 'cloud' } },
-  { label: 'Cyber security', href: '/courses?tech=cyber-security', params: { tech: 'cyber-security' } },
-  { label: 'Networking', href: '/courses?tech=networking', params: { tech: 'networking' } },
-  { label: 'Data & analytics', href: '/courses?tech=data', params: { tech: 'data' } },
-  { label: 'Design & gaming', href: '/courses?tech=design-gaming', params: { tech: 'design-gaming' } },
-  { label: 'Digital marketing', href: '/courses?tech=marketing', params: { tech: 'marketing' } },
-  { label: 'Hardware & OS', href: '/courses?tech=hardware-os', params: { tech: 'hardware-os' } },
 ] as const;

@@ -6,13 +6,13 @@
  *
  * Design note: fields that the AI Guide is allowed to state as fact are marked
  * `@grounded`. Anything not marked is presentational and must never be quoted
- * as authoritative by the Guide (see src/guide/guardrails.ts).
+ * as authoritative by the AI assistant.
  */
 
 export type PersonaId = 'student' | 'professional' | 'parent' | 'franchise' | 'unknown';
 
 /** Personas a piece of content is especially relevant to. Drives re-ranking. */
-export type PersonaRelevance = Partial<Record<Exclude<PersonaId, 'unknown'>, number>>;
+type PersonaRelevance = Partial<Record<Exclude<PersonaId, 'unknown'>, number>>;
 
 export interface Seo {
   /** @grounded */
@@ -43,7 +43,7 @@ export type CourseLevel = 'degree' | 'diploma' | 'certification' | 'short';
  * component and NEVER generates fee figures as free text (DEVELOPMENT-PLAN §5.2,
  * risk R4). If `disclosed` is false the Guide must hand off to a counsellor.
  */
-export interface Fees {
+interface Fees {
   disclosed: boolean;
   /** @grounded Total programme fee in INR. Only meaningful when disclosed. */
   totalInr?: number;
@@ -127,6 +127,21 @@ export interface Course {
   hiringPartners?: string[];
   /** @grounded Specimen of the certificate / credential awarded. */
   certificateImage?: ImageRef;
+  /** Degree pages: sample of the Jetking industry certificate awarded alongside the degree. */
+  jetkingCertificateImage?: ImageRef;
+  /** Degree pages: the "why now" block — intro, headline, points and one demand statistic. */
+  whyNow?: CourseWhyNow;
+}
+
+export interface CourseWhyNow {
+  intro: string;
+  headline: string;
+  points: string[];
+  /** The big number, e.g. "40,000+". */
+  demandValue: string;
+  demandLabel: string;
+  /** Small footer line, e.g. "Source: CareerNet outlook 2026". */
+  demandSource: string;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -140,17 +155,41 @@ export interface CentreFeaturedProgramme {
   mode?: string;
 }
 
-export interface CentreEligibilityBlock {
+interface CentreEligibilityBlock {
   title: string;
   items: string[];
 }
 
-export interface CentreJourneyStep {
+/** The four "About the centre" facts shown as a strip on the centre page. Each is optional; an empty one is hidden. */
+export interface CentreGalleryImage {
+  url: string;
+  caption?: string;
+}
+
+export interface CentreExperiencePhotos {
+  lab?: string;
+  classroom?: string;
+  counselling?: string;
+  mockInterview?: string;
+}
+
+interface CentreHighlights {
+  /** What is taught, e.g. "Degree & Short Term Courses". Falls back to the course levels on offer. */
+  programs?: string;
+  /** Placement headline, e.g. "295 in 2025". */
+  placement?: string;
+  /** What the centre offers, e.g. "Advanced labs, class mentoring". */
+  facility?: string;
+  /** Opening days and hours, e.g. "7 days, 9am - 7pm". */
+  timing?: string;
+}
+
+interface CentreJourneyStep {
   title: string;
   items: string[];
 }
 
-export interface CentreFaq {
+interface CentreFaq {
   question: string;
   answer: string;
 }
@@ -161,15 +200,37 @@ export interface CentreTestimonial {
   role?: string;
 }
 
-export interface CentreFaculty {
+interface CentreFaculty {
   name: string;
   title: string;
+  /** Free-text bio; shown only when none of the structured fields below is set. */
   bio?: string;
+  /** e.g. "BCA, certified CCNA". */
+  qualification?: string;
+  /** e.g. "12 years of teaching, industry and project delivery". */
+  experience?: string;
+  /** e.g. "RHCSA and server hardware". */
+  specialisation?: string;
   /** Portrait URL from the live centre page when available. */
   photoUrl?: string;
 }
 
-export interface CentrePlacement {
+/** A recent happening at the centre (placement drive, master session, workshop...), shown in "What's new". */
+interface CentreUpdate {
+  title: string;
+  /** One or two sentences. */
+  summary: string;
+  /** ISO date, e.g. 2026-09-12. */
+  date: string;
+  /** Short label, e.g. "Placement drive". */
+  category?: string;
+  /** Cover image path. */
+  image?: string;
+  /** Where the card goes (a blog post or event page); the card is not a link when empty. */
+  link?: string;
+}
+
+interface CentrePlacement {
   name: string;
   company: string;
   package?: string;
@@ -205,8 +266,16 @@ export interface Centre {
   featuredProgrammes?: CentreFeaturedProgramme[];
   /** Eligibility blocks (e.g. BCA / MCA). */
   eligibility?: CentreEligibilityBlock[];
+  /** The "About the centre" strip: programmes, placements, facilities and timings. */
+  highlights?: CentreHighlights;
   /** Multi-year transformation journey when published. */
   journey?: CentreJourneyStep[];
+  /** Photos of the centre (up to four are shown); empty slots show a labelled placeholder until real pictures are added. */
+  gallery?: CentreGalleryImage[];
+  /** Optional centre-specific photos for the "reasons to visit" tiles; the shared defaults are used when a slot is empty. */
+  experiencePhotos?: CentreExperiencePhotos;
+  /** Recent activities and upcoming events at the centre; the page shows the newest four. */
+  updates?: CentreUpdate[];
   /** Centre faculty when published on the live page. */
   faculty?: CentreFaculty[];
   /** Recent placement highlights from the live page. */
@@ -251,6 +320,8 @@ export interface Post {
   /** @grounded */
   excerpt: string;
   body: BodyBlock[];
+  /** Rich article HTML from the editor (sanitised). When present it is what the article page shows; `body` is derived from it. */
+  bodyHtml?: string;
   author: string;
   publishedAt: string;
   updatedAt: string;
@@ -265,11 +336,67 @@ export interface Post {
   kind?: 'blog' | 'news';
 }
 
-export type News = Post & { kind: 'news' };
-
 /* ────────────────────────────────────────────────────────────────────────── */
 /* FAQ                                                                        */
 /* ────────────────────────────────────────────────────────────────────────── */
+
+/** A slim bar at the very top of every public page. Window fields are ISO date-times; empty = no limit. */
+export interface Announcement {
+  id: string;
+  message: string;
+  linkLabel: string;
+  linkHref: string;
+  tone: 'info' | 'promo' | 'alert';
+  startsAt: string;
+  endsAt: string;
+  dismissible: boolean;
+}
+
+/** Site-wide SEO controls — one document (id `seo`). */
+export interface SeoSettings {
+  id: 'seo';
+  /** Master switch. Off = robots.txt disallows everything (a production site should leave it on). */
+  allowIndexing: boolean;
+  /** Disallow the named AI crawlers (GPTBot, ClaudeBot, …) while search engines stay allowed. */
+  blockAiCrawlers: boolean;
+  /** Extra paths robots.txt should disallow, e.g. `/thank-you`. */
+  extraDisallow: string[];
+  /** Paths left out of sitemap.xml. */
+  sitemapExclude: string[];
+  /** Share image for any page that has none of its own. */
+  defaultOgImage: string;
+  twitterHandle: string;
+  googleVerification: string;
+  bingVerification: string;
+  /** Feeds the Organization structured data on every page. */
+  organization: { description: string; logo: string; phone: string; sameAs: string[] };
+}
+
+/** How the Jetking AI assistant presents itself and what it says when it cannot answer — one document (id `chatbot`). */
+export interface ChatbotSettings {
+  id: 'chatbot';
+  /** Off: the chat page shows `disabledMessage` and the API refuses new questions. */
+  enabled: boolean;
+  disabledMessage: string;
+  name: string;
+  welcomeMessage: string;
+  welcomeChips: { label: string; query: string }[];
+  inputPlaceholder: string;
+  /** Said when nothing in the website content answers the question. */
+  noMatchReply: string;
+  /** Said for questions that are not about Jetking. */
+  offTopicReply: string;
+}
+
+/** A question and answer an editor wrote for the assistant. It is indexed with the rest of the website content. */
+export interface ChatbotKnowledge {
+  id: string;
+  question: string;
+  answer: string;
+  /** Page the answer is attributed to in citations (a path like /courses). Empty = the home page. */
+  link: string;
+  tags: string[];
+}
 
 export interface Faq {
   id: string;
@@ -312,7 +439,7 @@ export interface Faculty {
   updatedAt: string;
 }
 
-export interface PlacementStat {
+interface PlacementStat {
   /** @grounded */
   label: string;
   /** @grounded */
@@ -352,14 +479,14 @@ export interface TrustSignal {
 /* Homepage variants + CMS persona rules                                      */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export interface BannerContent {
+interface BannerContent {
   eyebrow?: string;
   headline: string;
   lede: string;
   imageUrl?: string;
 }
 
-export interface CtaContent {
+interface CtaContent {
   label: string;
   href: string;
 }
@@ -371,14 +498,14 @@ export interface Testimonial {
   role: string;
 }
 
-export interface SuccessStory {
+interface SuccessStory {
   id: string;
   title: string;
   summary: string;
   href?: string;
 }
 
-export interface VideoContent {
+interface VideoContent {
   title: string;
   src: string;
   poster?: string;
@@ -396,7 +523,7 @@ export interface HomepageVariant {
   centreBoost?: string[];
 }
 
-export type RuleConditionField =
+type RuleConditionField =
   | 'location.city'
   | 'interest'
   | 'returning'
@@ -425,6 +552,203 @@ export interface PersonaRule {
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
+/* Site pages managed in the CMS: About, Placements, legal documents           */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Leadership cards show photo + name + designation only; `bio` (when present) sits behind a
+ * "Read more" toggle. An empty `name` hides the card until a name is supplied.
+ */
+export interface Leader {
+  name: string;
+  role?: string;
+  photoUrl?: string;
+  bio?: string[];
+}
+
+export interface Milestone {
+  year: string;
+  title: string;
+  body?: string;
+  /** Optional trailing link rendered after `body`. */
+  link?: { href: string; label: string };
+}
+
+export interface Achievement {
+  title: string;
+  body: string;
+  imageSrc: string;
+}
+
+export interface Partnership {
+  name: string;
+  body: string;
+  logo: string;
+}
+
+/**
+ * Overrides for one page's editable text (see `lib/content/copy`). Only fields an editor changed are
+ * stored; `id` is the page's copy id ('home', 'site', …).
+ */
+export interface PageCopyRecord {
+  id: string;
+  entries: Record<string, string>;
+}
+
+/** The About page (/about-us) — one document. */
+export interface AboutPageContent {
+  id: 'about';
+  hero: { eyebrow: string; titleLead: string; titleAccent: string; lede: string };
+  /** Vision / mission / values cards. */
+  purpose: { title: string; body: string }[];
+  values: string[];
+  directors: Leader[];
+  managementTeam: Leader[];
+  timeline: Milestone[];
+  achievements: Achievement[];
+  partnerships: Partnership[];
+}
+
+export interface PlacementProcessStep {
+  step: string;
+  title: string;
+  description: string;
+}
+
+export interface StudentBenefit {
+  title: string;
+  description: string;
+}
+
+export interface PlacedCandidate {
+  name: string;
+  company: string;
+}
+
+export interface PlacementTestimonial {
+  name: string;
+  role: string;
+  quote: string;
+}
+
+export interface VideoTestimonial {
+  name: string;
+  title: string;
+  provider: 'youtube' | 'vimeo';
+  videoId: string;
+  thumbnail: string;
+}
+
+export interface OfferLetterSample {
+  src: string;
+  title: string;
+  sector: string;
+  /** Derived from `title` when the page is loaded — not an authored field. */
+  alt: string;
+}
+
+export interface Recruiter {
+  name: string;
+  src: string;
+}
+
+/**
+ * The Placements page (/placements) and every figure/line reused from it elsewhere (home,
+ * course pages, Explore). One document. Distinct from `PlacementPage`, the Jetking Guide's
+ * own knowledge-base record.
+ */
+export interface PlacementsPageContent {
+  id: 'placements';
+  hero: { eyebrow: string; titleLead: string; titleAccent: string; lede: string };
+  /** Load-bearing: no placement figure here implies a guarantee. */
+  disclaimer: string;
+  processSteps: PlacementProcessStep[];
+  studentBenefits: StudentBenefit[];
+  placedCandidates: PlacedCandidate[];
+  testimonials: PlacementTestimonial[];
+  videoTestimonials: VideoTestimonial[];
+  contact: { phone: string; /** `tel:` link, derived from `phone`. */ tel: string; email: string };
+  offerLetters: OfferLetterSample[];
+  recruiters: Recruiter[];
+  recruitersDisclaimer: string;
+  /** Headline placement figures shown on the home and course pages. */
+  stats: { partners: string; learnersPlaced: { value: string; label: string } };
+}
+
+/**
+ * What the CMS stores for the Placements page: `contact.tel` and each offer letter's `alt` are
+ * derived when the page is loaded, so editors never see (or desync) them.
+ */
+export type PlacementsPageRecord = Omit<PlacementsPageContent, 'contact' | 'offerLetters'> & {
+  contact: { phone: string; email: string };
+  offerLetters: { src: string; title: string; sector: string }[];
+};
+
+/** One document row in an Investors-page disclosure section. */
+export interface InvestorDocument {
+  label: string;
+  href: string;
+}
+
+/**
+ * The Investors page (/investors): SEBI (LODR) Regulation 46 and 62 disclosures. Regulatory content:
+ * company facts, named contacts and the document lists. One document.
+ */
+export interface InvestorsPageContent {
+  id: 'investors';
+  company: {
+    registeredOffice: string;
+    phone: string;
+    email: string;
+    listedAt: string;
+    scripCode: string;
+    tradingSymbol: string;
+  };
+  /** BSE live-price page. Empty hides the button. */
+  stockLive: string;
+  /** BSE corporate-announcements page. Empty hides the button. */
+  latestNews: string;
+  grievanceOfficer: { name: string; phone: string; email: string };
+  registrar: { name: string; address: string; phone: string; fax: string; email: string; website: string };
+  /** Key Managerial Personnel authorised to determine the materiality of an event or information. */
+  kmp: { name: string; designation: string; phone: string; email: string }[];
+  /** ISO date (YYYY-MM-DD) the document lists were last checked against jetking.com/investors. */
+  syncedAt: string;
+  sections: { id: string; title: string; items: InvestorDocument[] }[];
+}
+
+export type LegalBlock =
+  | { t: 'h2' | 'h3'; text: string }
+  | { t: 'p'; text: string }
+  /** Marker `m` is the source's own numbering ("a.", "3."); bullets have none. */
+  | { t: 'ul' | 'ol'; items: { m: string | null; text: string }[] }
+  | { t: 'table'; caption?: string; head: string[]; rows: string[][] }
+  | { t: 'img'; src: string; alt: string; w: number; h: number };
+
+/** A legal page (privacy, terms, enrollment terms). `slug` is its CMS id. */
+export interface LegalDoc {
+  slug: string;
+  title: string;
+  sourceUrl: string;
+  blocks: LegalBlock[];
+}
+
+/** One logo tile. A missing `file` renders a plain name tile; `dark` = light-on-dark artwork. */
+export interface LogoItem {
+  name: string;
+  file?: string;
+  dark?: boolean;
+}
+
+/** An editable list of logos (certifications, employers, partners) shown on a public page. */
+export interface LogoList {
+  id: string;
+  title: string;
+  description: string;
+  items: LogoItem[];
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
 /* Content source contract                                                    */
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -447,6 +771,15 @@ export interface ContentSource {
 
   listFaqs(): Promise<Faq[]>;
 
+  /** Published announcements (any window); the site shell picks the active one. */
+  listAnnouncements(): Promise<Announcement[]>;
+  /** Site-wide SEO controls; the in-repo defaults when none is published. */
+  getSeoSettings(): Promise<SeoSettings>;
+  /** Assistant settings; the in-repo defaults when none is published. */
+  getChatbotSettings(): Promise<ChatbotSettings>;
+  /** Published Q&A entries written for the assistant. */
+  listChatbotKnowledge(): Promise<ChatbotKnowledge[]>;
+
   /** Returns verified signals only. Unverified claims never reach a template. */
   listTrustSignals(): Promise<TrustSignal[]>;
 
@@ -463,4 +796,21 @@ export interface ContentSource {
   getHomepageVariant(id: string): Promise<HomepageVariant | null>;
 
   listPersonaRules(): Promise<PersonaRule[]>;
+
+  /** About page content. Never null: falls back to the in-repo defaults if the CMS record is missing or a draft. */
+  getAboutPage(): Promise<AboutPageContent>;
+  /** Placements page content (same fallback rule). */
+  getPlacementsPage(): Promise<PlacementsPageContent>;
+  /** Investors page content (same fallback rule). */
+  getInvestorsPage(): Promise<InvestorsPageContent>;
+
+  /** Published text overrides for a page (empty when none, or when the record is a draft). */
+  getPageCopyOverrides(id: string): Promise<Record<string, string>>;
+
+  listLegalDocuments(): Promise<LegalDoc[]>;
+  /** One legal page by slug; falls back to the in-repo copy if the CMS record is missing or a draft. */
+  getLegalDocument(slug: string): Promise<LegalDoc | null>;
+
+  /** A logo / partner list by id. Never blank: falls back to the in-repo list if the CMS record is missing or a draft. */
+  getLogoList(id: string): Promise<LogoList>;
 }

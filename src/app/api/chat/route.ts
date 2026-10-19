@@ -31,6 +31,7 @@ import { buildRetrievalQuery } from '@/features/jetking-ai/retrieval-query';
 import { EMPTY_SESSION, updateSession, type CounsellingSession } from '@/features/jetking-ai/session';
 import { structureAnswerText } from '@/features/jetking-ai/structure-answer';
 import { GUARD_FOLLOW_UPS, guardMessage } from '@/features/jetking-ai/conversation-guard';
+import { content } from '@/lib/content';
 import {
   blocksToPlainText,
   OLLAMA_ANSWER_FORMAT,
@@ -127,9 +128,7 @@ const ChatRequestSchema = z.object({
 /** Real cost per request (embeddings + a local/OpenAI generation) — must be capped. */
 const limiter = createRateLimiter({ windowMs: 60_000, max: 20 });
 
-const GATE_TEXT =
-  "I don't have verified information about that, so I'd rather not guess. A Jetking counsellor can answer it properly — and meanwhile I can help with courses, fees, eligibility, placements, or finding a centre near you. What would you like to know?";
-
+// The no-match reply is read from the assistant settings inside POST (see `GATE_TEXT` there).
 /** Natural-language framing for planner.ts's coarse nextBestQuestion key — the model phrases it, the planner only picks the topic. */
 const NEXT_QUESTION_HINT: Record<string, string> = {
   course_type: 'whether they want a full degree or a shorter, job-focused course',
@@ -443,6 +442,13 @@ export async function POST(req: Request): Promise<Response> {
     return Response.json({ ok: false, reason: 'bad-request' }, { status: 400 });
   }
 
+  // What the assistant says when it cannot answer, and whether it is on at all — edited in the admin (Chatbot → Assistant settings).
+  const settings = await content.getChatbotSettings();
+  if (!settings.enabled) {
+    return Response.json({ ok: true, text: settings.disabledMessage, reasoning: ['The assistant is switched off.'], followUps: [] });
+  }
+  const GATE_TEXT = settings.noMatchReply;
+
   const messages: ApiMessage[] = (parsed.data.messages ?? []).filter((m) => m.content.trim());
   while (messages.length && messages[0]?.role !== 'user') messages.shift();
 
@@ -457,7 +463,7 @@ export async function POST(req: Request): Promise<Response> {
   if (guard.kind === 'reply') {
     return Response.json({
       ok: true,
-      text: guard.text,
+      text: guard.reason.startsWith('off-topic') ? settings.offTopicReply : guard.text,
       reasoning: ['Read the message.', `Handled directly (${guard.reason}) — no knowledge-base lookup needed.`],
       followUps: GUARD_FOLLOW_UPS,
       session: parsed.data.session ?? EMPTY_SESSION,
@@ -713,7 +719,7 @@ export async function POST(req: Request): Promise<Response> {
             useCoords
               ? 'Matched the nearest centre by straight-line distance from the shared location.'
               : 'Matched structured centre records in the Jetking knowledge base.',
-            'Listed verified branches and programmes — nothing invented.',
+            'Listed verified branches and courses — nothing invented.',
           ],
           followUps: buildFollowUps(false),
           session: nextSession,

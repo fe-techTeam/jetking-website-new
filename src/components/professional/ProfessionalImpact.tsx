@@ -1,174 +1,88 @@
-import Link from 'next/link';
-import type { Route } from 'next';
+import { EnquiryLink } from '@/components/EnquirySheet';
+import { CardRail, Callout, FeatureCard, Reveal, Section, SectionHeader, StatBadges } from '@/components/kit';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { siteConfig } from '@/lib/site';
-import { FLEXIBLE_OPTIONS, IMPACT_STATS, PROFESSIONAL_BENEFITS } from './data';
+import type { professionalCopy } from '@/lib/content/copy/pages/professional';
+import { BENEFIT_ICONS, FLEXIBLE_OPTION_ICONS, IMPACT_STAT_ICONS } from './data';
 
-export function ProfessionalImpact() {
+export function ProfessionalImpact({ copy }: { copy: typeof professionalCopy.defaults }) {
+  const k = (key: string) => (copy as Record<string, string>)[key] ?? '';
   return (
-    <section className="bg-[var(--pro-surface)] py-10 sm:py-12 lg:py-14" aria-labelledby="pro-impact-heading">
-      <div className="shell">
-        <div className="pro-why overflow-hidden rounded-[28px] px-6 py-10 xs:rounded-[32px] sm:px-10 sm:py-12 lg:px-12 lg:py-14">
-          <div className="max-w-3xl">
-            <p className="text-[13px] font-bold tracking-[0.06em] text-[var(--pro-accent-soft)] uppercase">
-              Career outcomes
-            </p>
-            <h2
-              id="pro-impact-heading"
-              className="mt-2 font-display text-[26px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[28px] sm:text-[32px]"
-            >
-              The Impact You Can Expect from{' '}
-              <span className="text-[var(--pro-accent-soft)]">{siteConfig.name}</span>
-            </h2>
-            <p className="mt-3 max-w-[58ch] text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[15px]">
-              Measurable career growth for working professionals who upskill without leaving their
-              current role.
-            </p>
-          </div>
+    <Section tone="plain" deco="glow" labelledBy="pro-impact-heading">
+      <SectionHeader
+        id="pro-impact-heading"
+        eyebrow={copy['impact.eyebrow']}
+        title={
+          <>
+            {copy['impact.title.prefix']} <span className="text-[var(--k-red)]">{siteConfig.name}</span>
+          </>
+        }
+        lede={copy['impact.lede']}
+      />
+      <Reveal>
+        <StatBadges
+          stats={IMPACT_STAT_ICONS.map((icon, i) => ({
+            value: k(`impact.${i}.value`),
+            label: k(`impact.${i}.label`),
+            icon,
+          }))}
+        />
+      </Reveal>
 
-          <dl className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-4">
-            {IMPACT_STATS.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-[18px] border border-[var(--pro-hairline)] bg-[var(--pro-card)] p-4 xs:rounded-[20px] xs:p-5"
-              >
-                <span
-                  aria-hidden="true"
-                  className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--pro-accent-soft)]/35 bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)]"
-                >
-                  <stat.icon className="h-5 w-5" strokeWidth={1.75} />
-                </span>
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <span className="mt-3.5 block font-display text-[22px] leading-none font-extrabold text-[var(--pro-ink)] sm:text-[24px]">
-                    {stat.value}
-                  </span>
-                  <span className="mt-2 block text-[12.5px] leading-snug text-[var(--pro-ink-secondary)] sm:text-[13px]">
-                    {stat.label}
-                  </span>
-                </dd>
-              </div>
-            ))}
-          </dl>
-
-          <div className="mt-8 border-t border-[var(--pro-hairline)] pt-8 sm:mt-10 sm:pt-10">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-              <div className="max-w-xl">
-                <h3
-                  id="pro-flex-heading"
-                  className="font-display text-[18px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] sm:text-[20px]"
-                >
-                  Flexible Learning That Fits Your Life
-                </h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--pro-ink-secondary)] sm:text-[14px]">
-                  Choose a schedule that works around your job — not the other way around.
-                </p>
-              </div>
-            </div>
-
-            <ul
-              className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4"
-              aria-labelledby="pro-flex-heading"
-            >
-              {FLEXIBLE_OPTIONS.map((option) => (
-                <li key={option.label}>
-                  <div className="flex h-full flex-col items-start gap-3 rounded-[16px] border border-[var(--pro-hairline)] bg-[var(--pro-card)] p-4 sm:rounded-[18px] sm:p-5">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--pro-accent-soft)]/40 bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)]"
-                    >
-                      <option.icon className="h-5 w-5" strokeWidth={1.75} />
-                    </span>
-                    <p className="text-[13px] font-bold leading-snug text-[var(--pro-ink)] sm:text-[13.5px]">
-                      {option.label}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div
-          className={[
-            'mt-10 grid gap-6 xs:gap-7 sm:mt-12 sm:gap-8',
-            'lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10',
-            /* The quick-action rail (ActionRail) goes `fixed` to the viewport's
-               right edge from lg2 (1200px) — see its own breakpoint. This
-               grid's right-hand card reaches far enough right to sit under it
-               without this gutter; same fix as ProfessionalHero's grid. */
-            'lg2:pr-[130px] 2xl:pr-[160px]',
-          ].join(' ')}
-          aria-labelledby="pro-benefits-heading"
-        >
-          <div className="max-w-xl lg:col-span-7 xl:col-span-8">
-            <h3
-              id="pro-benefits-heading"
-              className="font-display text-[24px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:text-[26px] sm:text-[28px] lg:text-[30px]"
-            >
-              Why Professionals Choose Jetking
-            </h3>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--pro-ink-muted)] sm:text-[15px]">
-              What you get when you upskill with a programme built for working schedules.
-            </p>
-          </div>
-
-          <ul className="grid grid-cols-1 gap-3 xs:gap-3.5 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:row-start-2 xl:col-span-8">
-            {PROFESSIONAL_BENEFITS.map((benefit) => (
-              <li key={benefit.title} className="min-w-0">
-                <article className="pro-card flex h-full gap-3.5 rounded-[18px] p-4 xs:gap-4 xs:rounded-[20px] xs:p-5 sm:flex-col sm:gap-0">
-                  <span
-                    aria-hidden="true"
-                    className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-[var(--pro-accent-soft)]/40 bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)] xs:h-11 xs:w-11 sm:h-12 sm:w-12"
-                  >
-                    <benefit.icon className="h-5 w-5" strokeWidth={1.75} />
-                  </span>
-                  <div className="min-w-0 sm:mt-4">
-                    <h4 className="text-[15px] font-extrabold text-[var(--pro-ink)] xs:text-[16px]">
-                      {benefit.title}
-                    </h4>
-                    <p className="mt-1 text-[13px] leading-snug text-[var(--pro-ink-muted)] xs:mt-1.5 xs:text-[13.5px] sm:leading-relaxed">
-                      {benefit.detail}
-                    </p>
-                  </div>
-                </article>
-              </li>
-            ))}
-          </ul>
-
-          <div className="min-w-0 lg:col-span-5 lg:row-start-2 lg:self-stretch xl:col-span-4">
-            <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[22px] border border-[var(--pro-hairline)] bg-[var(--pro-card)] p-6 xs:rounded-[24px] xs:p-7 sm:rounded-[28px] sm:p-8 lg:p-7 xl:p-8">
-              <span
-                aria-hidden="true"
-                className="relative grid h-11 w-11 place-items-center rounded-2xl bg-[var(--pro-accent-tint)] text-[var(--pro-accent-soft)] shadow-[0_8px_20px_rgb(196_30_36/0.2)] xs:h-12 xs:w-12"
-              >
-                <TrendingUp className="h-5 w-5" strokeWidth={1.75} />
+      <div className="mt-14 sm:mt-16">
+        <h3 id="pro-flex-heading" className="text-[22px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:text-[26px]">
+          {copy['flex.title']}
+        </h3>
+        <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-[var(--k-ink-2)]">
+          {copy['flex.lede']}
+        </p>
+        <ul aria-labelledby="pro-flex-heading" className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {FLEXIBLE_OPTION_ICONS.map((Icon, i) => (
+            <li key={i} className="kit kit-card flex items-center gap-3 p-4 sm:p-5">
+              <span className="kit-iconwell" aria-hidden="true">
+                <Icon className="h-5 w-5" strokeWidth={1.9} />
               </span>
+              <span className="text-[15px] leading-snug font-bold text-[var(--k-ink)]">{k(`flex.${i}.label`)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-              <h3 className="relative mt-4 font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--pro-ink)] xs:mt-5 xs:text-[24px] sm:text-[26px]">
-                Ready to upgrade?
-              </h3>
-              <p className="relative mt-2.5 text-[14px] leading-relaxed text-[var(--pro-ink-secondary)] xs:mt-3 xs:text-[15px]">
-                Book a free career upgrade session — get a personalised plan without interrupting
-                your work week.
-              </p>
-
-              <Link
-                href={'/enquiry' as Route}
-                className="group/book relative mt-6 inline-flex w-full min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--pro-navy)] py-3 pr-3 pl-5 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 xs:mt-7 xs:text-[15px]"
-              >
-                <span>Book My Session Now</span>
-                <span
-                  aria-hidden="true"
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-ink-900 transition-transform duration-200 group-hover/book:translate-x-0.5"
-                >
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
-                </span>
-              </Link>
-            </div>
-          </div>
+      <div className="mt-14 sm:mt-16">
+        <h3 id="pro-benefits-heading" className="text-[22px] font-extrabold tracking-[-0.01em] text-[var(--k-ink)] sm:text-[26px]">
+          {copy['benefits.title']}
+        </h3>
+        <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-[var(--k-ink-2)]">
+          {copy['benefits.lede']}
+        </p>
+        <div className="mt-6">
+          <CardRail label={copy['benefits.rail.label']} cols={3} colsMd={2}>
+            {BENEFIT_ICONS.map((icon, i) => (
+              <FeatureCard key={i} icon={icon} title={k(`benefits.${i}.title`)}>
+                {k(`benefits.${i}.detail`)}
+              </FeatureCard>
+            ))}
+          </CardRail>
         </div>
       </div>
-    </section>
+
+      <div className="mt-12 sm:mt-14">
+        <Callout
+          icon={TrendingUp}
+          title={copy['callout.title']}
+          action={
+            <EnquiryLink
+              source="professional-impact"
+              className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
+            >
+              {copy['callout.cta.label']}
+              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+            </EnquiryLink>
+          }
+        >
+          {copy['callout.body']}
+        </Callout>
+      </div>
+    </Section>
   );
 }

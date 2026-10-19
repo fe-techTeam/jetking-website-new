@@ -1,39 +1,96 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { ChevronDown } from 'lucide-react';
-import { coursesMenu } from '@/lib/site';
+import { ArrowRight, ChevronDown, ChevronRight } from 'lucide-react';
+import type { CourseLevel } from '@/lib/content/types';
+import {
+  COURSE_LEVELS,
+  COURSE_LEVEL_LABEL as LEVEL_LABEL,
+  COURSE_TECHNOLOGIES,
+  type CourseCategoryId,
+} from '@/lib/course-categories';
+import { fill } from '@/lib/content/copy/define';
+import { useSiteCopy } from '@/components/providers/site-copy';
 import { cx } from './ui';
 
+export interface MenuCourse {
+  slug: string;
+  title: string;
+  level: CourseLevel;
+  duration: string;
+  featured: boolean;
+  categories: CourseCategoryId[];
+}
+
+interface MenuItem {
+  key: string;
+  kind: 'level' | 'tech';
+  label: string;
+  /** Named in the closing link, e.g. "degree" in "View all degree courses". */
+  viewAllName: string;
+  href: string;
+  params: Record<string, string>;
+  has: (course: MenuCourse) => boolean;
+}
+
+/** Level and technology are different questions, so the menu keeps them in two groups named as in the /courses filter ("Level", "Technology"), with the same labels. */
+const LEVEL_ITEMS: MenuItem[] = COURSE_LEVELS.map((l) => ({
+  key: `level:${l.id}`,
+  kind: 'level',
+  label: l.label,
+  viewAllName: l.id === 'short' ? 'short' : l.label.toLowerCase(),
+  href: `/courses?level=${l.id}`,
+  params: { level: l.id },
+  has: (course) => course.level === l.id,
+}));
+
+const TECH_ITEMS: MenuItem[] = COURSE_TECHNOLOGIES.map((t) => ({
+  key: `tech:${t.id}`,
+  kind: 'tech',
+  label: t.label,
+  viewAllName: t.label,
+  href: `/courses?tech=${t.id}`,
+  params: { tech: t.id },
+  has: (course) => course.categories.includes(t.id),
+}));
+
 /**
- * "Courses" header item with a category dropdown (desktop header only). Opens on hover
- * and on keyboard focus (`group-focus-within`), so the panel's links are reachable by
- * Tab. The trigger is still a real link to /courses. An entry is marked current when the
- * URL is /courses with exactly that filter (or no filter, for "All courses").
+ * "Courses" header item with a mega menu (desktop header only): categories on the left,
+ * the real courses in the highlighted category on the right — hover, focus or click a
+ * category to switch. Opens on hover and on keyboard focus (`group-focus-within`), so every
+ * link is reachable by Tab. The trigger is still a real link to /courses. A category is
+ * marked current when the URL is /courses with exactly that filter, and a course when
+ * its own page is open.
  */
-function Inner({ onDarkLead }: { onDarkLead: boolean }) {
+function Inner({ label, href, onDarkLead, courses }: { label: string; href: string; onDarkLead: boolean; courses: MenuCourse[] }) {
+  const copy = useSiteCopy();
   const pathname = usePathname();
   const search = useSearchParams();
   const onCourses = pathname === '/courses' || pathname.startsWith('/courses/');
 
-  const isCurrent = (params: Record<string, string>) => {
-    if (pathname !== '/courses') return false;
-    const keys = Object.keys(params);
-    if (keys.length === 0) return !search.get('tech') && !search.get('level');
-    return keys.every((k) => search.get(k) === params[k]);
-  };
+  const groups = [
+    { title: copy['header.coursesMenu.levelHeading'], items: LEVEL_ITEMS.filter((i) => courses.some(i.has)) },
+    { title: copy['header.coursesMenu.technologyHeading'], items: TECH_ITEMS.filter((i) => courses.some(i.has)) },
+  ].filter((g) => g.items.length > 0);
+  const all = groups.flatMap((g) => g.items);
+  const [activeKey, setActiveKey] = useState(all[0]?.key ?? '');
+  const active = all.find((i) => i.key === activeKey) ?? all[0];
+  const list = active ? courses.filter(active.has) : [];
+
+  const isCurrent = (params: Record<string, string>) =>
+    pathname === '/courses' && Object.keys(params).every((k) => search.get(k) === params[k]);
 
   return (
-    <div className="group relative">
+    <div className="group">
       <Link
-        href={'/courses' as Route}
+        href={href as Route}
         aria-current={pathname === '/courses' ? 'page' : undefined}
         aria-haspopup="true"
         className={cx(
-          'inline-flex items-center gap-1 rounded-full px-4 py-2.5 text-sm font-bold tracking-[-0.01em] transition-colors duration-200',
+          'inline-flex items-center gap-1 rounded-full px-3 py-2.5 text-sm font-bold tracking-[-0.01em] transition-colors duration-200 min-[1400px]:px-4',
           onCourses
             ? onDarkLead
               ? 'text-white'
@@ -43,7 +100,7 @@ function Inner({ onDarkLead }: { onDarkLead: boolean }) {
               : 'text-foreground-secondary hover:bg-surface hover:text-foreground',
         )}
       >
-        Courses
+        {label}
         <ChevronDown
           className="h-3.5 w-3.5 transition-transform duration-200 group-focus-within:rotate-180 group-hover:rotate-180"
           strokeWidth={2.5}
@@ -51,50 +108,122 @@ function Inner({ onDarkLead }: { onDarkLead: boolean }) {
         />
       </Link>
 
-      <div className="invisible absolute top-full left-1/2 z-[60] w-[260px] -translate-x-1/2 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-        <ul className="rounded-2xl border border-border bg-background p-2 shadow-[0_18px_40px_rgb(16_24_40/0.16)]">
-          {coursesMenu.map((item) => {
-            const active = isCurrent(item.params);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href as Route}
-                  aria-current={active ? 'page' : undefined}
-                  className={cx(
-                    'flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors',
-                    active
-                      ? 'bg-jk-50 text-[var(--accent-ink)]'
-                      : 'text-foreground-secondary hover:bg-surface hover:text-foreground',
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={cx('h-1.5 w-1.5 shrink-0 rounded-full', active ? 'bg-[var(--accent-ink)]' : 'bg-transparent')}
-                  />
-                  {item.label}
-                </Link>
+      {/* Positioned against the (sticky) header, so it is centred on the page, not on the trigger. */}
+      <div className="invisible absolute top-full left-1/2 z-[60] w-[min(960px,calc(100vw-48px))] -translate-x-1/2 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+        <div className="grid overflow-hidden rounded-2xl border border-border bg-background shadow-xl lg:grid-cols-[260px_minmax(0,1fr)]">
+          <ul className="border-r border-border bg-surface p-3" aria-label={copy['header.coursesMenu.groupsAriaLabel']}>
+            {groups.map((group, gi) => (
+              <li key={group.title} className={gi > 0 ? 'mt-3 border-t border-border pt-3' : undefined}>
+                <p className="label-mono px-3 pb-1.5 text-[11px] text-foreground-muted">{group.title}</p>
+                <ul aria-label={group.title}>
+                  {group.items.map((item) => {
+                    const highlighted = item.key === active?.key;
+                    const current = isCurrent(item.params);
+                    return (
+                      <li key={item.key}>
+                        <Link
+                          href={item.href as Route}
+                          aria-current={current ? 'page' : undefined}
+                          onMouseEnter={() => setActiveKey(item.key)}
+                          onFocus={() => setActiveKey(item.key)}
+                          className={cx(
+                            'flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-colors',
+                            highlighted
+                              ? 'bg-background text-[var(--accent-ink)] shadow-xs'
+                              : 'text-foreground-secondary hover:text-foreground',
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span
+                              aria-hidden="true"
+                              className={cx('h-1.5 w-1.5 shrink-0 rounded-full', current ? 'bg-[var(--accent-ink)]' : 'bg-transparent')}
+                            />
+                            {item.label}
+                          </span>
+                          <ChevronRight className="h-4 w-4 shrink-0 opacity-60" strokeWidth={2} aria-hidden="true" />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+            <li className="mt-2 border-t border-border pt-2">
+              <Link
+                href={'/courses' as Route}
+                aria-current={pathname === '/courses' && !search.get('tech') && !search.get('level') ? 'page' : undefined}
+                className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-[var(--accent-ink)] hover:bg-background"
+              >
+                {copy['header.coursesMenu.allCourses']}
+                <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+              </Link>
+            </li>
+          </ul>
+
+          <div className="p-5">
+            {active ? (
+              <>
+                <p className="label-mono text-[12px] text-foreground-muted">{active.label}</p>
+                <ul className="mt-3 grid gap-x-6 sm:grid-cols-2" aria-label={fill(copy['header.coursesMenu.listAriaLabel'], { group: active.label })}>
+                  {list.map((course) => {
+                    const here = pathname === `/courses/${course.slug}`;
+                    return (
+                      <li key={course.slug}>
+                        <Link
+                          href={`/courses/${course.slug}` as Route}
+                          aria-current={here ? 'page' : undefined}
+                          className={cx(
+                            'block rounded-xl px-3 py-2.5 transition-colors hover:bg-surface',
+                            here && 'bg-jk-50',
+                          )}
+                        >
+                          <span
+                            className={cx(
+                              'block text-sm font-semibold',
+                              here ? 'text-[var(--accent-ink)]' : 'text-foreground',
+                            )}
+                          >
+                            {course.title}
+                          </span>
+                          <span className="mt-0.5 block text-xs text-foreground-muted">
+                            {LEVEL_LABEL[course.level]} · {course.duration}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <Link
+                  href={active.href as Route}
+                  className="mt-3 inline-flex items-center gap-1.5 px-3 text-sm font-bold text-[var(--accent-ink)]"
+                >
+                  {active.kind === 'level'
+                    ? fill(copy['header.coursesMenu.viewAllLevel'], { level: active.viewAllName })
+                    : fill(copy['header.coursesMenu.viewAllTechnology'], { technology: active.viewAllName })}
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+                </Link>
+              </>
+            ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-export function CoursesMenu({ onDarkLead }: { onDarkLead: boolean }) {
+export function CoursesMenu({ label, href, onDarkLead, courses }: { label: string; href: string; onDarkLead: boolean; courses: MenuCourse[] }) {
   return (
     <Suspense
       fallback={
         <Link
-          href={'/courses' as Route}
+          href={href as Route}
           className="rounded-full px-4 py-2.5 text-sm font-bold tracking-[-0.01em] text-foreground-secondary"
         >
-          Courses
+          {label}
         </Link>
       }
     >
-      <Inner onDarkLead={onDarkLead} />
+      <Inner label={label} href={href} onDarkLead={onDarkLead} courses={courses} />
     </Suspense>
   );
 }

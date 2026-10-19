@@ -18,31 +18,10 @@
   --v2-shadow-card: var(--theme-shadow);
   --v2-shadow-card-hover: var(--theme-shadow-hover);
 
-  --pro-ink: var(--theme-ink);
-  --pro-ink-secondary: var(--theme-ink-secondary);
-  --pro-ink-muted: var(--theme-ink-muted);
-  --pro-accent: var(--theme-accent);
-  --pro-accent-soft: var(--theme-accent-soft);
-  --pro-accent-tint: var(--theme-accent-tint);
-  --pro-canvas: var(--theme-canvas);
-  --pro-surface: var(--theme-surface);
-  --pro-card: var(--theme-card);
-  --pro-navy: var(--theme-accent);
-  --pro-hairline: var(--theme-hairline-strong);
-  --pro-shadow: var(--theme-shadow);
-  --pro-shadow-hover: var(--theme-shadow-hover);
 
-  --pro-cyber: var(--theme-cyber-ink);
-  --pro-cloud: var(--theme-cloud-ink);
-  --pro-network: var(--theme-network-ink);
-  --pro-ai: var(--theme-ai-ink);
-  --pro-cyber-tint: var(--theme-cyber-tint);
-  --pro-cloud-tint: var(--theme-cloud-tint);
-  --pro-network-tint: var(--theme-network-tint);
-  --pro-ai-tint: var(--theme-ai-tint);
 
-  background: var(--pro-canvas);
-  color: var(--pro-ink);
+  background: var(--dc-canvas);
+  color: var(--dc-ink);
   isolation: isolate;
 }
 
@@ -90,18 +69,9 @@
   z-index: 1;
 }
 
-.pro-card {
-  background: var(--pro-card);
-  border: 1px solid var(--pro-hairline);
-  box-shadow: var(--pro-shadow);
-  transition:
-    box-shadow var(--duration-base) var(--ease-out-soft),
-    transform var(--duration-base) var(--ease-out-soft);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .pro-card-interactive:hover {
-    box-shadow: var(--pro-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-3px);
   }
 }
@@ -114,16 +84,13 @@
 }
 
 .pro-surface-band {
-  background: var(--pro-surface);
-  color: var(--pro-ink);
+  background: var(--dc-surface);
+  color: var(--dc-ink);
 }
 
 .pro-journey-panel {
-  background:
-    radial-gradient(80% 60% at 10% 20%, rgb(232 36 43 / 0.16) 0%, transparent 55%),
-    radial-gradient(70% 50% at 90% 80%, rgb(196 168 255 / 0.1) 0%, transparent 50%),
-    linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
-  border: 1px solid var(--pro-hairline);
+  background: linear-gradient(180deg, #14141c 0%, #101018 48%, #0c0c12 100%);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .pro-path-track {
@@ -146,18 +113,14 @@
 
 .pro-path-step-card-final {
   border-color: rgb(255 107 112 / 0.55);
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgb(232 36 43 / 0.14) 0%, transparent 60%),
-    rgb(20 20 28 / 0.72);
-  box-shadow:
-    0 0 24px rgb(232 36 43 / 0.18),
-    0 8px 24px rgb(0 0 0 / 0.25);
+  background: rgb(20 20 28 / 0.72);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
 }
 
 .pro-path-node-final {
-  border-color: var(--pro-accent-soft);
-  background: var(--pro-accent-tint);
-  box-shadow: 0 0 22px rgb(232 36 43 / 0.35);
+  border-color: var(--dc-accent-soft);
+  background: var(--dc-accent-tint);
+  box-shadow: none;
 }
 
 /* Continuous desktop connector — sits at vertical center of the step nodes. */
@@ -170,10 +133,8 @@
 }
 
 .pro-why {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.35) 0%, transparent 55%),
-    linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--pro-hairline);
+  background: linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
+  border: 1px solid var(--dc-hairline-strong);
 }
 
 .pro-program-track,
@@ -189,67 +150,13 @@
   display: none;
 }
 
-.pro-course-card {
-  scroll-snap-align: start;
-  isolation: isolate;
-  transition:
-    box-shadow var(--duration-base) var(--ease-out-soft),
-    transform var(--duration-base) var(--ease-out-soft);
-}
-
-.pro-course-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.45rem 0.85rem 0.45rem 0.7rem;
-  background: linear-gradient(135deg, #ff4d55 0%, #c41e24 52%, #a81820 100%);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  line-height: 1;
-  border-radius: 0 21px 0 14px;
-  box-shadow:
-    0 4px 16px rgb(196 30 36 / 0.5),
-    inset 0 1px 0 rgb(255 255 255 / 0.22);
-  pointer-events: none;
-}
-
-.pro-course-badge svg {
-  flex-shrink: 0;
-  opacity: 0.95;
-}
-
 
 @media (hover: hover) and (pointer: fine) {
   .pro-program-card:hover,
   .pro-course-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--pro-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
   }
-
-  .pro-course-track .pro-course-card:hover {
-    z-index: 2;
-  }
-}
-
-.pro-quote {
-  background: linear-gradient(145deg, #c41e24 0%, #8b1519 100%);
-  box-shadow:
-    0 0 28px rgb(196 30 36 / 0.35),
-    0 20px 44px rgb(0 0 0 / 0.45);
-}
-
-.pro-bottom-cta {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.28) 0%, transparent 55%),
-    linear-gradient(155deg, #0b1120 0%, #07070c 100%);
-  border-top: 1px solid var(--pro-hairline);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -273,53 +180,20 @@
 
 /* Light counterpart for the professional landing's local token system. */
 html:not(.dark) .professional-page {
-  --v2-canvas: #fbfafc;
+  --v2-canvas: #ffffff;
   --v2-card: #ffffff;
   --v2-hairline: rgb(20 20 31 / 0.14);
   --v2-ink: #14141f;
   --v2-ink-secondary: #475467;
   --v2-ink-muted: #5f6b7d;
-  --v2-accent: #c41e24;
+  --v2-accent: var(--color-jk-600);
   --v2-accent-soft: #a50d13;
   --v2-eyebrow: #a50d13;
   --v2-ink-bar: #171722;
   --v2-shadow-card: 0 10px 30px rgb(20 20 31 / 0.09);
-  --v2-shadow-card-hover:
-    0 0 0 1px rgb(196 30 36 / 0.35),
-    0 18px 44px rgb(60 50 90 / 0.14);
+  --v2-shadow-card-hover: 0 18px 44px rgb(60 50 90 / 0.14);
 
-  --pro-ink: #14141f;
-  --pro-ink-secondary: #475467;
-  --pro-ink-muted: #5f6b7d;
-  --pro-accent: #c41e24;
-  --pro-accent-soft: #a50d13;
-  --pro-accent-tint: #fff0f1;
-  --pro-canvas: #fbfafc;
-  --pro-surface: #f3f1f5;
-  --pro-card: #ffffff;
-  --pro-navy: #c41e24;
-  --pro-hairline: rgb(20 20 31 / 0.14);
-  --pro-shadow: 0 10px 30px rgb(20 20 31 / 0.09);
-  --pro-shadow-hover:
-    0 0 0 1px rgb(196 30 36 / 0.35),
-    0 18px 44px rgb(60 50 90 / 0.14);
 
-  --pro-cyber: #5f3aa8;
-  --pro-cloud: #2454a6;
-  --pro-network: #17683b;
-  --pro-ai: #9a4312;
-  --pro-cyber-tint: #eee8ff;
-  --pro-cloud-tint: #e9f0ff;
-  --pro-network-tint: #e8f7ed;
-  --pro-ai-tint: #fff0e7;
-}
-
-html:not(.dark) .professional-page::before {
-  background: radial-gradient(circle, rgb(232 36 43 / 0.13) 0%, transparent 68%);
-}
-
-html:not(.dark) .professional-page::after {
-  background: radial-gradient(circle, rgb(95 58 168 / 0.09) 0%, transparent 70%);
 }
 
 html:not(.dark) .professional-page .pro-float {
@@ -329,32 +203,19 @@ html:not(.dark) .professional-page .pro-float {
 }
 
 html:not(.dark) .professional-page .pro-journey-panel {
-  background:
-    radial-gradient(80% 60% at 10% 20%, rgb(232 36 43 / 0.08) 0%, transparent 55%),
-    radial-gradient(70% 50% at 90% 80%, rgb(95 58 168 / 0.07) 0%, transparent 50%),
-    linear-gradient(180deg, #ffffff 0%, #f8f6fa 100%);
+  background: #ffffff;
 }
 
 html:not(.dark) .professional-page .pro-why {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.12) 0%, transparent 55%),
-    linear-gradient(155deg, #fff5f5 0%, #ffffff 55%, #fef8f8 100%);
-}
-
-html:not(.dark) .professional-page .pro-bottom-cta {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.1) 0%, transparent 55%),
-    linear-gradient(155deg, #fef8f8 0%, #ffffff 100%);
+  background: #f8f9fb;
 }
 
 html:not(.dark) .professional-page .pro-path-step-card {
   background: rgb(255 255 255 / 0.82);
-  border-color: var(--pro-hairline);
+  border-color: var(--dc-hairline-strong);
   box-shadow: 0 8px 24px rgb(20 20 31 / 0.08);
 }
 
 html:not(.dark) .professional-page .pro-path-step-card-final {
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgb(232 36 43 / 0.08) 0%, transparent 60%),
-    #fff8f8;
+  background: #ffffff;
 }

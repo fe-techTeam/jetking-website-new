@@ -7,21 +7,9 @@
 
 .blog-page {
   /* Use global theme colors */
-  --blog-ink: var(--theme-ink);
-  --blog-ink-secondary: var(--theme-ink-secondary);
-  --blog-ink-muted: var(--theme-ink-muted);
-  --blog-accent: var(--theme-accent);
-  --blog-accent-soft: var(--theme-accent-soft);
-  --blog-accent-tint: var(--theme-accent-tint);
-  --blog-canvas: var(--theme-canvas);
-  --blog-surface: var(--theme-surface);
-  --blog-card: var(--theme-card);
-  --blog-hairline: var(--theme-hairline-strong);
-  --blog-shadow: var(--theme-shadow);
-  --blog-shadow-hover: var(--theme-shadow-hover);
 
-  background: var(--blog-canvas);
-  color: var(--blog-ink);
+  background: var(--dc-canvas);
+  color: var(--dc-ink);
   isolation: isolate;
 }
 
@@ -41,7 +29,7 @@
   right: -8%;
   width: min(720px, 70vw);
   height: min(720px, 70vw);
-  background: radial-gradient(circle, rgb(232 36 43 / 0.38) 0%, transparent 68%);
+  background: none;
 }
 
 .blog-page::after {
@@ -49,7 +37,7 @@
   left: -12%;
   width: min(640px, 65vw);
   height: min(640px, 65vw);
-  background: radial-gradient(circle, rgb(200 24 48 / 0.28) 0%, transparent 70%);
+  background: none;
   animation-delay: -3.2s;
 }
 
@@ -72,9 +60,9 @@
 /* Plain card — flat background, hairline border, ambient shadow only (same
    recipe as `.centres-card`). No gradient rim, no accent glow. */
 .blog-card {
-  background: var(--blog-card);
-  border: 1px solid var(--blog-hairline);
-  box-shadow: var(--blog-shadow);
+  background: var(--dc-card);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
   transition:
     box-shadow var(--duration-base) var(--ease-out-soft),
     transform var(--duration-base) var(--ease-out-soft),
@@ -83,37 +71,20 @@
 
 @media (hover: hover) and (pointer: fine) {
   .blog-card-interactive:hover {
-    box-shadow: var(--blog-shadow-hover);
+    box-shadow: var(--dc-shadow-hover);
     transform: translateY(-2px);
   }
 }
 
 .blog-card-interactive:focus-within {
-  box-shadow: var(--blog-shadow-hover);
-}
-
-.blog-cta-band {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.35) 0%, transparent 55%),
-    linear-gradient(155deg, #1a1218 0%, #101018 52%, #07070c 100%);
-  border: 1px solid var(--blog-hairline);
-}
-
-/* Light mode: the band is a spotlight card, not a fixed-dark one — it follows
-   the toggle like every other surface on the page. Must stay AFTER the
-   unconditional rule above; see the note on `.blog-hero-wash` below. */
-:where(html:not(.dark)) .blog-cta-band {
-  background:
-    radial-gradient(90% 80% at 15% 0%, rgb(232 36 43 / 0.12) 0%, transparent 55%),
-    linear-gradient(155deg, #fff5f5 0%, #ffffff 55%, #fef8f8 100%);
-  border: 1px solid var(--blog-hairline);
+  box-shadow: var(--dc-shadow-hover);
 }
 
 /* Hero banner — full-bleed cinematic plane + left text wash */
 .blog-hero-banner {
-  border: 1px solid var(--blog-hairline);
-  box-shadow: var(--blog-shadow);
-  background: var(--blog-canvas);
+  border: 1px solid var(--dc-hairline-strong);
+  box-shadow: var(--dc-shadow);
+  background: var(--dc-canvas);
 }
 
 .blog-hero-wash {
@@ -129,7 +100,7 @@
     linear-gradient(to top, rgb(7 7 12 / 0.55) 0%, transparent 42%);
 }
 
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   .blog-hero-wash {
     background:
       linear-gradient(to top, rgb(7 7 12 / 0.94) 0%, rgb(7 7 12 / 0.72) 42%, rgb(7 7 12 / 0.35) 100%),
@@ -157,7 +128,7 @@
     linear-gradient(to top, rgb(255 255 255 / 0.55) 0%, transparent 42%);
 }
 
-@media (max-width: 639px) {
+@media (max-width: 1023px) {
   :where(html:not(.dark)) .blog-hero-wash {
     background:
       linear-gradient(to top, rgb(255 255 255 / 0.94) 0%, rgb(255 255 255 / 0.72) 42%, rgb(255 255 255 / 0.35) 100%),
@@ -172,7 +143,7 @@
 }
 
 .blog-card-media {
-  background: var(--blog-surface);
+  background: var(--dc-surface);
 }
 
 /* Latest badge — mirrors student course Best match corner chip */
@@ -185,9 +156,9 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.45rem 0.85rem 0.45rem 0.7rem;
-  background: linear-gradient(135deg, #ff4d55 0%, #c41e24 52%, #a81820 100%);
+  background: linear-gradient(135deg, var(--color-jk-600) 0%, var(--color-jk-700) 100%);
   color: #fff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -209,7 +180,7 @@
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.2;
-  color: var(--blog-ink);
+  color: var(--dc-ink);
   text-wrap: balance;
 }
 
@@ -220,14 +191,14 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.3;
-  color: var(--blog-ink);
+  color: var(--dc-ink);
 }
 
 .blog-prose-p {
   margin-top: 1.15rem;
   font-size: 1.0625rem;
   line-height: 1.8;
-  color: var(--blog-ink-secondary);
+  color: var(--dc-ink-secondary);
 }
 
 @media (min-width: 640px) {
@@ -242,7 +213,7 @@
   padding-left: 1.35rem;
   font-size: 1.0625rem;
   line-height: 1.75;
-  color: var(--blog-ink-secondary);
+  color: var(--dc-ink-secondary);
 }
 
 @media (min-width: 640px) {
@@ -267,17 +238,17 @@
 }
 
 .blog-prose-ul li::marker {
-  color: var(--blog-accent-soft);
+  color: var(--dc-accent-soft);
 }
 
 .blog-prose-ol li::marker {
   font-weight: 700;
-  color: var(--blog-accent-soft);
+  color: var(--dc-accent-soft);
 }
 
 .blog-prose-quote {
   margin-top: 2.25rem;
-  border-left: 2px solid var(--blog-accent-soft);
+  border-left: 2px solid var(--dc-accent-soft);
   padding-left: 1.35rem;
 }
 
@@ -287,14 +258,14 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.35;
-  color: var(--blog-ink);
+  color: var(--dc-ink);
   text-wrap: balance;
 }
 
 .blog-prose-quote > footer {
   margin-top: 0.75rem;
   font-size: 0.875rem;
-  color: var(--blog-ink-muted);
+  color: var(--dc-ink-muted);
 }
 
 .blog-prose-figure {
@@ -304,7 +275,7 @@
 .blog-prose-figure figcaption {
   margin-top: 0.65rem;
   font-size: 0.8125rem;
-  color: var(--blog-ink-muted);
+  color: var(--dc-ink-muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -315,32 +286,36 @@
 }
 
 /* Light mode overrides — when HTML element doesn't have .dark class */
-html:not(.dark) .blog-page {
-  --blog-ink: #14141f;
-  --blog-ink-secondary: #464657;
-  --blog-ink-muted: #666679;
-  --blog-accent: #d81f26;
-  /* #f97066 is tuned for the dark canvas; on this light card it fails AA
-     text contrast (~2.5:1) — same fix as --stu-accent-soft/--dc-accent-soft. */
-  --blog-accent-soft: #a50d13;
-  --blog-accent-tint: #fef3f2;
-  --blog-canvas: radial-gradient(120% 100% at 88% 4%, #fff1f2 0%, #faf8fb 42%, #f1edf5 100%);
-  --blog-surface: #f8f9fb;
-  --blog-card: #ffffff;
-  --blog-hairline: rgb(20 20 31 / 0.12);
-  --blog-shadow:
-    0 6px 20px rgb(60 50 90 / 0.08),
-    0 0 12px rgb(234 28 36 / 0.04);
-  --blog-shadow-hover:
-    0 0 0 1px rgb(249 112 102 / 0.5),
-    0 8px 28px rgb(234 28 36 / 0.12),
-    0 12px 36px rgb(60 50 90 / 0.12);
-}
 
 html:not(.dark) .blog-page::before {
-  background: radial-gradient(circle, rgb(234 28 36 / 0.12) 0%, transparent 68%);
+  background: none;
 }
 
 html:not(.dark) .blog-page::after {
-  background: radial-gradient(circle, rgb(234 28 36 / 0.08) 0%, transparent 70%);
+  background: none;
 }
+
+/* Rich article HTML (written in the admin's editor) — same look as the structured blocks above. */
+.blog-rich > * + * { margin-top: 1.15rem; }
+.blog-rich h2 { margin-top: 2.75rem; font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem); font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--dc-ink); text-wrap: balance; }
+.blog-rich h3, .blog-rich h4 { margin-top: 2rem; font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.3; color: var(--dc-ink); }
+.blog-rich p, .blog-rich li { font-size: 1.0625rem; line-height: 1.8; color: var(--dc-ink-secondary); }
+@media (min-width: 640px) { .blog-rich p, .blog-rich li { font-size: 1.125rem; } }
+.blog-rich ul, .blog-rich ol { padding-left: 1.35rem; }
+.blog-rich ul { list-style: disc; }
+.blog-rich ol { list-style: decimal; }
+.blog-rich li { margin-top: 0.65rem; padding-left: 0.4rem; }
+.blog-rich li > p { margin: 0; }
+.blog-rich li::marker { color: var(--dc-accent-soft); }
+.blog-rich a { color: var(--dc-accent-soft); text-decoration: underline; text-underline-offset: 3px; }
+.blog-rich strong { color: var(--dc-ink); font-weight: 700; }
+.blog-rich blockquote { margin-top: 2.25rem; border-left: 2px solid var(--dc-accent-soft); padding-left: 1.35rem; }
+.blog-rich blockquote p { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; font-size: clamp(1.15rem, 1rem + 0.6vw, 1.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; color: var(--dc-ink); }
+.blog-rich img { max-width: 100%; height: auto; border-radius: 16px; margin-top: 2rem; }
+.blog-rich hr { border: 0; border-top: 1px solid var(--dc-hairline-strong, rgb(255 255 255 / 0.15)); margin: 2rem 0; }
+.blog-rich table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.blog-rich th, .blog-rich td { border: 1px solid var(--dc-hairline-strong, rgb(255 255 255 / 0.15)); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; color: var(--dc-ink-secondary); }
+.blog-rich th { color: var(--dc-ink); font-weight: 700; }
+.blog-rich code { font-size: 0.9em; padding: 0.1em 0.35em; border-radius: 6px; background: rgb(255 255 255 / 0.08); }
+.blog-rich [style*="text-align: center"] { text-align: center; }
+.blog-rich [style*="text-align: right"] { text-align: right; }

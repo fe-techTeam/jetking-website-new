@@ -294,7 +294,7 @@ export function formatCentreRecords(
     }
 
     if (centre.programmes.length) {
-      lines.push(centres.length > 1 ? 'Programmes:' : '### Programmes commonly offered', '');
+      lines.push(centres.length > 1 ? 'Courses:' : '### Courses commonly offered', '');
       for (const p of centre.programmes.slice(0, 6)) {
         lines.push(`- ${p.replace(/\u2014|\u2013/g, ' - ')}`);
       }
@@ -342,7 +342,7 @@ function formatCentre(text: string): string {
   return lines.join('\n').trim();
 }
 
-export function formatPassage(hit: PassageHit): string {
+function formatPassage(hit: PassageHit): string {
   const t = hit.type;
   if (t === 'fees') return formatFees(hit.text);
   if (t === 'curriculum') return formatCurriculum(hit.text);

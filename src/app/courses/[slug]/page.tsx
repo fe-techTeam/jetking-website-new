@@ -1,51 +1,13 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { ArrowRight, BadgeCheck, BriefcaseBusiness, GraduationCap, Waypoints } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { content } from '@/lib/content';
-import { brandMark } from '@/lib/course-logos';
-import { breadcrumbSchema, buildMetadata, courseSchema } from '@/lib/seo';
-import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
-import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
-import { Disclosure } from '@/components/Disclosure';
+import { coursesCopy } from '@/lib/content/copy/pages/courses';
+import { loadCopy } from '@/lib/content/copy/load';
+import { breadcrumbSchema, buildMetadata, courseSchema, faqSchema } from '@/lib/seo';
+import { JsonLd, type Crumb } from '@/components/ui';
 import { CourseViewTracker } from './CourseViewTracker';
-import { FeeDepthTracker } from './FeeDepthTracker';
-
-/*
- * Shared trust content — the same on every Jetking course page (mirrors the
- * "Why Choose Jetking" cards and headline stats that run across the live site),
- * so it lives here as static content rather than per-course data.
- */
-const JETKING_STATS = [
-  { value: '80', label: 'Years of Legacy' },
-  { value: '5000+', label: 'Recruiter partners' },
-  { value: '360°', label: 'Career support' },
-];
-
-const WHY_JETKING: Array<{ title: string; body: string; icon: LucideIcon }> = [
-  {
-    title: 'Top Indian & global faculty',
-    body: 'Learn from industry practitioners and expert mentors, not just textbooks.',
-    icon: GraduationCap,
-  },
-  {
-    title: 'Career services built in',
-    body: 'Resume building, mock interviews and interview preparation throughout the programme.',
-    icon: BriefcaseBusiness,
-  },
-  {
-    title: 'Learn your way',
-    body: 'Offline or hybrid delivery, structured to fit how and where you study.',
-    icon: Waypoints,
-  },
-  {
-    title: 'Placement support',
-    body: 'A 5000+ recruiter network with 360° placement support to launch your career.',
-    icon: BadgeCheck,
-  },
-];
+import { CoursePageTemplate } from './CoursePageTemplate';
+import { StickyCourseCta } from './StickyCourseCta';
 
 export async function generateStaticParams() {
   const courses = await content.listCourses();
@@ -60,7 +22,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const course = await content.getCourse(slug);
   if (!course) return {};
-  return buildMetadata(course.seo, `/courses/${course.slug}`);
+  // A per-course social card (course title, level, duration and photo) instead of the shared site image.
+  return buildMetadata({ ...course.seo, ogImage: course.seo.ogImage ?? `/og/course/${course.slug}` }, `/courses/${course.slug}`);
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -68,10 +31,13 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const course = await content.getCourse(slug);
   if (!course) notFound();
 
-  const [allCourses, centres, siteFaqs] = await Promise.all([
+  const copy = await loadCopy(coursesCopy);
+  const [allCourses, centres, cities, siteFaqs, placements] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
+    content.listCities(),
     content.listFaqs(),
+    content.getPlacementsPage(),
   ]);
 
   // The course's own Q&A first, then the site-wide answers about fees and placement support that
@@ -79,731 +45,50 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   // course already answers itself.
   const ownQuestions = new Set((course.faqs ?? []).map((f) => f.question.trim().toLowerCase()));
   const ownFaqs = course.faqs ?? [];
+  const paymentTopic = /instal+ment|emi|payment|pay\b/i;
+  const ownCoversPayment = ownFaqs.some((f) => paymentTopic.test(f.question));
   const feeFaqs = siteFaqs
     .filter((f) => (f.topic === 'fees' || f.topic === 'placement') && !ownQuestions.has(f.question.trim().toLowerCase()))
+    // The course already answers "payment options"; the site-wide EMI question would repeat it.
+    .filter((f) => !(ownCoversPayment && paymentTopic.test(f.question)))
     .map((f) => ({ question: f.question, answer: f.answer }));
 
   const offeringCentres = centres.filter((c) => c.coursesOffered.includes(course.slug));
-  const offeringCityCount = new Set(offeringCentres.map((c) => c.citySlug)).size;
-  const related = allCourses
-    .filter((c) => c.slug !== course.slug && c.level === course.level)
-    .slice(0, 3);
+  // Same level first, then the rest of the catalogue, so the row is full (four across on a laptop).
+  const others = allCourses.filter((c) => c.slug !== course.slug);
+  const related = [...others.filter((c) => c.level === course.level), ...others.filter((c) => c.level !== course.level)].slice(0, 4);
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Courses', path: '/courses' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.courses'], path: '/courses' },
     { name: course.shortTitle, path: `/courses/${course.slug}` },
   ];
 
-  const feeValue =
-    course.fees.disclosed && course.fees.totalInr
-      ? new Intl.NumberFormat('en-IN', {
-          style: 'currency',
-          currency: 'INR',
-          maximumFractionDigits: 0,
-        }).format(course.fees.totalInr)
-      : 'Confirmed by a counsellor';
-
   return (
     <>
-      <JsonLd data={[courseSchema(course), breadcrumbSchema(trail)]} />
+      <JsonLd
+        data={[
+          courseSchema(course),
+          breadcrumbSchema(trail),
+          ...(ownFaqs.length + feeFaqs.length ? [faqSchema([...ownFaqs, ...feeFaqs])] : []),
+        ]}
+      />
       {/* Records the behavioural signal. Client component, no effect on the document. */}
       <CourseViewTracker slug={course.slug} level={course.level} title={course.title} />
 
-      {/*
-        Future-Ready dark skin, matching the /courses index. `.dark-canvas`
-        supplies the canvas and `--dc-*` accent tokens, both already wired to the
-        site's global light/dark toggle. `.surface-inverse` is NOT used here — it
-        forces the semantic `--color-*` tokens permanently dark regardless of the
-        toggle, which broke theme switching on this page (and on /about-us and
-        /courses, fixed alongside this). `.dc-flow` keeps the sticky sidebar
-        working; the glow moves onto a self-clipping `.dc-orbs` child.
-      */}
-      <div className="dark-canvas no-orbs dc-flow pt-6 pb-16 sm:pt-8 lg:pb-20">
-        <span className="dc-orbs" aria-hidden="true" />
-
-        <div className="shell">
-          {/* ── Masthead ─────────────────────────────────────────────────── */}
-          <Breadcrumbs trail={trail} />
-
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-center lg:gap-12">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[var(--dc-accent-soft)] uppercase">
-                  {course.level}
-                </span>
-                <span className="inline-flex rounded-full border border-[var(--dc-hairline)] px-3 py-1 text-[11px] font-bold tracking-[0.08em] text-[var(--dc-ink-secondary)] uppercase">
-                  {course.duration}
-                </span>
-              </div>
-
-              {/*
-                The morph target. The explorer names the card heading with the same
-                `course-<slug>`, so navigating animates that heading into this one.
-              */}
-              <h1
-                className="dc-heading-glow mt-5 font-display text-3xl leading-[1.05] font-extrabold tracking-[-0.03em] text-balance text-[var(--dc-ink)] sm:text-4xl lg:text-5xl"
-                style={{ viewTransitionName: `course-${course.slug}` }}
-              >
-                {course.title}
-              </h1>
-              <p className="lede mt-6 max-w-[60ch] text-[var(--dc-ink-secondary)]">
-                {course.summary}
-              </p>
-            </div>
-
-            {course.heroImage ? (
-              <div className="dc-banner relative aspect-[4/3] overflow-hidden rounded-[20px] lg:aspect-[5/6]">
-                <Image
-                  src={course.heroImage.url}
-                  alt={course.heroImage.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 22rem, 100vw"
-                  className="object-cover"
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.5)] via-transparent to-transparent"
-                />
-              </div>
-            ) : null}
-          </div>
-
-          {/* ── Trust stats band (shared) ──────────────────────────────────── */}
-          <ul className="mt-10 grid grid-cols-3 gap-3 sm:mt-12 sm:gap-4">
-            {JETKING_STATS.map((stat) => (
-              <li
-                key={stat.label}
-                className="dc-panel rounded-[16px] px-3 py-5 text-center sm:px-6"
-              >
-                <p className="dc-accent-glow numeral font-display text-2xl font-extrabold sm:text-3xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-[11px] font-semibold tracking-[0.04em] text-[var(--dc-ink-muted)] uppercase sm:text-[12.5px]">
-                  {stat.label}
-                </p>
-              </li>
-            ))}
-          </ul>
-
-          {/* ── Body ───────────────────────────────────────────────────────── */}
-          <div className="mt-14 grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
-            <div className="min-w-0">
-              <div className="max-w-2xl">
-                <AdaptiveNudge
-                  id="course-detail-nudge"
-                  reserve="standard"
-                  tone="dark"
-                  variants={{
-                    student: {
-                      headline: 'Want to know how the placement year works?',
-                      ctaLabel: 'See placement support',
-                      ctaHref: '/placements',
-                    },
-                    professional: {
-                      headline: 'Need to fit this around a full-time job?',
-                      body: 'Ask a counsellor which centres run evening batches.',
-                      ctaLabel: 'Ask about batches',
-                      ctaHref: '/enquiry',
-                    },
-                    parent: {
-                      headline: 'Want the fee structure and EMI options?',
-                      body: 'A counsellor can give you the exact figures for your centre.',
-                      ctaLabel: 'Request fee details',
-                      ctaHref: '/enquiry',
-                    },
-                    franchise: {
-                      headline: 'Evaluating the programme portfolio?',
-                      ctaLabel: 'Franchise details',
-                      ctaHref: '/franchise',
-                    },
-                  }}
-                />
-              </div>
-
-              <div className="mt-14 space-y-14">
-                {/* Highlights — shown only when the live page lists key features */}
-                {course.highlights?.length ? (
-                  <section>
-                    <SectionHeading>Programme highlights</SectionHeading>
-                    <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-                      {course.highlights.map((item) => (
-                        <li
-                          key={item}
-                          className="flex gap-3 text-[15px] text-[var(--dc-ink-secondary)]"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--dc-accent)]"
-                          />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
-
-                {/* Outcomes */}
-                <section>
-                  <SectionHeading>What you will be able to do</SectionHeading>
-                  <ul className="mt-6 border-t border-[var(--dc-hairline)]">
-                    {course.outcomes.map((outcome) => (
-                      <li
-                        key={outcome}
-                        className="flex gap-4 border-b border-[var(--dc-hairline)] py-4 text-[15px] text-[var(--dc-ink-secondary)]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mt-2.5 h-px w-4 shrink-0 bg-[var(--dc-accent)]"
-                        />
-                        {outcome}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                {/* Learning journey — shown only when the programme has phases */}
-                {course.phases?.length ? (
-                  <section>
-                    <SectionHeading>Your learning journey</SectionHeading>
-                    <ol className="mt-6 space-y-3">
-                      {course.phases.map((phase, index) => (
-                        <li
-                          key={phase.title}
-                          className="dc-panel flex gap-4 rounded-[16px] p-5"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="numeral text-[13px] font-bold text-[var(--dc-accent-soft)]"
-                          >
-                            {String(index + 1).padStart(2, '0')}
-                          </span>
-                          <div className="min-w-0">
-                            <h3 className="font-display text-[16px] font-bold tracking-[-0.01em] text-[var(--dc-ink)]">
-                              {phase.title}
-                            </h3>
-                            <p className="mt-1 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                              {phase.description}
-                            </p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  </section>
-                ) : null}
-
-                {/*
-                  Curriculum as progressive disclosure. Every topic is in the
-                  server-rendered HTML — Disclosure hides with height, never with
-                  conditional rendering — so this reads as a full syllabus to a
-                  crawler and as an explorable structure to a visitor. When the
-                  full grouped curriculum exists it is shown; otherwise the
-                  condensed module list is the fallback.
-                */}
-                <section>
-                  <div className="flex items-baseline justify-between gap-4">
-                    <SectionHeading>What you will study</SectionHeading>
-                    <span className="label-mono numeral shrink-0">
-                      {course.curriculum?.length
-                        ? `${course.curriculum.reduce((n, t) => n + t.items.length, 0)} topics`
-                        : `${course.modules.length} modules`}
-                    </span>
-                  </div>
-                  <div className="mt-6 border-t border-[var(--dc-hairline)]">
-                    {course.curriculum?.length
-                      ? course.curriculum.map((term, index) => (
-                          <Disclosure
-                            key={term.title}
-                            tone="flush"
-                            defaultOpen={index === 0}
-                            summary={term.title}
-                            meta={`${term.items.length} topics`}
-                          >
-                            <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2">
-                              {term.items.map((item) => (
-                                <li
-                                  key={item}
-                                  className="flex gap-2.5 text-[14px] text-[var(--dc-ink-secondary)]"
-                                >
-                                  <span
-                                    aria-hidden="true"
-                                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--dc-accent)]"
-                                  />
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </Disclosure>
-                        ))
-                      : course.modules.map((module, index) => (
-                          <Disclosure
-                            key={module}
-                            tone="flush"
-                            defaultOpen={index === 0}
-                            summary={module}
-                            meta={`Module ${String(index + 1).padStart(2, '0')}`}
-                          >
-                            <p className="measure text-[15px]">
-                              Taught in person at your centre, with lab work and assessment
-                              built into the module rather than deferred to the end of the
-                              programme.
-                            </p>
-                          </Disclosure>
-                        ))}
-                  </div>
-                </section>
-
-                {/* Tools & technologies — shown only when listed on the page */}
-                {course.tools?.length ? (
-                  <section>
-                    <SectionHeading>Tools &amp; technologies</SectionHeading>
-                    <ul className="mt-6 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-6 md:grid-cols-5 lg:grid-cols-6">
-                      {course.tools.map((tool) => (
-                        <li key={tool}>
-                          <BrandTile name={tool} />
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
-
-                {course.certifications.length ? (
-                  <section>
-                    <SectionHeading>Industry certifications</SectionHeading>
-                    <ul className="mt-6 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-6 md:grid-cols-5 lg:grid-cols-6">
-                      {course.certifications.map((cert) => (
-                        <li key={cert}>
-                          <BrandTile name={cert} />
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
-
-                {/* The Power of Three — Certificate | Degree | Offer letter. The
-                   certificate card only renders for the courses that already
-                   have their own real specimen image; Degree Picture and
-                   Sample Offer Letter are generic, illustrative mockups
-                   shared across every course, so they always render. Grid
-                   columns match the actual card count (2 or 3) rather than a
-                   fixed 3-up — a 2-card row in a 3-column grid would leave a
-                   visibly empty slot on wide screens. */}
-                <section>
-                  <SectionHeading>The Power of Three</SectionHeading>
-                  <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                    Skills you can practise, a degree you can show, and a career outcome you can
-                    point to.
-                  </p>
-                  {(() => {
-                    const cards = [
-                      course.certificateImage
-                        ? {
-                            key: 'certificate',
-                            label: 'Jetking Certificate',
-                            image: course.certificateImage,
-                            caption: 'Specimen shown — issued in your name on successful completion.',
-                          }
-                        : null,
-                      {
-                        key: 'degree',
-                        label: 'Degree Picture',
-                        image: { url: '/courses/sample-degree.svg', alt: 'Sample degree certificate' },
-                        caption: 'Illustrative sample — actual degree is issued by our university partner.',
-                      },
-                      {
-                        key: 'offer',
-                        label: 'Sample Offer Letter',
-                        image: { url: '/courses/sample-offer-letter.svg', alt: 'Sample job offer letter' },
-                        caption: 'Illustrative sample — actual offer letters vary by employer.',
-                      },
-                    ].filter((card): card is NonNullable<typeof card> => card !== null);
-
-                    return (
-                      <div
-                        className={`mt-6 grid gap-5 sm:grid-cols-2 ${
-                          cards.length >= 3 ? 'lg:grid-cols-3' : 'lg:max-w-[47rem]'
-                        }`}
-                      >
-                        {cards.map((card) => (
-                          <figure
-                            key={card.key}
-                            className="dc-panel flex h-full flex-col overflow-hidden rounded-[16px] p-3 sm:p-4"
-                          >
-                            <div className="flex h-56 items-center justify-center overflow-hidden rounded-[12px] bg-white">
-                              {/* eslint-disable-next-line @next/next/no-img-element -- local SVG/JPEG specimens; next/image's optimizer rejects SVGs without extra config */}
-                              <img
-                                src={card.image.url}
-                                alt={card.image.alt}
-                                className="h-full w-full object-contain"
-                              />
-                            </div>
-                            <figcaption className="mt-3 px-1">
-                              <p className="text-[15px] font-bold text-[var(--dc-ink)]">{card.label}</p>
-                              <p className="mt-1 text-[13px] text-[var(--dc-ink-muted)]">{card.caption}</p>
-                            </figcaption>
-                          </figure>
-                        ))}
-                      </div>
-                    );
-                  })()}
-                </section>
-
-                {/* Career opportunities — shown only when roles are listed */}
-                {course.careerRoles?.length ? (
-                  <section>
-                    <SectionHeading>Where this can take you</SectionHeading>
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {course.careerRoles.map((role) => (
-                        <span
-                          key={role}
-                          className="inline-flex items-center gap-2 rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[13px] font-semibold text-[var(--dc-ink)]"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="h-1.5 w-1.5 rounded-full bg-[var(--dc-accent-soft)]"
-                          />
-                          {role}
-                        </span>
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-
-                {offeringCentres.length ? (
-                  <section>
-                    <SectionHeading>Where you can study this</SectionHeading>
-                    <div className="dc-panel mt-6 flex flex-col gap-5 rounded-[16px] p-6 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="min-w-0">
-                        <p className="font-display text-[17px] font-bold tracking-[-0.01em] text-[var(--dc-ink)]">
-                          Available at{' '}
-                          <span className="numeral text-[var(--dc-accent-soft)]">
-                            {offeringCentres.length}
-                          </span>{' '}
-                          {offeringCentres.length === 1 ? 'centre' : 'centres'}
-                        </p>
-                        <p className="mt-1 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                          Across {offeringCityCount}{' '}
-                          {offeringCityCount === 1 ? 'city' : 'cities'} — pick a location that
-                          works for you.
-                        </p>
-                      </div>
-                      <Link
-                        href="/centres"
-                        className="dc-cta inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold"
-                      >
-                        Browse centres
-                        <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-                      </Link>
-                    </div>
-                  </section>
-                ) : null}
-
-                {/* FAQs — the course's own Q&A plus the site-wide fees and placement answers */}
-                {ownFaqs.length + feeFaqs.length ? (
-                  <section>
-                    <SectionHeading>Frequently asked questions</SectionHeading>
-                    <div className="mt-6 border-t border-[var(--dc-hairline)]">
-                      {ownFaqs.map((faq) => (
-                        <Disclosure key={faq.question} tone="flush" summary={faq.question}>
-                          <p className="measure text-[15px]">{faq.answer}</p>
-                        </Disclosure>
-                      ))}
-                      {/* The fees / placement answers: reading this block is the `fee-depth` signal. */}
-                      <div id="course-fee-faqs">
-                        {feeFaqs.map((faq) => (
-                          <Disclosure key={faq.question} tone="flush" summary={faq.question}>
-                            <p className="measure text-[15px]">{faq.answer}</p>
-                          </Disclosure>
-                        ))}
-                      </div>
-                    </div>
-                    {feeFaqs.length ? <FeeDepthTracker targetId="course-fee-faqs" courseSlug={course.slug} /> : null}
-                  </section>
-                ) : null}
-              </div>
-            </div>
-
-            {/* ── Sidebar ──────────────────────────────────────────────────
-                Fees are shown as a policy statement, never a figure unless the
-                CMS holds an authoritative one — the same rule as the AI Guide. */}
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="dc-panel rounded-[20px] p-7">
-                <p className="dc-eyebrow label-mono">At a glance</p>
-                <dl className="mt-5">
-                  <SpecRow label="Duration" value={course.duration} numeric />
-                  <SpecRow label="Eligibility" items={eligibilityItems(course.eligibility)} />
-                  {course.university ? (
-                    <SpecRow label="Awarded by" value={course.university} />
-                  ) : null}
-                  <SpecRow label="Fees" value={feeValue} note={course.fees.note} />
-                  {course.fees.emiAvailable ? (
-                    <SpecRow label="Payment" value="EMI options available" />
-                  ) : null}
-                </dl>
-
-                <Link
-                  href="/enquiry"
-                  className="dc-cta mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold"
-                >
-                  Talk to a counsellor
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/enquiry"
-                  className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline)] px-6 text-sm font-semibold text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[rgb(255_100_105/0.08)]"
-                >
-                  Download brochure
-                </Link>
-              </div>
-            </aside>
-          </div>
-
-          {/* Where our alumni work — shown only when the page names companies */}
-          {course.hiringPartners?.length ? (
-            <section className="mt-16 border-t border-[var(--dc-hairline)] pt-12">
-              <SectionHeading>Where our alumni work</SectionHeading>
-              <ul className="mt-6 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-6 md:grid-cols-5 lg:grid-cols-6">
-                {course.hiringPartners.map((company) => (
-                  <li key={company}>
-                    <BrandTile name={company} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          {/* ── Why choose Jetking (shared) ────────────────────────────────── */}
-          <section className="mt-16 border-t border-[var(--dc-hairline)] pt-12">
-            <SectionHeading>Why choose Jetking</SectionHeading>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {WHY_JETKING.map((card) => {
-                const Icon = card.icon;
-                return (
-                  <div key={card.title} className="dc-panel rounded-[16px] p-6">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                    >
-                      <Icon className="h-5 w-5" strokeWidth={1.85} />
-                    </span>
-                    <h3 className="mt-4 font-display text-[16px] font-bold tracking-[-0.01em] text-[var(--dc-ink)]">
-                      {card.title}
-                    </h3>
-                    <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
-                      {card.body}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {related.length ? (
-            <section className="mt-20 border-t border-[var(--dc-hairline)] pt-12">
-              <div className="flex flex-wrap items-baseline justify-between gap-4">
-                <SectionHeading>Similar programmes</SectionHeading>
-                <Link
-                  href="/courses"
-                  className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]"
-                >
-                  Full catalogue
-                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-                </Link>
-              </div>
-              <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-                {related.map((item) => (
-                  <li key={item.slug} className="relative h-full">
-                    <Link
-                      href={`/courses/${item.slug}`}
-                      className="dc-card-shell dc-card-interactive group/card block h-full"
-                    >
-                      <div className="dc-card flex h-full flex-col overflow-hidden">
-                        <div className="dc-card-media relative aspect-[16/10] overflow-hidden">
-                          {item.heroImage ? (
-                            <Image
-                              src={item.heroImage.url}
-                              alt=""
-                              fill
-                              sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 90vw"
-                              className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
-                            />
-                          ) : null}
-                          <div
-                            aria-hidden="true"
-                            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgb(7_7_12/0.65)] via-transparent to-transparent"
-                          />
-                        </div>
-
-                        <div className="flex flex-1 flex-col p-5 sm:p-6">
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                            <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[11px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
-                              {item.level}
-                            </span>
-                            <span className="numeral text-[12.5px] font-semibold text-[var(--dc-ink-muted)]">
-                              {item.duration}
-                            </span>
-                          </div>
-
-                          <h3 className="mt-3.5 font-display text-[17px] leading-snug font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] transition-colors group-hover/card:text-[var(--dc-accent-soft)] sm:text-[18px]">
-                            {item.shortTitle}
-                          </h3>
-
-                          <p className="mt-2 line-clamp-2 flex-1 text-[13.5px] leading-relaxed text-[var(--dc-ink-muted)]">
-                            {item.eligibility}
-                          </p>
-
-                          <div className="mt-5 flex items-center justify-between gap-3">
-                            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">
-                              View programme
-                            </span>
-                            <span
-                              aria-hidden="true"
-                              className="dc-cta grid h-10 w-10 shrink-0 place-items-center rounded-full"
-                            >
-                              <ArrowRight
-                                className="h-[18px] w-[18px] transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover/card:translate-x-0.5"
-                                strokeWidth={2.25}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-        </div>
-      </div>
+      <CoursePageTemplate
+        course={course}
+        trail={trail}
+        centres={centres}
+        cities={cities}
+        offeringCentres={offeringCentres}
+        related={related}
+        ownFaqs={ownFaqs}
+        feeFaqs={feeFaqs}
+        placements={placements}
+        copy={copy}
+      />
+      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} copy={copy} />
     </>
-  );
-}
-
-/** Logo above label — used for the tools / certifications grids. */
-function BrandTile({ name }: { name: string }) {
-  const mark = brandMark(name);
-  const lightMark = mark ? isLightBrandColor(mark.color) : false;
-  const initials = name
-    .replace(/[^A-Za-z0-9+/]+/g, ' ')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.slice(0, part.length <= 4 ? part.length : 1).toUpperCase())
-    .join('')
-    .slice(0, 4);
-
-  return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <span
-        aria-hidden="true"
-        className={`grid h-16 w-16 place-items-center overflow-hidden rounded-2xl border border-[var(--dc-hairline)] sm:h-[4.5rem] sm:w-[4.5rem] ${
-          mark?.painted
-            ? 'bg-transparent p-0'
-            : lightMark
-              ? 'bg-[rgb(20_20_28)]'
-              : 'bg-white'
-        }`}
-      >
-        {mark?.painted ? (
-          // eslint-disable-next-line @next/next/no-img-element -- local painted SVG badge
-          <img src={mark.src} alt="" className="h-full w-full object-cover" />
-        ) : mark ? (
-          <span
-            className="dc-logo !h-9 !w-9 sm:!h-10 sm:!w-10"
-            style={
-              {
-                '--logo': `url(${mark.src})`,
-                color: mark.color,
-              } as React.CSSProperties
-            }
-          />
-        ) : (
-          <span className="font-display text-[15px] font-extrabold tracking-tight text-ink-500">
-            {initials || '·'}
-          </span>
-        )}
-      </span>
-      <span className="max-w-[8.5rem] text-[13px] leading-snug font-semibold text-[var(--dc-ink-secondary)]">
-        {name}
-      </span>
-    </div>
-  );
-}
-
-/** True when a brand hex would vanish on a white tile. */
-function isLightBrandColor(hex: string): boolean {
-  const raw = hex.replace('#', '');
-  if (raw.length !== 6) return false;
-  const r = parseInt(raw.slice(0, 2), 16);
-  const g = parseInt(raw.slice(2, 4), 16);
-  const b = parseInt(raw.slice(4, 6), 16);
-  // Relative luminance — treat near-white / neon yellows as needing a dark pad.
-  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.82;
-}
-
-/** Section heading with the signature red keyline. */
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <div>
-      <span aria-hidden="true" className="block h-0.5 w-10 rounded-full bg-[var(--dc-accent)]" />
-      <h2 className="mt-4 font-display text-2xl font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-3xl">
-        {children}
-      </h2>
-    </div>
-  );
-}
-
-/** Split a prose eligibility line into scannable bullets (by sentence). */
-function eligibilityItems(text: string): string[] {
-  const parts = text
-    .split(/(?<=\.)\s+(?=[A-Z0-9])/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  return parts.length ? parts : [text];
-}
-
-function SpecRow({
-  label,
-  value,
-  items,
-  note,
-  numeric,
-}: {
-  label: string;
-  value?: string;
-  items?: string[];
-  note?: string;
-  numeric?: boolean;
-}) {
-  return (
-    <div className="border-t border-[var(--dc-hairline)] py-3.5 first:border-t-0 first:pt-0">
-      <dt className="text-sm text-[var(--dc-ink-muted)]">{label}</dt>
-      {items?.length ? (
-        <dd className="mt-2">
-          <ul className="space-y-2">
-            {items.map((item) => (
-              <li
-                key={item}
-                className="flex gap-2.5 text-[13.5px] leading-snug font-semibold text-[var(--dc-ink)]"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--dc-accent)]"
-                />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </dd>
-      ) : (
-        <dd className={`mt-0.5 font-semibold text-[var(--dc-ink)]${numeric ? ' numeral' : ''}`}>
-          {value}
-        </dd>
-      )}
-      {note ? <dd className="mt-1 text-sm text-[var(--dc-ink-muted)]">{note}</dd> : null}
-    </div>
   );
 }

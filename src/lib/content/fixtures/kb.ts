@@ -8,7 +8,7 @@ export const policies: Policy[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Admissions are handled at the centre level. Counsellors verify eligibility against the published programme requirements and guide applicants through documentation and batch selection.',
+        text: 'Admissions are handled at the centre level. Counsellors verify eligibility against the published course requirements and guide applicants through documentation and batch selection.',
       },
       {
         type: 'heading',
@@ -17,7 +17,7 @@ export const policies: Policy[] = [
       },
       {
         type: 'paragraph',
-        text: 'Each programme lists its own eligibility on the course page. Degree tracks typically require completion of Class 12; short certifications may accept working professionals with relevant experience.',
+        text: 'Each course lists its own eligibility on the course page. Degree tracks typically require completion of Class 12; short certifications may accept working professionals with relevant experience.',
       },
     ],
     seo: {
@@ -33,12 +33,12 @@ export const policies: Policy[] = [
     body: [
       {
         type: 'paragraph',
-        text: 'Programme fees vary by centre and batch. Published fee figures on the site are structured data only when Jetking has authorised disclosure. For a quote, speak to a counsellor at your nearest centre.',
+        text: 'Course fees vary by centre and batch. Published fee figures on the site are structured data only when Jetking has authorised disclosure. For a quote, speak to a counsellor at your nearest centre.',
       },
     ],
     seo: {
       title: 'Refund and fee policy',
-      description: 'Fee and refund guidance for Jetking programmes.',
+      description: 'Fee and refund guidance for Jetking courses.',
     },
     updatedAt: '2026-03-01T00:00:00.000Z',
   },
@@ -65,11 +65,11 @@ export const placements: PlacementPage[] = [
     id: 'main',
     title: 'Placement support',
     summary:
-      'Jetking counsellors and placement teams help students prepare for interviews and connect with hiring partners. Outcomes vary by programme, centre, and student effort — no placement is guaranteed.',
+      'Jetking counsellors and placement teams help students prepare for interviews and connect with hiring partners. Outcomes vary by course, centre, and student effort — no placement is guaranteed.',
     body: [
       {
         type: 'paragraph',
-        text: 'Placement support includes resume workshops, mock interviews, and introductions to hiring partners where available. Results depend on the student, the market, and the programme.',
+        text: 'Placement support includes resume workshops, mock interviews, and introductions to hiring partners where available. Results depend on the student, the market, and the course.',
       },
     ],
     stats: [
@@ -94,7 +94,7 @@ export const homepageVariants: HomepageVariant[] = [
     banner: {
       eyebrow: "India's trusted IT training brand",
       headline: 'Build a career in cloud, cyber security and IT infrastructure.',
-      lede: 'Degree, diploma and certification programmes built around industry certifications — taught in person at centres across India.',
+      lede: 'Degree, diploma and certification courses built around industry certifications — taught in person at centres across India.',
     },
     cta: { label: 'Explore courses', href: '/courses' },
     testimonials: [
@@ -125,7 +125,7 @@ export const homepageVariants: HomepageVariant[] = [
     banner: {
       eyebrow: 'Mumbai · AI & emerging tech',
       headline: 'Continue your AI and cloud journey in Mumbai.',
-      lede: 'Pick up where you left off — programmes and centres near you, with counsellors who know the local batches.',
+      lede: 'Pick up where you left off — courses and centres near you, with counsellors who know the local batches.',
     },
     cta: { label: 'Explore AI courses in Mumbai', href: '/courses' },
     courseBoost: ['bca-cloud-cyber-security'],
@@ -157,7 +157,7 @@ export const homepageVariants: HomepageVariant[] = [
     banner: {
       eyebrow: 'After 12th',
       headline: 'Find a degree track that gets you earning while you learn.',
-      lede: 'BCA and diploma programmes built around industry certifications — no entrance-test gatekeeping.',
+      lede: 'BCA and diploma courses built around industry certifications — no entrance-test gatekeeping.',
     },
     cta: { label: 'Find a course after 12th', href: '/courses' },
     courseBoost: ['bca-cloud-cyber-security', 'pc-hardware-support'],
@@ -200,7 +200,7 @@ export const homepageVariants: HomepageVariant[] = [
     banner: {
       eyebrow: 'Upskill',
       headline: 'Compare certification tracks that fit around a full-time job.',
-      lede: 'Short and professional programmes with evening and weekend options at many centres.',
+      lede: 'Short and professional courses with evening and weekend options at many centres.',
     },
     cta: { label: 'Compare upskilling tracks', href: '/professional' },
     courseBoost: ['cloud-computing-engineer-ai', 'ethical-hacking-specialist'],

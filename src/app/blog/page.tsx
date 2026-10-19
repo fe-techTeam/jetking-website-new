@@ -1,17 +1,14 @@
 import type { Metadata } from 'next';
 import { content } from '@/lib/content';
-import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
+import { breadcrumbSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { BlogLanding } from '@/components/blog/BlogLanding';
+import { blogCopy } from '@/lib/content/copy/pages/blog';
+import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 
-export const metadata: Metadata = buildMetadata(
-  {
-    title: 'Career Guidance & IT Insights | Jetking Blog',
-    description:
-      'Guidance on choosing an IT course, switching careers, and what employers look for — written for students, working professionals and parents.',
-  },
-  '/blog',
-);
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(blogCopy, '/blog');
+}
 
 /**
  * Blog index — Future-Ready dark canvas (home / student language).
@@ -27,6 +24,7 @@ export default async function BlogPage({
   searchParams: Promise<{ category?: string; q?: string; page?: string }>;
 }) {
   const { category: rawCategory, q: rawQuery, page: rawPage } = await searchParams;
+  const copy = await loadCopy(blogCopy);
   const allPosts = await content.listPosts();
 
   const categories = [...new Set(allPosts.map((p) => p.category))].sort((a, b) =>
@@ -44,14 +42,15 @@ export default async function BlogPage({
   const initialPage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
   const trail: Crumb[] = [
-    { name: 'Home', path: '/' },
-    { name: 'Blog', path: '/blog' },
+    { name: copy['breadcrumb.home'], path: '/' },
+    { name: copy['breadcrumb.blog'], path: '/blog' },
   ];
 
   return (
     <>
       <JsonLd data={breadcrumbSchema(trail)} />
       <BlogLanding
+        copy={copy}
         allPosts={allPosts}
         posts={posts}
         categories={categories}

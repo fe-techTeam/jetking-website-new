@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { Leader } from './data';
+import type { Leader } from '@/lib/content/types';
 
 /** Photo when supplied, otherwise an initials placeholder — never a fabricated image. */
 export function LeaderAvatar({ leader }: { leader: Leader }) {
@@ -9,8 +9,7 @@ export function LeaderAvatar({ leader }: { leader: Leader }) {
         src={leader.photoUrl}
         alt={leader.name}
         fill
-        loading="eager"
-        sizes="128px"
+        sizes="160px"
         className="object-cover object-top"
       />
     );

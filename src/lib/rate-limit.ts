@@ -6,7 +6,7 @@
  * (serverless, autoscaled containers, multiple regions) a visitor spread across
  * N instances gets N× the intended allowance. That is acceptable for development,
  * for staging, and for a single always-on Node process. It is NOT acceptable for a
- * production deployment that scales horizontally while `/api/guide` spends real
+ * production deployment that scales horizontally while `/api/chat` spends real
  * money per request.
  *
  * `assertProductionReady()` turns that from tribal knowledge into a startup failure:
@@ -17,7 +17,9 @@
  * `createRateLimiter()`. No route changes.
  */
 
-export interface RateLimitResult {
+import { clientIpFromHeaders } from '@/lib/client-ip';
+
+interface RateLimitResult {
   allowed: boolean;
   /** Seconds until the window resets. Sent as `retry-after`. */
   retryAfter: number;
@@ -87,7 +89,7 @@ function assertProductionReady(store: string): void {
 
   throw new Error(
     'Rate limiting is in-memory, which under-limits on a multi-instance deployment ' +
-      'while /api/guide spends real money per request. Either wire a shared store ' +
+      'while /api/chat spends real money per request. Either wire a shared store ' +
       '(RATE_LIMIT_STORE=<store>) or, if this deploys as a single always-on instance, ' +
       'set RATE_LIMIT_ALLOW_MEMORY=true to accept the behaviour explicitly.',
   );
@@ -109,13 +111,8 @@ export function createRateLimiter(config: RateLimitConfig): RateLimiter {
   }
 }
 
-/** Best-effort client identity. Behind a proxy, the first XFF hop is the client. */
+
+/** Client identity for limiter keys: see `client-ip.ts` — only proxy-controlled headers are trusted. */
 export function clientKey(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  return (
-    forwarded?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    request.headers.get('cf-connecting-ip') ??
-    'anonymous'
-  );
+  return clientIpFromHeaders(request.headers);
 }

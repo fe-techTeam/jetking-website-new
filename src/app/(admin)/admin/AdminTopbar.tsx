@@ -2,14 +2,24 @@
 
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
-import { Menu } from 'lucide-react';
+import { ExternalLink, Menu, Search } from 'lucide-react';
+import { UserMenu } from './UserMenu';
 
 export function AdminTopbar({
   items,
+  user,
+  liveContent,
+  logoutAction,
   onMenuClick,
+  menuExpanded,
 }: {
   items: Array<{ href: Route; label: string; icon: string }>;
+  user: { name: string; role: string };
+  /** `CONTENT_SOURCE=admin` — whether saves here are what the public site actually reads. */
+  liveContent: boolean;
+  logoutAction: () => void | Promise<void>;
   onMenuClick: () => void;
+  menuExpanded: boolean;
 }) {
   const pathname = usePathname();
   const current =
@@ -17,20 +27,79 @@ export function AdminTopbar({
       ?.label ?? 'Dashboard';
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-background px-4 lg:px-8">
+    <header className="adm-topbar sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 px-4 lg:px-8">
       <button
         type="button"
         onClick={onMenuClick}
-        aria-label="Open navigation"
-        className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-[var(--admin-radius)] text-foreground-secondary transition-colors hover:bg-surface hover:text-foreground lg:hidden"
+        aria-label="Toggle navigation"
+        aria-expanded={menuExpanded}
+        className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-[12px] border border-border text-foreground-secondary transition-colors hover:border-border-medium hover:bg-surface hover:text-foreground"
       >
         <Menu aria-hidden="true" className="h-5 w-5" />
       </button>
 
-      <div className="flex items-baseline gap-2 text-sm">
-        <span className="text-foreground-muted">Admin</span>
-        <span className="text-foreground-muted">/</span>
-        <span className="font-medium text-foreground">{current}</span>
+      <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2 text-sm">
+        <span className="hidden text-foreground-muted sm:inline">Admin</span>
+        <span aria-hidden="true" className="hidden text-border-medium sm:inline">
+          /
+        </span>
+        <span aria-current="page" className="truncate font-semibold text-foreground">
+          {current}
+        </span>
+      </nav>
+
+      <form action="/admin/search" role="search" className="ml-auto hidden md:block md:mr-0">
+        <label className="relative block">
+          <span className="sr-only">Search content</span>
+          <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
+          <input
+            name="q"
+            type="search"
+            placeholder="Search content…"
+            style={{ paddingLeft: 36 }}
+            className="admin-input h-10 w-56 text-sm lg:w-72"
+          />
+        </label>
+      </form>
+
+      <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-0">
+        <span
+          title={
+            liveContent
+              ? 'Saves here are what the public site reads.'
+              : 'The public site reads repo fixtures, so saves here will not go live.'
+          }
+          className={`hidden items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold sm:inline-flex ${
+            liveContent
+              ? 'border-[var(--color-growth-600)]/25 bg-[var(--color-growth-50)] text-[#067647]'
+              : 'border-[var(--color-signal-600)]/30 bg-[var(--color-signal-50)] text-[#b54708]'
+          }`}
+        >
+          <span aria-hidden="true" className="adm-dot" />
+          {liveContent ? 'Content is live' : 'Fixtures mode'}
+        </span>
+
+        <a
+          href="/admin/search"
+          aria-label="Search content"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] border border-border text-foreground-secondary md:hidden"
+        >
+          <Search aria-hidden="true" className="h-5 w-5" />
+        </a>
+
+        <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="adm-btn-ghost inline-flex min-h-11 items-center gap-2 rounded-[12px] px-3.5 text-sm font-semibold sm:min-h-10"
+        >
+          <span className="hidden sm:inline">View site</span>
+          <ExternalLink aria-hidden="true" className="h-4 w-4" />
+          <span className="sr-only sm:hidden">View site</span>
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+
+        <UserMenu variant="topbar" name={user.name} role={user.role} logoutAction={logoutAction} />
       </div>
     </header>
   );

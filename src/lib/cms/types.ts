@@ -11,4 +11,14 @@ export type CmsCollection =
   | 'placements'
   | 'trust_signals'
   | 'homepage_variants'
-  | 'persona_rules';
+  | 'persona_rules'
+  | 'about_page'
+  | 'placements_page'
+  | 'investors_page'
+  | 'legal_documents'
+  | 'logo_lists'
+  | 'page_copy'
+  | 'announcements'
+  | 'seo_settings'
+  | 'chatbot_settings'
+  | 'chatbot_knowledge';

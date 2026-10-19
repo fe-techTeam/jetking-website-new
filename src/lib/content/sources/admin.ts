@@ -3,10 +3,15 @@ import type {
   Centre,
   City,
   ContentSource,
+  Announcement,
+  SeoSettings,
+  ChatbotKnowledge,
   Course,
   Faculty,
   Faq,
   HomepageVariant,
+  LegalDoc,
+  LogoList,
   PersonaRule,
   PlacementPage,
   Policy,
@@ -14,6 +19,11 @@ import type {
   TrustSignal,
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
+import { chatbotSettingsDefaults } from '../fixtures/chatbot';
+import { seoSettingsDefaults } from '../fixtures/seo-settings';
+import { legalDefaults } from '../fixtures/legal';
+import { logoListFallback } from '../fixtures/logo-lists';
+import { aboutFallback, investorsFallback, normalizeAbout, normalizeInvestors, normalizePlacements, placementsFallback } from '../page-content';
 
 function published<T extends { status: string }>(rows: T[]): Omit<T, 'status'>[] {
   return rows.map(({ status: _s, ...rest }) => rest);
@@ -78,6 +88,24 @@ export const adminSource: ContentSource = {
     return published(await listCollection('faqs', { publishedOnly: true })) as Faq[];
   },
 
+  async getChatbotSettings() {
+    const [record] = await listCollection('chatbot_settings', { publishedOnly: true });
+    return record ? { ...chatbotSettingsDefaults, ...published([record])[0]! } : chatbotSettingsDefaults;
+  },
+
+  async listChatbotKnowledge() {
+    return published(await listCollection('chatbot_knowledge', { publishedOnly: true })) as ChatbotKnowledge[];
+  },
+
+  async getSeoSettings() {
+    const [record] = await listCollection('seo_settings', { publishedOnly: true });
+    return record ? { ...seoSettingsDefaults, ...published([record])[0]!, organization: { ...seoSettingsDefaults.organization, ...(record as unknown as SeoSettings).organization } } : seoSettingsDefaults;
+  },
+
+  async listAnnouncements() {
+    return published(await listCollection('announcements', { publishedOnly: true })) as Announcement[];
+  },
+
   async listTrustSignals() {
     const rows = published(
       await listCollection('trust_signals', { publishedOnly: true }),
@@ -134,5 +162,43 @@ export const adminSource: ContentSource = {
       await listCollection('persona_rules', { publishedOnly: true }),
     ) as PersonaRule[];
     return rows.filter((r) => r.enabled).sort((a, b) => b.priority - a.priority);
+  },
+
+  // About, Placements and the legal pages are CMS documents, but a page must never go blank: if the
+  // record is missing or still a draft, the in-repo copy is served instead of nothing.
+  async getAboutPage() {
+    const [record] = await listCollection('about_page', { publishedOnly: true });
+    return record ? normalizeAbout(published([record])[0]!) : aboutFallback();
+  },
+
+  async getPlacementsPage() {
+    const [record] = await listCollection('placements_page', { publishedOnly: true });
+    return record ? normalizePlacements(published([record])[0]!) : placementsFallback();
+  },
+
+  async getInvestorsPage() {
+    const [record] = await listCollection('investors_page', { publishedOnly: true });
+    return record ? normalizeInvestors(published([record])[0]!) : investorsFallback();
+  },
+
+  async getPageCopyOverrides(id: string) {
+    const rows = await listCollection('page_copy', { publishedOnly: true });
+    return rows.find((r) => r.id === id)?.entries ?? {};
+  },
+
+  async listLegalDocuments() {
+    const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
+    // A document that is unpublished (or absent) falls back to its in-repo copy.
+    return legalDefaults.map((fallback) => rows.find((d) => d.slug === fallback.slug) ?? fallback);
+  },
+
+  async getLegalDocument(slug: string) {
+    const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
+    return rows.find((d) => d.slug === slug) ?? legalDefaults.find((d) => d.slug === slug) ?? null;
+  },
+
+  async getLogoList(id: string) {
+    const rows = published(await listCollection('logo_lists', { publishedOnly: true })) as LogoList[];
+    return rows.find((l) => l.id === id) ?? logoListFallback(id);
   },
 };

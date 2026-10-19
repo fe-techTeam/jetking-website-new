@@ -1,9 +1,12 @@
+import { chatbotSettingsDefaults } from '../fixtures/chatbot';
+import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import type {
   Centre,
   City,
   ContentSource,
   Course,
   Faculty,
+  Announcement,
   Faq,
   HomepageVariant,
   PersonaRule,
@@ -19,6 +22,9 @@ import { posts } from '../fixtures/posts';
 import { faqs } from '../fixtures/faqs';
 import { trustSignals } from '../fixtures/trust';
 import { faculty, homepageVariants, personaRules, placements, policies } from '../fixtures/kb';
+import { legalDefaults } from '../fixtures/legal';
+import { logoListFallback } from '../fixtures/logo-lists';
+import { aboutFallback, investorsFallback, placementsFallback } from '../page-content';
 
 /**
  * Repo-fixture content source — works offline without Admin CMS / Supabase.
@@ -74,6 +80,22 @@ export const localSource: ContentSource = {
     return [...faqs];
   },
 
+  async getChatbotSettings() {
+    return chatbotSettingsDefaults;
+  },
+
+  async listChatbotKnowledge() {
+    return [];
+  },
+
+  async getSeoSettings() {
+    return seoSettingsDefaults;
+  },
+
+  async listAnnouncements(): Promise<Announcement[]> {
+    return [];
+  },
+
   async listTrustSignals(): Promise<TrustSignal[]> {
     return trustSignals.filter((signal) => signal.verified && Boolean(signal.source));
   },
@@ -112,5 +134,33 @@ export const localSource: ContentSource = {
 
   async listPersonaRules(): Promise<PersonaRule[]> {
     return [...personaRules].filter((r) => r.enabled).sort((a, b) => b.priority - a.priority);
+  },
+
+  async getAboutPage() {
+    return aboutFallback();
+  },
+
+  async getPlacementsPage() {
+    return placementsFallback();
+  },
+
+  async getInvestorsPage() {
+    return investorsFallback();
+  },
+
+  async getPageCopyOverrides() {
+    return {};
+  },
+
+  async listLegalDocuments() {
+    return [...legalDefaults];
+  },
+
+  async getLegalDocument(slug: string) {
+    return legalDefaults.find((d) => d.slug === slug) ?? null;
+  },
+
+  async getLogoList(id: string) {
+    return logoListFallback(id);
   },
 };
