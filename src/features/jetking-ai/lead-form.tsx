@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useState, type FormEvent } from 'react';
 import { Button, Field, Input } from '@/components/ui';
 import { usePersona } from '@/persona/PersonaProvider';
@@ -36,6 +37,7 @@ export function LeadCaptureForm({
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const [course, setCourse] = useState(context.course ?? '');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -47,6 +49,12 @@ export function LeadCaptureForm({
     const city = String(form.get('city') ?? '').trim();
     const courseValue = String(form.get('course') ?? '').trim();
 
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
 
@@ -57,6 +65,7 @@ export function LeadCaptureForm({
         body: JSON.stringify({ ...botFields(),
           name: String(form.get('name') ?? ''),
           phone,
+          otpToken: otpToken ?? undefined,
           email: email || undefined,
           city: city || undefined,
           message: courseValue
@@ -123,19 +132,15 @@ export function LeadCaptureForm({
         />
       </Field>
 
-      <Field label="Mobile number" htmlFor="lead-phone" required>
-        <Input
-          id="lead-phone"
-          name="phone"
-          defaultValue={user?.phone}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          pattern="[\d\s+\(\)\-]{10,20}"
-          placeholder="+91 98765 43210"
-          className="h-10 text-[13.5px]"
-        />
-      </Field>
+      <MobileOtpField
+        key={`phone-${user?.id ?? 'guest'}`}
+        label="Mobile number"
+        placeholder="+91 98765 43210"
+        defaultValue={user?.phone}
+        inputClassName="h-10 text-[13.5px]"
+        source="chatbot-lead-form"
+        onTokenChange={setOtpToken}
+      />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="City" htmlFor="lead-city">

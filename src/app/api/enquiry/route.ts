@@ -4,6 +4,7 @@ import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import { leadForLog, safeError } from '@/lib/pii';
 import { content } from '@/lib/content';
 import { crmIdsForCentre, sendToCrm, toCrmPayload } from '@/lib/crm/smartrain';
+import { isVerifiedFor, otpEnforced } from '@/lib/otp/service';
 import { getSessionUser } from '@/lib/chatbot/session';
 import { QUALIFICATION_VALUES } from '@/lib/enquiry-fields';
 import { saveEnquiry, setCrmStatus } from '@/lib/leads/intake';
@@ -58,6 +59,8 @@ const EnquirySchema = z.object({
   journeyStage: z.enum(['discover', 'explore', 'compare', 'counsel', 'admit']).optional(),
   /** Locked or inferred career/topic intent label. */
   intent: z.string().max(120).optional(),
+  /** Proof the mobile number was verified by OTP (`/api/otp/verify`); required when `OTP_ENABLED=true`. */
+  otpToken: z.string().max(200).optional(),
   /** Bot trap: a hidden field real visitors never fill (see components/BotTrap). */
   hp: z.string().max(500).optional(),
   /** Milliseconds since the visitor's first interaction on the page; 0/absent for scripted posts. */
@@ -141,7 +144,7 @@ export async function POST(request: Request) {
 
   // Bot trap. A filled honeypot, or a post with no (or an impossibly short) human interaction before it,
   // is dropped quietly: the response looks like success so a bot learns nothing, and nothing reaches the CRM.
-  const { hp, ft, ...lead } = parsed.data;
+  const { hp, ft, otpToken, ...lead } = parsed.data;
   const tooFast = ft !== undefined && ft > 0 && ft < MIN_HUMAN_MS;
   if (hp || tooFast) {
     console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: hp ? 'honeypot' : 'too-fast', ft: ft ?? null }));
@@ -153,6 +156,14 @@ export async function POST(request: Request) {
       console.warn('[enquiry:bot-dropped]', JSON.stringify({ reason: 'no-signal-limit' }));
       return NextResponse.json({ ok: true, routed: false });
     }
+  }
+
+  // When OTP verification is switched on, only a number the visitor proved they own is accepted.
+  if (otpEnforced() && !isVerifiedFor(lead.phone, otpToken)) {
+    return NextResponse.json(
+      { ok: false, error: 'Please verify your mobile number with the OTP we send you.', code: 'otp_required' },
+      { status: 400 },
+    );
   }
 
   // Tie the lead to the signed-in account, if any, so a counsellor can see it is a known user.

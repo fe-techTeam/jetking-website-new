@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { Phone } from 'lucide-react';
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { TrackedAnchor } from '@/components/TrackedAnchor';
 import { useSiteCopy } from '@/components/providers/site-copy';
 import { Button, Field, Input, Select } from '@/components/ui';
@@ -50,6 +51,7 @@ export function CentreHeroForm({
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'done') successRef.current?.focus();
@@ -62,6 +64,12 @@ export function CentreHeroForm({
     const phoneValue = String(form.get('phone') ?? '');
     const source = 'centre-hero-form';
 
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
     try {
@@ -72,6 +80,7 @@ export function CentreHeroForm({
           ...botFields(),
           name: String(form.get('name') ?? ''),
           phone: phoneValue,
+          otpToken: otpToken ?? undefined,
           email: String(form.get('email') ?? '').trim(),
           centre: centreSlug,
           courseSlug: String(form.get('programme') ?? '') || undefined,
@@ -129,18 +138,13 @@ export function CentreHeroForm({
                 <Field label={site['enquiry.form.name.label']} htmlFor={`${id}-name`} required compact>
                   <Input id={`${id}-name`} name="name" minLength={2} maxLength={120} autoComplete="name" compact />
                 </Field>
-                <Field label={site['enquiry.form.mobile.label']} htmlFor={`${id}-phone`} required compact>
-                  <Input
-                    id={`${id}-phone`}
-                    name="phone"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    pattern="[\d\s+\(\)\-]{10,20}"
-                    placeholder={site['enquiry.form.mobile.placeholder']}
-                    compact
-                  />
-                </Field>
+                <MobileOtpField
+                  label={site['enquiry.form.mobile.label']}
+                  placeholder={site['enquiry.form.mobile.placeholder']}
+                  compact
+                  source="centre-hero-form"
+                  onTokenChange={setOtpToken}
+                />
               </div>
               <Field label={copy.email} htmlFor={`${id}-email`} compact>
                 <Input

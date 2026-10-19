@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useEffect, useRef, useState } from 'react';
 import { CalendarDays, CheckCircle2 } from 'lucide-react';
 import { Field, Input, Textarea } from '@/components/ui';
@@ -32,6 +33,7 @@ export function CounsellingStep({
   const { classification, visitor, profile, record } = usePersona();
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const startedRef = useRef(false);
   const intent = interestIntent(discovery.interest);
 
@@ -51,6 +53,12 @@ export function CounsellingStep({
     if (status === 'submitting' || status === 'done') return;
 
     const form = new FormData(event.currentTarget);
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
 
@@ -69,6 +77,7 @@ export function CounsellingStep({
         body: JSON.stringify({ ...botFields(),
           name: form.get('name'),
           phone: form.get('phone'),
+          otpToken: otpToken ?? undefined,
           email: form.get('email') || undefined,
           courseSlug: course.slug,
           message,
@@ -172,24 +181,14 @@ export function CounsellingStep({
           />
         </Field>
 
-        <Field
+        <MobileOtpField
           label={copy['counsel.phone.label']}
-          htmlFor="counsel-phone"
-          required
           hint={copy['counsel.phone.hint']}
-        >
-          <Input
-            id="counsel-phone"
-            name="phone"
-            type="tel"
-            required
-            inputMode="tel"
-            autoComplete="tel"
-            pattern="[\d\s+\(\)\-]{10,20}"
-            defaultValue={softPhone}
-            className="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
-          />
-        </Field>
+          defaultValue={softPhone}
+          inputClassName="border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] text-[var(--dc-ink)]"
+          source="student-journey-counsel"
+          onTokenChange={setOtpToken}
+        />
 
         <Field label={copy['counsel.email.label']} htmlFor="counsel-email" hint={copy['counsel.email.hint']}>
           <Input

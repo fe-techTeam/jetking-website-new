@@ -334,3 +334,25 @@ export const chatbotUnanswered = pgTable(
   (table) => [index('chatbot_unanswered_created_idx').on(table.createdAt), index('chatbot_unanswered_resolved_idx').on(table.resolved)],
 );
 export type ChatbotUnanswered = typeof chatbotUnanswered.$inferSelect;
+
+/**
+ * One row per OTP sent to verify a mobile number before an enquiry is accepted. Only a keyed hash of the code is
+ * stored (never the code), rows expire after minutes, and `attempts` caps guessing. See `src/lib/otp`.
+ */
+export const otpChallenges = pgTable(
+  'otp_challenges',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** Ten-digit Indian mobile number the code was sent to. */
+    phone: text('phone').notNull(),
+    codeHash: text('code_hash').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    /** Set once verified, so one code can never be redeemed twice. */
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('otp_challenges_phone_created_idx').on(table.phone, table.createdAt)],
+);
+
+export type OtpChallengeRow = typeof otpChallenges.$inferSelect;

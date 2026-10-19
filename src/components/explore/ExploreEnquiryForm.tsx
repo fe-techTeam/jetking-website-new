@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useRef, useState } from 'react';
 import { Clock3 } from 'lucide-react';
 import { Field, Input, Select } from '@/components/ui';
@@ -26,6 +27,7 @@ export function ExploreEnquiryForm({
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const startedRef = useRef(false);
   const loc = useEnquiryLocation(centres);
 
@@ -34,12 +36,19 @@ export function ExploreEnquiryForm({
     const form = e.currentTarget;
     const data = new FormData(form);
 
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
 
     const payload = {
       name: String(data.get('name') ?? ''),
       phone: String(data.get('phone') ?? ''),
+      otpToken: otpToken ?? undefined,
       email: String(data.get('email') ?? ''),
       state: loc.state || undefined,
       city: loc.city || undefined,
@@ -114,19 +123,13 @@ export function ExploreEnquiryForm({
           />
         </Field>
 
-        <Field label={copy['form.phone.label']} required htmlFor="exp-phone">
-          <Input
-            id="exp-phone"
-            name="phone"
-            type="tel"
-            required
-            minLength={10}
-            autoComplete="tel"
-            inputMode="tel"
-            placeholder={copy['form.phone.placeholder']}
-            className={fieldClass}
-          />
-        </Field>
+        <MobileOtpField
+          label={copy['form.phone.label']}
+          placeholder={copy['form.phone.placeholder']}
+          inputClassName={fieldClass}
+          source="explore-landing"
+          onTokenChange={setOtpToken}
+        />
 
         <Field label={copy['form.email.label']} htmlFor="exp-email">
           <Input

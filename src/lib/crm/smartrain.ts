@@ -1,4 +1,5 @@
 import ids from './centre-ids.json';
+import { normalizeMobile } from '@/lib/phone';
 
 /**
  * Hand-off of website enquiries to the external CRM (`POST …/externalInquirySave`, JSON).
@@ -53,13 +54,7 @@ export function crmIdsForCentre(slug: string | undefined): CentreIds | null {
   return slug ? (CENTRE_IDS[slug] ?? null) : null;
 }
 
-/** Ten-digit Indian mobile number: strips spaces, `+91`, a leading 0. */
-export function normalizeMobile(raw: string): string | null {
-  let digits = raw.replace(/\D/g, '');
-  if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
-  else if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
-  return /^[6-9]\d{9}$/.test(digits) ? digits : null;
-}
+export { normalizeMobile };
 
 export function splitName(full: string): { first: string; last?: string } {
   const parts = full.trim().split(/\s+/).filter(Boolean);

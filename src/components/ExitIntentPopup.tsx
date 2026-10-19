@@ -1,6 +1,7 @@
 'use client';
 
 import { BotTrap, botFields } from '@/components/BotTrap';
+import { MobileOtpField, OTP_ENABLED, OTP_REQUIRED_FALLBACK } from '@/components/MobileOtpField';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
@@ -31,6 +32,7 @@ export function ExitIntentPopup() {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [otpToken, setOtpToken] = useState<string | null>(null);
   const shownRef = useRef(false);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -75,12 +77,19 @@ export function ExitIntentPopup() {
     const form = event.currentTarget;
     const data = new FormData(form);
 
+    if (OTP_ENABLED && !otpToken) {
+      setStatus('error');
+      setError(OTP_REQUIRED_FALLBACK);
+      return;
+    }
+
     setStatus('submitting');
     setError('');
 
     const payload = {
       name: String(data.get('name') ?? ''),
       phone: String(data.get('phone') ?? ''),
+      otpToken: otpToken ?? undefined,
       email: String(data.get('email') ?? ''),
       message: 'Enquiry from the exit-intent popup.',
       persona: classification.persona,
@@ -171,18 +180,12 @@ export function ExitIntentPopup() {
                 />
               </Field>
 
-              <Field label={copy['exitIntent.mobile.label']} required htmlFor="exit-phone">
-                <Input
-                  id="exit-phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  minLength={10}
-                  autoComplete="tel"
-                  inputMode="tel"
-                  placeholder={copy['exitIntent.mobile.placeholder']}
-                />
-              </Field>
+              <MobileOtpField
+                label={copy['exitIntent.mobile.label']}
+                placeholder={copy['exitIntent.mobile.placeholder']}
+                source="exit-intent-popup"
+                onTokenChange={setOtpToken}
+              />
 
               <Field label={copy['exitIntent.email.label']} htmlFor="exit-email">
                 <Input id="exit-email" name="email" type="email" autoComplete="email" placeholder={copy['exitIntent.email.placeholder']} />

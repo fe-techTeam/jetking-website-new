@@ -156,6 +156,23 @@ export const siteCopy = definePageCopy({
     'enquiry.error.generic': 'Something went wrong. Please try again.',
     'enquiry.error.network': 'We could not send that. Please check your connection and try again.',
 
+    // Mobile-number verification (OTP) step shown inside the enquiry forms
+    'otp.verifyButton': 'Verify',
+    'otp.sending': 'Sending…',
+    'otp.sentTo': 'We sent a 6-digit code to {phone}.',
+    'otp.codeLabel': 'Enter the 6-digit code',
+    'otp.confirm': 'Confirm',
+    'otp.verifying': 'Checking…',
+    'otp.resendIn': 'Resend code in {seconds}s',
+    'otp.resend': 'Resend code',
+    'otp.change': 'Change number',
+    'otp.verified': 'Mobile number verified',
+    'otp.required': 'Please verify your mobile number to continue.',
+    'otp.invalidPhone': 'Enter a valid 10-digit mobile number.',
+    'otp.sendFailed': 'We could not send the code. Please try again.',
+    'otp.verifyFailed': 'That code did not work. Please try again.',
+    'otp.networkError': 'We could not reach the server. Please check your connection and try again.',
+
     // Exit-intent pop-up
     'exitIntent.title': 'Before you go —',
     'exitIntent.body': 'Leave your number and a Jetking counsellor will help you pick the right course. No spam, no pressure.',
