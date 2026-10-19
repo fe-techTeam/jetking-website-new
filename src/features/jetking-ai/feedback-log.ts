@@ -2,6 +2,7 @@ import 'server-only';
 import { getSupabase } from '@/lib/supabase';
 import { getDb } from '@/lib/db/client';
 import { chatbotUnanswered } from '@/lib/db/schema';
+import { safeError } from '@/lib/pii';
 
 export interface UnansweredEntry {
   /** The visitor's own message text, verbatim. */
@@ -49,7 +50,7 @@ export async function logUnanswered(entry: UnansweredEntry): Promise<void> {
         topScore: entry.topScore ?? null,
       });
     } catch (error) {
-      console.warn('[jetking-ai:unanswered] database insert failed:', error);
+      console.warn('[jetking-ai:unanswered] database insert failed:', safeError(error));
     }
   }
 

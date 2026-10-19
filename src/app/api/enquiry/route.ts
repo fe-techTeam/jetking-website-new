@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
+import { leadForLog, safeError } from '@/lib/pii';
 import { getSessionUser } from '@/lib/chatbot/session';
 import { QUALIFICATION_VALUES } from '@/lib/enquiry-fields';
 import { saveEnquiry, setCrmStatus } from '@/lib/leads/intake';
@@ -177,7 +178,7 @@ export async function POST(request: Request) {
     if (saved?.duplicate) return NextResponse.json({ ok: true, routed: false });
     leadId = saved?.id ?? null;
   } catch (error) {
-    console.error('[enquiry:store-failed]', JSON.stringify(enquiry), error);
+    console.error('[enquiry:store-failed]', leadForLog(enquiry), safeError(error));
   }
 
   const endpoint = process.env.CRM_ENDPOINT;
@@ -185,7 +186,7 @@ export async function POST(request: Request) {
   if (!endpoint) {
     // No CRM wired yet. Log with a distinctive marker so these are greppable and
     // reconcilable once the integration lands.
-    console.warn('[enquiry:unrouted]', JSON.stringify(enquiry));
+    console.warn('[enquiry:unrouted]', leadForLog(enquiry));
     return NextResponse.json({ ok: true, routed: false });
   }
 
@@ -209,7 +210,7 @@ export async function POST(request: Request) {
   } catch (error) {
     // The visitor must not be told to re-submit — we have their details, and a
     // duplicate submission is worse than a delayed hand-off. Log loudly instead.
-    console.error('[enquiry:crm-failed]', JSON.stringify(enquiry), error);
+    console.error('[enquiry:crm-failed]', leadForLog(enquiry), safeError(error));
     if (leadId) await setCrmStatus(leadId, 'failed').catch(() => {});
     return NextResponse.json({ ok: true, routed: false });
   }

@@ -26,6 +26,7 @@ import { leadInputSchema, leadStatusSchema } from '@/lib/leads/schema';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
 import { listUsers } from '@/lib/auth/users';
+import { safeError } from '@/lib/pii';
 
 const STAFF_ROLES = ['admin', 'editor', 'centre_staff'] as const;
 
@@ -112,7 +113,7 @@ export async function submitLead(
     void recordAudit(user, 'lead.create', 'lead', lead.id, `Added lead "${lead.name}"`);
     return { ok: true, lead };
   } catch (e) {
-    console.error('[leads:create-failed]', e);
+    console.error('[leads:create-failed]', safeError(e));
     return { ok: false, error: 'Could not save lead.' };
   }
 }
