@@ -164,6 +164,8 @@ function isEnoent(error: unknown): boolean {
   );
 }
 
+let parsedCache: { raw: string; store: CmsStore } | null = null;
+
 async function ensureFileStore(): Promise<CmsStore> {
   let raw: string;
   try {
@@ -178,8 +180,17 @@ async function ensureFileStore(): Promise<CmsStore> {
     return seeded;
   }
 
+  // A static build renders hundreds of pages and each reads several collections: re-parsing the whole
+  // multi-megabyte file for every read saturates the CPU (pages blow their 60s budget). The file text is
+  // the cache key, so any change on disk — this process, another instance, a hand edit — is picked up
+  // immediately. Callers replace whole collections on the top-level object, never mutate the arrays, so
+  // a shallow copy per read is enough to keep the cached copy clean.
+  if (parsedCache && parsedCache.raw === raw) return { ...parsedCache.store };
+
   try {
-    return withMissingCollections(JSON.parse(raw) as CmsStore);
+    const store = withMissingCollections(JSON.parse(raw) as CmsStore);
+    parsedCache = { raw, store };
+    return { ...store };
   } catch (error) {
     console.error(
       `[cms:store] ${STORE_PATH} contains invalid JSON — refusing to reseed and discard it. Fix or delete the file manually.`,
@@ -287,7 +298,8 @@ async function listCollectionRaw<K extends CmsCollection>(
   if (opts?.publishedOnly) {
     return rows.filter((row) => row.status === 'published') as CmsStore[K];
   }
-  return rows;
+  // A copy: the parsed file is cached and shared, so callers must not be handed its arrays to sort or push into.
+  return [...rows] as CmsStore[K];
 }
 
 export class DuplicateIdError extends Error {

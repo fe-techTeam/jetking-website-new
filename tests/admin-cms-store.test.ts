@@ -115,3 +115,29 @@ describe('file store: create, rename, duplicate', () => {
     expect(disk.content).toBe('{not json');
   });
 });
+
+describe('file store: parse cache', () => {
+  it('parses the store file once for repeated reads, and still sees any change on disk', async () => {
+    const parse = vi.spyOn(JSON, 'parse');
+    const big = (n: number) => parse.mock.calls.filter(([s]) => typeof s === 'string' && s.length > 200).length - n;
+
+    seedDisk([faq('a'), faq('b')]);
+    await listCollection('faqs');
+    const afterFirst = big(0);
+    await listCollection('faqs');
+    await listCollection('faqs', { publishedOnly: true });
+    await listCollection('courses');
+    expect(big(0)).toBe(afterFirst); // no further parsing of the same file text
+
+    seedDisk([faq('a'), faq('b'), faq('c')]); // changed on disk (another instance, a hand edit)
+    expect((await listCollection('faqs')).map((r) => r.id)).toEqual(['a', 'b', 'c']);
+    parse.mockRestore();
+  });
+
+  it('a cached read cannot be corrupted by a caller that mutates what it got back', async () => {
+    seedDisk([faq('a')]);
+    const first = await listCollection('faqs');
+    first.push(faq('intruder') as never);
+    expect((await listCollection('faqs')).map((r) => r.id)).toEqual(['a']);
+  });
+});
