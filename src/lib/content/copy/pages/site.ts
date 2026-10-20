@@ -1,4 +1,5 @@
 import { definePageCopy } from '../define';
+import { sectionVisibilityDefaults } from '../sections';
 import { siteConfig } from '@/lib/site';
 
 /**
@@ -9,13 +10,23 @@ import { siteConfig } from '@/lib/site';
  * published helpline exactly as the footer and the mobile bar did before. The WhatsApp number
  * (NEXT_PUBLIC_WHATSAPP_NUMBER) is not a field — it is read from `siteConfig` in code.
  */
+export const SITE_SECTIONS = [
+  'header',
+  'footer',
+  'mobileBar',
+  'announcement',
+  'exitIntent',
+] as const;
+
 export const siteCopy = definePageCopy({
   id: 'site',
   label: 'Site-wide (header, footer, contact)',
   path: undefined,
   group: 'Site',
-  description: 'Navigation, footer, contact details, social links, calls to action and error pages.',
+  description: 'Navigation, footer, contact details, social links, calls to action and error pages. Use Show or hide sections to turn site chrome on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(SITE_SECTIONS),
+
     // Default metadata for every page that does not set its own.
     'seo.title': `${siteConfig.name} — ${siteConfig.tagline}`,
     'seo.titleTemplate': `%s | ${siteConfig.name}`,

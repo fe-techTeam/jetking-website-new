@@ -36,9 +36,11 @@ export function ZoomImage({
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- local specimen, shown contained at full resolution */}
         <img src={src} alt={alt} loading="lazy" decoding="async" className={`${aspect} w-full object-contain`} />
-        <span className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-[#111827] px-3 py-1.5 text-[12.5px] font-bold text-white shadow-md">
-          <ZoomIn className="h-4 w-4" aria-hidden="true" />
-          {labels.enlarge}
+        <span
+          aria-hidden="true"
+          className="absolute right-2.5 bottom-2.5 grid h-9 w-9 place-items-center rounded-full bg-ink-900/78 text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 max-md:opacity-100"
+        >
+          <ZoomIn className="h-[18px] w-[18px]" strokeWidth={2} />
         </span>
       </button>
 

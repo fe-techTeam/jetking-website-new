@@ -4,10 +4,29 @@ import type { Route } from 'next';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { ImageRef, Post } from '@/lib/content/types';
 import { blogCopy } from '@/lib/content/copy/pages/blog';
+import { isBlogMarketingCover } from '@/lib/content/blogMarketingCovers';
 export const BLOG_PAGE_SIZE = 12;
 
 /** The card's own labels — callers on the blog pass their loaded copy; other pages get the shipped wording. */
 export type PostCardCopy = Pick<typeof blogCopy.defaults, 'card.latestBadge' | 'card.readArticle'>;
+
+/** Wordmark on a soft wash — used when a post has no photographic cover. */
+export function BlogLogoBanner({ className }: { className?: string }) {
+  return (
+    <div
+      className={`flex h-full w-full items-center justify-center bg-[linear-gradient(145deg,var(--dc-card),var(--dc-surface),var(--dc-card))] ${className ?? ''}`}
+      aria-hidden="true"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
+      <img
+        src="/brand/jetking-wordmark.png"
+        alt=""
+        draggable={false}
+        className="block h-[34px] w-auto select-none object-contain transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03] sm:h-[40px]"
+      />
+    </div>
+  );
+}
 
 export function formatPostDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-IN', {
@@ -40,11 +59,18 @@ export function categoryHref(category: string | null, searchQuery?: string): Rou
   return blogIndexHref({ category, searchQuery });
 }
 
-/** Cover for cards — hero first, then SEO og image. */
-export function postCover(post: Post): ImageRef | null {
-  if (post.heroImage?.url) return post.heroImage;
-  if (post.seo?.ogImage) {
-    return { url: post.seo.ogImage, alt: post.title };
+/**
+ * Cover for on-page cards/article banners — hero first, then SEO og image.
+ * Skips scraped social share cards (baked-in titles); those stay on `seo.ogImage` for OG only.
+ * Pass `marketingCovers` from SEO settings when available.
+ */
+export function postCover(post: Post, marketingCovers?: Iterable<string>): ImageRef | null {
+  if (post.heroImage?.url && !isBlogMarketingCover(post.heroImage.url, marketingCovers)) {
+    return post.heroImage;
+  }
+  const og = post.seo?.ogImage;
+  if (og && !isBlogMarketingCover(og, marketingCovers)) {
+    return { url: og, alt: post.title };
   }
   return null;
 }
@@ -53,12 +79,14 @@ export function PostCard({
   post,
   badge,
   copy = blogCopy.defaults,
+  marketingCovers,
 }: {
   post: Post;
   badge?: 'latest';
   copy?: PostCardCopy;
+  marketingCovers?: Iterable<string>;
 }) {
-  const cover = postCover(post);
+  const cover = postCover(post, marketingCovers);
 
   return (
     <article className="relative h-full">
@@ -72,30 +100,17 @@ export function PostCard({
         href={`/blog/${post.slug}` as Route}
         className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[var(--dc-cut)]"
       >
-        <div
-          className={`blog-card-media relative aspect-[840/300] overflow-hidden ${cover ? '' : 'hidden sm:block'}`}
-        >
+        <div className="blog-card-media relative aspect-[840/300] overflow-hidden">
           {cover ? (
             <Image
               src={cover.url}
               alt={cover.alt || post.title}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-contain transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03]"
+              className="object-cover object-center transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03]"
             />
           ) : (
-            <div
-              className="flex h-full w-full items-center justify-center bg-[linear-gradient(145deg,var(--dc-card),var(--dc-surface),var(--dc-card))]"
-              aria-hidden="true"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- brand asset; sized by caller */}
-              <img
-                src="/brand/jetking-wordmark.png"
-                alt=""
-                draggable={false}
-                className="block h-[34px] w-auto select-none object-contain transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03] sm:h-[40px]"
-              />
-            </div>
+            <BlogLogoBanner />
           )}
         </div>
 

@@ -18,6 +18,7 @@ import { faqCopy } from '@/lib/content/copy/pages/faq';
 import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { FaqList, Section, SectionHeader } from '@/components/kit';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(faqCopy, '/faq');
@@ -58,6 +59,7 @@ export default async function FaqPage() {
   // Franchise questions are answered on the Franchise page; this page is for students and families.
   const faqs = (await content.listFaqs()).filter((f) => f.topic !== 'franchise');
   const topics = [...new Set(faqs.map((f) => f.topic))];
+  const show = (id: string) => isSectionVisible(copy, id);
 
   return (
     <>
@@ -65,6 +67,7 @@ export default async function FaqPage() {
 
       <div className="dark-canvas">
         {/* ── Banner ────────────────────────────────────────────────────── */}
+        {show('hero') ? (
         <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
           <Breadcrumbs trail={trail} />
 
@@ -92,8 +95,14 @@ export default async function FaqPage() {
             </div>
           </div>
         </section>
+        ) : (
+          <div className="shell relative pt-6 sm:pt-8">
+            <Breadcrumbs trail={trail} />
+          </div>
+        )}
 
         {/* ── Topic jump links ──────────────────────────────────────────── */}
+        {show('topics') ? (
         <nav aria-label={copy['topics.navLabel']} className="shell relative mt-8 sm:mt-10">
           <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
             {topics.map((topic) => {
@@ -114,8 +123,10 @@ export default async function FaqPage() {
             })}
           </ul>
         </nav>
+        ) : null}
 
         {/* ── Questions by topic: one section per topic, tones alternating ─ */}
+        {show('list') ? (
         <div className="mt-10 sm:mt-12">
           {topics.map((topic, i) => {
             const topicFaqs = faqs.filter((f) => f.topic === topic);
@@ -134,11 +145,13 @@ export default async function FaqPage() {
             );
           })}
         </div>
+        ) : null}
 
         {/* ── Still have a question ─────────────────────────────────────── */}
+        {show('more') ? (
         <Section tone="plain" labelledBy="faq-more">
-          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-            <div className="p-6 sm:p-10 lg:p-12">
+          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <div className="p-6 sm:p-10 md:p-12">
               <p className="k-eyebrow">{copy['more.eyebrow']}</p>
               <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
                 {copy['more.title']}
@@ -161,11 +174,12 @@ export default async function FaqPage() {
                 </Link>
               </div>
             </div>
-            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
-              <Image src={copy['more.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+            <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[18rem]">
+              <Image src={copy['more.image']} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-center" />
             </div>
           </div>
         </Section>
+        ) : null}
       </div>
     </>
   );

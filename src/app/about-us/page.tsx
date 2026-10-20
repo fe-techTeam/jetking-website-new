@@ -6,8 +6,8 @@ import { content } from '@/lib/content';
 import { SINCE_FOUNDED } from '@/lib/brand-facts';
 import { siteConfig } from '@/lib/site';
 import { aboutCopy } from '@/lib/content/copy/pages/about';
-import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 import { exploreCopy } from '@/lib/content/copy/pages/explore';
 import { parentCopy } from '@/lib/content/copy/pages/parent';
 
@@ -19,13 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     sinceLower: SINCE_FOUNDED.toLowerCase(),
     centres: centres.length,
   };
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], values),
-      description: fill(copy['seo.description'], values),
-    },
-    '/about-us',
-  );
+  return buildMetadata(seoFromCopy(copy, values), '/about-us');
 }
 
 export default async function AboutPage() {

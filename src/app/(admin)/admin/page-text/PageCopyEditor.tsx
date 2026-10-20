@@ -1,10 +1,11 @@
 'use client';
 
 import { useMemo, useState, useTransition } from 'react';
-import { ArrowLeft, Pencil, RotateCcw, Save, Search } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Pencil, RotateCcw, Save, Search } from 'lucide-react';
 import { saveCollectionItem, removeCollectionItem } from '../actions';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { MediaPickerButton } from '../MediaPicker';
+import { isSectionVisibilityKey, listSectionToggles } from '@/lib/content/copy/sections';
 
 export interface EditablePage {
   id: string;
@@ -70,9 +71,13 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
   }, [draft, page]);
   const isDirty = JSON.stringify(nextEntries) !== JSON.stringify(saved);
 
+  const sectionToggles = useMemo(() => listSectionToggles(page.defaults), [page]);
+
   const sections = useMemo(() => {
     const map = new Map<string, Array<{ key: string; label: string }>>();
     for (const key of Object.keys(page.defaults)) {
+      // Visibility flags have their own toggle panel — keep them out of the text fields.
+      if (isSectionVisibilityKey(key)) continue;
       const { section, label } = describeKey(key);
       if (!map.has(section)) map.set(section, []);
       map.get(section)!.push({ key, label });
@@ -276,6 +281,68 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
               </button>
             </div>
           </div>
+
+          {sectionToggles.length > 0 ? (
+            <section
+              aria-label="Show or hide sections"
+              className="mt-6 rounded-[var(--admin-radius)] border border-border bg-surface/50 p-4 sm:p-5"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="flex items-center gap-2 text-sm font-bold tracking-tight text-foreground">
+                    <Eye aria-hidden="true" className="h-4 w-4 text-[var(--accent)]" />
+                    Show or hide sections
+                  </h3>
+                  <p className="mt-1 text-xs text-foreground-muted">
+                    Turn a block off to remove it from the live page. Its wording stays below so you can edit it while it is hidden.
+                  </p>
+                </div>
+                <p className="text-xs font-semibold text-foreground-muted">
+                  {sectionToggles.filter((t) => (draft[t.key] ?? 'true').toLowerCase() !== 'false').length} of{' '}
+                  {sectionToggles.length} visible
+                </p>
+              </div>
+              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                {sectionToggles.map(({ id, key, label }) => {
+                  const on = (draft[key] ?? 'true').trim().toLowerCase() !== 'false';
+                  const changed = (draft[key] ?? '') !== (page.defaults[key] ?? 'true');
+                  return (
+                    <li key={id}>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={on}
+                        aria-label={`${label}: ${on ? 'shown' : 'hidden'}`}
+                        onClick={() => setDraft((d) => ({ ...d, [key]: on ? 'false' : 'true' }))}
+                        className={`flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-[var(--admin-radius)] border px-3.5 text-left transition-colors ${
+                          on
+                            ? 'border-border bg-background hover:border-[var(--accent)]'
+                            : 'border-dashed border-border-medium bg-surface/80 text-foreground-muted'
+                        }`}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-foreground">{label}</span>
+                          {changed ? (
+                            <span className="mt-0.5 inline-block rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[11px] font-bold text-[var(--accent-ink)]">
+                              Edited
+                            </span>
+                          ) : null}
+                        </span>
+                        <span
+                          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${
+                            on ? 'bg-[#ecfdf3] text-[#067647]' : 'bg-[var(--color-error-50)] text-[#b42318]'
+                          }`}
+                        >
+                          {on ? <Eye aria-hidden="true" className="h-3.5 w-3.5" /> : <EyeOff aria-hidden="true" className="h-3.5 w-3.5" />}
+                          {on ? 'Shown' : 'Hidden'}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ) : null}
 
           <div className="relative mt-5">
             <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-foreground-muted" />

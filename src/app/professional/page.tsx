@@ -1,6 +1,6 @@
 import { content } from '@/lib/content';
-import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 import { professionalCopy } from '@/lib/content/copy/pages/professional';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
@@ -11,15 +11,7 @@ import { ProfessionalLanding } from '@/components/professional/ProfessionalLandi
 
 export async function generateMetadata() {
   const copy = await loadCopy(professionalCopy);
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
-      description: fill(copy['seo.description'], { siteName: siteConfig.name }),
-      // Audience pages are not listed or indexed; the main pages carry their content.
-      noindex: true,
-    },
-    '/professional',
-  );
+  return buildMetadata(seoFromCopy(copy, { siteName: siteConfig.name }), '/professional');
 }
 
 export default async function ProfessionalPage() {

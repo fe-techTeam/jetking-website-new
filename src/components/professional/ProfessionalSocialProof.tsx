@@ -45,10 +45,10 @@ export function ProfessionalSocialProof({
                 itemKey={(story) => story.id}
                 itemLabel={(story) => fill(copy['stories.slideLabel'], { name: story.name, from: story.from, to: story.to })}
                 classNames={{
-                  dotActive: 'bg-[var(--dc-accent-soft)]',
-                  dotIdle: 'bg-[var(--dc-ink-muted)]/40',
+                  dotActive: 'bg-[var(--k-red)]',
+                  dotIdle: 'bg-[var(--k-ink-3)]/40',
                   button:
-                    'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:text-[var(--dc-accent-soft)]',
+                    'border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]',
                 }}
               >
                 {(story) => (
@@ -92,11 +92,11 @@ export function ProfessionalSocialProof({
               </Carousel>
             </div>
 
-            <div className="border-t border-[var(--dc-hairline-strong)] pt-10 lg:pt-12">
-              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--dc-ink)] sm:text-[26px]">
+            <div className="border-t border-[var(--k-line-strong)] pt-10 lg:pt-12">
+              <h3 className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-[var(--k-ink)] sm:text-[26px]">
                 {copy['partners.title']}
               </h3>
-              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--dc-ink-secondary)] sm:text-[15px]">
+              <p className="mt-2 max-w-[62ch] text-[14px] text-[var(--k-ink-2)] sm:text-[15px]">
                 {copy['partners.note']}
               </p>
               <div className="mt-7 sm:mt-8">

@@ -231,10 +231,24 @@ export async function runPlanner(input: {
 }): Promise<PlannerOutput | null> {
   const prompt = buildPlannerPrompt(input);
   const apiKey = process.env.OPENAI_API_KEY;
-
-  const raw = apiKey ? await callOpenAiPlanner(apiKey, prompt) : await callOllamaPlanner(prompt);
+  // Match /api/chat: default local (Ollama only). OpenAI is opt-in via
+  // GUIDE_PROVIDER=openai|auto so the chatbot can run without a paid key.
+  const provider = (process.env.GUIDE_PROVIDER ?? 'local').toLowerCase();
+  let raw: string | null = null;
+  let backend = 'none';
+  if (provider === 'openai') {
+    backend = 'OpenAI';
+    raw = apiKey ? await callOpenAiPlanner(apiKey, prompt) : null;
+  } else if (provider === 'auto') {
+    raw = await callOllamaPlanner(prompt);
+    backend = raw ? 'Ollama' : 'OpenAI';
+    if (!raw && apiKey) raw = await callOpenAiPlanner(apiKey, prompt);
+  } else {
+    backend = 'Ollama';
+    raw = await callOllamaPlanner(prompt);
+  }
   if (!raw) {
-    console.warn(`[planner] no reply from ${apiKey ? 'OpenAI' : 'Ollama'} — falling through ungrounded`);
+    console.warn(`[planner] no reply from ${backend} — falling through ungrounded`);
     return null;
   }
 

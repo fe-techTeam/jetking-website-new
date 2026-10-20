@@ -1,7 +1,167 @@
 [
   {
+    "source": "/Courses",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/animation-graphics-metaverse-design-course",
+    "destination": "/courses/gaming-metaverse-design",
+    "permanent": true
+  },
+  {
+    "source": "/bca-cloud-computing-cyber-security-brochure-mumbai-signup",
+    "destination": "/courses/bca-cloud-cyber-security",
+    "permanent": true
+  },
+  {
+    "source": "/bca-cloud-computing-cyber-security-brochure-signup",
+    "destination": "/courses/bca-cloud-cyber-security",
+    "permanent": true
+  },
+  {
+    "source": "/bca-data-science-brochure-signup-page",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/bca-degree-in-cloud-computing-cyber-security",
+    "destination": "/courses/bca-cloud-cyber-security",
+    "permanent": true
+  },
+  {
+    "source": "/bca-multimedia-animation-brochure-signup-page",
+    "destination": "/courses/bca-multimedia-animation",
+    "permanent": true
+  },
+  {
+    "source": "/blog/advantages-and-best-practices-of-implementing-business-analytics-in-your-organiz",
+    "destination": "/blog/advantages-and-best-practices-of-implementing-business-analytics-in-your-organization",
+    "permanent": true
+  },
+  {
+    "source": "/blog/best-data-analyst-course-institute-in-mumbai-and-navi-mumbai-0f4a2",
+    "destination": "/blog/best-data-analyst-course-institute-in-mumbai-and-navi-mumbai--0f4a2",
+    "permanent": true
+  },
+  {
+    "source": "/blog/blockchain",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/cloud-computing",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
     "source": "/blog/cloud-computing-career-after-12th.html",
     "destination": "/blog/cloud-computing-career-after-12th",
+    "permanent": true
+  },
+  {
+    "source": "/blog/digital-marketing",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/emerging-technology",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/ethical-hacking",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/evolution-of-the-metaverse-from-concept-to-reality-0af65",
+    "destination": "/blog/evolution-of-the-metaverse-from-concept-to-reality--0af65",
+    "permanent": true
+  },
+  {
+    "source": "/blog/getting-started-with-your-blog",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/indispensable-engineers-e3158",
+    "destination": "/blog/indispensable-engineers--e3158",
+    "permanent": true
+  },
+  {
+    "source": "/blog/kcet-result-2026-out-now-check-kea-result-rank-explore-top-career-options-after",
+    "destination": "/blog/kcet-result-2026-out-now-check-kea-result-rank-explore-top-career-options-after-kcet",
+    "permanent": true
+  },
+  {
+    "source": "/blog/master-your-future-with-jetking-india-best-it-training-institute-for-digital-ski",
+    "destination": "/blog/master-your-future-with-jetking-india-best-it-training-institute-for-digital-skills",
+    "permanent": true
+  },
+  {
+    "source": "/blog/role-of-zero-trust-architecture-in-creating-a-robust-cyber-security-mechanism-fo",
+    "destination": "/blog/role-of-zero-trust-architecture-in-creating-a-robust-cyber-security-mechanism-for-your-organization",
+    "permanent": true
+  },
+  {
+    "source": "/blog/safeguarding-your-identity-5-essentials-to-protect-your-personal-information-onl",
+    "destination": "/blog/safeguarding-your-identity-5-essentials-to-protect-your-personal-information-online",
+    "permanent": true
+  },
+  {
+    "source": "/blog/technology",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/blog/top-50-interview-questions-for-it-freshers-a-complete-guide-to-crack-your-first",
+    "destination": "/blog/top-50-interview-questions-for-it-freshers-a-complete-guide-to-crack-your-first-it-interview",
+    "permanent": true
+  },
+  {
+    "source": "/blog/uncategorized",
+    "destination": "/blog",
+    "permanent": true
+  },
+  {
+    "source": "/board-of-directors",
+    "destination": "/about-us",
+    "permanent": true
+  },
+  {
+    "source": "/career",
+    "destination": "/about-us",
+    "permanent": true
+  },
+  {
+    "source": "/centres/prayagraj",
+    "destination": "/centres/allahabad",
+    "permanent": true
+  },
+  {
+    "source": "/centres/sewri",
+    "destination": "/centres/dadar",
+    "permanent": true
+  },
+  {
+    "source": "/contact-us",
+    "destination": "/enquiry",
+    "permanent": true
+  },
+  {
+    "source": "/core-plus",
+    "destination": "/franchise",
+    "permanent": true
+  },
+  {
+    "source": "/coreplus-brochure-signup",
+    "destination": "/franchise",
+    "permanent": true
+  },
+  {
+    "source": "/corporate-training",
+    "destination": "/franchise",
     "permanent": true
   },
   {
@@ -10,8 +170,238 @@
     "permanent": true
   },
   {
-    "source": "/centre/:city",
-    "destination": "/centres/:city",
+    "source": "/courses/best-data-analytics-course",
+    "destination": "/courses/data-analyst",
+    "permanent": true
+  },
+  {
+    "source": "/courses/best-semiconductor-chip-design-courses",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/courses/cloud-computing-and-cloud-ai-certification-training",
+    "destination": "/courses/cloud-computing-professional-ai",
+    "permanent": true
+  },
+  {
+    "source": "/courses/digital-marketing-training",
+    "destination": "/courses/digital-marketing",
+    "permanent": true
+  },
+  {
+    "source": "/courses/diploma-cloud-computing-cyber-security",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/courses/master-cloud-computing-cyber-security",
+    "destination": "/courses/cloud-cyber-security-engineer",
+    "permanent": true
+  },
+  {
+    "source": "/courses/masters-cloud-computing-artificial-intelligence-course",
+    "destination": "/courses/cloud-computing-engineer-ai",
+    "permanent": true
+  },
+  {
+    "source": "/courses/masters-in-gaming-metaverse",
+    "destination": "/courses/gaming-metaverse-design",
+    "permanent": true
+  },
+  {
+    "source": "/courses/mbd",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/courses/mcts-windows-10",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/courses/microsoft-server-technology-specialist-mcts",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/courses/networking-essentials-specialist",
+    "destination": "/courses/networking-essentials",
+    "permanent": true
+  },
+  {
+    "source": "/courses/red-hat-certification-rhcsa",
+    "destination": "/courses/red-hat-professional",
+    "permanent": true
+  },
+  {
+    "source": "/data-analyst-professional-program",
+    "destination": "/courses/data-analyst",
+    "permanent": true
+  },
+  {
+    "source": "/diploma-in-cloud-computing-and-cyber-security",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/diploma-in-fintech",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/faqs",
+    "destination": "/faq",
+    "permanent": true
+  },
+  {
+    "source": "/franchise-opportunities",
+    "destination": "/franchise",
+    "permanent": true
+  },
+  {
+    "source": "/graphics-design-and-audio-video-editor",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/institution-alliance",
+    "destination": "/franchise",
+    "permanent": true
+  },
+  {
+    "source": "/international-franchise",
+    "destination": "/franchise",
+    "permanent": true
+  },
+  {
+    "source": "/jetking-jets",
+    "destination": "/placements",
+    "permanent": true
+  },
+  {
+    "source": "/jetking-reviews",
+    "destination": "/placements",
+    "permanent": true
+  },
+  {
+    "source": "/life-at-jetkings",
+    "destination": "/about-us",
+    "permanent": true
+  },
+  {
+    "source": "/masters-in-blockchain-course-registration-page",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/masters-in-blockchain-development--5da35",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/masters-in-blockchain-development-course-brochure",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/masters-in-cloud-computing-cyber-security-brochure-signup",
+    "destination": "/courses/cloud-cyber-security-engineer",
+    "permanent": true
+  },
+  {
+    "source": "/mca-in-cloud-computing-cyber-security-brochure-signup",
+    "destination": "/courses/mca-cloud-cyber-security",
+    "permanent": true
+  },
+  {
+    "source": "/mca-in-cloud-computing-cyber-security-master-degree",
+    "destination": "/courses/mca-cloud-cyber-security",
+    "permanent": true
+  },
+  {
+    "source": "/metaverse-course--67d25",
+    "destination": "/courses/gaming-metaverse-design",
+    "permanent": true
+  },
+  {
+    "source": "/metaverse-course-brochure-signup",
+    "destination": "/courses/gaming-metaverse-design",
+    "permanent": true
+  },
+  {
+    "source": "/motion-graphics-and-animation-professional",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/networking-essentials-specialist",
+    "destination": "/courses/networking-essentials",
+    "permanent": true
+  },
+  {
+    "source": "/our-courses",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/parent",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/professional",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/program/bca-in-data-science-degree",
+    "destination": "/courses",
+    "permanent": true
+  },
+  {
+    "source": "/program/bca-in-multimedia-and-animation",
+    "destination": "/courses/bca-multimedia-animation",
+    "permanent": true
+  },
+  {
+    "source": "/sitemap-html",
+    "destination": "/sitemap",
+    "permanent": true
+  },
+  {
+    "source": "/sitemap-xml",
+    "destination": "/sitemap.xml",
+    "permanent": true
+  },
+  {
+    "source": "/student",
+    "destination": "/",
+    "permanent": true
+  },
+  {
+    "source": "/student-faqs",
+    "destination": "/faq",
+    "permanent": true
+  },
+  {
+    "source": "/blog/:slug.html",
+    "destination": "/blog/:slug",
+    "permanent": true
+  },
+  {
+    "source": "/blog/blog/:path*",
+    "destination": "/blog/:path*",
+    "permanent": true
+  },
+  {
+    "source": "/centre/:slug",
+    "destination": "/centres/:slug",
+    "permanent": true
+  },
+  {
+    "source": "/our-courses/:path*",
+    "destination": "/courses/:path*",
     "permanent": true
   }
 ]

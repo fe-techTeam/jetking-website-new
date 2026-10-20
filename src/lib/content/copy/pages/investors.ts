@@ -1,4 +1,6 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Investors — editable text. Fields are added here with their current wording as the default; the
@@ -10,13 +12,21 @@ import { definePageCopy } from '../define';
  *
  * `{brand}`, `{legalName}`, `{date}`, `{title}` and `{count}` are live values filled in by the page.
  */
+export const INVESTORS_SECTIONS = [
+  'hero',
+  'reports',
+] as const;
+
 export const investorsCopy = definePageCopy({
   id: 'investors',
   label: 'Investors',
   path: '/investors',
   group: 'Pages',
-  description: 'The Investors page (contacts, disclosures and headings).',
+  description: 'The Investors page (contacts, disclosures and headings). Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(INVESTORS_SECTIONS),
+    ...seoFieldDefaults(),
+
     'seo.title': 'Investor Information | {brand}',
     'seo.description':
       'SEBI (LODR) Regulation 46 and 62 disclosures by {legalName}: financial results, shareholding, annual reports, policies and investor contacts.',
@@ -28,7 +38,7 @@ export const investorsCopy = definePageCopy({
     'hero.titleAccent': 'Information',
     'hero.body':
       'Disclosure under Regulation 46 and 62 of SEBI (LODR) Regulations — financial information and updates for the shareholders of {legalName}.',
-    'hero.image': '/home/journey-franchise-v2.jpg',
+    'hero.image': '/investors/hero.jpg',
 
     // Reports intro
     'reports.eyebrow': 'Financial documents',

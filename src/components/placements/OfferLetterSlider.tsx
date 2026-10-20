@@ -20,7 +20,7 @@ export interface OfferLetterSample {
 type OfferCopy = typeof placementsCopy.defaults;
 
 const roundButton =
-  'grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] transition-colors hover:border-[var(--dc-accent-soft)] hover:bg-[var(--dc-accent-tint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--dc-hairline-strong)] disabled:hover:bg-[var(--dc-card)]';
+  'grid h-11 w-11 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:bg-[var(--k-red-wash)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--k-red)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[var(--k-line-strong)] disabled:hover:bg-[var(--k-card)]';
 
 /**
  * Sample offer letters as a swipeable row — one card on a phone, two on a tablet, three on
@@ -87,7 +87,7 @@ export function OfferLetterSlider({
   return (
     <div role="region" aria-roledescription="carousel" aria-label={label} className="relative">
       <div className="flex items-center justify-between gap-3">
-        <p id={hintId} className="text-[14px] font-semibold text-[var(--dc-ink-muted)]">
+        <p id={hintId} className="text-[14px] font-semibold text-[var(--k-ink-3)]">
           {copy['offers.hint']}
         </p>
         <div className="flex items-center gap-3">
@@ -133,7 +133,7 @@ export function OfferLetterSlider({
                 onClick={() => setOpenIndex(index)}
                 aria-haspopup="dialog"
                 aria-label={fill(copy['offers.viewLabel'], { title: item.title })}
-                className="group relative flex h-64 cursor-zoom-in items-center justify-center overflow-hidden rounded-[12px] bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dc-accent-soft)] sm:h-72"
+                className="group relative flex h-64 cursor-zoom-in items-center justify-center overflow-hidden rounded-[12px] bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--k-red)] sm:h-72"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- static SVG specimen; nothing for the image optimiser to do */}
                 <img src={item.src} alt="" loading="lazy" className="h-full w-full object-contain" />
@@ -145,8 +145,8 @@ export function OfferLetterSlider({
                 </span>
               </button>
               <figcaption className="mt-3 px-1">
-                <p className="text-[15px] font-bold text-[var(--dc-ink)]">{item.title}</p>
-                <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)]">
+                <p className="text-[15px] font-bold text-[var(--k-ink)]">{item.title}</p>
+                <p className="mt-1 text-[14px] leading-snug text-[var(--k-ink-3)]">
                   {item.sector} · {copy['offers.note']}
                 </p>
               </figcaption>
@@ -272,7 +272,7 @@ function OfferLetterGallery({
                 aria-label={fill(copy['offers.gallery.showLabel'], { title: thumb.title })}
                 aria-current={i === index ? 'true' : undefined}
                 className={`h-16 w-12 cursor-pointer overflow-hidden rounded-md bg-white transition-[opacity,box-shadow] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-[72px] sm:w-[52px] ${
-                  i === index ? 'opacity-100 ring-2 ring-[var(--dc-accent-soft)]' : 'opacity-55 hover:opacity-100'
+                  i === index ? 'opacity-100 ring-2 ring-[var(--k-red)]' : 'opacity-55 hover:opacity-100'
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- static SVG specimen */}

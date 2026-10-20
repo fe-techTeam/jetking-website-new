@@ -48,11 +48,11 @@ export function PlacementsTestimonialSlider({
       itemKey={(item) => item.id}
       itemLabel={(item) => `${item.name}, ${item.role}`}
       classNames={{
-        controls: 'text-[var(--dc-ink)]',
+        controls: 'text-[var(--k-ink)]',
         button:
-          'border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-ink)] hover:border-[var(--dc-accent-soft)]',
-        dotActive: 'bg-[var(--dc-accent-soft)]',
-        dotIdle: 'bg-[var(--dc-ink-muted)]/40',
+          'border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--k-ink)] hover:border-[var(--k-red)]',
+        dotActive: 'bg-[var(--k-red)]',
+        dotIdle: 'bg-[var(--k-ink-3)]/40',
       }}
     >
       {(item, i) => {

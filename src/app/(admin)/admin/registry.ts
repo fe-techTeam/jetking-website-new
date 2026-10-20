@@ -89,7 +89,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     label: 'Centres',
     icon: 'Building2',
     group: GROUP.website,
-    description: 'Each centre’s page, address, contact details and what it teaches.',
+    description: 'Each centre’s page, address, contact details, gallery and what it teaches.',
     live: true,
     appearsOn: [
       { label: 'Centre directory', href: '/centres' },
@@ -97,6 +97,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
       { label: 'Home centre map', href: '/' },
       { label: 'Enquiry form', href: '/enquiry' },
     ],
+    note: 'Gallery: upload up to four photos here. Empty slots fall back to Page text → Centres (Our centre / Classroom / Team / Labs).',
   },
   {
     key: 'cities',
@@ -121,6 +122,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     description: 'Articles on the blog and the latest-articles strip on the home page.',
     live: true,
     appearsOn: [{ label: 'Blog', href: '/blog' }, { label: 'Article pages' }, { label: 'Home', href: '/' }],
+    note: 'Hero image: use a real photograph. Scraped Open Graph / marketing share cards are skipped on the article page; visitors then see Page text → Blog (article.fallbackImage) instead.',
   },
   {
     key: 'about_page',
@@ -191,11 +193,12 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     label: 'SEO settings',
     icon: 'Search',
     group: GROUP.website,
-    description: 'Site-wide search settings: indexing, robots.txt, sitemap exclusions, share image, verification codes and organization data.',
+    description:
+      'Site-wide search: indexing, robots.txt, AI crawlers, sitemap include/exclude, share image, blog cover denylist, always-noindex paths, verification and Organization JSON-LD.',
     live: true,
     mode: 'singleton',
     appearsOn: [{ label: 'robots.txt', href: '/robots.txt' }, { label: 'sitemap.xml', href: '/sitemap.xml' }, { label: 'Every page', href: '/' }],
-    note: 'Turning indexing off tells every search engine to stay away — leave it on for the live site. Per-page titles and descriptions are on the SEO overview.',
+    note: 'Turning indexing off tells every search engine to stay away — leave it on for the live site. Per-page titles and descriptions are on the SEO overview. Legacy URL redirects are under Redirects.',
   },
   {
     key: 'announcements',
@@ -216,12 +219,13 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     label: 'Logos & partners',
     icon: 'Boxes',
     group: GROUP.website,
-    description: 'The certification and employer logo rows shown on the home page.',
+    description: 'Certification, employer and partner logo rows on Home, Explore and Courses.',
     live: true,
     mode: 'fixed',
-    hiddenRecordIds: ['explore-partners', 'professional-employers'],
     appearsOn: [
       { label: 'Home', href: '/' },
+      { label: 'Explore', href: '/explore' },
+      { label: 'Courses', href: '/courses' },
     ],
     note: 'Each list is a fixed document: add, remove, reorder or rename its logos. A logo without an image shows as a plain name tile. Set a list to Draft to show the built-in logos instead.',
   },
@@ -340,10 +344,11 @@ const ALL_COLLECTIONS: AdminCollection[] = [
 ];
 
 /**
- * Pages that exist but are not reachable by visitors: no link from anywhere, left out of the sitemap and
- * set to noindex. The admin does not list them, so editors don't spend time on pages nobody can find.
+ * Page-text IDs withheld from the editor.
+ * `student` landing is unused (URL redirects home). `parent` / `professional`
+ * stay listed under clearer labels for shared About / Courses copy.
  */
-export const UNLISTED_PAGE_IDS: readonly string[] = ['student', 'parent', 'professional', 'explore'];
+export const UNLISTED_PAGE_IDS: readonly string[] = ['student'];
 
 /** Every collection the panel offers (hidden ones are left out of the menu, dashboard, search and site map). */
 export const COLLECTIONS: AdminCollection[] = ALL_COLLECTIONS.filter((c) => !c.hidden);
@@ -378,19 +383,51 @@ export const SITE_PAGES: SitePage[] = [
     cms: ['page_copy', 'courses', 'centres', 'cities', 'posts', 'faqs', 'placements_page', 'logo_lists'],
     code: 'Icons beside cards and sections',
   },
-  { name: 'Course catalogue', path: '/courses', href: '/courses', cms: ['page_copy', 'courses', 'centres', 'cities'] },
+  {
+    name: 'Course catalogue',
+    path: '/courses',
+    href: '/courses',
+    cms: ['page_copy', 'courses', 'centres', 'cities'],
+    code: 'Flexible learning band also reads Page text → Professionals (flex.*)',
+  },
   { name: 'Course page', path: '/courses/[slug]', cms: ['courses', 'faqs', 'centres', 'placements_page', 'page_copy'] },
   { name: 'Centre directory', path: '/centres', href: '/centres', cms: ['page_copy', 'centres', 'cities'] },
   { name: 'City page', path: '/centres/[city]', cms: ['cities', 'centres', 'courses'] },
-  { name: 'Centre page', path: '/centres/[city]/[centre]', cms: ['centres', 'page_copy'] },
+  {
+    name: 'Centre page',
+    path: '/centres/[city]/[centre]',
+    cms: ['centres', 'page_copy'],
+    code: 'Gallery photos: centre CMS uploads first; empty slots use Page text → Centres (centreGallery.slot.*)',
+  },
   { name: 'Blog', path: '/blog', href: '/blog', cms: ['page_copy', 'posts'] },
-  { name: 'Article', path: '/blog/[slug]', cms: ['posts', 'page_copy'] },
+  {
+    name: 'Article',
+    path: '/blog/[slug]',
+    cms: ['posts', 'page_copy'],
+    code: 'Scraped share-card heroes are skipped on-page; set a real heroImage or the Blog article.fallbackImage',
+  },
   { name: 'FAQ', path: '/faq', href: '/faq', cms: ['page_copy', 'faqs'] },
   { name: 'Franchise', path: '/franchise', href: '/franchise', cms: ['page_copy', 'homepage_variants', 'faqs'] },
   { name: 'Enquiry', path: '/enquiry', href: '/enquiry', cms: ['page_copy', 'courses', 'centres', 'cities'] },
-  { name: 'About', path: '/about-us', href: '/about-us', cms: ['page_copy', 'about_page', 'courses', 'centres', 'cities'] },
+  {
+    name: 'About',
+    path: '/about-us',
+    href: '/about-us',
+    cms: ['page_copy', 'about_page', 'courses', 'centres', 'cities'],
+    code: 'Affiliations / reasons also read Page text → Explore; “loves” band reads Page text → Parents',
+  },
   { name: 'Placements', path: '/placements', href: '/placements', cms: ['page_copy', 'placements_page'] },
   { name: 'Investors', path: '/investors', href: '/investors', cms: ['page_copy', 'investors_page'] },
+  {
+    name: 'Jetking ABC Labs',
+    path: '/jetking-abc-labs',
+    href: '/jetking-abc-labs',
+    cms: ['page_copy'],
+    code: 'Layout/structure in code; page is noindex',
+  },
+  { name: 'Explore', path: '/explore', href: '/explore', cms: ['page_copy', 'logo_lists'], code: 'Optional landing (noindex); also feeds About extras' },
+  // /student, /parent, /professional permanently redirect to / — page_copy for
+  // Parents still feeds About “loves”; Professionals flex.* still feeds /courses.
   { name: 'Privacy, Terms & Enrollment', path: '/privacy-policy', href: '/privacy-policy', cms: ['legal_documents', 'page_copy'] },
   { name: 'Site map page', path: '/sitemap', href: '/sitemap', cms: ['page_copy'] },
   { name: 'Chat assistant', path: '/chatbot', href: '/chatbot', cms: ['chatbot_settings', 'chatbot_knowledge'] },

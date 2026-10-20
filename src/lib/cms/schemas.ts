@@ -493,21 +493,50 @@ const announcementSchema = withStatus({
   dismissible: z.boolean(),
 });
 
+const sitemapChangeFrequency = z.enum([
+  'always',
+  'hourly',
+  'daily',
+  'weekly',
+  'monthly',
+  'yearly',
+  'never',
+]);
+
 const seoSettingsSchema = withStatus({
   id: z.literal('seo'),
   allowIndexing: z.boolean(),
   blockAiCrawlers: z.boolean(),
   extraDisallow: z.array(z.string()),
+  alwaysDisallow: z.array(z.string()).default(['/api/']),
   sitemapExclude: z.array(z.string()),
+  sitemapInclude: z
+    .array(
+      z.object({
+        path: z.string().min(1),
+        priority: z.number().min(0).max(1).optional(),
+        changeFrequency: sitemapChangeFrequency.optional(),
+      }),
+    )
+    .default([]),
+  aiCrawlers: z.array(z.string()).default([]),
+  blogMarketingCovers: z.array(z.string()).default([]),
+  forcedNoindexPaths: z.array(z.string()).default([]),
   defaultOgImage: z.string(),
   twitterHandle: z.string(),
   googleVerification: z.string(),
   bingVerification: z.string(),
   organization: z.object({
+    name: z.string().default(''),
+    legalName: z.string().default(''),
+    alternateName: z.array(z.string()).default([]),
     description: z.string(),
     logo: z.string(),
     phone: z.string(),
     sameAs: z.array(z.string()),
+    foundingDate: z.string().default(''),
+    areaServed: z.string().default('India'),
+    knowsAbout: z.array(z.string()).default([]),
   }),
 });
 

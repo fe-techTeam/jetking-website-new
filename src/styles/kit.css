@@ -144,6 +144,28 @@
   flex-shrink: 0;
 }
 
+/*
+ * Form fields inside kit sections. Same specificity story as `.stu-field`
+ * (see student.css): shared `fieldControl` utilities cannot be overridden by
+ * another Tailwind border/focus class through plain `cx()` joins.
+ */
+.kit-field {
+  border-color: var(--k-line-strong) !important;
+  background: var(--k-card) !important;
+  color: var(--k-ink) !important;
+}
+.kit-field::placeholder {
+  color: var(--k-ink-3);
+}
+.kit-field:hover {
+  border-color: var(--k-red) !important;
+}
+.kit-field:focus {
+  border-color: var(--k-red) !important;
+  outline: 2px solid var(--k-red-fill) !important;
+  outline-offset: 2px !important;
+}
+
 /* ── Horizontal rail: swipeable on phones, grid from tablet up (no JS) ───── */
 .kit-rail {
   display: grid;

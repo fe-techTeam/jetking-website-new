@@ -25,7 +25,7 @@ export function BlogHero({
 }) {
   return (
     <section className="shell relative pt-6 pb-10 xs:pt-8 sm:pt-10 lg:pt-12 lg:pb-12">
-      <div className="blog-hero-banner relative min-h-[min(72vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[440px] sm:rounded-[28px] lg:min-h-[520px]">
+      <div className="blog-hero-banner relative min-h-[min(72vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[440px] sm:rounded-[28px] lg:min-h-[520px] 3xl:min-h-[600px] 4xl:min-h-[680px]">
         <Image
           src={copy['hero.image']}
           alt=""

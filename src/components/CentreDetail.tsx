@@ -231,15 +231,27 @@ export function CentreDetail({
     },
   ];
 
-  // Gallery: the centre's own pictures first, then labelled placeholders up to four (placeholders hidden when switched off).
+  // Gallery: centre CMS pictures first; empty slots fall back to the labelled defaults (or dashed placeholders when those are off).
   const realGallery = (centre.gallery ?? []).filter((g) => g.url).slice(0, 4);
+  const galleryDefaults: GallerySlot[] = [0, 1, 2, 3].map((i) => ({
+    label: copy[`centreGallery.slot.${i}` as 'centreGallery.slot.0'],
+    url: copy[`centreGallery.slot.${i}.photo` as 'centreGallery.slot.0.photo'],
+    alt: copy[`centreGallery.slot.${i}.photoAlt` as 'centreGallery.slot.0.photoAlt'],
+  }));
   const gallerySlots: GallerySlot[] = showPlaceholders
-    ? Array.from({ length: 4 }, (_, i) => ({
-        label: realGallery[i]?.caption || copy[`centreGallery.slot.${i}` as 'centreGallery.slot.0'],
-        url: realGallery[i]?.url,
+    ? galleryDefaults.map((slot, i) => ({
+        label: realGallery[i]?.caption || slot.label,
+        url: realGallery[i]?.url || slot.url,
+        alt: realGallery[i]?.caption || slot.alt,
       }))
-    : realGallery.map((g, i) => ({ label: g.caption || copy[`centreGallery.slot.${i}` as 'centreGallery.slot.0'], url: g.url }));
-  const hasStoriesSection = testimonials.length > 0 || gallerySlots.length > 0 || showPlaceholders;
+    : realGallery.length
+      ? realGallery.map((g, i) => ({
+          label: g.caption || galleryDefaults[i]?.label || copy['centreGallery.slot.0'],
+          url: g.url,
+          alt: g.caption || galleryDefaults[i]?.alt,
+        }))
+      : galleryDefaults;
+  const hasStoriesSection = testimonials.length > 0 || gallerySlots.length > 0;
 
   const hasCourses = featured.length > 0 || offered.length > 0;
   const showCoursePlaceholders = !hasCourses && showPlaceholders;
@@ -293,8 +305,8 @@ export function CentreDetail({
           />
           <div aria-hidden="true" className="centres-detail-wash pointer-events-none absolute inset-0" />
 
-          <div className="relative z-[1] flex flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-            <div className="flex flex-1 flex-col justify-center px-5 py-9 xs:px-8 xs:py-11 sm:px-10 sm:py-12 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
+          <div className="relative z-[1] flex flex-col min-[880px]:flex-row min-[880px]:items-center min-[880px]:justify-between min-[880px]:gap-6 lg:gap-8">
+            <div className="flex flex-1 flex-col justify-center px-5 py-9 xs:px-8 xs:py-11 sm:px-10 sm:py-12 min-[880px]:max-w-[58%] lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
               <p className="centres-reveal inline-flex w-fit items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[12px] font-bold tracking-[0.14em] text-[var(--dc-accent-soft)] uppercase">
                 {fill(copy['centreHero.region'], { state: centre.state })}
               </p>
@@ -343,7 +355,7 @@ export function CentreDetail({
 
       {/* Quick intro to Jetking, with the network in numbers */}
       <Section tone={nextTone()} labelledBy="centre-intro-heading">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="grid items-center gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:gap-10 lg:gap-12">
           <div>
             <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['centreIntro.eyebrow']}</p>
             <h2 id="centre-intro-heading" className="section-title mt-2 text-[var(--k-ink)] uppercase">
@@ -424,7 +436,7 @@ export function CentreDetail({
           />
           <div className="space-y-10 sm:space-y-12">
             {showCoursePlaceholders ? (
-              <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
+              <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
                 {[0, 1, 2, 3].map((i) => (
                   <li key={i} className="kit-card flex min-h-[200px] flex-col gap-3 !border-2 !border-dashed !border-[var(--k-line-strong)] !bg-[var(--k-red-wash)] p-5">
                     <span className="w-fit text-[11px] font-bold tracking-[0.08em] text-[var(--k-red)] uppercase">{copy['centrePlaceholder.badge']}</span>
@@ -639,7 +651,7 @@ export function CentreDetail({
           }
           lede={copy['centreClosing.body']}
         />
-        <div className="kit kit-card grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+        <div className="kit kit-card grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="p-5 sm:p-7">
             <address className="flex gap-3 text-[15px] leading-relaxed text-[var(--k-ink-2)] not-italic">
               <MapPin className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />

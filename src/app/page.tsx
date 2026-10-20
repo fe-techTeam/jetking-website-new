@@ -7,19 +7,14 @@ import { loadHomeData } from '@/components/home/data';
 import { HomeHero } from '@/components/home/hero/HomeHero';
 import { HomeSections } from '@/components/home/sections/HomeSections';
 import { PlacementBand } from '@/components/home/sections/PlacementBand';
-import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
 import { homeCopy } from '@/lib/content/copy/pages/home';
+import { seoFromCopy } from '@/lib/content/copy/seo';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 export async function generateMetadata() {
   const copy = await loadCopy(homeCopy);
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
-      description: fill(copy['seo.description'], { siteName: siteConfig.name }),
-    },
-    '/',
-  );
+  return buildMetadata(seoFromCopy(copy, { siteName: siteConfig.name }), '/');
 }
 
 /**
@@ -41,15 +36,19 @@ export default async function HomePage() {
   return (
     <>
       <ScrollDepthTracker />
-      <div className="relative overflow-hidden [transform:translateZ(0)]">
-        <HomeHero
-          enquiryCentres={enquiryCentres}
-          counts={data.counts}
-          placed={data.placements.stats.learnersPlaced}
-          copy={copy}
-        />
-      </div>
-      <PlacementBand copy={copy} placed={data.placements.stats.learnersPlaced} />
+      {isSectionVisible(copy, 'hero') ? (
+        <div className="relative overflow-hidden [transform:translateZ(0)]">
+          <HomeHero
+            enquiryCentres={enquiryCentres}
+            counts={data.counts}
+            placed={data.placements.stats.learnersPlaced}
+            copy={copy}
+          />
+        </div>
+      ) : null}
+      {isSectionVisible(copy, 'placementBand') ? (
+        <PlacementBand copy={copy} placed={data.placements.stats.learnersPlaced} />
+      ) : null}
       <HomeSections data={data} enquiryCentres={enquiryCentres} copy={copy} />
     </>
   );

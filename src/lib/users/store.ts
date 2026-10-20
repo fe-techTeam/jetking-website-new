@@ -2,20 +2,18 @@ import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { getDb, isDatabaseConfigured } from '@/lib/db/client';
 import { users } from '@/lib/db/schema';
+import { normalizeMobile } from '@/lib/phone';
 
 export { isDatabaseConfigured };
 
 /**
- * Accounts for the main website's own register/login — kept independent of
- * /chatbot's accounts (`src/lib/chatbot/store.ts`), which is a deliberate,
- * temporary split (see the `users` table's doc comment in `src/lib/db/schema.ts`).
+ * Shared visitor accounts for the website and /chatbot (one register/login).
  *
  * Postgres when `DATABASE_URL` is set, otherwise a JSON file under `data/users/` —
- * mirrors the chatbot store's "works locally with zero setup, real database in
- * production" split.
+ * "works locally with zero setup, real database in production".
  */
 
 export interface StoredUser {
@@ -46,6 +44,14 @@ function isUniqueViolation(error: unknown): boolean {
   return false;
 }
 
+/** True when a stored phone string is the same Indian mobile as `tenDigits`. */
+export function phoneMatches(stored: string, tenDigits: string): boolean {
+  const normalised = normalizeMobile(stored);
+  if (normalised) return normalised === tenDigits;
+  const digits = stored.replace(/\D/g, '');
+  return digits === tenDigits || digits.endsWith(tenDigits);
+}
+
 interface UserStore {
   createUser(input: {
     name: string;
@@ -58,6 +64,9 @@ interface UserStore {
   }): Promise<StoredUser>;
   getUserByEmail(email: string): Promise<StoredUser | null>;
   getUserById(id: string): Promise<StoredUser | null>;
+  /** All accounts whose phone normalises to this 10-digit mobile (phone is not unique). */
+  getUsersByPhone(tenDigits: string): Promise<StoredUser[]>;
+  updatePassword(id: string, passwordHash: string): Promise<StoredUser | null>;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -90,6 +99,23 @@ function pgStore(): UserStore {
 
     async getUserById(id) {
       const [row] = await db().select().from(users).where(eq(users.id, id)).limit(1);
+      return row ?? null;
+    },
+
+    async getUsersByPhone(tenDigits) {
+      // Match +91… / 0… / raw 10-digit forms already in the table.
+      return db()
+        .select()
+        .from(users)
+        .where(sql`right(regexp_replace(${users.phone}, '[^0-9]', '', 'g'), 10) = ${tenDigits}`);
+    },
+
+    async updatePassword(id, passwordHash) {
+      const [row] = await db()
+        .update(users)
+        .set({ passwordHash })
+        .where(eq(users.id, id))
+        .returning();
       return row ?? null;
     },
   };
@@ -151,6 +177,21 @@ function fileStore(): UserStore {
       withFile((data) => ({ result: data.users.find((u) => u.email === email) ?? null })),
 
     getUserById: (id) => withFile((data) => ({ result: data.users.find((u) => u.id === id) ?? null })),
+
+    getUsersByPhone: (tenDigits) =>
+      withFile((data) => ({
+        result: data.users.filter((u) => phoneMatches(u.phone, tenDigits)),
+      })),
+
+    updatePassword: (id, passwordHash) =>
+      withFile((data) => {
+        const index = data.users.findIndex((u) => u.id === id);
+        if (index < 0) return { result: null };
+        const next = { ...data.users[index]!, passwordHash };
+        const users = [...data.users];
+        users[index] = next;
+        return { data: { ...data, users }, result: next };
+      }),
   };
 }
 
@@ -166,3 +207,5 @@ function store(): UserStore {
 export const createUser: UserStore['createUser'] = (input) => store().createUser(input);
 export const getUserByEmail: UserStore['getUserByEmail'] = (email) => store().getUserByEmail(email);
 export const getUserById: UserStore['getUserById'] = (id) => store().getUserById(id);
+export const getUsersByPhone: UserStore['getUsersByPhone'] = (phone) => store().getUsersByPhone(phone);
+export const updatePassword: UserStore['updatePassword'] = (id, hash) => store().updatePassword(id, hash);

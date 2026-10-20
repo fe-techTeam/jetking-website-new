@@ -6,16 +6,11 @@ import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { legalCopy } from '@/lib/content/copy/pages/legal';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(legalCopy);
-  return buildMetadata(
-    {
-      title: copy['enrollment.seo.title'],
-      description: copy['enrollment.seo.description'],
-    },
-    '/enrollment-terms-and-conditions',
-  );
+  return buildMetadata(seoFromCopy(copy, undefined, 'enrollment.seo'), '/enrollment-terms-and-conditions');
 }
 
 export default async function EnrollmentTermsPage() {

@@ -8,8 +8,6 @@ import type { Post } from '@/lib/content/types';
 import { fill } from '@/lib/content/copy/define';
 import type { blogCopy } from '@/lib/content/copy/pages/blog';
 import { track } from '@/lib/analytics';
-import { usePersona } from '@/persona/PersonaProvider';
-import { AdaptiveList } from '@/persona/AdaptiveSlot';
 import { BLOG_PAGE_SIZE, PostCard, blogIndexHref, categoryHref } from './BlogCards';
 import { subscribeBlogSearch } from './BlogHeroSearch';
 
@@ -44,7 +42,7 @@ function buildPageItems(current: number, total: number): Array<number | 'gap'> {
 }
 
 /**
- * Blog index — category dropdown + search + AdaptiveList + pagination.
+ * Blog index — category dropdown + search + pagination.
  *
  * Search filters the in-memory category list, then pagination shows
  * {@link BLOG_PAGE_SIZE} cards per page. Query / page sync to the URL via
@@ -70,10 +68,14 @@ export function BlogIndex({
   const inputId = useId();
   const categoryId = useId();
   const router = useRouter();
-  const { classification, hydrated } = usePersona();
   const [query, setQuery] = useState(initialQuery);
   const [page, setPage] = useState(initialPage);
   const trackedRef = useRef('');
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const needle = query.trim().toLowerCase();
   const matchedPosts = useMemo(
@@ -119,7 +121,6 @@ export function BlogIndex({
       trackedRef.current = trimmed;
       track('blog_searched', {
         query: trimmed,
-        persona: classification.persona,
         category: activeCategory ?? undefined,
       });
     }
@@ -166,8 +167,8 @@ export function BlogIndex({
         </p>
       </div>
 
-      <div className="mt-7 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-        <label htmlFor={inputId} className="relative block w-full max-w-md">
+      <div className="mt-7 flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:gap-6 lg:gap-8">
+        <label htmlFor={inputId} className="relative block w-full max-w-md md:max-w-sm lg:max-w-md">
           <span className="sr-only">{copy['index.searchLabel']}</span>
           <Search
             className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
@@ -188,7 +189,7 @@ export function BlogIndex({
               type="button"
               onClick={() => onSearchChange('')}
               aria-label={copy['index.clearSearch']}
-              className="absolute top-1/2 right-3 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)]"
+              className="tap absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)]"
             >
               <X className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
             </button>
@@ -196,7 +197,7 @@ export function BlogIndex({
         </label>
 
         {categories.length > 1 ? (
-          <nav aria-label={copy['index.topicsNavLabel']} className="-mx-[var(--gutter)] lg:hidden">
+          <nav aria-label={copy['index.topicsNavLabel']} className="-mx-[var(--gutter)] md:hidden">
             <ul className="scrollbar-none flex snap-x scroll-px-[var(--gutter)] gap-2 overflow-x-auto px-[var(--gutter)] pb-1">
               {[null, ...categories].map((category) => {
                 const active = (activeCategory ?? null) === category;
@@ -221,7 +222,7 @@ export function BlogIndex({
         ) : null}
 
         {categories.length > 1 ? (
-          <div className="relative hidden w-full lg:block lg:w-64 lg:shrink-0">
+          <div className="relative hidden w-full md:block md:w-56 md:shrink-0 lg:w-64">
             <label htmlFor={categoryId} className="sr-only">
               {copy['index.filterLabel']}
             </label>
@@ -274,22 +275,17 @@ export function BlogIndex({
           ) : null}
 
           {pagePosts.length > 0 ? (
-            <AdaptiveList
-              id="blog-list"
-              as="ul"
-              className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
-              items={pagePosts.map((post) => ({
-                key: post.slug,
-                relevance: post.personaRelevance,
-                node: (
+            <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+              {pagePosts.map((post) => (
+                <li key={post.slug} className="min-w-0">
                   <PostCard
                     post={post}
                     copy={copy}
                     badge={post.slug === latestSlug ? 'latest' : undefined}
                   />
-                ),
-              }))}
-            />
+                </li>
+              ))}
+            </ul>
           ) : null}
 
           {totalPages > 1 ? (

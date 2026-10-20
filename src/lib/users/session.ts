@@ -5,15 +5,18 @@ import { getUserById } from './store';
 import type { SiteUser } from './types';
 
 /**
- * Signed session cookie for the website's own accounts. The cookie carries only a
- * user id and an issue time; the signature stops it being forged, and every request
- * re-reads the user row, so deleting an account ends its sessions immediately.
- * Separate cookie name and secret from both the admin panel's and /chatbot's, so
- * none of the three can be replayed against another.
+ * Signed session cookie for visitor accounts (website + /chatbot). The cookie
+ * carries only a user id and an issue time; the signature stops it being forged,
+ * and every request re-reads the user row, so deleting an account ends its
+ * sessions immediately. Separate cookie name and secret from the admin panel.
  */
 
 const COOKIE = 'jk_user_session';
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
+
+/** Pre-unification chatbot cookies — cleared on login/logout so old sessions do not linger. */
+const LEGACY_CHAT_COOKIE = 'jk_chat_session';
+const LEGACY_CHAT_HINT = 'jk_chat_hint';
 
 function secret(): string {
   const value = process.env.USER_SESSION_SECRET;
@@ -57,9 +60,14 @@ function readToken(token: string | undefined): string | null {
  * carries no identity and grants nothing — its one job is to let the client skip the
  * "who am I" request entirely for anonymous visitors. The real cookie above stays
  * httpOnly and is the only thing the server trusts. Name is mirrored in
- * `use-site-account.ts`.
+ * `use-site-account.ts` and `use-chat-account.ts`.
  */
 const HINT_COOKIE = 'jk_user_hint';
+
+function clearLegacyChatCookies(store: Awaited<ReturnType<typeof cookies>>): void {
+  store.delete(LEGACY_CHAT_COOKIE);
+  store.delete(LEGACY_CHAT_HINT);
+}
 
 export async function startSession(userId: string): Promise<void> {
   const store = await cookies();
@@ -78,21 +86,24 @@ export async function startSession(userId: string): Promise<void> {
     path: '/',
     maxAge: MAX_AGE_SECONDS,
   });
+  clearLegacyChatCookies(store);
 }
 
 export async function endSession(): Promise<void> {
   const store = await cookies();
   store.delete(COOKIE);
   store.delete(HINT_COOKIE);
+  clearLegacyChatCookies(store);
 }
 
 /** Drops a stale hint (session expired, or the account was deleted) so the client stops asking. */
 export async function clearSessionHint(): Promise<void> {
   const store = await cookies();
   if (store.has(HINT_COOKIE)) store.delete(HINT_COOKIE);
+  if (store.has(LEGACY_CHAT_HINT)) store.delete(LEGACY_CHAT_HINT);
 }
 
-/** The signed-in website user, or `null` for a guest (or a stale/forged cookie). */
+/** The signed-in visitor, or `null` for a guest (or a stale/forged cookie). */
 export async function getSessionUser(): Promise<SiteUser | null> {
   const store = await cookies();
   const userId = readToken(store.get(COOKIE)?.value);

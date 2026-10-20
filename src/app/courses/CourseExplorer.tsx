@@ -424,7 +424,7 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
 
         <div
           ref={listRef}
-          className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+          className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
         >
           {ordered.map((course) => {
             const isVisible = visible.has(course.slug);

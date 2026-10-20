@@ -70,42 +70,54 @@ export const WEBSITE_ID = `${siteConfig.url}/#website`;
 const organizationRef = { '@id': ORGANIZATION_ID } as const;
 
 export function organizationSchema(settings?: SeoSettings['organization']): JsonLd {
+  const org = settings;
   return {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
     '@id': ORGANIZATION_ID,
-    name: siteConfig.name,
-    legalName: siteConfig.legalName,
-    alternateName: ['Jetking Infotrain', 'Jetking Infotrain Ltd'],
+    name: org?.name || siteConfig.name,
+    legalName: org?.legalName || siteConfig.legalName,
+    alternateName: org?.alternateName?.length
+      ? org.alternateName
+      : ['Jetking Infotrain', 'Jetking Infotrain Ltd'],
     url: siteConfig.url,
     logo: {
       '@type': 'ImageObject',
-      url: absoluteUrl(settings?.logo || '/brand/jetking-shield.png'),
+      url: absoluteUrl(org?.logo || '/brand/jetking-shield.png'),
       width: 238,
       height: 266,
     },
     image: absoluteUrl('/og-default.png'),
-    description: settings?.description || siteConfig.description,
-    foundingDate: String(FOUNDED_YEAR),
-    areaServed: { '@type': 'Country', name: 'India' },
-    knowsAbout: [
-      'Cloud computing',
-      'Cyber security',
-      'Ethical hacking',
-      'Computer networking',
-      'IT infrastructure',
-      'DevOps',
-      'Data analytics',
-      'Artificial intelligence',
-    ],
+    description: org?.description || siteConfig.description,
+    foundingDate: org?.foundingDate || String(FOUNDED_YEAR),
+    areaServed: { '@type': 'Country', name: org?.areaServed || 'India' },
+    knowsAbout: org?.knowsAbout?.length
+      ? org.knowsAbout
+      : [
+          'Cloud computing',
+          'Cyber security',
+          'Ethical hacking',
+          'Computer networking',
+          'IT infrastructure',
+          'DevOps',
+          'Data analytics',
+          'Artificial intelligence',
+        ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: settings?.phone || `+91-${siteConfig.helpline.replace(/^0/, '')}`,
+      telephone: org?.phone || `+91-${siteConfig.helpline.replace(/^0/, '')}`,
       contactType: 'admissions',
       areaServed: 'IN',
     },
-    sameAs: settings?.sameAs.length ? settings.sameAs : SOCIAL_LINKS.map((social) => social.href),
+    sameAs: org?.sameAs?.length ? org.sameAs : SOCIAL_LINKS.map((social) => social.href),
   };
+}
+
+/** True when SEO settings list this path as always-noindex (account, chatbot, …). */
+export async function pathForcedNoindex(path: string): Promise<boolean> {
+  const seo = await content.getSeoSettings();
+  const normalised = path.replace(/\/+$/, '') || '/';
+  return seo.forcedNoindexPaths.some((p) => (p.trim().replace(/\/+$/, '') || '/') === normalised);
 }
 
 export function websiteSchema(): JsonLd {

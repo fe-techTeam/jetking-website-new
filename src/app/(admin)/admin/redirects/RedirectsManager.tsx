@@ -133,7 +133,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
           </ul>
         )}
         <p className="border-t border-border px-4 py-3 text-xs text-foreground-muted">
-          {staticCount} more reviewed legacy redirects are built into the site and are not listed here.
+          {staticCount} build-time redirects also load from redirects.json (same list the deploy uses). Add runtime rules here to change behaviour without a redeploy.
         </p>
       </section>
 

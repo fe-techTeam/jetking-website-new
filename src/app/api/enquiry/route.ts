@@ -2,12 +2,11 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import { leadForLog, safeError } from '@/lib/pii';
-import { content } from '@/lib/content';
-import { crmIdsForCentre, sendToCrm, toCrmPayload } from '@/lib/crm/smartrain';
 import { isVerifiedFor, otpEnforced } from '@/lib/otp/service';
-import { getSessionUser } from '@/lib/chatbot/session';
+import { getSessionUser } from '@/lib/users/session';
 import { QUALIFICATION_VALUES } from '@/lib/enquiry-fields';
-import { saveEnquiry, setCrmStatus } from '@/lib/leads/intake';
+import { saveEnquiry } from '@/lib/leads/intake';
+import { handoffLeadToCrm } from '@/lib/leads/crm-handoff';
 import { UTM_COOKIE, cookieValue, decodeUtm, utmToFlat } from '@/lib/utm';
 
 export const runtime = 'nodejs';
@@ -66,21 +65,6 @@ const EnquirySchema = z.object({
   /** Milliseconds since the visitor's first interaction on the page; 0/absent for scripted posts. */
   ft: z.number().min(0).max(1e10).optional(),
 });
-
-/**
- * The centre the CRM should receive the lead under: the one the visitor picked, or — when they only gave a
- * city — the first centre in that city that has a CRM branch mapping.
- */
-async function centreForCrm(centreSlug: string | undefined, city: string | undefined): Promise<string | undefined> {
-  if (centreSlug && crmIdsForCentre(centreSlug)) return centreSlug;
-  const key = city?.trim().toLowerCase();
-  if (!key) return centreSlug;
-  const cities = await content.listCities();
-  const match = cities.find((c) => c.slug === key || c.name.toLowerCase() === key);
-  if (!match) return centreSlug;
-  const centres = await content.listCentres({ citySlug: match.slug });
-  return centres.find((c) => crmIdsForCentre(c.slug))?.slug ?? centreSlug;
-}
 
 /** Faster than a person can read a form and fill it in. */
 const MIN_HUMAN_MS = 600;
@@ -209,61 +193,15 @@ export async function POST(request: Request) {
     console.error('[enquiry:store-failed]', leadForLog(enquiry), safeError(error));
   }
 
-  const endpoint = process.env.CRM_ENDPOINT;
-
-  // Provider adapter: the Smartrain CRM wants its own numeric ids and different field names, and reports
-  // failures in the response body (see src/lib/crm/smartrain.ts), so it gets its own hand-off path.
-  if (endpoint && process.env.CRM_PROVIDER === 'smartrain') {
-    const centreSlug = await centreForCrm(lead.centre, lead.city);
-    const built = toCrmPayload({
-      name: lead.name,
-      phone: lead.phone,
-      email: lead.email || undefined,
-      centreSlug,
-    });
-    if (!built.ok) {
-      // Not sent, and not invented: the lead is already stored here for a counsellor to handle.
-      console.warn('[enquiry:crm-skipped]', built.reason);
-      if (leadId) await setCrmStatus(leadId, 'skipped').catch(() => {});
-      return NextResponse.json({ ok: true, routed: false });
-    }
-    const outcome = await sendToCrm(endpoint, built.payload);
-    if (outcome.status === 'failed' || outcome.status === 'rejected') {
-      console.error('[enquiry:crm-failed]', outcome.status, outcome.detail);
-    }
-    if (leadId) await setCrmStatus(leadId, outcome.status).catch(() => {});
-    return NextResponse.json({ ok: true, routed: outcome.status === 'routed' });
-  }
-
-  if (!endpoint) {
-    // No CRM wired yet. Log with a distinctive marker so these are greppable and
-    // reconcilable once the integration lands.
-    console.warn('[enquiry:unrouted]', leadForLog(enquiry));
-    return NextResponse.json({ ok: true, routed: false });
-  }
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...(process.env.CRM_API_KEY ? { authorization: `Bearer ${process.env.CRM_API_KEY}` } : {}),
-      },
-      body: JSON.stringify(enquiry),
-      // A hung CRM must still hit the catch below and log — that's the durable
-      // record this comment block calls the one thing that must never be lost.
-      signal: AbortSignal.timeout(8_000),
-    });
-
-    if (!response.ok) throw new Error(`CRM returned ${response.status}`);
-
-    if (leadId) await setCrmStatus(leadId, 'routed').catch(() => {});
-    return NextResponse.json({ ok: true, routed: true });
-  } catch (error) {
-    // The visitor must not be told to re-submit — we have their details, and a
-    // duplicate submission is worse than a delayed hand-off. Log loudly instead.
-    console.error('[enquiry:crm-failed]', leadForLog(enquiry), safeError(error));
-    if (leadId) await setCrmStatus(leadId, 'failed').catch(() => {});
-    return NextResponse.json({ ok: true, routed: false });
-  }
+  // Same CRM path as admin "Add lead" and journey soft-save — panel row first, then hand-off.
+  const handoff = await handoffLeadToCrm({
+    leadId,
+    name: lead.name,
+    phone: lead.phone,
+    email: lead.email || undefined,
+    centreSlug: lead.centre,
+    city: lead.city,
+    raw: enquiry,
+  });
+  return NextResponse.json({ ok: true, routed: handoff.routed });
 }

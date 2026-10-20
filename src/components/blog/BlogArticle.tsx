@@ -7,7 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import type { BodyBlock, Post } from '@/lib/content/types';
 import { AdaptiveNudge } from '@/persona/AdaptiveSlot';
 import type { Crumb } from '@/components/ui';
-import { categoryHref, formatPostDate, PostCard, postCover } from './BlogCards';
+import { BlogLogoBanner, categoryHref, formatPostDate, PostCard, postCover } from './BlogCards';
 import { cleanBlogBody, decodeEntities } from '@/lib/content/cleanBlogBody';
 import { fill } from '@/lib/content/copy/define';
 import { sanitizeRichHtml } from '@/lib/rich/html';
@@ -67,15 +67,15 @@ export function BlogArticle({
   related,
   trail,
   copy,
+  marketingCovers,
 }: {
   post: Post;
   related: Post[];
   trail: Crumb[];
   copy: typeof blogCopy.defaults;
+  marketingCovers?: Iterable<string>;
 }) {
-  const cover = postCover(post);
-  const bannerSrc = cover?.url || copy['article.fallbackImage'];
-  const bannerAlt = cover?.alt || post.title;
+  const cover = postCover(post, marketingCovers);
   const body = cleanBlogBody(post.body);
 
   return (
@@ -113,21 +113,25 @@ export function BlogArticle({
         </nav>
 
         <div className="blog-hero-banner blog-card-media relative aspect-[840/300] overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[28px]">
-          <Image
-            src={bannerSrc}
-            alt={bannerAlt}
-            fill
-            priority
-            sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
-            className="object-cover object-center"
-          />
+          {cover ? (
+            <Image
+              src={cover.url}
+              alt={cover.alt || post.title}
+              fill
+              priority
+              sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
+              className="object-cover object-[center_28%]"
+            />
+          ) : (
+            <BlogLogoBanner />
+          )}
         </div>
 
         <header className="mt-7 sm:mt-8 lg:mt-10">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <Link
               href={categoryHref(post.category)}
-              className="tap inline-flex min-h-11 rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase transition-colors hover:border-[var(--dc-accent-soft)]/60"
+              className="tap inline-flex items-center rounded-full border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase transition-colors hover:border-[var(--dc-accent-soft)]/60"
             >
               {post.category}
             </Link>
@@ -171,31 +175,13 @@ export function BlogArticle({
               id="article-footer-nudge"
               tone="blog"
               reserve="standard"
-              variants={{
-                student: {
-                  headline: copy['nudge.student.headline'],
-                  body: copy['nudge.student.body'],
-                  ctaLabel: copy['nudge.student.cta.label'],
-                  ctaHref: copy['nudge.student.cta.href'],
-                },
-                professional: {
-                  headline: copy['nudge.professional.headline'],
-                  body: copy['nudge.professional.body'],
-                  ctaLabel: copy['nudge.professional.cta.label'],
-                  ctaHref: copy['nudge.professional.cta.href'],
-                },
-                parent: {
-                  headline: copy['nudge.parent.headline'],
-                  body: copy['nudge.parent.body'],
-                  ctaLabel: copy['nudge.parent.cta.label'],
-                  ctaHref: copy['nudge.parent.cta.href'],
-                },
-                franchise: {
-                  headline: copy['nudge.franchise.headline'],
-                  ctaLabel: copy['nudge.franchise.cta.label'],
-                  ctaHref: copy['nudge.franchise.cta.href'],
-                },
+              fallback={{
+                headline: copy['nudge.fallback.headline'],
+                body: copy['nudge.fallback.body'],
+                ctaLabel: copy['nudge.fallback.cta.label'],
+                ctaHref: copy['nudge.fallback.cta.href'],
               }}
+              variants={{}}
             />
           </div>
         </article>
@@ -220,38 +206,54 @@ export function BlogArticle({
           <ul className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
             {related.map((item) => (
               <li key={item.slug} className="h-full">
-                <PostCard post={item} copy={copy} />
+                <PostCard post={item} copy={copy} marketingCovers={marketingCovers} />
               </li>
             ))}
           </ul>
         </Section>
       ) : null}
 
-      <Section tone="wash" labelledBy="blog-article-cta">
-        <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-          <div className="max-w-2xl">
-            <p className="k-eyebrow">{copy['articleCta.eyebrow']}</p>
+      <Section tone="plain" labelledBy="blog-article-cta">
+        <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="p-6 sm:p-10">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">
+              {copy['articleCta.eyebrow']}
+            </p>
             <h2 id="blog-article-cta" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
               {copy['articleCta.title']}
             </h2>
-            <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
+            <p className="mt-3 max-w-[52ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
               {copy['articleCta.body']}
             </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <EnquiryLink
+                source="blog-article"
+                className="group/book inline-flex min-h-12 items-center justify-between gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
+              >
+                <span>{copy['articleCta.primary.label']}</span>
+                <span
+                  aria-hidden="true"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[var(--k-red)] transition-transform duration-200 group-hover/book:translate-x-0.5"
+                >
+                  <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
+                </span>
+              </EnquiryLink>
+              <Link
+                href={copy['articleCta.secondary.href'] as Route}
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--k-line-strong)] px-6 py-3 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)] hover:text-[var(--k-red)]"
+              >
+                {copy['articleCta.secondary.label']}
+              </Link>
+            </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <EnquiryLink
-              source="blog-article"
-              className="dc-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold sm:text-[16px]"
-            >
-              {copy['articleCta.primary.label']}
-              <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
-            </EnquiryLink>
-            <Link
-              href={copy['articleCta.secondary.href'] as Route}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
-            >
-              {copy['articleCta.secondary.label']}
-            </Link>
+          <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[18rem]">
+            <Image
+              src={copy['articleCta.image']}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 40vw, 100vw"
+              className="object-cover object-[center_28%]"
+            />
           </div>
         </div>
       </Section>

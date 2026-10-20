@@ -18,6 +18,10 @@ export interface SeoRow {
   ogImage: string;
   noindex: boolean;
   draft?: boolean;
+  /** Page_copy key prefix (`seo` or `privacy.seo`). */
+  fieldPrefix?: string;
+  /** Shown when SEO is stored but not rendered (e.g. city redirects). */
+  note?: string;
 }
 
 const TITLE_MAX = 60;
@@ -76,7 +80,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
   );
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const view = shown.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
-  const key = (r: SeoRow) => `${r.collection}:${r.id}`;
+  const key = (r: SeoRow) => `${r.collection}:${r.id}:${r.fieldPrefix ?? 'seo'}:${r.path}`;
 
   function open(r: SeoRow) {
     setOpenKey(key(r));
@@ -86,7 +90,10 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
 
   function save(r: SeoRow) {
     if (!draft) return;
-    const target: SeoTarget = r.kind === 'page' ? { kind: 'page', id: r.id } : { kind: 'record', collection: r.collection as 'courses', id: r.id };
+    const target: SeoTarget =
+      r.kind === 'page'
+        ? { kind: 'page', id: r.id, fieldPrefix: r.fieldPrefix ?? 'seo' }
+        : { kind: 'record', collection: r.collection as 'courses', id: r.id };
     start(async () => {
       const result = await saveSeo(target, draft);
       if (!result.ok) {
@@ -144,6 +151,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                   </p>
                   <p className="truncate text-xs text-foreground-muted">{r.path}</p>
                   <p className="mt-1 truncate text-sm text-foreground-secondary">{r.title || '—'}</p>
+                  {r.note ? <p className="mt-1 text-[11px] leading-snug text-[#b54708]">{r.note}</p> : null}
                   {issues.length > 0 ? (
                     <p className="mt-1 flex flex-wrap gap-1.5">
                       {issues.map((i) => (
@@ -168,12 +176,10 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                       <span className="flex justify-between">Description <Counter value={draft.description} min={DESC_MIN} max={DESC_MAX} /></span>
                       <textarea value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} rows={3} className="admin-input mt-1.5" />
                     </label>
-                    {r.kind === 'record' ? (
-                      <label className="text-xs font-semibold text-foreground-secondary">
-                        Canonical URL (only if this content lives elsewhere)
-                        <input value={draft.canonicalPath} onChange={(e) => setDraft({ ...draft, canonicalPath: e.target.value })} placeholder={r.path} className="admin-input mt-1.5" />
-                      </label>
-                    ) : null}
+                    <label className="text-xs font-semibold text-foreground-secondary">
+                      Canonical URL (leave blank for this page’s own URL)
+                      <input value={draft.canonicalPath} onChange={(e) => setDraft({ ...draft, canonicalPath: e.target.value })} placeholder={r.path} className="admin-input mt-1.5" />
+                    </label>
                     <div className="text-xs font-semibold text-foreground-secondary">
                       Share image
                       <div className="mt-1.5 flex gap-2">

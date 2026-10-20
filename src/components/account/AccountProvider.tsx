@@ -31,11 +31,10 @@ export function useAccount(): AccountContextValue {
 }
 
 /**
- * The website's own account, for the whole public site. Inert on /admin and
- * /chatbot: neither shows the site chrome, and /chatbot runs its own, separate
- * account system (`use-chat-account.ts`, `chat_users` table) — unifying the two
- * is future work, not done here (see the `users` table's doc comment in
- * `src/lib/db/schema.ts`).
+ * Shared visitor account for the public site. Inert on /admin (staff use a
+ * different login). On /chatbot the Jetking AI UI drives the same `/api/users/auth`
+ * session via `use-chat-account`, so this provider stays off there to avoid two
+ * auth dialogs — the cookie is still shared.
  */
 export function AccountProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();

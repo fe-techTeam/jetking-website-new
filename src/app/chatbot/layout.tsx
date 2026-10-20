@@ -2,12 +2,16 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 import { AppProviders } from '@/components/providers/app-providers';
+import { pathForcedNoindex } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Chat with Jetking AI',
-  description: 'Your Jetking learning assistant — courses, placements, fees and more.',
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const noindex = await pathForcedNoindex('/chatbot');
+  return {
+    title: 'Chat with Jetking AI',
+    description: 'Your Jetking learning assistant — courses, placements, fees and more.',
+    robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
+  };
+}
 
 export default function ChatbotLayout({ children }: { children: ReactNode }) {
   return (

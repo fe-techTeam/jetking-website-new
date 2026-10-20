@@ -35,7 +35,7 @@ export function CredibilityMarquee({
         />
 
         <div className="mt-8 sm:mt-10">
-          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.certs.label']}</p>
+          <p className="label-mono text-[12px] text-[var(--k-ink-3)]">{copy['marquee.certs.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '32s' }}>
             <div className="dc-marquee-track">
               <LogoList items={certifications} />
@@ -45,7 +45,7 @@ export function CredibilityMarquee({
         </div>
 
         <div className="mt-8 sm:mt-10">
-          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['marquee.alumni.label']}</p>
+          <p className="label-mono text-[12px] text-[var(--k-ink-3)]">{copy['marquee.alumni.label']}</p>
           <div className="mt-3 dc-marquee" data-paused={paused} style={{ ['--dc-marquee-duration' as string]: '40s' }}>
             <div className="dc-marquee-track">
               <LogoList items={employers} />
@@ -55,7 +55,7 @@ export function CredibilityMarquee({
         </div>
 
         <div className="mt-8 sm:mt-10">
-          <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">{copy['recognition.universities.label']}</p>
+          <p className="label-mono text-[12px] text-[var(--k-ink-3)]">{copy['recognition.universities.label']}</p>
           <div className="mt-3">
             <LogoStrip
               size="lg"
@@ -72,7 +72,7 @@ export function CredibilityMarquee({
             onClick={() => setPaused((p) => !p)}
             aria-pressed={paused}
             aria-label={paused ? copy['marquee.play.aria'] : copy['marquee.pause.aria']}
-            className="dc-chip inline-flex h-10 gap-2 px-4 text-[12.5px]"
+            className="dc-chip inline-flex min-h-11 gap-2 px-4 text-[12.5px]"
           >
             {paused ? (
               <Play className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />

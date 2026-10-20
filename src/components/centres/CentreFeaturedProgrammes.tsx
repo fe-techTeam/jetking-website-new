@@ -52,7 +52,8 @@ function courseForProgramme(title: string, courses: Course[]): Course | undefine
   return (fallbackSlug && courses.find((c) => c.slug === fallbackSlug)) || matched;
 }
 
-const GRID = 'mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4';
+/** 1 → 2 (tablet) → 3 (desktop) → 4 (wide). Avoids a 2-col stretch at ~1100px. */
+const GRID = 'mt-5 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4';
 
 /** Centre pages store "36 Months"; people say "3 Years". */
 function readableDuration(raw?: string): string | undefined {

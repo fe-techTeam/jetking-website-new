@@ -49,18 +49,8 @@ export const saveConversationSchema = z.object({
 });
 export type SaveConversationInput = z.infer<typeof saveConversationSchema>;
 
-export interface ChatUser {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  /** State name, e.g. "Gujarat". Null for accounts created before location was collected. */
-  state: string | null;
-  /** City slug, e.g. "ahmedabad". */
-  city: string | null;
-  /** Centre slug the person prefers, if they picked one. */
-  centre: string | null;
-}
+/** Same shape as the website visitor account — one register/login covers both. */
+export type { SiteUser as ChatUser } from '@/lib/users/types';
 
 /** State → city → centre, as served by /api/locations. */
 export interface LocationTree {

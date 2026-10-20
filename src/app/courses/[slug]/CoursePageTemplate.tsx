@@ -36,6 +36,7 @@ import { JumpNav, type JumpItem } from '@/components/JumpNav';
 import { CourseCard } from '@/components/CourseCard';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { CentrePicker } from './CentrePicker';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 /*
  * Course page template (degree and short-term) — built from the client's "Website Design Feedback" deck.
@@ -253,15 +254,17 @@ export function CoursePageTemplate({
   const internshipPoints = internshipPoints0.length ? internshipPoints0 : showPlaceholders ? [copy['coursePlaceholder.internship'], copy['coursePlaceholder.internship']] : [];
   const internshipIsPlaceholder = internshipPoints0.length === 0 && internshipPoints.length > 0;
 
+  const show = (id: string) => isSectionVisible(copy, id);
+
   // Phone/tablet "on this page" strip: only the sections this course actually has, in page order.
   const jumpItems: JumpItem[] = [
-    { id: 'cp-why', label: copy['courseJump.overview'] },
-    { id: 'cp-curriculum', label: copy['courseJump.curriculum'] },
-    ...(toolsOnly.length || showPlaceholders ? [{ id: 'cp-tools', label: copy['courseJump.tools'] }] : []),
-    ...(course.certifications.length || showPlaceholders ? [{ id: 'cp-certs', label: copy['courseJump.certifications'] }] : []),
-    { id: 'cp-records', label: copy['courseJump.placement'] },
-    { id: 'cp-centres', label: copy['courseJump.centres'] },
-    ...(ownFaqs.length + feeFaqs.length || showPlaceholders ? [{ id: 'cp-faqs', label: copy['courseJump.faqs'] }] : []),
+    ...(show('courseWhy') ? [{ id: 'cp-why', label: copy['courseJump.overview'] }] : []),
+    ...(show('courseCurriculum') ? [{ id: 'cp-curriculum', label: copy['courseJump.curriculum'] }] : []),
+    ...(show('courseTools') && (toolsOnly.length || showPlaceholders) ? [{ id: 'cp-tools', label: copy['courseJump.tools'] }] : []),
+    ...(show('courseCerts') && (course.certifications.length || showPlaceholders) ? [{ id: 'cp-certs', label: copy['courseJump.certifications'] }] : []),
+    ...(show('courseRecords') ? [{ id: 'cp-records', label: copy['courseJump.placement'] }] : []),
+    ...(show('courseCentres') ? [{ id: 'cp-centres', label: copy['courseJump.centres'] }] : []),
+    ...(show('courseFaqs') && (ownFaqs.length + feeFaqs.length || showPlaceholders) ? [{ id: 'cp-faqs', label: copy['courseJump.faqs'] }] : []),
   ];
 
   const centreSection = (
@@ -326,6 +329,7 @@ export function CoursePageTemplate({
   return (
     <div className="cp">
       {/* ── 1. Top banner with enquiry form ─────────────────────────────── */}
+      {show('courseHero') ? (
       <section className="cp-band-sky relative overflow-hidden pt-6 pb-10 sm:pt-8 lg:pb-14">
         {course.heroImage ? (
           <>
@@ -344,7 +348,7 @@ export function CoursePageTemplate({
         ) : null}
         <div className="shell relative">
           <Breadcrumbs trail={trail} />
-          <div className="mt-7 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:items-start lg:gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_minmax(0,24rem)] xl:gap-10">
+          <div className="mt-7 grid gap-8 min-[880px]:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] min-[880px]:items-start min-[880px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_minmax(0,24rem)] xl:gap-10">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex min-h-9 items-center rounded-full bg-[var(--cp-red-fill)] px-3.5 text-[12px] font-bold tracking-[0.08em] text-white uppercase">
@@ -400,11 +404,12 @@ export function CoursePageTemplate({
             </div>
 
             {/* A clear, unblurred face between the programme name and the form (wide screens). */}
-            <div className="relative hidden aspect-[3/4] self-center overflow-hidden rounded-[24px] border-4 border-white shadow-[0_18px_40px_-20px_rgba(17,24,39,0.45)] xl:block">
+            <div className="relative hidden aspect-[3/4] w-56 shrink-0 self-center overflow-hidden rounded-[24px] border-4 border-white shadow-[0_18px_40px_-20px_rgba(17,24,39,0.45)] xl:block">
               <Image src={copy['courseBanner.faceImage']} alt={copy['courseBanner.faceAlt']} fill priority sizes="224px" className="object-cover object-top" />
             </div>
 
-            <aside id="cp-enquiry" aria-labelledby="cp-form-title" className="hidden scroll-mt-24 rounded-[20px] lg:block border border-[var(--cp-line)] bg-[var(--cp-bg)] p-4 shadow-[0_18px_40px_-20px_rgba(17,24,39,0.35)] sm:p-5">
+            {show('courseEnquiry') ? (
+            <aside id="cp-enquiry" aria-labelledby="cp-form-title" className="hidden scroll-mt-24 rounded-[20px] border border-[var(--cp-line)] bg-[var(--cp-bg)] p-4 shadow-[0_18px_40px_-20px_rgba(17,24,39,0.35)] min-[880px]:block sm:p-5">
               <h2 id="cp-form-title" className="mb-3 text-[1.0625rem] leading-snug font-bold text-[var(--cp-red)]">
                 {copy['courseForm.title']}
               </h2>
@@ -414,36 +419,41 @@ export function CoursePageTemplate({
                 compact
               />
             </aside>
+            ) : null}
           </div>
         </div>
       </section>
+      ) : null}
 
-      <JumpNav items={jumpItems} />
+      {jumpItems.length ? <JumpNav items={jumpItems} /> : null}
 
       {/* ── 2. Key programme highlights ─────────────────────────────────── */}
+      {show('courseFacts') ? (
       <section className="shell pt-10 pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label={copy['courseFacts.aria']}>
-        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {quickFacts.map((fact, i) => {
             const Icon = fact.icon;
             return (
-              <li key={fact.title} className="cp-card flex flex-col items-start gap-3 p-4 sm:flex-row sm:gap-4 sm:p-5">
-                <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${HIGHLIGHT_ACCENTS[i]}`}>
+              <li key={fact.title} className="cp-card flex flex-col items-start gap-2.5 p-3.5 xs:gap-3 xs:p-4 sm:flex-row sm:gap-4 sm:p-5">
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl xs:h-11 xs:w-11 ${HIGHLIGHT_ACCENTS[i]}`}>
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="cp-h3">{fact.title}</p>
-                  <p className="mt-0.5 text-[14px] leading-snug text-[var(--cp-muted)]">{fact.body}</p>
+                  <p className="mt-0.5 text-[13px] leading-snug text-[var(--cp-muted)] xs:text-[14px]">{fact.body}</p>
                 </div>
               </li>
             );
           })}
         </ul>
       </section>
+      ) : null}
 
       {/* ── 3. Why this degree & why now (job roles) ────────────────────── */}
+      {show('courseWhy') ? (
       <section id="cp-why" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         {whyNow ? (
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-stretch lg:gap-14">
+          <div className="grid gap-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-stretch md:gap-10 lg:gap-14">
             <div>
               <Heading kicker={copy['courseWhy.degreeKicker']}>{fill(copy['courseWhy.degreeTitle'], { degree })}</Heading>
               {whyNowIsPlaceholder ? (
@@ -475,7 +485,7 @@ export function CoursePageTemplate({
             </aside>
           </div>
         ) : (
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-14">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:items-start md:gap-10 lg:gap-14">
           <div>
             <Heading kicker={isDegree ? copy['courseWhy.degreeKicker'] : copy['courseWhy.shortKicker']}>
               {isDegree ? fill(copy['courseWhy.degreeTitle'], { degree }) : fill(copy['courseWhy.shortTitle'], { label })}
@@ -549,8 +559,10 @@ export function CoursePageTemplate({
         </div>
         )}
       </section>
+      ) : null}
       {/* Phones/tablets: the enquiry form sits mid-page, after the reader has seen what the course is (the hero offers the
           main action first). From lg up the same form is the banner card above. */}
+      {show('courseEnquiry') ? (
       <section aria-labelledby="cp-form-title-m" className="shell py-[clamp(2.25rem,5vw,3.5rem)] lg:hidden">
         <div id="cp-enquiry-m" className="cp-card scroll-mt-36 p-5 sm:p-6">
           <h2 id="cp-form-title-m" className="mb-4 text-[1.0625rem] leading-snug font-bold text-[var(--cp-red)]">
@@ -559,12 +571,14 @@ export function CoursePageTemplate({
           <QuickEnquiryForm centres={toEnquiryCentres(centres, cities)} source={`course-${course.slug}-mid`} />
         </div>
       </section>
+      ) : null}
 
       {/* Every course: the internship and placement points, in one prominent box (a placeholder until the programme's own points are entered). */}
       {internshipPoints.length ? (
+        show('courseInternship') ? (
         <section className="shell py-[clamp(2.25rem,5vw,3.5rem)]" aria-labelledby="cp-intern-title">
-          <div className="relative overflow-hidden rounded-[28px]">
-            <Image src={copy['coursePhoto.image']} alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_25%]" />
+          <div className="relative min-h-[280px] overflow-hidden rounded-[28px] sm:min-h-[320px]">
+            <Image src={copy['coursePhoto.image']} alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_30%]" />
             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#0f1115]/95 via-[#0f1115]/90 to-[#0f1115]/80" />
             <div className="relative p-7 sm:p-10">
               <span className="cp-eyebrow !text-white/80">{copy['courseInternship.kicker']}</span>
@@ -589,7 +603,8 @@ export function CoursePageTemplate({
             </div>
           </div>
         </section>
-      ) : (
+        ) : null
+      ) : show('coursePhoto') ? (
       <section className="shell py-[clamp(2.25rem,5vw,3.5rem)]" aria-label={copy['coursePhoto.aria']}>
         <div className="relative min-h-[240px] overflow-hidden rounded-[28px] sm:min-h-[280px]">
           <Image src={copy['coursePhoto.image']} alt="" fill sizes="(min-width: 1024px) 1100px, 100vw" className="object-cover object-[center_25%]" />
@@ -606,22 +621,22 @@ export function CoursePageTemplate({
           </div>
         </div>
       </section>
-      )}
+      ) : null}
 
-      {isDegree ? (
+      {isDegree && show('courseUniversity') ? (
         <>
       {/* The numbered 'what makes this degree different' band is gone: its points repeated the facts strip, the university
           block and the certifications below. The internship and placement points live in the box above. */}
 
       {/* ── 5. About the university ─────────────────────────────────────── */}
       <section className="cp-section shell">
-        <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-14">
+        <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
           <div>
             <Heading kicker={copy['courseUniversity.kicker']}>
               {course.university ? fill(copy['courseUniversity.titleWith'], { university: course.university }) : copy['courseUniversity.titleWithout']}
             </Heading>
             {universityLogo ? (
-              <div className="mt-8 inline-flex rounded-2xl border border-[var(--cp-line)] bg-white p-4">
+              <div className="mt-8 inline-flex rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-grey)] p-4">
                 {/* eslint-disable-next-line @next/next/no-img-element -- local partner logo */}
                 <img src={universityLogo} alt={fill(copy['courseUniversity.logoAlt'], { university: course.university ?? '' })} className="h-14 w-auto object-contain" />
               </div>
@@ -679,11 +694,11 @@ export function CoursePageTemplate({
       ) : null}
 
       {/* ── 6. Your learning journey (every course; placeholder phases until the programme's own are entered) ── */}
-      {course.phases?.length || showPlaceholders ? (
+      {show('courseJourney') && (course.phases?.length || showPlaceholders) ? (
         <section className="cp-section">
           <div className="shell">
             <Heading kicker={copy['courseJourney.kicker']}>{copy['courseJourney.title']}</Heading>
-            <ol className="mt-8 grid gap-4 lg:grid-cols-3">
+            <ol className="mt-8 grid gap-4 md:grid-cols-3">
               {(course.phases?.length ? course.phases : [null, null, null]).map((phase, i) => (
                 <li key={phase ? phase.title : `ph-${i}`} className={`cp-card relative border-t-4 p-6 ${ACCENT_TOPS[i % 3]} ${phase ? '' : 'border-dashed'}`}>
                   <span className={`grid h-10 w-10 place-items-center rounded-full text-[15px] font-bold ${ACCENT_DOTS[i % 3]}`}>
@@ -702,6 +717,7 @@ export function CoursePageTemplate({
       ) : null}
 
       {/* ── 7. Curriculum ───────────────────────────────────────────────── */}
+      {show('courseCurriculum') ? (
       <section id="cp-curriculum" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         <div className="flex items-baseline justify-between gap-4">
           <Heading kicker={copy['courseCurriculum.kicker']}>{copy['courseCurriculum.title']}</Heading>
@@ -711,7 +727,7 @@ export function CoursePageTemplate({
               : fill(copy['courseCurriculum.modules'], { count: course.modules.length })}
           </span>
         </div>
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
           {curriculumStats.map((stat) => (
             <li key={stat.label} className={`rounded-2xl p-4 text-center ${'bg-[var(--cp-grey)]'}`}>
               <span className="block text-3xl leading-none font-bold text-[var(--cp-ink)]">{stat.value}</span>
@@ -742,13 +758,14 @@ export function CoursePageTemplate({
               ))}
         </div>
       </section>
+      ) : null}
 
       {/* ── 8. Tools & technologies — all logos in two lines on a light band ─ */}
-      {toolsOnly.length || showPlaceholders ? (
+      {show('courseTools') && (toolsOnly.length || showPlaceholders) ? (
         <section id="cp-tools" className="cp-band-grey cp-section scroll-mt-36 lg:scroll-mt-24">
           <div className="shell">
             <Heading kicker={copy['courseTools.kicker']}>{copy['courseTools.title']}</Heading>
-            <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
+            <ul className="mt-8 grid grid-cols-2 gap-2.5 xs:grid-cols-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
               {toolsOnly.length
                 ? toolsOnly.map((tool) => (
                     <li key={tool}>
@@ -766,10 +783,10 @@ export function CoursePageTemplate({
       ) : null}
 
       {/* ── 9. Industry certifications ──────────────────────────────────── */}
-      {course.certifications.length || showPlaceholders ? (
+      {show('courseCerts') && (course.certifications.length || showPlaceholders) ? (
         <section id="cp-certs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker={copy['courseCerts.kicker']}>{copy['courseCerts.title']}</Heading>
-          <ul className="mt-8 grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
+          <ul className="mt-8 grid grid-cols-2 gap-2.5 xs:grid-cols-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6">
             {course.certifications.length
               ? course.certifications.map((cert) => (
                   <li key={cert}>
@@ -812,6 +829,7 @@ export function CoursePageTemplate({
           Placements box, so it is gone. */}
 
       {/* ── 11. Placement records — 4 learner cards per scroll, no testimonials ─── */}
+      {show('courseRecords') ? (
       <section id="cp-records" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
         {/* Slide 10: stat beside the heading, four learner cards per scroll, no testimonials.
             No learner photos are in the repo yet, so a monogram stands in until they are supplied. */}
@@ -868,12 +886,14 @@ export function CoursePageTemplate({
           <p className="mt-4 text-[14px] text-[var(--cp-muted)]">{RECRUITERS_DISCLAIMER}</p>
         </div>
       </section>
+      ) : null}
 
-      {centreSection}
+      {show('courseCentres') ? centreSection : null}
 
       {/* ── 13. Call to action ──────────────────────────────────────────── */}
+      {show('courseClosing') ? (
       <section className="cp-section shell">
-        <div className="cp-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div className="cp-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
           <div className="p-6 sm:p-10">
             <h2 className="cp-h2">{copy['courseClosing.title']}</h2>
             <p className="cp-lede mt-3">{copy['courseClosing.body']}</p>
@@ -893,14 +913,15 @@ export function CoursePageTemplate({
               </a>
             </p>
           </div>
-          <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[18rem]">
-            <Image src={copy['courseClosing.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+          <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[18rem]">
+            <Image src={copy['courseClosing.image']} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-center" />
           </div>
         </div>
       </section>
+      ) : null}
 
       {/* ── 14. FAQs, similar courses ───────────────────────────────────── */}
-      {ownFaqs.length + feeFaqs.length || showPlaceholders ? (
+      {show('courseFaqs') && (ownFaqs.length + feeFaqs.length || showPlaceholders) ? (
         <section id="cp-faqs" className="cp-section shell scroll-mt-36 lg:scroll-mt-24">
           <Heading kicker={copy['courseFaq.kicker']}>{copy['courseFaq.title']}</Heading>
           <div className="mt-8">
@@ -918,19 +939,19 @@ export function CoursePageTemplate({
         </section>
       ) : null}
 
-      {related.length ? (
+      {show('courseRelated') && related.length ? (
         <section className="cp-band-grey cp-section">
           <div className="shell">
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <Heading kicker={copy['courseRelated.kicker']}>{copy['courseRelated.title']}</Heading>
-              <Link href="/courses" className="tap inline-flex min-h-11 items-center sm:min-h-6 gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
+              <Link href="/courses" className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
                 {copy['courseRelated.catalogueLink']}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
               {related.map((item) => (
-                <li key={item.slug}>
+                <li key={item.slug} className="min-w-0">
                   <CourseCard course={item} surface="course-related" compact cta={copy['courseRelated.viewCourse']} />
                 </li>
               ))}

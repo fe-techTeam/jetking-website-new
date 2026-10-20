@@ -18,7 +18,8 @@ export function ChatbotConsole({
   needsRebuild: boolean;
   builtLabel: string;
   embedModel: string;
-  breakdown: Array<[string, number]>;
+  /** Pre-formatted on the server so Node vs browser `toLocaleString` cannot hydrate-mismatch. */
+  breakdown: Array<[string, string]>;
   chats: ChatSummary[];
   canReadChats?: boolean;
 }) {
@@ -89,10 +90,10 @@ export function ChatbotConsole({
         ) : null}
         {breakdown.length > 0 ? (
           <ul className="mt-5 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
-            {breakdown.map(([label, n]) => (
+            {breakdown.map(([label, countLabel]) => (
               <li key={label} className="flex items-center justify-between gap-3 border-b border-border py-1.5">
                 <span className="text-foreground-secondary">{label}</span>
-                <span className="numeral font-bold text-foreground">{n.toLocaleString('en-IN')}</span>
+                <span className="numeral font-bold text-foreground">{countLabel}</span>
               </li>
             ))}
           </ul>

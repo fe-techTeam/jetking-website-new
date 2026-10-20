@@ -9,7 +9,7 @@ export function LeaderAvatar({ leader }: { leader: Leader }) {
         src={leader.photoUrl}
         alt={leader.name}
         fill
-        sizes="160px"
+        sizes="(min-width: 640px) 128px, 80px"
         className="object-cover object-top"
       />
     );
@@ -24,7 +24,7 @@ export function LeaderAvatar({ leader }: { leader: Leader }) {
     .toUpperCase();
 
   return (
-    <span className="grid h-full w-full place-items-center font-display text-[22px] font-extrabold text-[var(--dc-accent-soft)] sm:text-[26px]">
+    <span className="grid h-full w-full place-items-center font-display text-[22px] font-extrabold text-[var(--k-red)] sm:text-[26px]">
       {initials || '—'}
     </span>
   );

@@ -10,3 +10,4 @@ export { Timeline, type Step } from './Timeline';
 export { StepPath, type PathStep } from './StepPath';
 export { Callout } from './Callout';
 export { Reveal } from './Reveal';
+export { BrandIconGlyph } from './BrandIconGlyph';

@@ -5,7 +5,7 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { requireRole } from '../actions';
 import { getBuildState, startBuild, type BuildState } from '@/lib/chatbot/ops';
 import { getDb } from '@/lib/db/client';
-import { chatConversations, chatbotUnanswered, chatUsers } from '@/lib/db/schema';
+import { chatConversations, chatbotUnanswered, users } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
 
 const ROLES = ['admin', 'editor'] as const;
@@ -116,10 +116,10 @@ export async function listRecentChats(limit = 15): Promise<ChatSummary[]> {
       title: chatConversations.title,
       messages: chatConversations.messages,
       updatedAt: chatConversations.updatedAt,
-      name: chatUsers.name,
+      name: users.name,
     })
     .from(chatConversations)
-    .leftJoin(chatUsers, eq(chatUsers.id, chatConversations.userId))
+    .leftJoin(users, eq(users.id, chatConversations.userId))
     .orderBy(desc(chatConversations.updatedAt))
     .limit(limit);
   return rows.map((r) => ({ id: r.id, title: r.title, who: r.name ?? 'Visitor', messages: r.messages.length, updatedAt: r.updatedAt.toISOString() }));

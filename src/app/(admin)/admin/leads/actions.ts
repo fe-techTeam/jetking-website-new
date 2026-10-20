@@ -23,6 +23,7 @@ import {
 } from '@/lib/leads/store';
 import { resolveCentreCity, leadInScope, scopeLeadList, isUuid } from '@/lib/leads/centre-scope';
 import { leadInputSchema, leadStatusSchema } from '@/lib/leads/schema';
+import { handoffLeadToCrm } from '@/lib/leads/crm-handoff';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
 import { listUsers } from '@/lib/auth/users';
@@ -111,6 +112,26 @@ export async function submitLead(
   try {
     const lead = await createLead(parsed.data);
     void recordAudit(user, 'lead.create', 'lead', lead.id, `Added lead "${lead.name}"`);
+    // Same dual write as website enquiries: admin panel row + CRM hand-off.
+    void handoffLeadToCrm({
+      leadId: lead.id,
+      name: lead.name,
+      phone: lead.phone ?? '',
+      email: lead.email,
+      centreSlug: user.centreSlug ?? lead.centreSlug,
+      city: lead.city,
+      raw: {
+        name: lead.name,
+        phone: lead.phone,
+        email: lead.email,
+        city: lead.city,
+        courseInterest: lead.courseInterest,
+        source: 'admin-panel',
+        persona: lead.persona,
+        notes: lead.notes,
+        receivedAt: new Date().toISOString(),
+      },
+    }).catch((err) => console.error('[leads:crm-handoff-failed]', safeError(err)));
     return { ok: true, lead };
   } catch (e) {
     console.error('[leads:create-failed]', safeError(e));

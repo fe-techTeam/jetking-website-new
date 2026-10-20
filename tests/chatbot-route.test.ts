@@ -41,6 +41,14 @@ vi.mock('@/features/jetking-ai/resolve-centre-answer', () => ({
   resolveCentreAnswer: async () => '## Jetking centres in Pune\n- **Jetking Pune**: Camp, 411001',
   resolveCentreAnswerByCoords: async () => '## Nearest centre\n- **Jetking Pune**: Camp',
 }));
+// Keep LLM-path tests on the retrieval/LLM branch; catalogue / placement
+// answers are covered by their own resolvers.
+vi.mock('@/features/jetking-ai/resolve-course-answer', () => ({
+  resolveCourseAnswer: async () => null,
+}));
+vi.mock('@/features/jetking-ai/resolve-placement-answer', () => ({
+  resolvePlacementAnswer: async () => null,
+}));
 
 type Json = Record<string, unknown>;
 const llmReply = { content: '' as string, status: 200 };
@@ -61,6 +69,8 @@ const ask = (content: string) => post({ messages: [{ role: 'user', content }] })
 
 beforeEach(() => {
   vi.resetModules();
+  // Opt into OpenAI for these route tests — production default is local (no OpenAI).
+  process.env.GUIDE_PROVIDER = 'openai';
   process.env.OPENAI_API_KEY = 'sk-test';
   search.result = { size: 100, topScore: 0.8, hits: [{ type: 'fees', text: 'Fees for Cyber Security Course fee: Confirmed by a counsellor. Payment: EMI options available. runs for 6 months' }] };
   env.allowGeneralAnswers = false;
@@ -79,6 +89,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.unstubAllGlobals();
+  delete process.env.GUIDE_PROVIDER;
 });
 
 describe('request validation', () => {
@@ -180,6 +191,7 @@ describe('LLM structured-output path', () => {
 
 describe('Ollama fallback (no OpenAI key)', () => {
   it('sends the bare schema under `format`', async () => {
+    process.env.GUIDE_PROVIDER = 'local';
     delete process.env.OPENAI_API_KEY;
     llmReply.content = '';
     vi.stubGlobal(

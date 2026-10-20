@@ -10,6 +10,7 @@ import { fill } from '@/lib/content/copy/define';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
 import { CentresHero } from './CentresHero';
 import { CentresIndex } from './CentresIndex';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 type CitySummary = { slug: string; name: string; state: string };
 type CentreSummary = {
@@ -26,13 +27,13 @@ type CentreSummary = {
 function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
   return (
     <Section tone="plain" labelledBy="centres-cta">
-      <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[22rem]">
+      <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+        <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[22rem]">
           <Image
             src={copy['directoryCta.image']}
             alt=""
             fill
-            sizes="(min-width: 1024px) 40vw, 100vw"
+            sizes="(min-width: 768px) 40vw, 100vw"
             className="object-cover object-center"
           />
         </div>
@@ -50,17 +51,17 @@ function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
             <li>
               <a
                 href={copy['directoryCta.phoneHref']}
-                className="tap flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-ink)]"
+                className="tap inline-flex items-center gap-2 py-1 text-[14px] font-semibold text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-ink)]"
               >
                 <Phone className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
                 {copy['directoryCta.phoneLabel']}
               </a>
             </li>
-            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+            <li className="flex items-center gap-2 py-1 text-[14px] font-semibold text-[var(--k-ink-2)]">
               <MessageCircle className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
               {copy['directoryCta.point1']}
             </li>
-            <li className="flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
+            <li className="flex items-center gap-2 py-1 text-[14px] font-semibold text-[var(--k-ink-2)]">
               <Building2 className="h-4 w-4 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
               {copy['directoryCta.point2']}
             </li>
@@ -102,19 +103,24 @@ export function CentresLanding({
   centres: CentreSummary[];
   initialQuery?: string;
 }) {
+  const show = (id: string) => isSectionVisible(copy, id);
   return (
     <div className="centres-page relative">
-      <CentresHero
-        copy={copy}
-        cityCount={cities.length}
-        centreCount={centres.length}
-        centres={toEnquiryCentres(centres, cities)}
-        initialQuery={initialQuery}
-      />
+      {show('hero') ? (
+        <CentresHero
+          copy={copy}
+          cityCount={cities.length}
+          centreCount={centres.length}
+          centres={toEnquiryCentres(centres, cities)}
+          initialQuery={initialQuery}
+        />
+      ) : null}
 
-      <CentresIndex cities={cities} centres={centres} initialQuery={initialQuery} copy={copy} />
+      {show('index') ? (
+        <CentresIndex cities={cities} centres={centres} initialQuery={initialQuery} copy={copy} />
+      ) : null}
 
-      <CentresBottomCta copy={copy} />
+      {show('cta') ? <CentresBottomCta copy={copy} /> : null}
     </div>
   );
 }

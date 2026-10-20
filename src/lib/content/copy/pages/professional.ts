@@ -1,4 +1,5 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
 import { SINCE_FOUNDED } from '../../../brand-facts';
 
 /**
@@ -10,11 +11,13 @@ import { SINCE_FOUNDED } from '../../../brand-facts';
  */
 export const professionalCopy = definePageCopy({
   id: 'professional',
-  label: 'Professionals',
-  path: '/professional',
+  label: 'Courses — flexible learning',
+  path: '/courses',
   group: 'Pages',
-  description: 'The working-professional landing page.',
+  description:
+    'Flexible-learning band copy used on /courses. The old /professional URL redirects to home.',
   defaults: {
+    ...seoFieldDefaults({ noindex: true }),
     'seo.title': 'Working Professional Path — Upskill & Advance | {siteName}',
     'seo.description':
       'Upgrade your career with Jetking courses in cloud, cyber security, DevOps and AI — flexible batches, certifications and career support for working professionals.',
@@ -75,9 +78,13 @@ export const professionalCopy = definePageCopy({
     'flex.title': 'Flexible Learning That Fits Your Life',
     'flex.lede': 'Choose a schedule that works around your job — not the other way around.',
     'flex.0.label': 'Weekend Batches',
+    'flex.0.icon': '/icons/courses/01_weekday.svg',
     'flex.1.label': 'Evening Batches',
+    'flex.1.icon': '/icons/courses/02_evening.svg',
     'flex.2.label': 'Online Live Classes',
+    'flex.2.icon': '/icons/courses/03_online.svg',
     'flex.3.label': 'Career Break Friendly',
+    'flex.3.icon': '/icons/courses/04_flexible.svg',
 
     'benefits.title': 'Why Professionals Choose Jetking',
     'benefits.lede': 'What you get when you upskill with a course built for working schedules.',

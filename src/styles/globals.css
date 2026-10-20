@@ -175,8 +175,10 @@
      rem defaults and interleaves lg(64rem) < lg2(75rem) < xl(80rem) in the cascade —
      a px value here is emitted in a separate group and loses to lg. */
   --breakpoint-lg2: 75rem;
-  --breakpoint-3xl: 1920px;
-  --breakpoint-4xl: 2560px;
+  /* rem (not px) so 3xl/4xl interleave after 2xl in Tailwind's breakpoint sort —
+     a px value is emitted in a separate group and loses to xl/2xl utilities. */
+  --breakpoint-3xl: 120rem; /* 1920px */
+  --breakpoint-4xl: 160rem; /* 2560px */
 
   /* ── Layout: Frame (container) + Content ───────────────────────────────── */
   --container-xl: 1440px;
@@ -571,11 +573,13 @@
 @media (min-width: 1920px) {
   :root {
     --gutter: 96px;
+    --section-y: 160px;
   }
 }
 @media (min-width: 2560px) {
   :root {
     --gutter: 120px;
+    --section-y: 176px;
   }
 }
 

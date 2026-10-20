@@ -1,19 +1,38 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Placements (page text) — editable text. Fields are added here with their current wording as the default; the
  * page component reads them from the copy it is given instead of hard-coding the string.
  * (The hero lede, disclaimers, steps, recruiters, benefits, testimonials and contact details are the
  * Placements document, edited under Placements.)
+ *
+ * `sections.*.visible` toggles (Page text → Show or hide sections) control which blocks render.
  */
+export const PLACEMENTS_SECTIONS = [
+  'hero',
+  'disclaimer',
+  'recruiters',
+  'testimonials',
+  'process',
+  'benefits',
+  'offers',
+  'cta',
+] as const;
+
 export const placementsCopy = definePageCopy({
   id: 'placements',
   label: 'Placements (page text)',
   path: '/placements',
   group: 'Pages',
-  description: 'Section headings and labels around the Placements document.',
+  description: 'Section headings and labels around the Placements document. Use Show or hide sections to turn blocks on or off.',
   defaults: {
-    'seo.title': 'Placement Support at Jetking — What It Includes',
+    ...sectionVisibilityDefaults(PLACEMENTS_SECTIONS),
+    ...seoFieldDefaults(),
+
+    /* Live placement keywords retained; “guarantee” claims stay out of titles. */
+    'seo.title': 'Secure Placement Opportunities in Networking & Computers | Jetking',
     'seo.description':
       'What Jetking placement support covers: interview preparation, profile building and employer introductions. Written for students and parents evaluating the course.',
 
@@ -21,12 +40,12 @@ export const placementsCopy = definePageCopy({
     'breadcrumb.placements': 'Placements',
 
     'hero.image': '/placements/photos/hero-male.webp',
-    'benefits.image': '/home/counsellor.jpg',
-    'testimonials.avatars.0.avatar': '/student/testimonial.webp',
-    'testimonials.avatars.1.avatar': '/student/avatar-1.webp',
-    'testimonials.avatars.2.avatar': '/student/avatar-2.webp',
-    'testimonials.avatars.3.avatar': '/student/avatar-3.webp',
-    'centre.image': '/home/centre-exterior.jpg',
+    'benefits.image': '/placements/photos/benefits-side.jpg',
+    'testimonials.avatars.0.avatar': '/placements/photos/testimonial-1.webp',
+    'testimonials.avatars.1.avatar': '/placements/photos/testimonial-2.webp',
+    'testimonials.avatars.2.avatar': '/placements/photos/testimonial-3.webp',
+    'testimonials.avatars.3.avatar': '/placements/photos/testimonial-1.webp',
+    'centre.image': '/centres/hero.jpg',
     'icons.0.image': '/placements/icons/01_hiring_partners.svg',
     'icons.1.image': '/placements/icons/02_placement_support.svg',
     'icons.2.image': '/placements/icons/03_realworld_preparation.svg',

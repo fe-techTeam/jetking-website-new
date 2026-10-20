@@ -1,4 +1,5 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
 
 /**
  * Parents — editable text. Fields are added here with their current wording as the default; the
@@ -7,11 +8,13 @@ import { definePageCopy } from '../define';
  */
 export const parentCopy = definePageCopy({
   id: 'parent',
-  label: 'Parents',
-  path: '/parent',
+  label: 'About — families band',
+  path: '/about-us',
   group: 'Pages',
-  description: 'The parent landing page.',
+  description:
+    'Shared “families / loves” copy used on About. The old /parent URL redirects to home.',
   defaults: {
+    ...seoFieldDefaults({ noindex: true }),
     'seo.title': 'Parent Path — Placements, Fees & Trust | {siteName}',
     'seo.description':
       'For parents evaluating Jetking: placement support explained honestly, fee clarity, centre visits, and counsellor conversations before you decide.',
@@ -79,9 +82,9 @@ export const parentCopy = definePageCopy({
     'stories.foundedLabel': 'Training IT talent since',
     'stories.citiesLabel': 'Cities with a Jetking centre',
     'stories.caption': 'Parents & learners across India',
-    'stories.avatar.0': '/student/avatar-1.webp',
-    'stories.avatar.1': '/student/avatar-2.webp',
-    'stories.avatar.2': '/student/avatar-3.webp',
+    'stories.avatar.0': '/parent/avatars/avatar-1.jpg',
+    'stories.avatar.1': '/parent/avatars/avatar-2.jpg',
+    'stories.avatar.2': '/parent/avatars/avatar-3.jpg',
     'stories.label': 'Parent stories',
     'stories.slider.0': '/student/avatar-1.webp',
     'stories.slider.1': '/student/avatar-2.webp',

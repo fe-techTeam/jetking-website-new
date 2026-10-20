@@ -11,6 +11,10 @@ import type {
 
 type AuthResult = { ok: true; user: ChatUser } | { ok: false; error: string };
 
+export type OtpSendResult =
+  | { ok: true; phone: string | null; sent: boolean; resendIn: number; devCode?: string }
+  | { ok: false; error: string; needsEmail?: boolean; retryAfter?: number };
+
 interface AuthResponse {
   ok?: boolean;
   error?: string;
@@ -29,9 +33,10 @@ export interface SignupInput {
 
 const NETWORK_ERROR = 'We could not reach the server. Please check your connection and try again.';
 
-/** Mirrors `HINT_COOKIE` in `src/lib/chatbot/session.ts`: present only while a session probably exists. */
+/** Mirrors `HINT_COOKIE` in `src/lib/users/session.ts` (shared with the website). */
 function hasSessionHint(): boolean {
-  return document.cookie.split('; ').includes('jk_chat_hint=1');
+  const cookies = document.cookie.split('; ');
+  return cookies.includes('jk_user_hint=1') || cookies.includes('jk_chat_hint=1');
 }
 
 interface ChatAccountOptions {
@@ -42,9 +47,9 @@ interface ChatAccountOptions {
 }
 
 /**
- * Client side of the optional Jetking account, shared by the website and /chatbot:
- * who is signed in, their saved chats, and the calls that sign in / out and save /
- * open / delete a chat. Guests get `user: null` and everything else is inert.
+ * Client side of the shared Jetking visitor account on /chatbot: who is signed in,
+ * their saved chats, and sign in / out. Uses the same `/api/users/auth` session as
+ * the website. Guests get `user: null` and everything else is inert.
  */
 export function useChatAccount({ history: withHistory = true, enabled = true }: ChatAccountOptions = {}) {
   const [user, setUser] = useState<ChatUser | null>(null);
@@ -72,7 +77,7 @@ export function useChatAccount({ history: withHistory = true, enabled = true }: 
     // No hint cookie means no session, so an anonymous visitor makes no request at all.
     const lookup: Promise<{ user?: ChatUser | null }> =
       enabled && hasSessionHint()
-        ? fetch('/api/chatbot/auth').then((r) => r.json())
+        ? fetch('/api/users/auth').then((r) => r.json())
         : Promise.resolve({ user: null });
     lookup
       .then((data) => {
@@ -92,7 +97,7 @@ export function useChatAccount({ history: withHistory = true, enabled = true }: 
   const authenticate = useCallback(
     async (body: Record<string, string>): Promise<AuthResult> => {
       try {
-        const res = await fetch('/api/chatbot/auth', {
+        const res = await fetch('/api/users/auth', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify(body),
@@ -111,8 +116,84 @@ export function useChatAccount({ history: withHistory = true, enabled = true }: 
     [refreshHistory],
   );
 
+  const postOtp = useCallback(async (body: Record<string, string>): Promise<OtpSendResult> => {
+    try {
+      const res = await fetch('/api/users/auth', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data: AuthResponse & {
+        phone?: string | null;
+        sent?: boolean;
+        resendIn?: number;
+        devCode?: string;
+        needsEmail?: boolean;
+        retryAfter?: number;
+      } = await res.json();
+      if (!res.ok || !data.ok) {
+        return {
+          ok: false,
+          error: data.error ?? 'Something went wrong. Please try again.',
+          needsEmail: data.needsEmail,
+          retryAfter: data.retryAfter,
+        };
+      }
+      return {
+        ok: true,
+        phone: data.phone ?? null,
+        sent: Boolean(data.sent),
+        resendIn: data.resendIn ?? 30,
+        ...(data.devCode ? { devCode: data.devCode } : {}),
+      };
+    } catch {
+      return { ok: false, error: NETWORK_ERROR };
+    }
+  }, []);
+
   const login = useCallback(
     (email: string, password: string) => authenticate({ action: 'login', email, password }),
+    [authenticate],
+  );
+
+  const loginOtpSend = useCallback(
+    (phone: string, email?: string) =>
+      postOtp({ action: 'login_otp_send', phone, ...(email ? { email } : {}) }),
+    [postOtp],
+  );
+
+  const loginOtpVerify = useCallback(
+    (input: { phone: string; otpToken?: string; code?: string; email?: string }) =>
+      authenticate({
+        action: 'login_otp_verify',
+        phone: input.phone,
+        ...(input.otpToken ? { otpToken: input.otpToken } : {}),
+        ...(input.code ? { code: input.code } : {}),
+        ...(input.email ? { email: input.email } : {}),
+      }),
+    [authenticate],
+  );
+
+  const resetSend = useCallback(
+    (input: { email?: string; phone?: string }) =>
+      postOtp({
+        action: 'reset_send',
+        ...(input.email ? { email: input.email } : {}),
+        ...(input.phone ? { phone: input.phone } : {}),
+      }),
+    [postOtp],
+  );
+
+  const resetVerify = useCallback(
+    (input: { phone: string; newPassword: string; otpToken?: string; code?: string; email?: string }) =>
+      authenticate({
+        action: 'reset_verify',
+        phone: input.phone,
+        newPassword: input.newPassword,
+        ...(input.otpToken ? { otpToken: input.otpToken } : {}),
+        ...(input.code ? { code: input.code } : {}),
+        ...(input.email ? { email: input.email } : {}),
+      }),
     [authenticate],
   );
 
@@ -134,7 +215,7 @@ export function useChatAccount({ history: withHistory = true, enabled = true }: 
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/chatbot/auth', { method: 'DELETE' });
+      await fetch('/api/users/auth', { method: 'DELETE' });
     } finally {
       setUser(null);
       setHistory([]);
@@ -187,6 +268,10 @@ export function useChatAccount({ history: withHistory = true, enabled = true }: 
     ready,
     history,
     login,
+    loginOtpSend,
+    loginOtpVerify,
+    resetSend,
+    resetVerify,
     signup,
     logout,
     saveConversation,

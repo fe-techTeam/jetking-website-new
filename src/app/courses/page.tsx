@@ -15,6 +15,7 @@ import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import { AskAiLink } from '@/components/AskAiLink';
 import { Section } from '@/components/kit';
 import { CourseExplorer } from './CourseExplorer';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 export async function generateMetadata() {
   return pageMetadata(coursesCopy, '/courses');
@@ -41,6 +42,7 @@ export default async function CoursesPage() {
     { name: copy['breadcrumb.home'], path: '/' },
     { name: copy['breadcrumb.courses'], path: '/courses' },
   ];
+  const show = (id: string) => isSectionVisible(copy, id);
 
   return (
     <>
@@ -63,23 +65,24 @@ export default async function CoursesPage() {
           <Breadcrumbs trail={trail} />
 
           {/* ── Cinematic banner (blog / centres hero language) ───────────── */}
+          {show('hero') ? (
           <section className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[28px] lg:min-h-[480px]">
+            <div className="dc-banner relative min-h-[min(74vw,400px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[420px] sm:rounded-[28px] lg:min-h-[480px] 3xl:min-h-[580px] 4xl:min-h-[660px]">
               <Image
                 src={copy['hero.image']}
                 alt=""
                 fill
                 priority
                 sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
-                className="object-cover object-[center_22%]"
+                className="object-cover object-[center_30%]"
               />
               <div
                 aria-hidden="true"
                 className="dc-banner-wash pointer-events-none absolute inset-0"
               />
 
-              <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
+              <div className="relative z-[1] flex h-full min-h-[inherit] flex-col min-[880px]:flex-row min-[880px]:items-center min-[880px]:justify-between min-[880px]:gap-6 lg:gap-8">
+                <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 min-[880px]:max-w-[58%] lg:max-w-[62%] lg:px-12 lg:py-16 xl:px-14">
                   <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
 
                   <h1 className="page-title-hero mt-4 font-display text-[var(--dc-ink)] sm:mt-5">
@@ -115,10 +118,12 @@ export default async function CoursesPage() {
                   source="courses-hero-form"
                   tone="dc"
                   titleId="courses-hero-form-title"
+                  earlyShow
                 />
               </div>
             </div>
           </section>
+          ) : null}
 
           {/*
             The explorer is a client component, so Next server-renders it: every
@@ -126,54 +131,39 @@ export default async function CoursesPage() {
             toggles visibility — nothing is hidden from crawlers, and every course
             page stays linked. See the contract at the top of CourseExplorer.tsx.
           */}
+          {show('explorer') ? (
           <div className="mt-10 lg:mt-12">
             <CourseExplorer courses={courses} copy={copy} />
           </div>
+          ) : null}
 
-          {/* Persona-adaptive next step, after the list rather than before it, so the programmes come first. */}
-          <div className="mt-10 max-w-2xl">
+          {/* Single next-step nudge — no audience/persona variants. */}
+          {show('guidance') ? (
             <AdaptiveNudge
               id="courses-guidance-nudge"
-              reserve="standard"
+              className="mt-10 max-w-2xl"
+              reserve="none"
               tone="dark"
-              variants={{
-                student: {
-                  headline: copy['guidance.student.headline'],
-                  body: copy['guidance.student.body'],
-                  ctaLabel: copy['guidance.student.ctaLabel'],
-                  ctaHref: copy['guidance.student.ctaHref'],
-                },
-                professional: {
-                  headline: copy['guidance.professional.headline'],
-                  body: copy['guidance.professional.body'],
-                  ctaLabel: copy['guidance.professional.ctaLabel'],
-                  ctaAction: 'guide',
-                },
-                parent: {
-                  headline: copy['guidance.parent.headline'],
-                  body: copy['guidance.parent.body'],
-                  ctaLabel: copy['guidance.parent.ctaLabel'],
-                  ctaHref: copy['guidance.parent.ctaHref'],
-                },
-                franchise: {
-                  headline: copy['guidance.franchise.headline'],
-                  body: copy['guidance.franchise.body'],
-                  ctaLabel: copy['guidance.franchise.ctaLabel'],
-                  ctaHref: copy['guidance.franchise.ctaHref'],
-                },
+              fallback={{
+                headline: copy['guidance.fallback.headline'],
+                body: copy['guidance.fallback.body'],
+                ctaLabel: copy['guidance.fallback.ctaLabel'],
+                ctaAction: 'guide',
               }}
+              variants={{}}
             />
-          </div>
+          ) : null}
         </div>
 
         {/* ── Flexible batches, carried over from the Professional page ───── */}
         <FlexibleLearning copy={professional} />
 
         {/* ── Closing CTA: the page's one consolidated enquiry prompt ───── */}
+        {show('cta') ? (
         <Section tone="plain" labelledBy="courses-cta">
-          <div className="kit-card overflow-hidden lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div className="relative h-52 sm:h-64 lg:h-auto lg:min-h-[17rem]">
-              <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-center" />
+          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[17rem]">
+              <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-[center_40%]" />
             </div>
             <div className="p-6 sm:p-10">
               <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
@@ -196,6 +186,7 @@ export default async function CoursesPage() {
             </div>
           </div>
         </Section>
+        ) : null}
       </div>
     </>
   );

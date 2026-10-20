@@ -127,7 +127,7 @@ export function ParentLanding({
               {copy['hero.body']}
             </p>
 
-            <ul className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-4 sm:gap-4">
+            <ul className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 md:grid-cols-4">
               {heroFeatures(copy).map((item) => (
                 <li
                   key={item.label}
@@ -267,7 +267,7 @@ export function ParentLanding({
             <div className="kit kit-card p-5 sm:p-6 lg:col-span-8">
               <h2
                 id="par-help"
-                className="font-display text-[18px] font-extrabold text-[var(--dc-ink)] sm:text-[20px]"
+                className="font-display text-[18px] font-extrabold text-[var(--k-ink)] sm:text-[20px]"
               >
                 {copy['help.title']}
               </h2>
@@ -284,11 +284,11 @@ export function ParentLanding({
                       >
                         <item.icon className="h-5 w-5" strokeWidth={1.9} />
                       </span>
-                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--dc-ink)]">
+                      <span className="min-w-0 flex-1 text-[13.5px] font-bold text-[var(--k-ink)]">
                         {item.label}
                       </span>
                       <ChevronRight
-                        className="h-4 w-4 shrink-0 text-[var(--dc-ink-muted)]"
+                        className="h-4 w-4 shrink-0 text-[var(--k-ink-3)]"
                         strokeWidth={2.25}
                         aria-hidden="true"
                       />
@@ -296,15 +296,15 @@ export function ParentLanding({
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-[14px] text-[var(--dc-ink-muted)]">
+              <p className="mt-4 text-[14px] text-[var(--k-ink-3)]">
                 {fill(copy['help.centres'], { centres: counts.centres, cities: counts.cities })}
               </p>
             </div>
 
             <div className="kit kit-card flex flex-col justify-center bg-[var(--k-red-wash)] p-5 sm:p-6 lg:col-span-4">
-              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
+              <p className="flex items-start gap-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
                 <FileText
-                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--k-red)]"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
@@ -312,7 +312,7 @@ export function ParentLanding({
               </p>
               <Link
                 href={copy['help.chat.href'] as Route}
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--dc-accent)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--k-red-fill)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
               >
                 <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                 {copy['help.chat.label']}
@@ -324,30 +324,30 @@ export function ParentLanding({
       {/* ── Success stories ──────────────────────────────────────────────── */}
       <Section tone="tint" deco="glow" labelledBy="par-stories">
           <div>
-            <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
+            <div className="grid gap-10 md:grid-cols-[1fr_1fr] md:items-center md:gap-10 lg:gap-12">
               <div>
                 <h2
                   id="par-stories"
-                  className="section-title font-display text-[var(--dc-ink)]"
+                  className="section-title font-display text-[var(--k-ink)]"
                 >
                   {copy['stories.title']}{' '}
-                  <span className="text-[var(--dc-accent-soft)]">{copy['stories.titleAccent']}</span> {copy['stories.titleEnd']}
+                  <span className="text-[var(--k-red)]">{copy['stories.titleAccent']}</span> {copy['stories.titleEnd']}
                 </h2>
 
                 <div className="mt-8 flex flex-wrap items-end gap-8">
                   <div>
-                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--dc-accent-soft)] sm:text-[56px]">
+                    <p className="font-display text-[48px] leading-none font-extrabold text-[var(--k-red)] sm:text-[56px]">
                       {FOUNDED_YEAR}
                     </p>
-                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--k-ink-2)]">
                       {copy['stories.foundedLabel']}
                     </p>
                   </div>
                   <div>
-                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--dc-ink)] sm:text-[36px]">
+                    <p className="font-display text-[32px] leading-none font-extrabold text-[var(--k-ink)] sm:text-[36px]">
                       {counts.cities}
                     </p>
-                    <p className="mt-2 text-[14px] font-semibold text-[var(--dc-ink-secondary)]">{copy['stories.citiesLabel']}</p>
+                    <p className="mt-2 text-[14px] font-semibold text-[var(--k-ink-2)]">{copy['stories.citiesLabel']}</p>
                   </div>
                 </div>
 
@@ -356,13 +356,13 @@ export function ParentLanding({
                     {storyAvatars.map((src) => (
                       <span
                         key={src}
-                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--dc-card)]"
+                        className="relative h-9 w-9 overflow-hidden rounded-full border-[2.5px] border-[var(--k-card)]"
                       >
                         <Image src={src} alt="" fill sizes="36px" className="object-cover" />
                       </span>
                     ))}
                   </span>
-                  <span className="text-[13px] font-semibold text-[var(--dc-ink-secondary)]">
+                  <span className="text-[13px] font-semibold text-[var(--k-ink-2)]">
                     {copy['stories.caption']}
                   </span>
                 </div>
@@ -377,7 +377,7 @@ export function ParentLanding({
       <Section tone="plain" labelledBy="par-loves">
           <h2
             id="par-loves"
-            className="section-title font-display text-[var(--dc-ink)]"
+            className="section-title font-display text-[var(--k-ink)]"
           >
             {fill(copy['loves.title'], { siteName: siteConfig.name })}
           </h2>
@@ -392,7 +392,7 @@ export function ParentLanding({
                   >
                     <item.icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
-                  <span className="text-[13px] leading-snug font-bold text-[var(--dc-ink-secondary)] sm:text-[13.5px]">
+                  <span className="text-[13px] leading-snug font-bold text-[var(--k-ink-2)] sm:text-[13.5px]">
                     {item.label}
                   </span>
                 </article>
@@ -402,23 +402,23 @@ export function ParentLanding({
         </Section>
 
       {/* ── Bottom CTA ───────────────────────────────────────────────────── */}
-      <Section tone="wash" labelledBy="par-cta">
+      <Section tone="plain" labelledBy="par-cta">
           <div className="kit kit-card">
             <div className="grid items-center gap-8 p-7 sm:gap-10 sm:p-9 min-[880px]:grid-cols-12 min-[880px]:gap-8 lg:p-10 xl:gap-12">
               <div className="flex min-w-0 flex-col items-start min-[880px]:col-span-7">
                 <h2
                   id="par-cta"
-                  className="section-title max-w-[22ch] font-display text-[var(--dc-ink)]"
+                  className="section-title max-w-[22ch] font-display text-[var(--k-ink)]"
                 >
                   {copy['cta.title']}
                 </h2>
-                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--dc-ink-secondary)] sm:text-[15px]">
+                <p className="mt-3 max-w-[46ch] text-[14px] leading-relaxed text-[var(--k-ink-2)] sm:text-[15px]">
                   {copy['cta.body']}
                 </p>
 
                 <EnquiryLink
                   source="parent"
-                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--dc-accent)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
+                  className="group/book mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--k-red-fill)] py-3 pr-3 pl-6 text-[14.5px] font-bold text-white transition-colors hover:bg-jk-700 sm:text-[15px]"
                 >
                   {copy['cta.label']}
                   <span
@@ -429,9 +429,9 @@ export function ParentLanding({
                   </span>
                 </EnquiryLink>
 
-                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-accent-tint)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--dc-ink-secondary)]">
+                <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] px-3.5 py-1.5 text-[14px] font-bold text-[var(--k-ink-2)]">
                   <CheckCircle2
-                    className="h-3.5 w-3.5 shrink-0 text-[var(--dc-accent-soft)]"
+                    className="h-3.5 w-3.5 shrink-0 text-[var(--k-red)]"
                     strokeWidth={2.5}
                     aria-hidden="true"
                   />
@@ -441,7 +441,7 @@ export function ParentLanding({
 
               <div className="relative mx-auto w-full max-w-[340px] min-[880px]:col-span-5 min-[880px]:mx-0 min-[880px]:ml-auto lg:max-w-[360px]">
                 <div className="relative aspect-square w-full">
-                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--dc-hairline-strong)] bg-[linear-gradient(160deg,var(--dc-card),var(--dc-surface),var(--dc-card))] shadow-media">
+                  <div className="absolute inset-[8%] overflow-hidden rounded-full border border-[var(--k-line-strong)] bg-[linear-gradient(160deg,var(--k-card),var(--k-tint),var(--k-card))] shadow-media">
                     <Image
                       src={copy['cta.image']}
                       alt={fill(copy['cta.imageAlt'], { siteName: siteConfig.name })}
@@ -453,19 +453,19 @@ export function ParentLanding({
 
                   <div
                     aria-hidden="true"
-                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-accent-soft)] shadow-[var(--dc-shadow)]"
+                    className="absolute top-0 right-[6%] grid h-12 w-12 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--k-red)] shadow-[var(--k-shadow)]"
                   >
                     <GraduationCap className="h-5 w-5" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cyber)] shadow-[var(--dc-shadow)]"
+                    className="absolute top-[30%] left-0 grid h-11 w-11 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--theme-cyber-ink)] shadow-[var(--k-shadow)]"
                   >
                     <Sparkles className="h-4 w-4" strokeWidth={1.85} />
                   </div>
                   <div
                     aria-hidden="true"
-                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] text-[var(--dc-cloud)] shadow-[var(--dc-shadow)]"
+                    className="absolute right-0 bottom-[14%] grid h-11 w-11 place-items-center rounded-full border border-[var(--k-line-strong)] bg-[var(--k-card)] text-[var(--theme-cloud-ink)] shadow-[var(--k-shadow)]"
                   >
                     <Briefcase className="h-4 w-4" strokeWidth={1.85} />
                   </div>

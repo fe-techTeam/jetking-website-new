@@ -1,16 +1,15 @@
 import type { Metadata } from 'next';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, pathForcedNoindex } from '@/lib/seo';
 import { AccountView } from './AccountView';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
-  {
-    title: 'Your Jetking Account',
-    description: 'Your Jetking details and saved Jetking AI chats.',
-    // Personal page behind a login — nothing here belongs in a search index.
-    noindex: true,
-  },
-  '/account',
+    {
+      title: 'Your Jetking Account',
+      description: 'Your Jetking details and saved Jetking AI chats.',
+      noindex: await pathForcedNoindex('/account'),
+    },
+    '/account',
   );
 }
 

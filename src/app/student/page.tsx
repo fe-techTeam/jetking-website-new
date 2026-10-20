@@ -1,6 +1,6 @@
 import { content } from '@/lib/content';
 import { loadCopy } from '@/lib/content/copy/load';
-import { fill } from '@/lib/content/copy/define';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 import { studentCopy } from '@/lib/content/copy/pages/student';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
@@ -11,15 +11,7 @@ import { StudentLanding } from '@/components/student/StudentLanding';
 
 export async function generateMetadata() {
   const copy = await loadCopy(studentCopy);
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
-      description: copy['seo.description'],
-      // Audience pages are not listed or indexed; the main pages carry their content.
-      noindex: true,
-    },
-    '/student',
-  );
+  return buildMetadata(seoFromCopy(copy, { siteName: siteConfig.name }), '/student');
 }
 
 export default async function StudentPage() {

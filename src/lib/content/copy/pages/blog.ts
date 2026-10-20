@@ -1,17 +1,29 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Blog — editable text. Fields are added here with their current wording as the default; the
  * page component reads them from the copy it is given instead of hard-coding the string.
  * (Article titles, excerpts and bodies are CMS posts, edited under Blog posts.)
  */
+export const BLOG_SECTIONS = [
+  'hero',
+  'index',
+  'cta',
+] as const;
+
 export const blogCopy = definePageCopy({
   id: 'blog',
   label: 'Blog',
   path: '/blog',
   group: 'Pages',
-  description: 'The blog index and article page chrome.',
+  description:
+    'Blog index and article chrome. article.fallbackImage is used when a post’s hero/og image is a scraped marketing share card. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(BLOG_SECTIONS),
+    ...seoFieldDefaults(),
+
     'seo.title': 'Career Guidance & IT Insights | Jetking Blog',
     'seo.description':
       'Guidance on choosing an IT course, switching careers, and what employers look for — written for students, working professionals and parents.',
@@ -66,30 +78,20 @@ export const blogCopy = definePageCopy({
     'cta.secondary.href': '/courses',
 
     'article.breadcrumbLabel': 'Breadcrumb',
-    'article.fallbackImage': '/blog/hero.webp',
+    'article.fallbackImage': '/blog/article-fallback.jpg',
     'article.emptyBody':
       'Full article text is being refreshed for this post. The summary above covers the key points for now.',
 
-    'nudge.student.headline': 'Ready to look at actual courses?',
-    'nudge.student.body': 'Start with the tracks open to you straight after 12th.',
-    'nudge.student.cta.label': 'Browse courses',
-    'nudge.student.cta.href': '/courses',
-    'nudge.professional.headline': 'Thinking about making the move?',
-    'nudge.professional.body': 'Compare the tracks built for working professionals.',
-    'nudge.professional.cta.label': 'Compare tracks',
-    'nudge.professional.cta.href': '/courses',
-    'nudge.parent.headline': 'Want to talk it through with someone?',
-    'nudge.parent.body': 'A counsellor can walk you through options, fees and centres.',
-    'nudge.parent.cta.label': 'Talk to a counsellor',
-    'nudge.parent.cta.href': '/enquiry',
-    'nudge.franchise.headline': 'Exploring the franchise opportunity?',
-    'nudge.franchise.cta.label': 'Franchise details',
-    'nudge.franchise.cta.href': '/franchise',
+    'nudge.fallback.headline': 'Ready to look at courses?',
+    'nudge.fallback.body': 'Browse the catalogue or talk to a counsellor about the right track for you.',
+    'nudge.fallback.cta.label': 'Browse courses',
+    'nudge.fallback.cta.href': '/courses',
 
     'related.eyebrow': 'Keep reading',
     'related.title': 'More in {category}',
     'related.allLabel': 'All articles',
 
+    'articleCta.image': '/home/counsellor.jpg',
     'articleCta.eyebrow': 'Still deciding',
     'articleCta.title': 'Talk it through with a counsellor',
     'articleCta.body':

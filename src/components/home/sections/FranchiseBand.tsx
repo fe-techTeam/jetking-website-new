@@ -6,14 +6,13 @@ import type { HomeCopy } from '@/lib/content/copy/pages/home';
 
 /**
  * A different audience from the student journey, so it is its own full-width band at the very end: dark
- * on the left with the offer, white on the right where the building art (which has a white ground) sits
- * edge to edge, with no card or frame around it.
+ * on the left with the offer, centre exterior photo edge-to-edge on the right.
  */
 export function FranchiseBand({ copy }: { copy: HomeCopy }) {
   return (
     <section aria-labelledby="home-franchise-heading" className="kit relative grid bg-scrim md:grid-cols-2">
       <div className="relative flex items-center bg-jk-600">
-        <div className="w-full px-[var(--gutter)] py-12 sm:py-16 md:pr-8 lg:ml-auto lg:max-w-[calc(var(--container-xl)/2)] lg:py-20 lg:pr-12 2xl:max-w-[calc(var(--container-2xl)/2)]">
+        <div className="w-full px-[var(--gutter)] py-12 sm:py-16 md:pr-8 lg:ml-auto lg:max-w-[calc(var(--container-xl)/2)] lg:py-20 lg:pr-12 2xl:max-w-[calc(var(--container-2xl)/2)] 3xl:max-w-[calc(var(--container-3xl)/2)] 3xl:py-24 4xl:max-w-[calc(var(--container-4xl)/2)] 4xl:py-28">
           <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/15 text-white ring-1 ring-white/30">
             <Handshake className="h-7 w-7" strokeWidth={1.8} aria-hidden="true" />
           </span>
@@ -40,13 +39,13 @@ export function FranchiseBand({ copy }: { copy: HomeCopy }) {
         </div>
       </div>
 
-      <div className="relative min-h-[280px] bg-white sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px]">
+      <div className="relative min-h-[280px] overflow-hidden bg-[var(--k-card)] sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px] 3xl:min-h-[560px] 4xl:min-h-[640px]">
         <Image
           src={copy['franchise.image']}
           alt=""
           fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-contain object-center p-6 sm:p-10"
+          sizes="(min-width: 2560px) 1050px, (min-width: 1920px) 900px, (min-width: 768px) 50vw, 100vw"
+          className="object-cover object-center"
         />
       </div>
     </section>

@@ -1,17 +1,39 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * About (page text) — editable text. Fields are added here with their current wording as the default; the
  * page component reads them from the copy it is given instead of hard-coding the string.
  * (The hero, purpose cards, leaders, timeline, awards and partners are the About document, edited under About.)
+ *
+ * `sections.*.visible` toggles (Page text → Show or hide sections) control which blocks render.
  */
+export const ABOUT_SECTIONS = [
+  'hero',
+  'legacy',
+  'purpose',
+  'why',
+  'families',
+  'leaders',
+  'timeline',
+  'achievements',
+  'partnerships',
+  'affiliations',
+  'future',
+] as const;
+
 export const aboutCopy = definePageCopy({
   id: 'about',
   label: 'About (page text)',
   path: '/about-us',
   group: 'Pages',
-  description: 'Section headings and labels around the About document.',
+  description:
+    'Section headings and labels around the About document. Affiliations/reasons also come from Explore; the families “loves” band from Parents. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(ABOUT_SECTIONS),
+    ...seoFieldDefaults(),
+
     'seo.title': 'About {name} — Training IT Talent {since}',
     'seo.description':
       "Jetking is India's foremost IT and networking training institute, training IT talent {sinceLower}, with {centres} centres and placement support across India.",
@@ -19,7 +41,7 @@ export const aboutCopy = definePageCopy({
     'breadcrumb.home': 'Home',
     'breadcrumb.about': 'About Us',
 
-    'hero.image': '/home/journey-explore-v2.jpg',
+    'hero.image': '/about/hero.jpg',
 
     'legacy.heading': 'Legacy at a glance',
     'legacy.stats.0.label': 'Year founded',
@@ -27,7 +49,7 @@ export const aboutCopy = definePageCopy({
     'legacy.stats.2.label': 'Cities across India',
     'legacy.stats.3.label': 'Courses on offer',
 
-    'purpose.image': '/home/about-purpose.jpg',
+    'purpose.image': '/about/purpose.jpg',
     'purpose.eyebrow': 'Purpose',
     'purpose.titleLead': 'Our purpose &',
     'purpose.titleAccent': 'values',

@@ -2,7 +2,11 @@ import { z } from 'zod';
 import { semanticSearch } from '@/features/knowledge/lib/embeddings';
 import { serverEnv } from '@/lib/config/env.server';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
-import { cleanPassageText, formatPassagesAnswer } from '@/features/jetking-ai/format-passage';
+import {
+  cleanPassageText,
+  FEES_COUNSELLOR_ANSWER,
+  formatPassagesAnswer,
+} from '@/features/jetking-ai/format-passage';
 import { unsupportedSensitiveClaims } from '@/features/jetking-ai/grounding';
 import {
   PERSONA_FRAMING,
@@ -16,6 +20,8 @@ import {
   resolveCentreAnswer,
   resolveCentreAnswerByCoords,
 } from '@/features/jetking-ai/resolve-centre-answer';
+import { resolveCourseAnswer } from '@/features/jetking-ai/resolve-course-answer';
+import { resolvePlacementAnswer } from '@/features/jetking-ai/resolve-placement-answer';
 import { logUnanswered } from '@/features/jetking-ai/feedback-log';
 import {
   detectAnsweredFacet,
@@ -345,19 +351,32 @@ async function askOllamaLocal(
 }
 
 /**
- * Prefers a hosted OpenAI model when a key is configured — src/guide/answer.ts
- * already does this for /api/guide, and OLLAMA_BASE_URL has no reachable
- * target in this deployment (confirmed live: it resolves to the serverless
- * function's own localhost, which has no Ollama listening on it). Falling
- * back to the local model keeps this working unchanged for anyone who *does*
- * run Ollama themselves — self-hosted or local dev with no OpenAI key set.
+ * Language-model backend for chat answers.
+ *
+ * Default is **local** (no OpenAI): try Ollama when reachable; otherwise the
+ * caller falls through to deterministic KB / catalogue passages — so the
+ * chatbot still answers without any paid API. Set `GUIDE_PROVIDER=openai` to
+ * force OpenAI, or `auto` to try Ollama then OpenAI when a key is present.
  */
+function guideProvider(): 'local' | 'openai' | 'auto' {
+  const raw = (process.env.GUIDE_PROVIDER ?? 'local').toLowerCase();
+  return raw === 'openai' || raw === 'auto' ? raw : 'local';
+}
+
 async function askOllama(
   prompt: string,
   messages: ApiMessage[],
   temperature: number,
 ): Promise<OllamaReply | null> {
-  if (OPENAI_API_KEY) return askOpenAI(prompt, messages, temperature);
+  const provider = guideProvider();
+  if (provider === 'openai') {
+    return OPENAI_API_KEY ? askOpenAI(prompt, messages, temperature) : null;
+  }
+  if (provider === 'auto') {
+    const local = await askOllamaLocal(prompt, messages, temperature);
+    if (local) return local;
+    return OPENAI_API_KEY ? askOpenAI(prompt, messages, temperature) : null;
+  }
   return askOllamaLocal(prompt, messages, temperature);
 }
 
@@ -776,6 +795,64 @@ export async function POST(req: Request): Promise<Response> {
     });
   }
 
+  // Course catalogue / fees / compare / named-course facets: answer from the
+  // same published records as /courses. Semantic search over scraped SEO and
+  // blog blobs kept winning these with chrome ("HELP — Contact Us") or
+  // competitor pages — never invent, never quote an undisclosed fee figure.
+  try {
+    const courseResolved = await resolveCourseAnswer({
+      message: q,
+      subject,
+      wants,
+    });
+    if (courseResolved) {
+      return Response.json({
+        ok: true,
+        source: 'kb',
+        text: structureAnswerText(courseResolved.text),
+        reasoning: [
+          step1,
+          ...plannerStep,
+          `Recognised it as about ${intentLabel}.`,
+          courseResolved.reason,
+        ],
+        followUps: buildFollowUps(false),
+        session: nextSession,
+      });
+    }
+  } catch (error) {
+    console.warn(
+      '[chat] resolveCourseAnswer failed:',
+      error instanceof Error ? error.message : String(error),
+    );
+  }
+
+  // Placement support from the published /placements page — never blog SEO
+  // ("100% Placement") or invented guarantees.
+  try {
+    const placementResolved = await resolvePlacementAnswer({ message: q, wants });
+    if (placementResolved) {
+      return Response.json({
+        ok: true,
+        source: 'kb',
+        text: structureAnswerText(placementResolved.text),
+        reasoning: [
+          step1,
+          ...plannerStep,
+          `Recognised it as about ${intentLabel}.`,
+          placementResolved.reason,
+        ],
+        followUps: buildFollowUps(false),
+        session: nextSession,
+      });
+    }
+  } catch (error) {
+    console.warn(
+      '[chat] resolvePlacementAnswer failed:',
+      error instanceof Error ? error.message : String(error),
+    );
+  }
+
   let hits: { type: string; text: string }[] = [];
   let size = 0;
   let topScore = 0;
@@ -849,9 +926,14 @@ export async function POST(req: Request): Promise<Response> {
   };
 
   const passagesAnswer = (validationNote?: string) => {
-    const structured = structureAnswerText(formatPassagesAnswer(hits, passagesMax(wants)));
+    const structured = structureAnswerText(
+      formatPassagesAnswer(hits, passagesMax(wants), { preferFees: wantFees }),
+    );
     const top = present(hits[0]);
-    const text = structured || structureAnswerText(top.body, top.title) || GATE_TEXT;
+    // Fees asks must never fall back to raw SEO/chrome titles when structured fees content is empty.
+    const text = wantFees
+      ? structured || FEES_COUNSELLOR_ANSWER
+      : structured || structureAnswerText(top.body, top.title) || GATE_TEXT;
     const title = text.startsWith('##') ? undefined : top.title || undefined;
     return Response.json({
       ok: true,

@@ -5,10 +5,20 @@ import type { SiteUser } from '@/lib/users/types';
 
 type AuthResult = { ok: true; user: SiteUser } | { ok: false; error: string };
 
+export type OtpSendResult =
+  | { ok: true; phone: string | null; sent: boolean; resendIn: number; devCode?: string }
+  | { ok: false; error: string; needsEmail?: boolean; retryAfter?: number };
+
 interface AuthResponse {
   ok?: boolean;
   error?: string;
   user?: SiteUser;
+  phone?: string | null;
+  sent?: boolean;
+  resendIn?: number;
+  devCode?: string;
+  needsEmail?: boolean;
+  retryAfter?: number;
 }
 
 export interface SiteSignupInput {
@@ -28,15 +38,25 @@ function hasSessionHint(): boolean {
   return document.cookie.split('; ').includes('jk_user_hint=1');
 }
 
+async function postAuth(body: Record<string, string>): Promise<{ res: Response; data: AuthResponse }> {
+  const res = await fetch('/api/users/auth', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data: AuthResponse = await res.json().catch(() => ({}));
+  return { res, data };
+}
+
 interface SiteAccountOptions {
   /** `false` makes the hook inert (no requests) — for routes where the account UI isn't shown. */
   enabled?: boolean;
 }
 
 /**
- * Client side of the website's own account — independent of /chatbot's
- * (`use-chat-account.ts`), see the `users` table's doc comment in
- * `src/lib/db/schema.ts`. Guests get `user: null` and everything else is inert.
+ * Client side of the shared visitor account (website + /chatbot). Guests get
+ * `user: null` and everything else is inert. /chatbot uses the same session via
+ * `use-chat-account.ts`.
  */
 export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
   const [user, setUser] = useState<SiteUser | null>(null);
@@ -66,12 +86,7 @@ export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
 
   const authenticate = useCallback(async (body: Record<string, string>): Promise<AuthResult> => {
     try {
-      const res = await fetch('/api/users/auth', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const data: AuthResponse = await res.json();
+      const { res, data } = await postAuth(body);
       if (!res.ok || !data.ok || !data.user) {
         return { ok: false, error: data.error ?? 'Something went wrong. Please try again.' };
       }
@@ -84,6 +99,85 @@ export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
 
   const login = useCallback(
     (email: string, password: string) => authenticate({ action: 'login', email, password }),
+    [authenticate],
+  );
+
+  const loginOtpSend = useCallback(async (phone: string, email?: string): Promise<OtpSendResult> => {
+    try {
+      const { res, data } = await postAuth({
+        action: 'login_otp_send',
+        phone,
+        ...(email ? { email } : {}),
+      });
+      if (!res.ok || !data.ok) {
+        return {
+          ok: false,
+          error: data.error ?? 'Something went wrong. Please try again.',
+          needsEmail: data.needsEmail,
+          retryAfter: data.retryAfter,
+        };
+      }
+      return {
+        ok: true,
+        phone: data.phone ?? null,
+        sent: Boolean(data.sent),
+        resendIn: data.resendIn ?? 30,
+        ...(data.devCode ? { devCode: data.devCode } : {}),
+      };
+    } catch {
+      return { ok: false, error: NETWORK_ERROR };
+    }
+  }, []);
+
+  const loginOtpVerify = useCallback(
+    (input: { phone: string; otpToken?: string; code?: string; email?: string }) =>
+      authenticate({
+        action: 'login_otp_verify',
+        phone: input.phone,
+        ...(input.otpToken ? { otpToken: input.otpToken } : {}),
+        ...(input.code ? { code: input.code } : {}),
+        ...(input.email ? { email: input.email } : {}),
+      }),
+    [authenticate],
+  );
+
+  const resetSend = useCallback(async (input: { email?: string; phone?: string }): Promise<OtpSendResult> => {
+    try {
+      const { res, data } = await postAuth({
+        action: 'reset_send',
+        ...(input.email ? { email: input.email } : {}),
+        ...(input.phone ? { phone: input.phone } : {}),
+      });
+      if (!res.ok || !data.ok) {
+        return {
+          ok: false,
+          error: data.error ?? 'Something went wrong. Please try again.',
+          needsEmail: data.needsEmail,
+          retryAfter: data.retryAfter,
+        };
+      }
+      return {
+        ok: true,
+        phone: data.phone ?? null,
+        sent: Boolean(data.sent),
+        resendIn: data.resendIn ?? 30,
+        ...(data.devCode ? { devCode: data.devCode } : {}),
+      };
+    } catch {
+      return { ok: false, error: NETWORK_ERROR };
+    }
+  }, []);
+
+  const resetVerify = useCallback(
+    (input: { phone: string; newPassword: string; otpToken?: string; code?: string; email?: string }) =>
+      authenticate({
+        action: 'reset_verify',
+        phone: input.phone,
+        newPassword: input.newPassword,
+        ...(input.otpToken ? { otpToken: input.otpToken } : {}),
+        ...(input.code ? { code: input.code } : {}),
+        ...(input.email ? { email: input.email } : {}),
+      }),
     [authenticate],
   );
 
@@ -111,7 +205,17 @@ export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
     }
   }, []);
 
-  return { user, ready, login, signup, logout };
+  return {
+    user,
+    ready,
+    login,
+    loginOtpSend,
+    loginOtpVerify,
+    resetSend,
+    resetVerify,
+    signup,
+    logout,
+  };
 }
 
 export type SiteAccount = ReturnType<typeof useSiteAccount>;

@@ -9,12 +9,13 @@ export const siteConfig = {
   locale: 'en_IN',
   /**
    * Must be an absolute origin in production — canonical URLs and OG tags depend on
-   * it. Reads the `NEXT_PUBLIC_` variant deliberately: this file is imported by
-   * several 'use client' components (SiteHeader, EnquiryForm, …), and the private
-   * `SITE_URL` read directly here once already caused a production outage when a
-   * sibling file did the same thing across the server/client boundary.
+   * it. Default matches the live host (https://www.jetking.com). Override with
+   * NEXT_PUBLIC_SITE_URL for local/preview. Uses the `NEXT_PUBLIC_` variant
+   * deliberately: this file is imported by several 'use client' components
+   * (SiteHeader, EnquiryForm, …), and reading private `SITE_URL` here once
+   * already caused a production outage across the server/client boundary.
    */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, ''),
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.jetking.com').replace(/\/$/, ''),
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   /**
    * National enquiry line, E.164. Optional: when it is unset, "call us" affordances

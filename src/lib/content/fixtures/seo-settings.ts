@@ -1,6 +1,8 @@
 import type { SeoSettings } from '../types';
 import { SOCIAL_LINKS } from '@/lib/social';
 import { siteConfig } from '@/lib/site';
+import { FOUNDED_YEAR } from '@/lib/brand-facts';
+import blogMarketingCovers from './blog-marketing-covers.json';
 
 /** What the site does today — so an unedited SEO settings record changes nothing. */
 export const seoSettingsDefaults: SeoSettings = {
@@ -8,15 +10,62 @@ export const seoSettingsDefaults: SeoSettings = {
   allowIndexing: true,
   blockAiCrawlers: false,
   extraDisallow: [],
+  alwaysDisallow: ['/api/'],
   sitemapExclude: [],
+  sitemapInclude: [
+    { path: '/', priority: 1, changeFrequency: 'weekly' },
+    { path: '/courses', priority: 0.9, changeFrequency: 'weekly' },
+    { path: '/centres', priority: 0.8, changeFrequency: 'monthly' },
+    { path: '/placements', priority: 0.7, changeFrequency: 'monthly' },
+    { path: '/franchise', priority: 0.7, changeFrequency: 'monthly' },
+    { path: '/blog', priority: 0.7, changeFrequency: 'weekly' },
+    { path: '/about-us', priority: 0.7, changeFrequency: 'monthly' },
+    { path: '/faq', priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/sitemap', priority: 0.3, changeFrequency: 'monthly' },
+    { path: '/privacy-policy', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/terms-conditions', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/enrollment-terms-and-conditions', priority: 0.3, changeFrequency: 'yearly' },
+    { path: '/investors', priority: 0.5, changeFrequency: 'monthly' },
+  ],
+  aiCrawlers: [
+    'GPTBot',
+    'OAI-SearchBot',
+    'ChatGPT-User',
+    'PerplexityBot',
+    'Perplexity-User',
+    'ClaudeBot',
+    'Claude-SearchBot',
+    'Claude-User',
+    'Google-Extended',
+    'Applebot-Extended',
+    'meta-externalagent',
+    'CCBot',
+  ],
+  blogMarketingCovers: blogMarketingCovers as string[],
+  forcedNoindexPaths: ['/account', '/chatbot', '/design-kit'],
   defaultOgImage: '/og-default.png',
   twitterHandle: '@JetkingLtd',
   googleVerification: '',
   bingVerification: '',
   organization: {
+    name: siteConfig.name,
+    legalName: siteConfig.legalName,
+    alternateName: ['Jetking Infotrain', 'Jetking Infotrain Ltd'],
     description: siteConfig.description,
     logo: '/brand/jetking-shield.png',
     phone: `+91-${siteConfig.helpline.replace(/^0/, '')}`,
     sameAs: SOCIAL_LINKS.map((s) => s.href),
+    foundingDate: String(FOUNDED_YEAR),
+    areaServed: 'India',
+    knowsAbout: [
+      'Cloud computing',
+      'Cyber security',
+      'Ethical hacking',
+      'Computer networking',
+      'IT infrastructure',
+      'DevOps',
+      'Data analytics',
+      'Artificial intelligence',
+    ],
   },
 };

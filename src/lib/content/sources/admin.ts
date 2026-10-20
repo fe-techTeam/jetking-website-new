@@ -99,7 +99,28 @@ export const adminSource: ContentSource = {
 
   async getSeoSettings() {
     const [record] = await listCollection('seo_settings', { publishedOnly: true });
-    return record ? { ...seoSettingsDefaults, ...published([record])[0]!, organization: { ...seoSettingsDefaults.organization, ...(record as unknown as SeoSettings).organization } } : seoSettingsDefaults;
+    if (!record) return seoSettingsDefaults;
+    const publishedRow = published([record])[0] as SeoSettings | undefined;
+    if (!publishedRow) return seoSettingsDefaults;
+    return {
+      ...seoSettingsDefaults,
+      ...publishedRow,
+      // Empty arrays from a partial admin save must not wipe the shipped defaults.
+      alwaysDisallow: publishedRow.alwaysDisallow?.length
+        ? publishedRow.alwaysDisallow
+        : seoSettingsDefaults.alwaysDisallow,
+      sitemapInclude: publishedRow.sitemapInclude?.length
+        ? publishedRow.sitemapInclude
+        : seoSettingsDefaults.sitemapInclude,
+      aiCrawlers: publishedRow.aiCrawlers?.length ? publishedRow.aiCrawlers : seoSettingsDefaults.aiCrawlers,
+      blogMarketingCovers: publishedRow.blogMarketingCovers?.length
+        ? publishedRow.blogMarketingCovers
+        : seoSettingsDefaults.blogMarketingCovers,
+      forcedNoindexPaths: publishedRow.forcedNoindexPaths?.length
+        ? publishedRow.forcedNoindexPaths
+        : seoSettingsDefaults.forcedNoindexPaths,
+      organization: { ...seoSettingsDefaults.organization, ...publishedRow.organization },
+    };
   },
 
   async listAnnouncements() {

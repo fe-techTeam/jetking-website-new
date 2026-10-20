@@ -77,7 +77,7 @@ export function StudentLanding({
 
       {/* ── Why Jetking ───────────────────────────────────────────────────── */}
       <Section tone="tint" deco="glow" labelledBy="stu-why">
-        <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
+        <div className="grid gap-10 md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-10 lg:gap-12">
           <div>
             <h2 id="stu-why" className="section-title text-[var(--k-ink)]">
               {copy['why.title']} <span className="text-[var(--k-red)]">{siteConfig.name}</span>
@@ -93,7 +93,7 @@ export function StudentLanding({
                       <stat.icon className="h-5 w-5" strokeWidth={1.9} />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--k-ink)] sm:text-[22px]">
+                      <span className="block truncate text-[20px] leading-none font-extrabold text-[var(--k-ink)] sm:text-[22px]">
                         {stat.value}
                       </span>
                       <span className="mt-1.5 block text-[13px] leading-snug text-[var(--k-ink-2)]">{stat.label}</span>

@@ -31,6 +31,7 @@ import { fill } from '@/lib/content/copy/define';
 import type { franchiseCopy } from '@/lib/content/copy/pages/franchise';
 import { FranchiseTestimonialSliderLight } from './FranchiseTestimonialSliderLight';
 import { FranchiseEnquiryFormLight } from './FranchiseEnquiryFormLight';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 import { HeroOrbit } from '@/components/HeroOrbit';
 
 // Icons paired with ./data's arrays by index — kept here, not in the shared
@@ -76,6 +77,7 @@ export function FranchiseLandingLight({
     detail: k(`orbit.${i}.detail`),
   }));
   const bands = [0, 1, 2].map((i) => k(`investment.band.${i}`));
+  const show = (id: string) => isSectionVisible(copy, id);
 
   return (
     <div
@@ -92,6 +94,7 @@ export function FranchiseLandingLight({
       ].join(' ')}
     >
       {/* ── Hero (student orbit pattern) ───────────────────────────────── */}
+      {show('hero') ? (
       <section className="shell relative pt-8 pb-6 xs:pt-10 sm:pt-12 lg:pt-14 lg:pb-8">
 
         <div className="grid items-center gap-10 min-[880px]:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] min-[880px]:gap-6 xl:gap-10">
@@ -144,7 +147,7 @@ export function FranchiseLandingLight({
                     </span>
                   ))}
                 </span>
-                <span className="whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
+                <span className="text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                   {copy['hero.partners']}
                 </span>
               </div>
@@ -152,7 +155,7 @@ export function FranchiseLandingLight({
                 className="hidden h-4 w-px shrink-0 bg-[var(--dc-hairline-strong)] min-[720px]:block"
                 aria-hidden="true"
               />
-              <span className="inline-flex items-center gap-2 whitespace-nowrap text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
+              <span className="inline-flex items-center gap-2 text-[13.5px] font-semibold text-[var(--dc-ink-secondary)]">
                 <ShieldCheck
                   className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
                   strokeWidth={2.25}
@@ -178,19 +181,21 @@ export function FranchiseLandingLight({
           />
         </div>
       </section>
+      ) : null}
 
       {/* ── Why Franchise (student Why panel) ──────────────────────────── */}
+      {show('why') ? (
       <Section tone="plain" labelledBy="fra-why">
           <div>
-            <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
+            <div className="grid gap-10 md:grid-cols-[1.15fr_0.85fr] md:items-center md:gap-10 lg:gap-12">
               <div>
                 <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['why.eyebrow']}</p>
                 <h2
                   id="fra-why"
-                  className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
+                  className="section-title mt-2.5 font-display text-[var(--k-ink)]"
                 >
                   {copy['why.title.prefix']}{' '}
-                  <span className="text-[var(--dc-accent-soft)]">{siteConfig.name}</span>
+                  <span className="text-[var(--k-red)]">{siteConfig.name}</span>
                 </h2>
 
                 <p className="mt-3 max-w-md text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
@@ -215,10 +220,10 @@ export function FranchiseLandingLight({
                           <Icon className="h-5 w-5" strokeWidth={1.9} />
                         </span>
                         <span className="min-w-0">
-                          <span className="block font-display text-[20px] leading-none font-extrabold whitespace-nowrap text-[var(--dc-ink)] sm:text-[22px]">
+                          <span className="block truncate font-display text-[20px] leading-none font-extrabold text-[var(--k-ink)] sm:text-[22px]">
                             {stat.value}
                           </span>
-                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--dc-ink-secondary)] sm:text-[13px]">
+                          <span className="mt-1.5 block text-[12.5px] leading-snug text-[var(--k-ink-2)] sm:text-[13px]">
                             {stat.label}
                           </span>
                         </span>
@@ -233,11 +238,13 @@ export function FranchiseLandingLight({
             </div>
           </div>
         </Section>
+      ) : null}
 
       {/* ── Market opportunity + image ─────────────────────────────────── */}
+      {show('opportunity') ? (
       <Section tone="tint" id="opportunity">
-          <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
-            <div className="kit kit-card relative overflow-hidden lg:col-span-5">
+          <div className="grid items-center gap-8 md:grid-cols-12 md:gap-8 lg:gap-10">
+            <div className="kit kit-card relative overflow-hidden md:col-span-5">
               <Image
                 src={copy['market.image']}
                 alt={copy['market.image.alt']}
@@ -251,9 +258,9 @@ export function FranchiseLandingLight({
               />
             </div>
 
-            <div className="lg:col-span-7">
+            <div className="md:col-span-7">
               <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['market.eyebrow']}</p>
-              <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+              <h2 className="section-title mt-2.5 font-display text-[var(--k-ink)]">
                 {copy['market.title']}
               </h2>
               <p className="mt-3 max-w-[54ch] text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
@@ -263,10 +270,10 @@ export function FranchiseLandingLight({
               <ul className="mt-7 grid grid-cols-2 gap-2.5 sm:gap-3">
                 {[0, 1, 2, 3].map((i) => (
                   <li key={i} className="kit kit-card p-3.5 sm:p-5">
-                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--dc-accent-soft)] sm:text-[26px]">
+                    <p className="font-display text-[22px] font-extrabold leading-none text-[var(--k-red)] sm:text-[26px]">
                       {k(`market.${i}.value`)}
                     </p>
-                    <p className="mt-2 text-[14px] leading-snug text-[var(--dc-ink-secondary)]">
+                    <p className="mt-2 text-[14px] leading-snug text-[var(--k-ink-2)]">
                       {k(`market.${i}.label`)}
                     </p>
                   </li>
@@ -275,15 +282,17 @@ export function FranchiseLandingLight({
             </div>
           </div>
         </Section>
+      ) : null}
 
       {/* ── Partner benefits (student Benefits pattern) ────────────────── */}
+      {show('jump') ? (
       <Section tone="plain" labelledBy="fra-benefits">
           <div className="grid gap-6 xs:gap-7 sm:gap-8 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-8 lg:gap-y-6 xl:gap-x-10">
             <div className="max-w-xl lg:col-span-7 xl:col-span-8">
               <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['jump.eyebrow']}</p>
               <h2
                 id="fra-benefits"
-                className="section-title mt-2.5 font-display text-[var(--dc-ink)]"
+                className="section-title mt-2.5 font-display text-[var(--k-ink)]"
               >
                 {copy['jump.title']}
               </h2>
@@ -305,10 +314,10 @@ export function FranchiseLandingLight({
                       <Icon className="h-5 w-5" strokeWidth={1.9} />
                     </span>
                     <div className="min-w-0 sm:mt-4">
-                      <h3 className="text-[15px] font-extrabold text-[var(--dc-ink)] xs:text-[16px]">
+                      <h3 className="text-[15px] font-extrabold text-[var(--k-ink)] xs:text-[16px]">
                         {item.title}
                       </h3>
-                      <p className="mt-1 text-[14px] leading-snug text-[var(--dc-ink-muted)] xs:mt-1.5 sm:leading-relaxed">
+                      <p className="mt-1 text-[14px] leading-snug text-[var(--k-ink-3)] xs:mt-1.5 sm:leading-relaxed">
                         {item.detail}
                       </p>
                     </div>
@@ -354,12 +363,14 @@ export function FranchiseLandingLight({
             </div>
           </div>
         </Section>
+      ) : null}
 
       {/* ── Launch plan ─────────────────────────────────────────────────── */}
+      {show('launch') ? (
       <Section tone="tint" id="journey">
           <div className="max-w-xl">
             <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['launch.eyebrow']}</p>
-            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+            <h2 className="section-title mt-2.5 font-display text-[var(--k-ink)]">
               {copy['launch.title']}
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
@@ -380,12 +391,14 @@ export function FranchiseLandingLight({
             </Reveal>
           </div>
         </Section>
+      ) : null}
 
       {/* ── Courses ────────────────────────────────────────────────────── */}
+      {show('courses') ? (
       <Section tone="plain" id="courses">
           <div className="max-w-xl">
             <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['courses.eyebrow']}</p>
-            <h2 className="section-title mt-2.5 font-display text-[var(--dc-ink)]">
+            <h2 className="section-title mt-2.5 font-display text-[var(--k-ink)]">
               {copy['courses.title']}
             </h2>
             <p className="mt-3 text-[16px] leading-relaxed text-[var(--k-ink-2)] sm:text-[17px]">
@@ -393,7 +406,7 @@ export function FranchiseLandingLight({
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           <div className="relative isolate min-h-[200px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] sm:min-h-[260px] lg:min-h-full">
             <Image src={copy['courses.image']} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="-z-10 object-cover" />
           </div>
@@ -410,8 +423,8 @@ export function FranchiseLandingLight({
                     <Icon className="h-5 w-5" strokeWidth={1.9} />
                   </span>
                   <div className="min-w-0">
-                    <h3 className="text-[16px] font-extrabold text-[var(--dc-ink)]">{course.title}</h3>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--dc-ink-muted)]">{course.body}</p>
+                    <h3 className="text-[16px] font-extrabold text-[var(--k-ink)]">{course.title}</h3>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--k-ink-3)]">{course.body}</p>
                   </div>
                 </article>
               </li>
@@ -420,9 +433,10 @@ export function FranchiseLandingLight({
           </ul>
           </div>
         </Section>
+      ) : null}
 
       {/* ── FAQs ───────────────────────────────────────────────────────── */}
-      {faqs?.length ? (
+      {show('faq') && faqs?.length ? (
         <Section tone="tint" labelledBy="fra-faq">
           <SectionHeader id="fra-faq" eyebrow={copy['faq.eyebrow']} title={copy['faq.title']} />
           <FaqList items={faqs} />
@@ -430,9 +444,10 @@ export function FranchiseLandingLight({
       ) : null}
 
       {/* ── Enquire ────────────────────────────────────────────────────── */}
+      {show('enquire') ? (
       <Section tone="tint" id="enquire">
           <div className="kit kit-card overflow-hidden">
-            <div className="grid lg:grid-cols-2">
+            <div className="grid md:grid-cols-2">
               <div className="relative min-h-[220px] overflow-hidden lg:min-h-full">
                 <Image
                   src={copy['enquire.image']}
@@ -458,8 +473,10 @@ export function FranchiseLandingLight({
             </div>
           </div>
         </Section>
+      ) : null}
 
       {/* ── Contact bar ────────────────────────────────────────────────── */}
+      {show('contact') ? (
       <footer className="border-t border-[var(--dc-hairline-strong)] bg-[var(--dc-surface)] py-5">
         <div className="shell">
           <div className="flex flex-col items-center justify-center gap-1 text-center sm:flex-row sm:flex-wrap sm:gap-8">
@@ -499,6 +516,7 @@ export function FranchiseLandingLight({
           </div>
         </div>
       </footer>
+      ) : null}
     </div>
   );
 }

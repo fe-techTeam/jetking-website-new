@@ -11,17 +11,13 @@ import type { InvestorsPageContent } from '@/lib/content/types';
 import { investorsCopy } from '@/lib/content/copy/pages/investors';
 import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(investorsCopy);
   const live = { brand: siteConfig.name, legalName: siteConfig.legalName };
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], live),
-      description: fill(copy['seo.description'], live),
-    },
-    '/investors',
-  );
+  return buildMetadata(seoFromCopy(copy, live), '/investors');
 }
 
 type Copy = typeof investorsCopy.defaults;
@@ -42,6 +38,7 @@ const externalLink = { target: '_blank', rel: 'noopener noreferrer' } as const;
  */
 export default async function InvestorsPage() {
   const [copy, page] = await Promise.all([loadCopy(investorsCopy), content.getInvestorsPage()]);
+  const show = (id: string) => isSectionVisible(copy, id);
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
     { name: copy['breadcrumb.label'], path: '/investors' },
@@ -57,35 +54,38 @@ export default async function InvestorsPage() {
 
       <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
         {/* ── Banner ────────────────────────────────────────────────────── */}
-        <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
-          <Breadcrumbs trail={trail} />
+        {show('hero') ? (
+          <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
+            <Breadcrumbs trail={trail} />
 
-          <div className="relative mt-5 sm:mt-6">
-            <div className="dc-banner relative min-h-[240px] overflow-hidden rounded-[24px] xs:min-h-[260px] xs:rounded-[28px] sm:min-h-[300px] sm:rounded-[28px] lg:min-h-[320px]">
-              <Image
-                src={copy['hero.image']}
-                alt=""
-                fill
-                priority
-                sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
-                className="object-cover object-[center_28%]"
-              />
-              <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
+            <div className="relative mt-5 sm:mt-6">
+              <div className="dc-banner relative min-h-[240px] overflow-hidden rounded-[24px] xs:min-h-[260px] xs:rounded-[28px] sm:min-h-[300px] sm:rounded-[28px] lg:min-h-[320px]">
+                <Image
+                  src={copy['hero.image']}
+                  alt=""
+                  fill
+                  priority
+                  sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
+                  className="object-cover object-[center_28%]"
+                />
+                <div aria-hidden="true" className="dc-banner-wash pointer-events-none absolute inset-0" />
 
-              <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
-                <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
-                <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)] sm:mt-4">
-                  {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
-                </h1>
-                <p className="mt-3 max-w-[52ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-4 sm:text-[16px]">
-                  {fill(copy['hero.body'], live)}
-                </p>
+                <div className="relative z-[1] flex h-full min-h-[inherit] flex-col justify-center px-6 py-10 xs:px-8 sm:px-10 sm:py-12 lg:max-w-[68%] lg:px-12 xl:px-14">
+                  <p className="k-hero-eyebrow">{copy['hero.eyebrow']}</p>
+                  <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)] sm:mt-4">
+                    {copy['hero.titleLead']} <span className="dc-accent-glow">{copy['hero.titleAccent']}</span>
+                  </h1>
+                  <p className="mt-3 max-w-[52ch] text-[14.5px] leading-[1.65] text-[var(--dc-ink-secondary)] xs:text-[15.5px] sm:mt-4 sm:text-[16px]">
+                    {fill(copy['hero.body'], live)}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         {/* ── Reports accordion ─────────────────────────────────────────── */}
+        {show('reports') ? (
         <section
           className="shell relative mt-10 sm:mt-12 lg:mt-14"
           aria-labelledby="investors-reports"
@@ -133,6 +133,7 @@ export default async function InvestorsPage() {
             .
           </p>
         </section>
+        ) : null}
       </div>
 
     </>
@@ -233,7 +234,7 @@ function DocumentRow({ label, href, copy }: { label: string; href: string; copy:
     <div className="flex flex-wrap items-center gap-3 rounded-[12px] border border-[var(--dc-hairline)] bg-[var(--dc-surface)] px-3.5 py-3 sm:flex-nowrap sm:px-4">
       <span
         aria-hidden="true"
-        className="kit-iconwell !h-10 !w-10"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)] ring-1 ring-[var(--dc-hairline)]"
       >
         <FileText className="h-5 w-5" strokeWidth={1.9} />
       </span>

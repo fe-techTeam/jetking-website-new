@@ -28,6 +28,10 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 /** These actions are callable directly with any string; a non-uuid id would make Postgres throw. */
 const NOT_FOUND = { ok: false, error: 'User not found.' } as const;
+const LAST_ADMIN = {
+  ok: false,
+  error: 'Keep at least one active admin — invite another admin before changing this one.',
+} as const;
 
 async function assertRealCentre(centreSlug: string): Promise<string | null> {
   const centres = await listCentreOptions();
@@ -35,6 +39,20 @@ async function assertRealCentre(centreSlug: string): Promise<string | null> {
     return 'That centre doesn\'t exist — pick one from the list.';
   }
   return null;
+}
+
+/** True when demoting / disabling / removing this user would leave zero active admins. */
+async function wouldRemoveLastActiveAdmin(target: {
+  id: string;
+  role: string;
+  status: string;
+}): Promise<boolean> {
+  if (target.role !== 'admin' || target.status !== 'active') return false;
+  const users = await listUsers();
+  const otherActiveAdmins = users.filter(
+    (u) => u.id !== target.id && u.role === 'admin' && u.status === 'active',
+  );
+  return otherActiveAdmins.length === 0;
 }
 
 export async function inviteUser(
@@ -94,6 +112,12 @@ export async function changeUserRole(
     return { ok: false, error: "You can't demote your own account." };
   }
 
+  const target = await getUserById(id);
+  if (!target) return NOT_FOUND;
+  if (role !== 'admin' && (await wouldRemoveLastActiveAdmin(target))) {
+    return LAST_ADMIN;
+  }
+
   const user = await updateUser(id, {
     role,
     centreSlug: role === 'centre_staff' ? centreSlug.trim() : null,
@@ -108,9 +132,11 @@ export async function toggleUserStatus(id: string): Promise<{ ok: true; user: Ad
   if (id === me.id) return { ok: false, error: "You can't disable your own account." };
   if (!UUID_RE.test(id)) return NOT_FOUND;
 
-  const users = await listUsers();
-  const target = users.find((u) => u.id === id);
+  const target = await getUserById(id);
   if (!target) return { ok: false, error: 'User not found.' };
+  if (target.status === 'active' && (await wouldRemoveLastActiveAdmin(target))) {
+    return LAST_ADMIN;
+  }
 
   const user = await updateUser(id, { status: target.status === 'active' ? 'disabled' : 'active' });
   if (!user) return { ok: false, error: 'User not found.' };
@@ -138,6 +164,9 @@ export async function removeUser(id: string): Promise<{ ok: true } | { ok: false
   if (!UUID_RE.test(id)) return NOT_FOUND;
   const target = await getUserById(id);
   if (!target) return NOT_FOUND;
+  if (await wouldRemoveLastActiveAdmin(target)) {
+    return LAST_ADMIN;
+  }
   await deleteUser(id);
   void recordAudit(me, 'team.remove', 'user', id, `Removed ${target.name}`);
   return { ok: true };

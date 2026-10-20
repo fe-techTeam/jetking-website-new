@@ -1,5 +1,7 @@
 # Jetking Assistant
 
+> Platform context: [ARCHITECTURE.md](./ARCHITECTURE.md) §7 · [DATA_FLOWS.md](./DATA_FLOWS.md) §4 · [docs/INDEX.md](./INDEX.md)
+
 A search-and-answer entry point for the Jetking website. Ask a question in plain language and
 get back a **structured answer page** — headline, summary, matching course cards, centre
 cards, key-details tables, FAQs, contact actions, and citations to the exact site pages the

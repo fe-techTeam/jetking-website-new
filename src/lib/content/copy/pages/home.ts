@@ -1,4 +1,6 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Home — editable text. Fields are added here with their current wording as the default; the
@@ -6,17 +8,38 @@ import { definePageCopy } from '../define';
  *
  * Live values stay in code and are filled into `{placeholder}` tokens: `{siteName}` (SEO title),
  * `{centres}` / `{cities}` (network counts), `{city}` and `{query}` (centre finder).
+ *
+ * `sections.*.visible` toggles (Page text → Show or hide sections) control which blocks render.
  */
+export const HOME_SECTIONS = [
+  'hero',
+  'placementBand',
+  'programs',
+  'marquee',
+  'why',
+  'proof',
+  'recognition',
+  'network',
+  'blog',
+  'cta',
+  'faq',
+  'franchise',
+] as const;
+
 export const homeCopy = definePageCopy({
   id: 'home',
   label: 'Home',
   path: '/',
   group: 'Pages',
-  description: 'Hero, journey, programmes, centres, proof, FAQ and calls to action on the home page.',
+  description: 'Hero, journey, programmes, centres, proof, FAQ and calls to action on the home page. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(HOME_SECTIONS),
+    ...seoFieldDefaults(),
+
+    /* Live home title is bare “Jetking” — keep a descriptive title for SERP clarity. */
     'seo.title': '{siteName} — Cloud, Cyber Security & IT Courses',
     'seo.description':
-      'Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — taught at Jetking centres across India.',
+      'Jetking is India’s foremost IT training institute. Degree, diploma and certification courses in cloud computing, cyber security and IT infrastructure — centres across India.',
 
     // ── Hero ──────────────────────────────────────────────────────────────
     'hero.image': '/home/hero-student.jpg',
@@ -68,6 +91,11 @@ export const homeCopy = definePageCopy({
     'how.eyebrow': 'How it works',
     'how.title': 'Build your career, step by step',
     'how.lede': 'From beginner to job-ready professional — we guide you at every stage.',
+    'how.image': '/home/how-bg.jpg',
+    'how.icons.0': '/icons/home/01_learn.svg',
+    'how.icons.1': '/icons/home/02_practice.svg',
+    'how.icons.2': '/icons/home/03_certify.svg',
+    'how.icons.3': '/icons/home/04_place.svg',
     'how.steps.0.title': 'Learn',
     'how.steps.0.points.0': 'Start from the fundamentals, whatever your background',
     'how.steps.0.points.1': 'Real-world tools from day one',

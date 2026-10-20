@@ -16,12 +16,11 @@ import { LeaderAvatar } from './LeaderAvatar';
  * only way to reach it. Same overlay/focus-trap mechanics as the site header's
  * nav drawer (`useDialog`), just centred instead of a side panel.
  *
- * The portaled panel deliberately uses the global `--color-*` tokens
- * (`bg-background`, `text-foreground`, …), not `.dark-canvas`'s `--dc-*` ones —
- * `createPortal` renders to `document.body`, outside the `.dark-canvas`
- * wrapper that scopes `--dc-*`, so those custom properties resolve to nothing
- * out there (transparent panel, invisible text). The trigger button below stays
- * on `--dc-*` since it renders in place, inside the card, inside that scope.
+ * The portaled panel deliberately uses the global theme utilities
+ * (`bg-background`, `text-foreground`, …), not kit `--k-*` tokens —
+ * `createPortal` renders to `document.body`, outside the `.kit` / `.dark-canvas`
+ * scopes, so those custom properties would resolve to nothing out there.
+ * The trigger button below stays on `--k-*` (it renders in place, inside the card).
  */
 export function LeaderDetailModal({
   leader,
@@ -109,7 +108,7 @@ export function LeaderDetailModal({
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        className={`tap mt-1 flex min-h-11 w-full cursor-pointer items-center ${align === 'start' ? 'justify-center xs:justify-start' : 'justify-center'} gap-1.5 text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)]`}
+        className={`tap mt-1 flex min-h-11 w-full cursor-pointer items-center ${align === 'start' ? 'justify-center xs:justify-start' : 'justify-center'} gap-1.5 text-[13px] font-bold text-[var(--k-red)] transition-colors hover:text-[var(--k-ink)]`}
       >
         {copy['leaders.readMore']}
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />

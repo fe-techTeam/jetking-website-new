@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArrowRight, Award, Briefcase, Cpu, GraduationCap, MapPin, MessageCircle, Users, Wrench } from 'lucide-react';
-import { buildMetadata } from '@/lib/seo';
+import { buildMetadata, pathForcedNoindex } from '@/lib/seo';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { RECRUITERS } from '@/lib/content/fixtures/placements-page';
 import {
@@ -21,12 +21,12 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
-  {
-    title: 'Design kit',
-    description: 'Internal preview of the shared page components.',
-    noindex: true,
-  },
-  '/design-kit',
+    {
+      title: 'Design kit',
+      description: 'Internal preview of the shared page components.',
+      noindex: await pathForcedNoindex('/design-kit'),
+    },
+    '/design-kit',
   );
 }
 

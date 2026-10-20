@@ -1,4 +1,6 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 import { SINCE_FOUNDED } from '../../../brand-facts';
 
 /**
@@ -8,13 +10,28 @@ import { SINCE_FOUNDED } from '../../../brand-facts';
  * `components/franchise/data.ts` rebuilds its arrays from these defaults for the chatbot corpus export,
  * so the shipped wording lives in one place. Item counts (stats, steps, cards) are fixed by the layout.
  */
+export const FRANCHISE_SECTIONS = [
+  'hero',
+  'why',
+  'opportunity',
+  'jump',
+  'launch',
+  'courses',
+  'faq',
+  'enquire',
+  'contact',
+] as const;
+
 export const franchiseCopy = definePageCopy({
   id: 'franchise',
   label: 'Franchise',
   path: '/franchise',
   group: 'Pages',
-  description: 'The franchise landing page and its enquiry form.',
+  description: 'The franchise landing page and its enquiry form. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(FRANCHISE_SECTIONS),
+    ...seoFieldDefaults(),
+
     'seo.title': `Own a Jetking Franchise | India's Leading IT Training Brand`,
     'seo.description':
       'Build your future with a Jetking IT training franchise. Established brand, proven business model, end-to-end support, and attractive ROI. Investment from ₹15 Lakhs.',
@@ -41,7 +58,7 @@ export const franchiseCopy = definePageCopy({
     'stories.avatars.0.avatar': '/franchise/partner-avatar-2.webp',
     'stories.avatars.1.avatar': '/franchise/partner-avatar-1.webp',
     'stories.avatars.2.avatar': '/franchise/partner-avatar-3.webp',
-    'courses.image': '/home/campus-lab.jpg',
+    'courses.image': '/franchise/courses-band.jpg',
     'enquire.image': '/franchise/hero-building.webp',
     'hero.image.alt': 'Modern Jetking franchise training centre building',
 

@@ -1,4 +1,6 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Enquiry — editable text. Fields are added here with their current wording as the default; the
@@ -6,23 +8,31 @@ import { definePageCopy } from '../define';
  *
  * `{name}` in `form.signedIn` is the signed-in visitor's name, filled in by the form.
  */
+export const ENQUIRY_SECTIONS = [
+  'hero',
+  'form',
+  'next',
+] as const;
+
 export const enquiryCopy = definePageCopy({
   id: 'enquiry',
   label: 'Enquiry',
   path: '/enquiry',
   group: 'Pages',
-  description: 'The enquiry page and form text.',
+  description: 'The enquiry page and form text. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(ENQUIRY_SECTIONS),
+    ...seoFieldDefaults({ noindex: true }),
+
     'next.image': '/home/counsellor.jpg',
     'seo.title': 'Enquire About a Jetking Course',
     'seo.description':
       'Send an enquiry and a Jetking counsellor will get in touch about courses, fees, centres and admissions.',
     // Thin, transactional and duplicated in intent across the funnel — kept out of the index
     // deliberately. Set to anything other than "true" to let search engines index it.
-    'seo.noindex': 'true',
 
     // Hero
-    'hero.eyebrow': '💬 Enquiry',
+    'hero.eyebrow': 'Enquiry',
     'hero.title': 'Talk to a counsellor',
     'hero.body':
       'Tell us a little about what you are looking for. A counsellor from your nearest centre will get in touch — usually within one working day.',

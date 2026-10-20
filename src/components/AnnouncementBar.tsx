@@ -79,7 +79,7 @@ export function AnnouncementBar({ items, renderedAt }: { items: Announcement[]; 
       role="region"
       aria-label="Announcement"
       data-announcement-id={active.id}
-      className={`relative z-[55] flex min-h-9 items-center justify-center gap-3 px-10 py-1.5 text-center text-[13px] font-medium leading-snug ${TONE_CLASS[active.tone]}`}
+      className={`relative z-[55] flex min-h-9 items-center justify-center gap-3 px-12 py-1.5 text-center text-[13px] font-medium leading-snug ${TONE_CLASS[active.tone]}`}
     >
       <p className="min-w-0">
         <span>{active.message}</span>
@@ -105,7 +105,7 @@ export function AnnouncementBar({ items, renderedAt }: { items: Announcement[]; 
           type="button"
           onClick={dismiss}
           aria-label="Dismiss announcement"
-          className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-lg leading-none opacity-80 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-current"
+          className="tap absolute right-1.5 top-1/2 grid h-11 w-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-lg leading-none opacity-80 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-current"
         >
           <span aria-hidden="true">&times;</span>
         </button>

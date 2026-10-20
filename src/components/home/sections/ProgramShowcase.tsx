@@ -73,7 +73,7 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
               onClick={() => setTab(t.id)}
               aria-pressed={tab === t.id}
               className={[
-                'dc-chip shrink-0 px-4 py-2 text-[13px]',
+                'dc-chip shrink-0 min-h-11 px-4 py-2 text-[13px]',
                 tab === t.id ? '!bg-jk-600 !text-white' : '',
               ].join(' ')}
             >

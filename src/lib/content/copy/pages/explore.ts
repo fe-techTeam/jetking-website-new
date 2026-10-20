@@ -1,4 +1,5 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
 
 /**
  * Explore — editable text. Fields are added here with their current wording as the default; the
@@ -12,8 +13,10 @@ export const exploreCopy = definePageCopy({
   label: 'Explore',
   path: '/explore',
   group: 'Pages',
-  description: 'The Explore landing page.',
+  description:
+    'Explore landing (/explore, noindex). Affiliations, reasons and related images are also used on About.',
   defaults: {
+    ...seoFieldDefaults({ noindex: true }),
     'seo.title': 'Explore {brand} — Courses, Centres & Placements',
     'seo.description':
       'Browse Jetking courses, placement stories and centres across India — no commitment needed, just explore at your own pace.',
@@ -31,7 +34,7 @@ export const exploreCopy = definePageCopy({
     'hero.cta.secondary.href': '/centres',
     'hero.citiesLine': 'Centres in {cities} cities',
     'hero.noForm': 'No form, no pressure',
-    'hero.image': '/home/journey-explore-v2.jpg',
+    'hero.image': '/explore/hero.jpg',
     'hero.avatars.0.avatar': '/student/avatar-1.webp',
     'hero.avatars.1.avatar': '/student/avatar-2.webp',
     'hero.avatars.2.avatar': '/student/avatar-3.webp',
@@ -40,7 +43,7 @@ export const exploreCopy = definePageCopy({
     'slider.avatars.1.avatar': '/student/avatar-2.webp',
     'slider.avatars.2.avatar': '/student/avatar-3.webp',
     'slider.avatars.3.avatar': '/student/testimonial.webp',
-    'reasons.image': '/home/why-labs.jpg',
+    'reasons.image': '/explore/reasons.jpg',
     'hero.imageAlt': 'Visitor exploring the Jetking campus',
 
     // Orbit chips around the hero image
@@ -54,7 +57,7 @@ export const exploreCopy = definePageCopy({
     'orbit.3.detail': 'Talk to us only when ready',
 
     // Quick enquiry
-    'enquire.image': '/home/journey-explore-v2.jpg',
+    'enquire.image': '/explore/hero.jpg',
     'enquire.title': 'Have a specific question?',
     'enquire.note': 'Leave a note and we’ll get back — entirely optional.',
 
@@ -107,7 +110,7 @@ export const exploreCopy = definePageCopy({
     'awards.title': 'Awards & recognition',
 
     // 10 reasons
-    'reasons.title': '10 reasons why {brand} is every student’s choice',
+    'reasons.title': '10 reasons why people choose {brand}',
     'reasons.0.title': 'Trained & Certified Faculty',
     'reasons.0.detail': 'Award winning and internationally bench-marked training faculty.',
     'reasons.1.title': 'Practical Foundation through Labs',

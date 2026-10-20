@@ -92,6 +92,13 @@
       "when": 1792411591509,
       "tag": "0012_users",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792512000000,
+      "tag": "0013_unify_visitor_accounts",
+      "breakpoints": true
     }
   ]
 }

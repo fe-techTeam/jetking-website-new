@@ -115,7 +115,7 @@ export function CentreHeroForm({
     <aside
       id="centre-hero-cta"
       aria-labelledby={titleId}
-      className="w-full scroll-mt-24 px-5 pb-8 xs:px-8 sm:px-10 lg:w-[400px] lg:shrink-0 lg:px-0 lg:py-7 lg:pr-8 xl:w-[440px] xl:pr-10"
+      className="w-full scroll-mt-24 px-5 pb-8 xs:px-8 sm:px-10 min-[880px]:w-[340px] min-[880px]:shrink-0 min-[880px]:px-0 min-[880px]:py-7 min-[880px]:pr-6 lg:w-[400px] lg:pr-8 xl:w-[440px] xl:pr-10 3xl:w-[480px] 4xl:w-[520px]"
     >
       <div className="rounded-[24px] border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] p-4 shadow-[var(--dc-shadow)]">
         {status === 'done' ? (

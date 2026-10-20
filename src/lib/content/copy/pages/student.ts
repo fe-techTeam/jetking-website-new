@@ -1,4 +1,5 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
 
 /**
  * Students — editable text. Fields are added here with their current wording as the default; the
@@ -7,11 +8,12 @@ import { definePageCopy } from '../define';
  */
 export const studentCopy = definePageCopy({
   id: 'student',
-  label: 'Students',
-  path: '/student',
+  label: 'Legacy student landing (unused)',
+  // Path redirects to home — kept only so shared assets/copy still load if referenced.
   group: 'Pages',
-  description: 'The student landing page.',
+  description: 'Not shown on the live site (/student redirects home). Kept for legacy copy only.',
   defaults: {
+    ...seoFieldDefaults({ noindex: true }),
     'seo.title': 'Student Path — Courses & Career Start | {siteName}',
     'seo.description':
       'Explore Jetking courses for students after 10th or 12th — cloud, cyber security and IT tracks with labs, certifications and placement support.',

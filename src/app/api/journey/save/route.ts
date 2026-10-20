@@ -2,13 +2,17 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import { leadForLog, safeError } from '@/lib/pii';
+import { saveEnquiry } from '@/lib/leads/intake';
+import { handoffLeadToCrm } from '@/lib/leads/crm-handoff';
+import { UTM_COOKIE, cookieValue, decodeUtm } from '@/lib/utm';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
  * Soft lead capture — after recommendations, before counselling.
- * Phone only (name optional). Links anonymous visitor ID for CRM merge later.
+ * Phone only (name optional). Stored in the admin panel like every other lead,
+ * then handed to the CRM when the payload is complete enough for the provider.
  */
 
 const SaveSchema = z.object({
@@ -60,34 +64,43 @@ export async function POST(request: Request) {
     );
   }
 
+  const data = parsed.data;
+  const name = (data.name && data.name.trim()) || 'Journey visitor';
   const payload = {
-    ...parsed.data,
-    journeyStage: 'explore',
+    ...data,
+    name,
+    journeyStage: 'explore' as const,
     receivedAt: new Date().toISOString(),
   };
 
-  const endpoint = process.env.CRM_ENDPOINT;
-
-  // The Smartrain CRM only accepts complete enquiries (email, state, city, centre); a soft-save is not one.
-  if (!endpoint || process.env.CRM_PROVIDER === 'smartrain') {
-    console.warn('[journey:soft-save:unrouted]', leadForLog(payload));
-    return NextResponse.json({ ok: true, routed: false });
-  }
-
+  let leadId: string | null = null;
   try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...(process.env.CRM_API_KEY ? { authorization: `Bearer ${process.env.CRM_API_KEY}` } : {}),
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(8_000),
+    const saved = await saveEnquiry({
+      name,
+      phone: data.phone,
+      courseSlug: data.selectedCourseSlug,
+      persona: data.persona,
+      source: data.source,
+      visitorId: data.visitorId,
+      journeyStage: 'explore',
+      intent: data.intent,
+      message: data.recommendedSlugs?.length
+        ? `Soft save — recommended: ${data.recommendedSlugs.join(', ')}`
+        : 'Soft save from student journey',
+      utm: decodeUtm(cookieValue(request.headers.get('cookie'), UTM_COOKIE)),
     });
-    if (!response.ok) throw new Error(`CRM returned ${response.status}`);
-    return NextResponse.json({ ok: true, routed: true });
+    if (saved?.duplicate) return NextResponse.json({ ok: true, routed: false });
+    leadId = saved?.id ?? null;
   } catch (error) {
-    console.error('[journey:soft-save:crm-failed]', leadForLog(payload), safeError(error));
-    return NextResponse.json({ ok: true, routed: false });
+    console.error('[journey:soft-save:store-failed]', leadForLog(payload), safeError(error));
   }
+
+  const handoff = await handoffLeadToCrm({
+    leadId,
+    name,
+    phone: data.phone,
+    raw: payload,
+  });
+
+  return NextResponse.json({ ok: true, routed: handoff.routed });
 }

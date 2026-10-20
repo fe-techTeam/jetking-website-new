@@ -1,17 +1,30 @@
 import { definePageCopy } from '../define';
+import { namespacedSeoDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Legal pages (SEO & intros) — editable text. Fields are added here with their current wording as the default; the
  * page component reads them from the copy it is given instead of hard-coding the string.
  * (The legal wording itself is in `legal_documents`, edited under Legal documents.)
  */
+export const LEGAL_SECTIONS = [
+  'intro',
+  'body',
+  'alsoRead',
+] as const;
+
 export const legalCopy = definePageCopy({
   id: 'legal',
   label: 'Legal pages (SEO & intros)',
   path: '/privacy-policy',
   group: 'Pages',
-  description: 'Titles, descriptions and intro lines of the legal pages.',
+  description: 'Titles, descriptions and intro lines of the legal pages. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(LEGAL_SECTIONS),
+    ...namespacedSeoDefaults('privacy'),
+    ...namespacedSeoDefaults('terms'),
+    ...namespacedSeoDefaults('enrollment'),
+
     'privacy.seo.title': 'Privacy Policy | Jetking',
     'privacy.seo.description':
       'How Jetking Infotrain Limited collects, uses and protects the personal information you share through the Jetking website and services.',
@@ -38,5 +51,8 @@ export const legalCopy = definePageCopy({
     'labels.otherPagesNav': 'Other legal pages',
     'labels.talkToCounsellor': 'Questions? Talk to a counsellor',
     'labels.tableFallback': 'Table',
+    'labels.enlarge': 'Enlarge',
+    'labels.enlargeLabel': 'Enlarge: {alt}',
+    'labels.close': 'Close',
   },
 });

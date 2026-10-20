@@ -17,16 +17,16 @@ export function ProfessionalPrograms({ copy, courses }: { copy: typeof professio
         <div className="min-w-0 flex-[1_1_18rem]">
           <h2
             id="pro-programs-heading"
-            className="section-title inline-flex items-center gap-2.5 font-display text-[var(--dc-ink)]"
+            className="section-title inline-flex items-center gap-2.5 font-display text-[var(--k-ink)]"
           >
             <Sparkles
-              className="h-6 w-6 text-[var(--dc-accent-soft)]"
+              className="h-6 w-6 text-[var(--k-red)]"
               strokeWidth={1.75}
               aria-hidden="true"
             />
             {copy['programs.title']}
           </h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] sm:text-[15px]">
+          <p className="mt-2 text-[14px] leading-relaxed text-[var(--k-ink-3)] sm:text-[15px]">
             {copy['programs.lede']}
           </p>
         </div>
@@ -34,7 +34,7 @@ export function ProfessionalPrograms({ copy, courses }: { copy: typeof professio
         <div className="flex items-center gap-3">
           <Link
             href={copy['programs.viewAll.href'] as Route}
-            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--dc-accent-soft)]"
+            className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--k-red)]"
           >
             {copy['programs.viewAll.label']}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} aria-hidden="true" />

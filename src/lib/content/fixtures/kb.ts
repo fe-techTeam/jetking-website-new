@@ -202,7 +202,7 @@ export const homepageVariants: HomepageVariant[] = [
       headline: 'Compare certification tracks that fit around a full-time job.',
       lede: 'Short and professional courses with evening and weekend options at many centres.',
     },
-    cta: { label: 'Compare upskilling tracks', href: '/professional' },
+    cta: { label: 'Compare upskilling tracks', href: '/courses' },
     courseBoost: ['cloud-computing-engineer-ai', 'ethical-hacking-specialist'],
     testimonials: [
       {
@@ -245,7 +245,7 @@ export const homepageVariants: HomepageVariant[] = [
       headline: 'See placement support, fee clarity, and what to ask any institute.',
       lede: 'Trust signals, counsellor conversations, and transparent next steps before you decide.',
     },
-    cta: { label: 'Explore the parent path', href: '/parent' },
+    cta: { label: 'Talk to a counsellor', href: '/enquiry' },
     courseBoost: ['bca-cloud-cyber-security'],
     testimonials: [
       {

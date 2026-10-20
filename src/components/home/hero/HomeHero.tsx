@@ -46,12 +46,12 @@ export function HomeHero({
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[60%_30%] lg:object-[center_30%]"
+          className="object-cover object-[58%_22%] sm:object-[55%_26%] lg:object-[center_28%]"
         />
         <div aria-hidden="true" className="centres-detail-wash pointer-events-none absolute inset-0" />
 
         <div className="shell relative z-[1] flex flex-col">
-          <div className="flex min-h-[min(110vw,560px)] flex-col min-[880px]:min-h-[540px] min-[880px]:flex-row min-[880px]:items-center min-[880px]:justify-between min-[880px]:gap-6 lg:gap-8">
+          <div className="flex min-h-[min(110vw,560px)] flex-col min-[880px]:min-h-[540px] min-[880px]:flex-row min-[880px]:items-center min-[880px]:justify-between min-[880px]:gap-6 lg:gap-8 3xl:min-h-[640px] 4xl:min-h-[720px]">
             <div className="flex flex-1 flex-col justify-center py-9 xs:py-11 sm:py-12 min-[880px]:max-w-[58%] min-[880px]:py-12">
               <h1 className="page-title-hero text-[var(--dc-ink)]">
                 {copy['hero.title.line1']}

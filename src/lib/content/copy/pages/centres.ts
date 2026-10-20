@@ -1,4 +1,6 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Centres — editable text for the centre directory (`/centres`) and the fixed text on every centre
@@ -6,13 +8,23 @@ import { definePageCopy } from '../define';
  * the centre record; everything here is the wording around them. `{name}` tokens are live values the
  * page fills in.
  */
+export const CENTRES_SECTIONS = [
+  'hero',
+  'index',
+  'cta',
+] as const;
+
 export const centresCopy = definePageCopy({
   id: 'centres',
   label: 'Centres',
   path: '/centres',
   group: 'Pages',
-  description: 'The centre directory, city pages and centre pages.',
+  description:
+    'Centre directory, city and centre chrome. Gallery defaults (centreGallery.slot.*) fill empty centre photo slots; per-centre uploads live under Centres CMS. Use Show or hide sections to turn blocks on or off.',
   defaults: {
+    ...sectionVisibilityDefaults(CENTRES_SECTIONS),
+    ...seoFieldDefaults(),
+
     'seo.title': 'Jetking Centres Across India | Find Your Nearest',
     'seo.description':
       'Find Jetking IT training centres by city. Browse centres across India offering cloud computing, cyber security, DevOps and networking courses.',
@@ -26,7 +38,7 @@ export const centresCopy = definePageCopy({
     'units.centreMany': 'centres',
 
     // ── Directory: banner and search ────────────────────────────────────
-    'directoryHero.image': '/home/journey-explore-v2.jpg',
+    'directoryHero.image': '/centres/hero.jpg',
     'directoryHero.eyebrow': '{centres} Centres · Nationwide',
     'directoryHero.title': 'Find a Jetking centre',
     'directoryHero.titleAccent': 'near you.',
@@ -66,7 +78,7 @@ export const centresCopy = definePageCopy({
     'directoryIndex.phone': 'Phone',
 
     // ── Directory: closing band ─────────────────────────────────────────
-    'directoryCta.image': '/home/centre-exterior.jpg',
+    'directoryCta.image': '/centres/hero.jpg',
     'directoryCta.eyebrow': 'Need help choosing?',
     'directoryCta.title': 'Talk to a counsellor about your nearest centre',
     'directoryCta.body':
@@ -80,7 +92,7 @@ export const centresCopy = definePageCopy({
     'directoryCta.browseHref': '/courses',
 
     // ── Centre page: banner ─────────────────────────────────────────────
-    'centreHero.image': '/home/journey-explore-v2.jpg',
+    'centreHero.image': '/centres/hero.jpg',
     'centreHero.introFallback':
       'IT training centre in {place}. Cloud, cyber security and BCA courses with placement support.',
     'centreHero.enquire': 'Enquire at this centre',
@@ -106,7 +118,7 @@ export const centresCopy = definePageCopy({
     'centreForm.callPrefix': 'Or call',
 
     // ── Centre page: Jetking intro ──────────────────────────────────────
-    'centreIntro.image': '/franchise/centre-interior.webp',
+    'centreIntro.image': '/centres/classroom.webp',
     'centreIntro.eyebrow': 'Learn with',
     'centreIntro.title': "India's most trusted",
     'centreIntro.titleAccent': 'digital skills institute',
@@ -147,30 +159,38 @@ export const centresCopy = definePageCopy({
     'centreAbout.lede': 'Everything you need to learn, practise and get placed, under one roof. Walk in and see it for yourself.',
     'centreReasons.lab.title': 'Adv Labs 1:1',
     'centreReasons.lab.body': 'One machine per student to practice tools and work on real projects',
-    'centreReasons.lab.photo': '/courses/centre-advantage.jpg',
+    'centreReasons.lab.photo': '/centres/lab.jpg',
     'centreReasons.lab.photoAlt': 'A student practising in the lab with an instructor guiding',
     'centreReasons.lab.photoLabel': 'Lab picture: a student practising with an instructor to guide',
     'centreReasons.expert.title': 'Expert Sessions',
     'centreReasons.expert.body': 'Every session is delivered live in classroom and virtually for anywhere learning',
-    'centreReasons.classroom.photo': '',
+    'centreReasons.classroom.photo': '/centres/classroom.webp',
     'centreReasons.classroom.photoAlt': 'An instructor teaching a batch in the classroom',
     'centreReasons.classroom.photoLabel': 'Classroom picture: an instructor teaching a batch',
     'centreReasons.career.title': 'Career Counselling',
     'centreReasons.career.body': 'Career guidance on getting best from the program and choosing your career',
-    'centreReasons.counselling.photo': '/home/counsellor.jpg',
+    'centreReasons.counselling.photo': '/centres/counselling.jpg',
     'centreReasons.counselling.photoAlt': 'A counsellor guiding a student one to one',
     'centreReasons.counselling.photoLabel': 'A counsellor guiding a student 1:1',
     'centreReasons.placement.title': 'Placement & Personality Prep',
     'centreReasons.placement.body': 'Get prepared to succeed in placement & internship opportunities',
-    'centreReasons.mock.photo': '',
+    'centreReasons.mock.photo': '/centres/mock-interview.jpg',
     'centreReasons.mock.photoAlt': 'A panel interviewing a student in a mock interview',
     'centreReasons.mock.photoLabel': 'Mock interview preparation: a panel interviewing a student',
     'centreReasons.photoPlaceholder': 'Photo to be added',
     'centreGallery.label': 'Photos of the centre',
     'centreGallery.slot.0': 'Our centre',
+    'centreGallery.slot.0.photo': '/centres/hero.jpg',
+    'centreGallery.slot.0.photoAlt': 'Students arriving at a Jetking centre',
     'centreGallery.slot.1': 'Classroom',
+    'centreGallery.slot.1.photo': '/centres/classroom.webp',
+    'centreGallery.slot.1.photoAlt': 'An instructor teaching a batch in the classroom',
     'centreGallery.slot.2': 'Jetking team with students',
+    'centreGallery.slot.2.photo': '/centres/team-students.jpg',
+    'centreGallery.slot.2.photoAlt': 'A Jetking instructor with students after class',
     'centreGallery.slot.3': 'Labs',
+    'centreGallery.slot.3.photo': '/centres/lab.jpg',
+    'centreGallery.slot.3.photoAlt': 'Students practising in the networking lab with an instructor',
     'centreGallery.placeholder': 'Photo to be added',
     'centreAbout.programs': 'Programs',
     'centreAbout.programsDegreeShort': 'Degree & Short Term Courses',

@@ -77,7 +77,7 @@ export function CourseCard({
               fill
               sizes="(min-width: 1280px) 22vw, (min-width: 640px) 42vw, 120px"
               onError={() => setPhotoFailed(true)}
-              className="object-cover transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
+              className="object-cover object-[center_28%] transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/card:scale-[1.04]"
             />
           ) : (
             <div className="absolute inset-0 bg-[var(--k-red-wash,#fdf1f1)]">

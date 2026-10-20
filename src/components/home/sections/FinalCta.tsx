@@ -13,15 +13,15 @@ export function FinalCta({ centres, copy }: { centres: EnquiryCentre[]; copy: Ho
 
   return (
     <Section tone="tint" labelledBy="home-final-cta-heading">
-      <div className="grid overflow-hidden rounded-[28px] border border-[var(--k-line)] bg-[var(--k-card)] shadow-[var(--k-shadow-up)] lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+      <div className="grid overflow-hidden rounded-[28px] border border-[var(--k-line)] bg-[var(--k-card)] shadow-[var(--k-shadow-up)] md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
         {/* Photo side: the promise, in white over the picture */}
-        <div className="relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden p-6 sm:p-10 lg:min-h-[560px] lg:p-12">
+        <div className="relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden p-6 sm:p-10 md:min-h-[480px] lg:min-h-[560px] lg:p-12 3xl:min-h-[640px] 4xl:min-h-[720px]">
           <Image
             src={copy['cta.image']}
             alt=""
             fill
-            sizes="(min-width: 1024px) 55vw, 100vw"
-            className="-z-10 object-cover object-[center_20%]"
+            sizes="(min-width: 2560px) 1155px, (min-width: 1920px) 990px, (min-width: 768px) 55vw, 100vw"
+            className="-z-10 object-cover object-[center_28%]"
           />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-scrim/95 via-scrim/65 to-scrim/25" />
 

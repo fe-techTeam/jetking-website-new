@@ -93,14 +93,14 @@ export function AboutTimeline({ timeline, copy }: { timeline: Milestone[]; copy:
       >
         {active.items.map((item) => (
           <div key={`${item.year}-${item.title}`} className="kit kit-card p-5 sm:p-6">
-            <span className="numeral inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold text-[var(--dc-accent-soft)]">
+            <span className="numeral inline-flex rounded-full border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] px-2.5 py-1 text-[12px] font-bold text-[var(--k-red)]">
               {item.year}
             </span>
-            <h3 className="mt-3 font-display text-[16px] leading-snug font-bold tracking-[-0.01em] text-[var(--dc-ink)]">
+            <h3 className="mt-3 font-display text-[16px] leading-snug font-bold tracking-[-0.01em] text-[var(--k-ink)]">
               {item.title}
             </h3>
             {item.body ? (
-              <p className="mt-2 text-[14px] leading-relaxed text-[var(--dc-ink-secondary)]">
+              <p className="mt-2 text-[14px] leading-relaxed text-[var(--k-ink-2)]">
                 {item.body}
               </p>
             ) : null}
@@ -109,7 +109,7 @@ export function AboutTimeline({ timeline, copy }: { timeline: Milestone[]; copy:
                 href={item.link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="tap mt-3 inline-flex min-h-11 items-center sm:min-h-6 text-[13px] font-bold text-[var(--dc-accent-soft)] hover:underline"
+                className="tap mt-3 inline-flex min-h-11 items-center sm:min-h-6 text-[13px] font-bold text-[var(--k-red)] hover:underline"
               >
                 {item.link.label}
               </a>

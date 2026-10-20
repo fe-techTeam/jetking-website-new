@@ -1,10 +1,11 @@
 import type { Route } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { Breadcrumbs, type Crumb } from '@/components/ui';
 import { LEGAL_LINKS, type LegalBlock, type LegalDoc } from '@/lib/legal';
 import type { legalCopy } from '@/lib/content/copy/pages/legal';
+import { isSectionVisible } from '@/lib/content/copy/sections';
+import { LegalZoomImage } from './LegalZoomImage';
 
 const slugify = (s: string) =>
   s
@@ -50,11 +51,13 @@ function Block({
   block,
   id,
   tableFallback,
+  zoomLabels,
 }: {
   block: LegalBlock;
   id?: string;
   /** Accessible name of a table that has no caption. */
   tableFallback: string;
+  zoomLabels: { enlarge: string; enlargeLabel: string; close: string };
 }) {
   switch (block.t) {
     case 'h2':
@@ -74,13 +77,13 @@ function Block({
       );
     case 'p':
       return (
-        <p className="mt-4 max-w-[85ch] text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <p className="mt-4 text-[15px] leading-[1.75] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           <Inline text={block.text} />
         </p>
       );
     case 'ul':
       return (
-        <ul className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ul className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="relative pl-5">
               <span aria-hidden="true" className="absolute top-[0.72em] left-0.5 h-1.5 w-1.5 rounded-full bg-[var(--dc-accent-soft)]" />
@@ -93,7 +96,7 @@ function Block({
       // The source's own numbering ("a.", "3.") is kept as text, so cross-references
       // such as "clause 3.1(b)" still read the way the document says.
       return (
-        <ol role="list" className="mt-4 max-w-[85ch] space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
+        <ol role="list" className="mt-4 space-y-2.5 text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[15.5px]">
           {block.items.map((item, i) => (
             <li key={i} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-1">
               <span aria-hidden="true" className="font-semibold text-[var(--dc-ink-muted)] tabular-nums">
@@ -148,17 +151,13 @@ function Block({
       );
     case 'img':
       return (
-        // Screenshots of forms and tables drawn on white: keep a white ground in dark mode too.
-        <figure className="mt-5 flex justify-center rounded-[12px] border border-[var(--dc-hairline-strong)] bg-white p-2 sm:p-3">
-          <Image
-            src={block.src}
-            alt={block.alt}
-            width={block.w}
-            height={block.h}
-            sizes="(min-width: 900px) 800px, 100vw"
-            className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
-          />
-        </figure>
+        <LegalZoomImage
+          src={block.src}
+          alt={block.alt}
+          width={block.w}
+          height={block.h}
+          labels={zoomLabels}
+        />
       );
   }
 }
@@ -189,38 +188,55 @@ export function LegalDocument({
   };
   const ids = doc.blocks.map((b) => (b.t === 'h2' ? idFor(b.text) : undefined));
   const others = LEGAL_LINKS.filter((l) => l.href !== path);
+  const show = (id: string) => isSectionVisible(copy, id);
 
   return (
     <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
-      <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
-        <Breadcrumbs trail={trail} />
-        <div className="mt-6 sm:mt-8">
-          <p className="k-hero-eyebrow">{copy['labels.eyebrow']}</p>
-          <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
-            {doc.title}
-          </h1>
-          <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[16px]">{intro}</p>
-        </div>
-      </section>
+      {show('intro') ? (
+        <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
+          <Breadcrumbs trail={trail} />
+          <div className="mt-6 sm:mt-8">
+            <p className="k-hero-eyebrow">{copy['labels.eyebrow']}</p>
+            <h1 className="page-title mt-3 font-display text-balance text-[var(--dc-ink)]">
+              {doc.title}
+            </h1>
+            <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-[var(--dc-ink-secondary)] sm:text-[16px]">{intro}</p>
+          </div>
+        </section>
+      ) : null}
 
       <div className="shell relative mt-8 space-y-6 sm:mt-10">
-        <article className="dc-panel rounded-[24px] px-5 py-8 xs:rounded-[28px] sm:px-10 sm:py-11">
-          {doc.blocks.map((block, i) => (
-            <Block key={i} block={block} id={ids[i]} tableFallback={copy['labels.tableFallback']} />
-          ))}
-        </article>
+        {show('body') ? (
+          <article className="dc-panel rounded-[24px] px-5 py-8 xs:rounded-[28px] sm:px-10 sm:py-11">
+            {doc.blocks.map((block, i) => (
+              <Block
+                key={i}
+                block={block}
+                id={ids[i]}
+                tableFallback={copy['labels.tableFallback']}
+                zoomLabels={{
+                  enlarge: copy['labels.enlarge'],
+                  enlargeLabel: copy['labels.enlargeLabel'],
+                  close: copy['labels.close'],
+                }}
+              />
+            ))}
+          </article>
+        ) : null}
 
-        <nav aria-label={copy['labels.otherPagesNav']} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
-          <span className="dc-eyebrow label-mono">{copy['labels.alsoRead']}</span>
-          {others.map((l) => (
-            <Link key={l.href} href={l.href as Route} className="tap font-semibold text-[var(--dc-accent-soft)] hover:underline">
-              {l.label}
+        {show('alsoRead') ? (
+          <nav aria-label={copy['labels.otherPagesNav']} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[14px]">
+            <span className="dc-eyebrow label-mono">{copy['labels.alsoRead']}</span>
+            {others.map((l) => (
+              <Link key={l.href} href={l.href as Route} className="tap font-semibold text-[var(--dc-accent-soft)] hover:underline">
+                {l.label}
+              </Link>
+            ))}
+            <Link href={'/enquiry' as Route} className="tap font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
+              {copy['labels.talkToCounsellor']}
             </Link>
-          ))}
-          <Link href={'/enquiry' as Route} className="tap font-semibold text-[var(--dc-ink-secondary)] hover:underline sm:ml-auto">
-            {copy['labels.talkToCounsellor']}
-          </Link>
-        </nav>
+          </nav>
+        ) : null}
       </div>
     </div>
   );

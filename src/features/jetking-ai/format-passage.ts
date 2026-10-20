@@ -62,6 +62,21 @@ function splitTitleBody(text: string): { title: string; body: string } {
   return { title: '', body: cleanSpace(text) };
 }
 
+/** Honest default when the KB has no published fee figure (live site keeps fees undisclosed). */
+export const FEES_COUNSELLOR_ANSWER = [
+  '## Fees & EMI',
+  '- Fees vary by course, centre and intake — they are confirmed by a counsellor rather than published as a single figure.',
+  '- EMI / instalment options are available on most courses.',
+  '',
+  '_Ask a Jetking counsellor for the exact fee for your course and centre._',
+].join('\n');
+
+function looksLikeFeeSubstance(body: string): boolean {
+  return /\b(course fee|fees vary|emi|instal+ment|payment options?|cost|charges?|scholarship|confirmed by a counsellor)\b/i.test(
+    body,
+  );
+}
+
 function formatFeesChunk(body: string): string {
   const name =
     body.match(/^Fees for\s+(.+?)\s+Course fee:/i)?.[1] ??
@@ -84,17 +99,24 @@ function formatFeesChunk(body: string): string {
   if (fee) lines.push(`- **Course fee:** ${fee}`);
   if (payment) lines.push(`- **Payment:** ${payment}`);
   if (duration) lines.push(`- **Duration:** ${duration}`);
-  if (!fee && !payment && !duration) lines.push(body);
+  if (!fee && !payment && !duration) {
+    if (!looksLikeFeeSubstance(body)) return '';
+    lines.push(body);
+  }
   return lines.join('\n');
 }
 
 function formatFees(text: string): string {
   const body = cleanSpace(text);
+  if (!looksLikeFeeSubstance(body)) return FEES_COUNSELLOR_ANSWER;
   const chunks = body
     .split(/(?=Fees for\s+)/i)
     .map((c) => c.trim())
     .filter((c) => /^Fees for\s+/i.test(c));
-  const sections = (chunks.length > 1 ? chunks : [body]).map(formatFeesChunk);
+  const sections = (chunks.length > 1 ? chunks : [body])
+    .map(formatFeesChunk)
+    .filter(Boolean);
+  if (!sections.length) return FEES_COUNSELLOR_ANSWER;
   sections.push('_Exact fees are confirmed by a Jetking counsellor for your centre and intake._');
   return sections.join('\n\n');
 }
@@ -342,9 +364,22 @@ function formatCentre(text: string): string {
   return lines.join('\n').trim();
 }
 
-function formatPassage(hit: PassageHit): string {
+function isChromePassage(text: string): boolean {
+  return (
+    /\bHELP\s*[—–-]/i.test(text) ||
+    /\bContact Us\b[\s\S]{0,80}\b(Student FAQs|Privacy Policy|Terms)\b/i.test(text) ||
+    /^\s*Enrollment Terms and Conditions/i.test(text)
+  );
+}
+
+function formatPassage(hit: PassageHit, preferFees = false): string {
+  if (isChromePassage(hit.text)) return '';
   const t = hit.type;
-  if (t === 'fees') return formatFees(hit.text);
+  if (t === 'fees' || (preferFees && looksLikeFeeSubstance(hit.text))) return formatFees(hit.text);
+  if (preferFees && (t === 'faq' || t === 'course' || t === 'overview' || t === 'info')) {
+    // Live site does not publish a single fee figure — never echo SEO chrome as "fees".
+    return looksLikeFeeSubstance(hit.text) ? formatFees(hit.text) : '';
+  }
   if (t === 'curriculum') return formatCurriculum(hit.text);
   if (t === 'course' || t === 'overview') return formatCourse(hit.text);
   if (t === 'eligibility') return formatEligibility(hit.text);
@@ -353,11 +388,12 @@ function formatPassage(hit: PassageHit): string {
 }
 
 /** Compose 1–3 hits into a single structured answer string. */
-export function formatPassagesAnswer(hits: PassageHit[], max = 2): string {
+export function formatPassagesAnswer(hits: PassageHit[], max = 2, opts?: { preferFees?: boolean }): string {
+  const preferFees = Boolean(opts?.preferFees);
   const parts: string[] = [];
   const seen = new Set<string>();
-  for (const hit of hits.slice(0, max + 1)) {
-    const formatted = formatPassage(hit).trim();
+  for (const hit of hits.slice(0, max + 2)) {
+    const formatted = formatPassage(hit, preferFees).trim();
     if (!formatted) continue;
     const key = formatted.slice(0, 80).toLowerCase();
     if (seen.has(key)) continue;
@@ -365,5 +401,6 @@ export function formatPassagesAnswer(hits: PassageHit[], max = 2): string {
     parts.push(formatted);
     if (parts.length >= max) break;
   }
+  if (preferFees && !parts.length) return FEES_COUNSELLOR_ANSWER;
   return parts.join('\n\n') || '';
 }

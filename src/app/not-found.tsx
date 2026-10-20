@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Route } from 'next';
+import type { Metadata, Route } from 'next';
 import {
   ArrowRight,
   Briefcase,
@@ -25,6 +25,11 @@ import { siteCopy } from '@/lib/content/copy/pages/site';
  * Palette follows the rest of the site: white / grey surfaces with Jetking red as the only accent,
  * built from theme tokens so it tracks the light / dark toggle.
  */
+
+export const metadata: Metadata = {
+  title: 'Page not found',
+  robots: { index: false, follow: true },
+};
 
 /** Icons for the six destination cards, in order; their titles, descriptions and links are site copy. */
 const DESTINATION_ICONS: LucideIcon[] = [GraduationCap, MapPin, Briefcase, Newspaper, Store, MessageCircle];

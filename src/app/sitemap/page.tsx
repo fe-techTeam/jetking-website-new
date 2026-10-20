@@ -6,6 +6,7 @@ import { centrePath } from '@/lib/centre-path';
 import { breadcrumbSchema } from '@/lib/seo';
 import { sitemapCopy } from '@/lib/content/copy/pages/sitemap';
 import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { Section, SectionHeader } from '@/components/kit';
 import { COURSE_LEVEL_LABEL } from '@/lib/course-categories';
@@ -21,39 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SitemapPage() {
   const copy = await loadCopy(sitemapCopy);
+  const show = (id: string) => isSectionVisible(copy, id);
   const trail: Crumb[] = [
     { name: 'Home', path: '/' },
     { name: copy['breadcrumb.label'], path: '/sitemap' },
   ];
-  const PAGE_GROUPS: { title: string; links: { label: string; href: string }[] }[] = [
-    {
-      title: copy['groups.0.title'],
-      links: [
-        { label: copy['groups.0.links.0.label'], href: copy['groups.0.links.0.href'] },
-        { label: copy['groups.0.links.1.label'], href: copy['groups.0.links.1.href'] },
-        { label: copy['groups.0.links.2.label'], href: copy['groups.0.links.2.href'] },
-        { label: copy['groups.0.links.3.label'], href: copy['groups.0.links.3.href'] },
-      ],
-    },
-    {
-      title: copy['groups.1.title'],
-      links: [
-        { label: copy['groups.1.links.0.label'], href: copy['groups.1.links.0.href'] },
-        { label: copy['groups.1.links.1.label'], href: copy['groups.1.links.1.href'] },
-        { label: copy['groups.1.links.2.label'], href: copy['groups.1.links.2.href'] },
-        { label: copy['groups.1.links.3.label'], href: copy['groups.1.links.3.href'] },
-        { label: copy['groups.1.links.4.label'], href: copy['groups.1.links.4.href'] },
-      ],
-    },
-    {
-      title: copy['groups.2.title'],
-      links: [
-        { label: copy['groups.2.links.0.label'], href: copy['groups.2.links.0.href'] },
-        { label: copy['groups.2.links.1.label'], href: copy['groups.2.links.1.href'] },
-        { label: copy['groups.2.links.2.label'], href: copy['groups.2.links.2.href'] },
-      ],
-    },
-  ];
+  const PAGE_GROUPS = readPageGroups(copy);
   const [courses, centres, posts] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
@@ -68,9 +42,10 @@ export default async function SitemapPage() {
   }
   const states = [...centresByState.keys()].sort((a, b) => a.localeCompare(b));
 
-  const latestPosts = [...posts]
-    .sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt))
-    .slice(0, 8);
+  // Every published article — same set as /sitemap.xml (minus noindex / non-canonical).
+  const allPosts = [...posts]
+    .filter((post) => !post.seo.noindex && (!post.seo.canonicalPath || post.seo.canonicalPath === `/blog/${post.slug}`))
+    .sort((a, b) => a.title.localeCompare(b.title));
 
   const courseGroups = [...new Set(courses.map((c) => c.level))].map((level) => ({
     level,
@@ -78,10 +53,10 @@ export default async function SitemapPage() {
     list: courses.filter((c) => c.level === level),
   }));
   const JUMPS: { id: string; label: string; count?: number; Icon: LucideIcon }[] = [
-    { id: 'pages', label: copy['pages.title'], count: PAGE_GROUPS.reduce((n, g) => n + g.links.length, 0), Icon: Compass },
-    { id: 'courses', label: copy['courses.title'], count: courses.length, Icon: BookOpen },
-    { id: 'centres', label: copy['centres.title'], count: centres.length, Icon: MapPin },
-    ...(latestPosts.length ? [{ id: 'blog', label: copy['jump.blog'], count: latestPosts.length, Icon: Newspaper }] : []),
+    ...(show('pages') ? [{ id: 'pages', label: copy['pages.title'], count: PAGE_GROUPS.reduce((n, g) => n + g.links.length, 0), Icon: Compass }] : []),
+    ...(show('courses') ? [{ id: 'courses', label: copy['courses.title'], count: courses.length, Icon: BookOpen }] : []),
+    ...(show('centres') ? [{ id: 'centres', label: copy['centres.title'], count: centres.length, Icon: MapPin }] : []),
+    ...(show('blog') && allPosts.length ? [{ id: 'blog', label: copy['jump.blog'], count: allPosts.length, Icon: Newspaper }] : []),
   ];
 
   return (
@@ -89,6 +64,7 @@ export default async function SitemapPage() {
       <JsonLd data={breadcrumbSchema(trail)} />
 
       <div className="dark-canvas pb-16 sm:pb-20 lg:pb-24">
+        {show('hero') ? (
         <section className="shell relative pt-6 sm:pt-8" data-reveal-skip>
           <Breadcrumbs trail={trail} />
 
@@ -116,8 +92,10 @@ export default async function SitemapPage() {
             </div>
           </div>
         </section>
+        ) : null}
 
         {/* Jump bar: the four parts of the page, with how much is in each */}
+        {show('jump') && JUMPS.length ? (
         <nav aria-label={copy['jump.label']} className="shell relative mt-8 sm:mt-10">
           <ul className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
             {JUMPS.map(({ id, label, count, Icon }) => (
@@ -134,9 +112,11 @@ export default async function SitemapPage() {
             ))}
           </ul>
         </nav>
+        ) : null}
 
         <div className="mt-10 sm:mt-12">
           {/* ── Main pages ─────────────────────────────────────────────── */}
+          {show('pages') ? (
           <Section tone="plain" id="pages" labelledBy="sm-pages" className="scroll-mt-28">
             <SectionHeader id="sm-pages" title={copy['pages.title']} />
             <div className="grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
@@ -158,8 +138,10 @@ export default async function SitemapPage() {
               ))}
             </div>
           </Section>
+          ) : null}
 
           {/* ── Courses, by level ─────────────────────────────────────── */}
+          {show('courses') ? (
           <Section tone="tint" id="courses" labelledBy="sm-courses" className="scroll-mt-28">
             <SectionHeader
               id="sm-courses"
@@ -186,8 +168,10 @@ export default async function SitemapPage() {
               ))}
             </div>
           </Section>
+          ) : null}
 
           {/* ── Centres, by state ─────────────────────────────────────── */}
+          {show('centres') ? (
           <Section tone="plain" id="centres" labelledBy="sm-centres" className="scroll-mt-28">
             <SectionHeader
               id="sm-centres"
@@ -220,17 +204,18 @@ export default async function SitemapPage() {
               })}
             </div>
           </Section>
+          ) : null}
 
-          {/* ── Blog ──────────────────────────────────────────────────── */}
-          {latestPosts.length > 0 && (
+          {/* ── Blog (full catalogue, mirrors sitemap.xml) ────────────── */}
+          {show('blog') && allPosts.length > 0 ? (
             <Section tone="tint" id="blog" labelledBy="sm-blog" className="scroll-mt-28">
               <SectionHeader
                 id="sm-blog"
                 title={copy['blog.title']}
                 action={<AllLink href={copy['blog.cta.href']}>{copy['blog.cta.label']}</AllLink>}
               />
-              <ul className="grid gap-x-8 sm:grid-cols-2">
-                {latestPosts.map((post) => (
+              <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+                {allPosts.map((post) => (
                   <li key={post.slug}>
                     <Link href={`/blog/${post.slug}` as Route} className="flex min-h-10 items-center text-[15px] text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-red)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--k-red)]">
                       {post.title}
@@ -239,7 +224,7 @@ export default async function SitemapPage() {
                 ))}
               </ul>
             </Section>
-          )}
+          ) : null}
         </div>
 
         <p className="shell mt-10 text-center text-[14px] text-[var(--dc-ink-muted)]">
@@ -259,4 +244,22 @@ function AllLink({ href, children }: { href: string; children: React.ReactNode }
       {children}
     </Link>
   );
+}
+
+/** Read `groups.{n}.title` + `groups.{n}.links.{i}.{label,href}` until the first missing index. */
+function readPageGroups(copy: Record<string, string>): { title: string; links: { label: string; href: string }[] }[] {
+  const groups: { title: string; links: { label: string; href: string }[] }[] = [];
+  for (let g = 0; ; g++) {
+    const title = copy[`groups.${g}.title`];
+    if (!title) break;
+    const links: { label: string; href: string }[] = [];
+    for (let i = 0; ; i++) {
+      const label = copy[`groups.${g}.links.${i}.label`];
+      const href = copy[`groups.${g}.links.${i}.href`];
+      if (!label || !href) break;
+      links.push({ label, href });
+    }
+    if (links.length) groups.push({ title, links });
+  }
+  return groups;
 }

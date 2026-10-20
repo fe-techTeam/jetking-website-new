@@ -6,16 +6,11 @@ import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { legalCopy } from '@/lib/content/copy/pages/legal';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(legalCopy);
-  return buildMetadata(
-    {
-      title: copy['terms.seo.title'],
-      description: copy['terms.seo.description'],
-    },
-    '/terms-conditions',
-  );
+  return buildMetadata(seoFromCopy(copy, undefined, 'terms.seo'), '/terms-conditions');
 }
 
 export default async function TermsConditionsPage() {

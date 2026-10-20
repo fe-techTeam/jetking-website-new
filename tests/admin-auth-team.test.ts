@@ -146,6 +146,26 @@ describe('toggleUserStatus / removeUser (last-admin protection)', () => {
     expect(h.users.get(ME)?.status).toBe('active');
     expect(h.deleteUser).not.toHaveBeenCalled();
   });
+  it('blocks demoting, disabling or removing the sole remaining active admin', async () => {
+    h.users.set(OTHER, { id: OTHER, name: 'Other', email: 'o@x.com', role: 'admin', status: 'active' });
+    h.users.set(ME, { id: ME, name: 'Boss', email: 'boss@x.com', role: 'editor', status: 'active' });
+    // Session still claims admin (stale / race) while DB has only OTHER as active admin.
+    h.me = { id: ME, name: 'Boss', role: 'admin' };
+    expect(await changeUserRole(OTHER, 'editor', '')).toMatchObject({
+      ok: false,
+      error: expect.stringMatching(/at least one active admin/i),
+    });
+    expect(await toggleUserStatus(OTHER)).toMatchObject({ ok: false });
+    expect(await removeUser(OTHER)).toMatchObject({ ok: false });
+    expect(h.users.get(OTHER)?.role).toBe('admin');
+    expect(h.users.get(OTHER)?.status).toBe('active');
+    expect(h.deleteUser).not.toHaveBeenCalled();
+  });
+  it('allows demoting another admin when a second active admin remains', async () => {
+    h.users.set(OTHER, { id: OTHER, name: 'Other', email: 'o@x.com', role: 'admin', status: 'active' });
+    expect(await changeUserRole(OTHER, 'editor', '')).toMatchObject({ ok: true });
+    expect(h.users.get(OTHER)?.role).toBe('editor');
+  });
   it('toggles another user both ways', async () => {
     expect(await toggleUserStatus(OTHER)).toMatchObject({ ok: true });
     expect(h.users.get(OTHER)?.status).toBe('disabled');

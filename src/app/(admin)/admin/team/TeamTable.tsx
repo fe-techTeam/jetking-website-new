@@ -10,7 +10,7 @@ import {
   adminResetPassword,
   removeUser,
 } from './actions';
-import { ROLES, ROLE_LABEL, type Role } from '@/lib/auth/roles';
+import { ROLES, ROLE_DESCRIPTION, ROLE_LABEL, type Role } from '@/lib/auth/roles';
 import type { AdminUser } from '@/lib/db/schema';
 import type { CentreOption } from '@/lib/leads/centre-scope';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
@@ -21,14 +21,36 @@ function formatDate(value: Date | string | null): string {
   return new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function roleCounts(users: AdminUser[]): string {
+  const parts = ROLES.map((role) => {
+    const n = users.filter((u) => u.role === role).length;
+    if (n === 0) return null;
+    const label = ROLE_LABEL[role];
+    return `${n} ${n === 1 ? label.toLowerCase() : `${label.toLowerCase()}s`}`;
+  }).filter(Boolean);
+  return parts.length ? parts.join(' · ') : 'No accounts yet';
+}
+
+function suggestPassword(): string {
+  const alphabet = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = new Uint8Array(12);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join('');
+}
+
 export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]; centres: CentreOption[] }) {
   const [users, setUsers] = useState(initialUsers);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
   const [showInvite, setShowInvite] = useState(false);
   const [inviteRole, setInviteRole] = useState<Role>('editor');
+  const [invitePassword, setInvitePassword] = useState('');
   const [pendingRemove, setPendingRemove] = useState<AdminUser | null>(null);
-  const [pendingRoleChange, setPendingRoleChange] = useState<{ user: AdminUser; role: Role } | null>(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState<{
+    user: AdminUser;
+    role: Role;
+    centreSlug: string;
+  } | null>(null);
   const [pendingDisable, setPendingDisable] = useState<AdminUser | null>(null);
   const [resetPasswordFor, setResetPasswordFor] = useState<AdminUser | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -61,9 +83,12 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         return;
       }
       setUsers((prev) => [result.user, ...prev]);
-      setMessage(`Invited ${result.user.name}.`);
-      setShowInvite(false);
+      setMessage(
+        `Created ${result.user.name} as ${ROLE_LABEL[result.user.role as Role]}. Add another account below, or close the form.`,
+      );
       formRef.current?.reset();
+      setInvitePassword('');
+      setInviteRole('editor');
     });
   }
 
@@ -93,9 +118,9 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
 
   function confirmRoleChange() {
     if (!pendingRoleChange) return;
-    const { user, role } = pendingRoleChange;
+    const { user, role, centreSlug } = pendingRoleChange;
     start(async () => {
-      const result = await changeUserRole(user.id, role, user.centreSlug ?? '');
+      const result = await changeUserRole(user.id, role, centreSlug);
       if (!result.ok) {
         setError(result.error);
         setPendingRoleChange(null);
@@ -147,16 +172,18 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           <p className="adm-eyebrow">team</p>
           <h1 className="adm-title mt-3">Team &amp; access</h1>
           <p className="adm-lede mt-3">
-            Who can sign in, and what they can touch. Centre staff only see their own centre&apos;s
-            leads.
+            Create as many staff accounts as you need — Admin, Editor, or Centre staff. Each person
+            signs in with their own email. Centre staff only see their centre&apos;s leads.
           </p>
+          <p className="mt-2 text-sm text-foreground-muted">{roleCounts(users)}</p>
         </div>
         <button
           type="button"
           onClick={() => setShowInvite((v) => !v)}
           className="adm-btn-primary font-bold inline-flex h-11 shrink-0 cursor-pointer items-center rounded-[var(--admin-radius)] px-5 text-sm"
         >
-          {showInvite ? <X aria-hidden="true" className="mr-2 h-4 w-4" /> : <Plus aria-hidden="true" className="mr-2 h-4 w-4" />}{showInvite ? 'Cancel' : 'Invite'}
+          {showInvite ? <X aria-hidden="true" className="mr-2 h-4 w-4" /> : <Plus aria-hidden="true" className="mr-2 h-4 w-4" />}
+          {showInvite ? 'Close form' : 'Add team member'}
         </button>
       </div>
 
@@ -166,17 +193,47 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           onSubmit={handleInvite}
           className="mt-8 grid gap-4 adm-card p-5 sm:grid-cols-2"
         >
+          <p className="sm:col-span-2 text-sm text-foreground-secondary">
+            Pick a role for this person. You can invite multiple people with the same role — there is
+            no limit per role.
+          </p>
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Name</span>
-            <input name="name" required className="admin-input" placeholder="Full name" />
+            <input name="name" required className="admin-input" placeholder="Full name" autoComplete="off" />
           </label>
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Email</span>
-            <input name="email" type="email" required className="admin-input" placeholder="name@jetking.example" />
+            <input
+              name="email"
+              type="email"
+              required
+              className="admin-input"
+              placeholder="name@jetking.example"
+              autoComplete="off"
+            />
           </label>
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Temporary password</span>
-            <input name="password" type="text" required minLength={8} className="admin-input" placeholder="At least 8 characters" />
+            <div className="flex gap-2">
+              <input
+                name="password"
+                type="text"
+                required
+                minLength={8}
+                value={invitePassword}
+                onChange={(e) => setInvitePassword(e.target.value)}
+                className="admin-input min-w-0 flex-1"
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setInvitePassword(suggestPassword())}
+                className="admin-input h-auto shrink-0 cursor-pointer px-3 text-xs font-semibold text-foreground-secondary hover:text-foreground"
+              >
+                Generate
+              </button>
+            </div>
           </label>
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Role</span>
@@ -192,6 +249,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                 </option>
               ))}
             </select>
+            <span className="text-xs text-foreground-muted">{ROLE_DESCRIPTION[inviteRole]}</span>
           </label>
           {inviteRole === 'centre_staff' ? (
             <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
@@ -217,10 +275,10 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           <div className="sm:col-span-2">
             <button
               type="submit"
-              disabled={pending}
+              disabled={pending || (inviteRole === 'centre_staff' && centres.length === 0)}
               className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
             >
-              {pending ? 'Inviting…' : 'Create account'}
+              {pending ? 'Creating…' : 'Create account'}
             </button>
           </div>
         </form>
@@ -315,7 +373,11 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                     onChange={(e) => {
                       const role = e.target.value as Role;
                       if (role === user.role) return;
-                      setPendingRoleChange({ user, role });
+                      setPendingRoleChange({
+                        user,
+                        role,
+                        centreSlug: role === 'centre_staff' ? (user.centreSlug ?? '') : '',
+                      });
                     }}
                     className="admin-input h-9 w-auto py-0 text-xs"
                   >
@@ -424,14 +486,46 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                 {ROLE_LABEL[pendingRoleChange.user.role as Role]}
               </span>{' '}
               to <span className="font-semibold text-foreground">{ROLE_LABEL[pendingRoleChange.role]}</span>?
+              <span className="mt-2 block text-foreground-muted">
+                {ROLE_DESCRIPTION[pendingRoleChange.role]}
+              </span>
             </>
           ) : null
         }
         confirmLabel="Change role"
         tone="default"
         pending={pending}
+        confirmDisabled={
+          pendingRoleChange?.role === 'centre_staff' && !pendingRoleChange.centreSlug
+        }
         onConfirm={confirmRoleChange}
-      />
+      >
+        {pendingRoleChange?.role === 'centre_staff' ? (
+          <label className="mt-4 flex flex-col gap-1.5 text-sm">
+            <span className="label-mono">Centre</span>
+            {centres.length > 0 ? (
+              <select
+                className="admin-input"
+                value={pendingRoleChange.centreSlug}
+                onChange={(e) =>
+                  setPendingRoleChange((prev) => (prev ? { ...prev, centreSlug: e.target.value } : prev))
+                }
+              >
+                <option value="" disabled>
+                  Select a centre…
+                </option>
+                {centres.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name} — {c.cityName}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-xs text-foreground-muted">Add a centre first, then assign this role.</p>
+            )}
+          </label>
+        ) : null}
+      </AdminConfirmDialog>
 
       <AdminConfirmDialog
         open={pendingDisable !== null}

@@ -38,7 +38,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const post = await content.getPost(slug);
   if (!post) notFound();
 
-  const copy = await loadCopy(blogCopy);
+  const [copy, seo] = await Promise.all([loadCopy(blogCopy), content.getSeoSettings()]);
   const allPosts = await content.listPosts();
   const related = allPosts
     .filter((p) => p.slug !== post.slug && p.category === post.category)
@@ -54,7 +54,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <>
       <JsonLd data={[articleSchema(post), breadcrumbSchema(trail)]} />
       <ArticleViewTracker slug={post.slug} category={post.category} title={post.title} />
-      <BlogArticle post={post} related={related} trail={trail} copy={copy} />
+      <BlogArticle
+        post={post}
+        related={related}
+        trail={trail}
+        copy={copy}
+        marketingCovers={seo.blogMarketingCovers}
+      />
     </>
   );
 }

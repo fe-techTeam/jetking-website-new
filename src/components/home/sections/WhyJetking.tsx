@@ -1,15 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
-import {
-  ArrowRight,
-  BookOpen,
-  BriefcaseBusiness,
-  Cpu,
-  Trophy,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { REASONS } from "@/components/explore/content";
-import { Reveal, Section, SectionHeader } from "@/components/kit";
+import { BrandIconGlyph, Reveal, Section, SectionHeader } from "@/components/kit";
 import { IconSlot } from "@/components/kit/IconSlot";
 import type { HomeCopy } from "@/lib/content/copy/pages/home";
 
@@ -23,8 +17,13 @@ const SHOWN = [
 ];
 const ICONS = SHOWN.map((t) => REASONS.find((r) => r.title === t)!.icon);
 
-/** Icons for the four-step journey strip; wording is the page copy `how.steps.N.*`. */
-const JOURNEY_ICONS = [BookOpen, Cpu, Trophy, BriefcaseBusiness];
+/** Brand SVG glyphs for the four-step journey; paths live in home copy `how.icons.N`. */
+const JOURNEY_ICON_KEYS = [
+  "how.icons.0",
+  "how.icons.1",
+  "how.icons.2",
+  "how.icons.3",
+] as const;
 
 /** The lab reason leads: it gets the photo. The other four sit beside it as a 2 x 2. */
 const FEATURED = 1;
@@ -55,7 +54,7 @@ export function WhyJetking({ copy }: { copy: HomeCopy }) {
       <Reveal>
         <ul
           aria-label={copy["why.rail.aria"]}
-          className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+          className="grid gap-4 sm:gap-5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
         >
           {/* Featured: photo card */}
           <li className="group relative isolate min-h-[340px] overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] sm:min-h-[400px] lg:min-h-full">
@@ -64,7 +63,7 @@ export function WhyJetking({ copy }: { copy: HomeCopy }) {
               alt=""
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
-              className="-z-10 object-cover object-[center_35%] transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.03]"
+              className="-z-10 object-cover object-[center_22%] transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.03]"
             />
             <div
               aria-hidden="true"
@@ -129,34 +128,46 @@ export function WhyJetking({ copy }: { copy: HomeCopy }) {
 
       {/* The path in one line: learn, practise, certify, get placed */}
       <Reveal>
-        <div className="mt-10 sm:mt-12">
-          <p className="mb-4 text-[13px] font-bold tracking-[0.1em] text-[var(--k-ink-3)] uppercase">
-            {copy["how.title"]}
-          </p>
-          <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {JOURNEY_ICONS.map((Icon, i) => (
-              <li
-                key={i}
-                className="relative flex items-start gap-3.5 rounded-[var(--k-r)] border border-[var(--k-line)] bg-[var(--k-card)] p-4 sm:p-5"
-              >
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--k-red-wash)] text-[var(--k-red)] ring-1 ring-[var(--k-line)]">
-                  <Icon
-                    className="h-5 w-5"
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                </span>
-                <div className="min-w-0">
-                  <h3 className="font-display text-[16px] leading-snug font-extrabold text-[var(--k-ink)]">
-                    {copy[`how.steps.${i}.title` as keyof HomeCopy]}
-                  </h3>
-                  <p className="mt-1 text-[13.5px] leading-snug text-[var(--k-ink-2)]">
-                    {copy[`how.steps.${i}.points.0` as keyof HomeCopy]}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <div className="relative mt-10 overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] sm:mt-12">
+          <Image
+            src={copy["how.image"]}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center opacity-[0.14]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-br from-[var(--k-card)] via-[var(--k-card)]/92 to-[var(--k-red-wash)]/40"
+          />
+          <div className="relative p-5 sm:p-6 lg:p-7">
+            <p className="mb-4 text-[13px] font-bold tracking-[0.1em] text-[var(--k-ink-3)] uppercase">
+              {copy["how.title"]}
+            </p>
+            <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+              {JOURNEY_ICON_KEYS.map((key, i) => (
+                <li
+                  key={key}
+                  className="relative flex items-start gap-3.5 rounded-[var(--k-r)] border border-[var(--k-line)] bg-[var(--k-card)]/90 p-4 backdrop-blur-[2px] sm:p-5"
+                >
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--k-red-wash)] text-[var(--k-red)] ring-1 ring-[var(--k-line)]">
+                    <BrandIconGlyph
+                      src={copy[key]}
+                      className="h-5 w-5"
+                    />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-[16px] leading-snug font-extrabold text-[var(--k-ink)]">
+                      {copy[`how.steps.${i}.title` as keyof HomeCopy]}
+                    </h3>
+                    <p className="mt-1 text-[13.5px] leading-snug text-[var(--k-ink-2)]">
+                      {copy[`how.steps.${i}.points.0` as keyof HomeCopy]}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </Reveal>
     </Section>

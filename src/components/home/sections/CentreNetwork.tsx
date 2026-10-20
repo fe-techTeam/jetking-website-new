@@ -96,7 +96,7 @@ export function CentreNetwork({
       />
 
       {/* One card: the centre photo and the finder side by side (stacked on phones), as a single piece */}
-      <div className="grid overflow-hidden rounded-[28px] border border-[var(--dc-hairline)] bg-[var(--dc-card)] shadow-[var(--dc-shadow)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
+      <div className="grid overflow-hidden rounded-[28px] border border-[var(--k-line)] bg-[var(--k-card)] shadow-[var(--k-shadow)] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:items-stretch">
         {/* A Jetking centre building: as tall as the finder beside it */}
         <div className="relative min-h-[14rem] w-full sm:min-h-[18rem] lg:min-h-0">
           <Image
@@ -112,13 +112,13 @@ export function CentreNetwork({
         <div className="min-w-0 p-5 sm:p-6 lg:p-6 xl:p-8">
           <label
             htmlFor="home-city-search"
-            className="font-display text-[18px] font-extrabold text-[var(--dc-ink)]"
+            className="font-display text-[18px] font-extrabold text-[var(--k-ink)]"
           >
             {copy["network.finder.title"]}
           </label>
           <div className="relative mt-3">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
+              className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[var(--k-ink-3)]"
               strokeWidth={2}
               aria-hidden="true"
             />
@@ -129,7 +129,7 @@ export function CentreNetwork({
               onChange={(e) => setQuery(e.target.value)}
               placeholder={copy["network.finder.placeholder"]}
               autoComplete="off"
-              className="h-11 w-full rounded-xl border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] pr-3 pl-10 text-[14px] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)] focus-visible:outline-2 focus-visible:outline-[var(--dc-accent-soft)]"
+              className="h-11 w-full rounded-xl border border-[var(--k-line-strong)] bg-[var(--k-card)] pr-3 pl-10 text-[14px] text-[var(--k-ink)] placeholder:text-[var(--k-ink-3)] focus-visible:outline-2 focus-visible:outline-[var(--k-red)]"
             />
           </div>
 
@@ -142,7 +142,7 @@ export function CentreNetwork({
               onChange={(e) => setSelected(e.target.value)}
               disabled={filtered.length === 0}
               aria-label={copy["network.finder.select.aria"]}
-              className="h-11 w-full appearance-none rounded-xl border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] pr-10 pl-3.5 text-[14px] font-semibold text-[var(--dc-ink)] focus-visible:outline-2 focus-visible:outline-[var(--dc-accent-soft)] disabled:text-[var(--dc-ink-muted)]"
+              className="h-11 w-full appearance-none rounded-xl border border-[var(--k-line-strong)] bg-[var(--k-card)] pr-10 pl-3.5 text-[14px] font-semibold text-[var(--k-ink)] focus-visible:outline-2 focus-visible:outline-[var(--k-red)] disabled:text-[var(--k-ink-3)]"
             >
               {filtered.length === 0 ? (
                 <option value="">
@@ -157,7 +157,7 @@ export function CentreNetwork({
               )}
             </select>
             <ChevronDown
-              className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-[var(--dc-ink-muted)]"
+              className="pointer-events-none absolute top-1/2 right-3.5 h-4 w-4 -translate-y-1/2 text-[var(--k-ink-3)]"
               strokeWidth={2}
               aria-hidden="true"
             />
@@ -165,7 +165,7 @@ export function CentreNetwork({
 
           <div className="mt-2 grid gap-5 sm:mt-3 sm:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[minmax(0,9.5rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,10.5rem)_minmax(0,1fr)]">
             <ul
-              className="hidden sm:block sm:max-h-[260px] lg:max-h-[280px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--dc-hairline)] sm:pr-3"
+              className="hidden sm:block sm:max-h-[260px] lg:max-h-[280px] sm:overflow-x-hidden sm:overflow-y-auto sm:border-r sm:border-[var(--k-line)] sm:pr-3"
               aria-label={copy["network.finder.list.aria"]}
               // Scroll container: focusable so keyboard users can scroll it with the arrow keys.
               tabIndex={0}
@@ -180,14 +180,14 @@ export function CentreNetwork({
                       aria-pressed={isActive}
                       className={[
                         /* Mobile: a swipeable chip row (no nested vertical scroll to trap the page). sm+: the vertical list. */
-                        "flex min-h-11 cursor-pointer items-center justify-between gap-2 rounded-full border px-4 text-left text-[14px] font-semibold whitespace-nowrap transition-colors hover:text-[var(--dc-accent-soft)] sm:mb-1 sm:w-full sm:rounded-xl sm:border-0 sm:px-3",
+                        "flex min-h-11 cursor-pointer items-center justify-between gap-2 rounded-full border px-4 text-left text-[14px] font-semibold whitespace-nowrap transition-colors hover:text-[var(--k-red)] sm:mb-1 sm:w-full sm:rounded-xl sm:border-0 sm:px-3",
                         isActive
-                          ? "border-[var(--dc-accent-soft)] bg-[var(--dc-accent-tint)] text-[var(--dc-accent-soft)]"
-                          : "border-[var(--dc-hairline-strong)] text-[var(--dc-ink)] sm:hover:bg-[var(--dc-accent-tint)]",
+                          ? "border-[var(--k-red)] bg-[var(--k-red-wash)] text-[var(--k-red)]"
+                          : "border-[var(--k-line-strong)] text-[var(--k-ink)] sm:hover:bg-[var(--k-red-wash)]",
                       ].join(" ")}
                     >
                       <span className="min-w-0 truncate">{city.name}</span>
-                      <span className="shrink-0 text-[12px] font-normal text-[var(--dc-ink-muted)]">
+                      <span className="shrink-0 text-[12px] font-normal text-[var(--k-ink-3)]">
                         {list.length}
                       </span>
                     </button>
@@ -195,7 +195,7 @@ export function CentreNetwork({
                 );
               })}
               {filtered.length === 0 ? (
-                <li className="py-3 text-[14px] text-[var(--dc-ink-muted)]">
+                <li className="py-3 text-[14px] text-[var(--k-ink-3)]">
                   {fill(copy["network.finder.empty.list"], { query })}
                 </li>
               ) : null}
@@ -205,10 +205,10 @@ export function CentreNetwork({
               <div className="min-w-0">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="label-mono text-[12px] text-[var(--dc-ink-muted)]">
+                    <p className="label-mono text-[12px] text-[var(--k-ink-3)]">
                       {active.city.state}
                     </p>
-                    <h3 className="mt-1 font-display text-[22px] font-extrabold text-[var(--dc-ink)]">
+                    <h3 className="mt-1 font-display text-[22px] font-extrabold text-[var(--k-ink)]">
                       {active.city.name}
                     </h3>
                   </div>
@@ -226,33 +226,33 @@ export function CentreNetwork({
                 <ul
                   tabIndex={0}
                   aria-label={active.city.name}
-                  className="mt-3 max-h-[200px] overflow-x-hidden overflow-y-auto border-t border-[var(--dc-hairline)] lg:max-h-[220px]"
+                  className="mt-3 max-h-[200px] overflow-x-hidden overflow-y-auto border-t border-[var(--k-line)] lg:max-h-[220px]"
                 >
                   {active.centres.map((c) => (
                     <li key={c.slug}>
                       <Link
                         href={centrePath(c.slug) as Route}
-                        className="group/row flex items-center justify-between gap-3 rounded-xl border-b border-[var(--dc-hairline)]/60 px-2 py-2.5 text-[14px] transition-colors hover:bg-[var(--dc-accent-tint)]"
+                        className="group/row flex items-center justify-between gap-3 rounded-xl border-b border-[var(--k-line)]/60 px-2 py-2.5 text-[14px] transition-colors hover:bg-[var(--k-red-wash)]"
                       >
                         <span className="flex min-w-0 items-center gap-2.5">
                           <MapPin
-                            className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)]"
+                            className="h-4 w-4 shrink-0 text-[var(--k-red)]"
                             strokeWidth={2}
                             aria-hidden="true"
                           />
                           <span className="min-w-0">
-                            <span className="block truncate font-bold text-[var(--dc-ink)]">
+                            <span className="block truncate font-bold text-[var(--k-ink)]">
                               {c.name}
                             </span>
                             {c.locality ? (
-                              <span className="block truncate text-[12.5px] text-[var(--dc-ink-muted)]">
+                              <span className="block truncate text-[12.5px] text-[var(--k-ink-3)]">
                                 {c.locality}
                               </span>
                             ) : null}
                           </span>
                         </span>
                         <ArrowRight
-                          className="h-4 w-4 shrink-0 text-[var(--dc-accent-soft)] transition-transform group-hover/row:translate-x-0.5"
+                          className="h-4 w-4 shrink-0 text-[var(--k-red)] transition-transform group-hover/row:translate-x-0.5"
                           strokeWidth={2.25}
                           aria-hidden="true"
                         />
@@ -268,7 +268,7 @@ export function CentreNetwork({
 
       {/* What every centre offers, under the map: the same "mini campus" block as a course page */}
       <div className="mt-12 sm:mt-14">
-        <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
           {/* Photo card carries the block title */}
           <div className="relative isolate flex min-h-[320px] flex-col justify-end overflow-hidden rounded-[var(--k-r)] border border-[var(--k-line)] shadow-[var(--k-shadow)] lg:min-h-full">
             <Image

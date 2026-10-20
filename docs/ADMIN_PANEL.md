@@ -1,5 +1,8 @@
 # Jetking Admin Panel
 
+> **Start here for how the admin works end-to-end (roles, publish flow, diagrams):**  
+> [ADMIN_CMS.md](./ADMIN_CMS.md) · [docs/INDEX.md](./INDEX.md)
+
 A CMS + CRM for staff: publish every editorial content type the public site reads, manage the
 lead pipeline the chatbot and enquiry form feed into, and manage staff accounts with real roles
 — all from `/admin`.
@@ -149,7 +152,7 @@ components can import it without pulling the Postgres driver into the browser bu
 
 ### Roles
 
-| Role | Content (Courses, Centres, Posts, FAQs, Policies, Faculty, Homepage variants, Persona rules) | Leads | Team & Access | Audit log | Dashboard |
+| Role | Content (Courses, Centres, Posts, FAQs, Policies, Faculty, Franchise testimonials) | Leads | Team & Access | Audit log | Dashboard |
 | --- | --- | --- | --- | --- | --- |
 | **admin** | Full — create, edit, publish, delete | All leads | Invite, change role, disable, reset password, remove | Full history | Full, incl. "Reset from fixtures" |
 | **editor** | Full — create, edit, publish, delete | All leads | No access (redirected to Dashboard) | No access | Full, incl. "Reset from fixtures" |
@@ -183,7 +186,7 @@ anywhere.
 | Policies | `/admin/policies` | `slug` |
 | Faculty | `/admin/faculty` | `slug` |
 | Homepage variants | `/admin/variants` | `id` |
-| Persona rules | `/admin/rules` | `id` |
+| Persona rules (hidden — unused) | `/admin/rules` | `id` |
 
 ### How the form is generated
 
@@ -247,6 +250,12 @@ Real Postgres tables (`leads`, `lead_activities`) via Drizzle — see
 [`src/lib/db/schema.ts`](../src/lib/db/schema.ts). No file-store fallback: a lead is live
 operational data, not editorial content that needs to keep working offline.
 
+**Dual destination:** public enquiries, chatbot lead forms, journey soft-saves, and **+ New lead**
+all call `saveEnquiry` / `createLead` for the panel, then
+[`src/lib/leads/crm-handoff.ts`](../src/lib/leads/crm-handoff.ts) for the external CRM
+(`CRM_ENDPOINT`, optional `CRM_PROVIDER=smartrain`). The panel copy is authoritative if CRM
+skips or fails (`crm_status` on the row).
+
 - **Board** (kanban: New → Contacted → Enrolled → Lost) and **List** views, toggled in place.
 - **Search** (name/course/city) plus **status** and **source** filter chips apply to both views
   at once, with a "Showing X of Y" count. The status filter reads a `?status=` query param on
@@ -254,7 +263,8 @@ operational data, not editorial content that needs to keep working offline.
 - Click a lead to open its detail panel — contact info (phone/email render as `tel:` / `mailto:`
   links, not just text), a status `<select>`, a note field, and a timeline (`lead_activities`:
   chatbot handoff, calls, notes, status changes).
-- "+ New lead" for manual entry (walk-ins, phone enquiries).
+- "+ New lead" for manual entry (walk-ins, phone enquiries) — also forwarded to the CRM.
+- CSV Import is panel-only (does not fan out to CRM).
 - Delete goes through `AdminConfirmDialog`, not `window.confirm()`.
 
 `src/app/(admin)/admin/leads/actions.ts` and `page.tsx` apply the `centre_staff` scoping

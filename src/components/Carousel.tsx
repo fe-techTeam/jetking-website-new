@@ -47,7 +47,10 @@ export interface CarouselProps<T> {
   label: string;
   /** Rotation interval in ms. `0` disables autoplay. */
   interval?: number;
-  /** Show the per-slide dot buttons. Prev/Next (and Pause) stay either way. Defaults to `true`. */
+  /**
+   * Show per-slide dot buttons when the slide count stays small enough to fit.
+   * Above five slides the dots are omitted (Prev/Next and Pause stay). Defaults to `true`.
+   */
   dots?: boolean;
   className?: string;
   /** Styling hook for the control row — the dark and light skins differ here. */
@@ -100,6 +103,8 @@ export function Carousel<T>({
   const viewportId = useId();
 
   const count = items.length;
+  /* One 44×44 hit target per slide crowds the control row past ~5 on phones. */
+  const showDots = Boolean(dots && count > 1 && count <= 5);
   const go = useCallback(
     (dir: -1 | 1) => setIndex((i) => (i + dir + count) % count),
     [count],
@@ -158,11 +163,11 @@ export function Carousel<T>({
         <div
           className={cx(
             'mt-4 flex items-center gap-3',
-            dots ? 'justify-between' : 'justify-end',
+            showDots ? 'justify-between' : 'justify-end',
             classNames?.controls,
           )}
         >
-          {dots ? (
+          {showDots ? (
             <div className="flex items-center gap-0.5">
               {items.map((item, i) => (
                 <button

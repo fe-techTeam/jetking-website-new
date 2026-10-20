@@ -169,20 +169,31 @@ export async function SiteFooter() {
       </div>
 
       <div className="border-t border-border">
-        <div className="shell flex flex-col gap-2 py-6 text-sm text-foreground-muted lg:flex-row lg:items-center lg:justify-between">
-          <p>{fill(copy['footer.copyright'], { year: new Date().getFullYear() })}</p>
-          <nav aria-label={copy['footer.legal.ariaLabel']} className="flex flex-wrap gap-x-5">
+        {/*
+          Bottom bar by breakpoint:
+          - phones: stack copyright → legal → tagline
+          - md (tablet): copyright full-width, then legal | tagline
+          - lg: three columns (copyright | legal | tagline)
+        */}
+        <div className="shell grid gap-3 py-5 text-sm text-foreground-muted md:grid-cols-2 md:items-center md:gap-x-6 md:gap-y-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:py-6">
+          <p className="md:col-span-2 lg:col-span-1">
+            {fill(copy['footer.copyright'], { year: new Date().getFullYear() })}
+          </p>
+          <nav
+            aria-label={copy['footer.legal.ariaLabel']}
+            className="flex flex-wrap gap-x-5 gap-y-1 lg:justify-center"
+          >
             {legal.map((l) => (
               <Link
                 key={l.href}
                 href={l.href as never}
-                className="inline-flex min-h-11 items-center transition-colors hover:text-foreground focus-visible:text-foreground lg:min-h-6"
+                className="tap inline-flex min-h-11 items-center md:min-h-0 md:py-1 transition-colors hover:text-foreground focus-visible:text-foreground"
               >
                 {l.label}
               </Link>
             ))}
           </nav>
-          <p>{copy['footer.tagline']}</p>
+          <p className="md:justify-self-end md:text-right">{copy['footer.tagline']}</p>
         </div>
       </div>
     </footer>

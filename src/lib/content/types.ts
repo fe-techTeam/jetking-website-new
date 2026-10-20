@@ -353,6 +353,21 @@ export interface Announcement {
 }
 
 /** Site-wide SEO controls — one document (id `seo`). */
+export type SitemapChangeFrequency =
+  | 'always'
+  | 'hourly'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'yearly'
+  | 'never';
+
+export interface SitemapIncludeEntry {
+  path: string;
+  priority?: number;
+  changeFrequency?: SitemapChangeFrequency;
+}
+
 export interface SeoSettings {
   id: 'seo';
   /** Master switch. Off = robots.txt disallows everything (a production site should leave it on). */
@@ -361,15 +376,36 @@ export interface SeoSettings {
   blockAiCrawlers: boolean;
   /** Extra paths robots.txt should disallow, e.g. `/thank-you`. */
   extraDisallow: string[];
+  /** Always disallowed (typically `/api/`). Editable in SEO settings. */
+  alwaysDisallow: string[];
   /** Paths left out of sitemap.xml. */
   sitemapExclude: string[];
+  /** Static paths listed in sitemap.xml (courses, centres and posts are added automatically). */
+  sitemapInclude: SitemapIncludeEntry[];
+  /** User-agent names used when “block AI crawlers” is on. */
+  aiCrawlers: string[];
+  /** Image URLs treated as marketing share cards — skipped as on-page blog covers. */
+  blogMarketingCovers: string[];
+  /** Paths whose pages should send noindex (account, chatbot, design-kit, …). */
+  forcedNoindexPaths: string[];
   /** Share image for any page that has none of its own. */
   defaultOgImage: string;
   twitterHandle: string;
   googleVerification: string;
   bingVerification: string;
   /** Feeds the Organization structured data on every page. */
-  organization: { description: string; logo: string; phone: string; sameAs: string[] };
+  organization: {
+    name: string;
+    legalName: string;
+    alternateName: string[];
+    description: string;
+    logo: string;
+    phone: string;
+    sameAs: string[];
+    foundingDate: string;
+    areaServed: string;
+    knowsAbout: string[];
+  };
 }
 
 /** How the Jetking AI assistant presents itself and what it says when it cannot answer — one document (id `chatbot`). */

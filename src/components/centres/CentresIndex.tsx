@@ -309,7 +309,7 @@ export function CentresIndex({
                   type="button"
                   onClick={() => onSearchChange('')}
                   aria-label={copy['directoryIndex.clearSearch']}
-                  className="absolute top-1/2 right-2.5 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-ink)]"
+                  className="tap absolute top-1/2 right-1.5 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--dc-ink-muted)] transition-colors hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-ink)]"
                 >
                   <X
                     className="h-3.5 w-3.5"

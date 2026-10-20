@@ -4,6 +4,12 @@ One Next.js project containing the complete Jetking adaptive website and the
 Jetking AI assistant. The website remains the canonical base at `/`; users can
 switch to the assistant at `/chatbot` and return through the Website control.
 
+**Client-facing overview (for Jetking stakeholders):**  
+→ **[docs/CLIENT_GUIDE.md](./docs/CLIENT_GUIDE.md)**
+
+**Full technical documentation (architecture, website, admin, auth, deployment):**  
+→ **[docs/INDEX.md](./docs/INDEX.md)**
+
 The original website implementation is preserved, and the original chatbot
 features, local knowledge base, embeddings, assets, scripts, and model setup
 now run inside the same application and dependency graph.

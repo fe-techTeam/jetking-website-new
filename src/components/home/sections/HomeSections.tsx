@@ -1,6 +1,7 @@
 import type { HomeData } from '../data';
 import type { EnquiryCentre } from '@/components/EnquiryModal';
 import type { HomeCopy } from '@/lib/content/copy/pages/home';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 import { ProgramShowcase } from './ProgramShowcase';
 import { WhyJetking } from './WhyJetking';
 import { Recognitions } from './Recognitions';
@@ -13,20 +14,8 @@ import { FinalCta } from './FinalCta';
 import { HomeFaq } from './HomeFaq';
 
 /**
- * Everything below the hero, ordered the way a visitor decides:
- *   1. programmes        what you can study: courses lead, as on every comparable site
- *   2. partner logos     proof straight after the product (certifications, hiring partners)
- *   3. why Jetking       the reasons to choose us over the alternatives
- *   4. placements        outcomes and student voices, at the peak of interest
- *   5. recognitions      accreditations and awards, completing the trust run
- *   6. centre network    "is there one near me?": the offline answer
- *   7. counsellor band   a low-pressure ask for anyone still unsure
- *   8. blog              for those still reading
- *   9. FAQ               the last objections (eligibility, fees and EMI, placement)
- *  10. lead form         the closing ask
- *  11. franchise         a different audience, kept clear of the student journey
- * then the site's normal footer (see `FooterChrome`). Backgrounds alternate plain / tint section by
- * section (the light theme's `--theme-surface`), with the placements on the blush wash.
+ * Everything below the hero, ordered the way a visitor decides.
+ * Each block respects `sections.<id>.visible` from Page text (admin).
  *
  * `.dark-canvas.no-orbs` opts into the shared token/card system the rest of the site uses.
  */
@@ -39,18 +28,24 @@ export function HomeSections({
   enquiryCentres: EnquiryCentre[];
   copy: HomeCopy;
 }) {
+  const show = (id: string) => isSectionVisible(copy, id);
+
   return (
     <div className="dark-canvas no-orbs">
-      <ProgramShowcase courses={data.courses} copy={copy} />
-      <CredibilityMarquee copy={copy} certifications={data.logos.certifications} employers={data.logos.employers} />
-      <WhyJetking copy={copy} />
-      <PlacementProof disclaimer={data.placements.disclaimer} copy={copy} />
-      <Recognitions copy={copy} />
-      <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
-      <BlogTeaser posts={data.posts} copy={copy} />
-      <FinalCta centres={enquiryCentres} copy={copy} />
-      <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} />
-      <FranchiseBand copy={copy} />
+      {show('programs') ? <ProgramShowcase courses={data.courses} copy={copy} /> : null}
+      {show('marquee') ? (
+        <CredibilityMarquee copy={copy} certifications={data.logos.certifications} employers={data.logos.employers} />
+      ) : null}
+      {show('why') ? <WhyJetking copy={copy} /> : null}
+      {show('proof') ? <PlacementProof disclaimer={data.placements.disclaimer} copy={copy} /> : null}
+      {show('recognition') ? <Recognitions copy={copy} /> : null}
+      {show('network') ? (
+        <CentreNetwork cities={data.cities} centres={data.centres} counts={data.counts} copy={copy} />
+      ) : null}
+      {show('blog') ? <BlogTeaser posts={data.posts} copy={copy} /> : null}
+      {show('cta') ? <FinalCta centres={enquiryCentres} copy={copy} /> : null}
+      {show('faq') ? <HomeFaq faqs={data.faqs} counts={data.counts} copy={copy} /> : null}
+      {show('franchise') ? <FranchiseBand copy={copy} /> : null}
     </div>
   );
 }

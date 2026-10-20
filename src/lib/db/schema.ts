@@ -128,10 +128,9 @@ export type NewAdminAuditLogEntry = typeof adminAuditLog.$inferInsert;
 
 /**
  * Website register/login accounts — the main site's own account system,
- * deliberately separate from both `admin_users` (staff) and `chat_users`
- * (the /chatbot widget's accounts, kept independent for now; unifying the two
- * — so a chat account and a website account can be the same person — is
- * future work, not done here). Same PBKDF2 hashing (`src/lib/auth/password.ts`).
+ * Shared with /chatbot: one register/login covers the website and saved chats
+ * (see migration `0013_unify_visitor_accounts`). Separate from `admin_users`
+ * (staff). Same PBKDF2 hashing (`src/lib/auth/password.ts`).
  */
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -151,29 +150,11 @@ export type UserRow = typeof users.$inferSelect;
 export type NewUserRow = typeof users.$inferInsert;
 
 /**
- * /chatbot's own accounts — visitors who log in there to keep their chat
- * history. Same PBKDF2 hashing (`src/lib/auth/password.ts`).
- */
-export const chatUsers = pgTable('chat_users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  /** Normalised mobile number (digits with an optional leading +). Not unique — family members share numbers. */
-  phone: text('phone').notNull(),
-  /** Where the person is, for personalisation: state name, city slug, preferred centre slug. Nullable so the form can evolve. */
-  state: text('state'),
-  city: text('city'),
-  centre: text('centre'),
-  passwordHash: text('password_hash').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
-
-/**
  * One row per saved chat. The transcript is a single jsonb array rather than a
  * messages table: the client model (chips, follow-ups, reasoning) round-trips as-is,
  * and a chat is always read and written whole. `id` is client-generated so the first
  * autosave needs no round trip; writes are always scoped to `user_id`, so a guessed
- * id can never touch another user's chat.
+ * id can never touch another user's chat. Owners live in `users`.
  */
 export const chatConversations = pgTable(
   'chat_conversations',
@@ -181,7 +162,7 @@ export const chatConversations = pgTable(
     id: uuid('id').primaryKey(),
     userId: uuid('user_id')
       .notNull()
-      .references(() => chatUsers.id, { onDelete: 'cascade' }),
+      .references(() => users.id, { onDelete: 'cascade' }),
     title: text('title').notNull(),
     messages: jsonb('messages').$type<StoredMessage[]>().notNull(),
     session: jsonb('session').$type<Record<string, unknown>>(),
@@ -191,7 +172,6 @@ export const chatConversations = pgTable(
   (table) => [index('chat_conversations_user_updated_idx').on(table.userId, table.updatedAt)],
 );
 
-export type ChatUserRow = typeof chatUsers.$inferSelect;
 export type ChatConversationRow = typeof chatConversations.$inferSelect;
 
 /**

@@ -7,21 +7,13 @@ import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
 import { loadHomeData } from '@/components/home/data';
 import { toEnquiryCentres } from '@/lib/enquiry-centres';
 import { exploreCopy } from '@/lib/content/copy/pages/explore';
-import { fill } from '@/lib/content/copy/define';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 import { ExploreLanding } from '@/components/explore/ExploreLanding';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(exploreCopy);
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], { brand: siteConfig.name }),
-      description: fill(copy['seo.description'], { brand: siteConfig.name }),
-      // Audience pages are not listed or indexed; the main pages carry their content.
-      noindex: true,
-    },
-    '/explore',
-  );
+  return buildMetadata(seoFromCopy(copy, { brand: siteConfig.name }), '/explore');
 }
 
 export default async function ExplorePage() {

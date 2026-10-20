@@ -7,10 +7,13 @@
  * renders exactly as before until someone edits it, and a missing or draft record changes nothing.
  *
  * Key conventions (the admin groups and labels fields from them):
- *   - `seo.title`, `seo.description`, `seo.ogImage` — the page's search/share metadata.
+ *   - `seo.title`, `seo.description`, `seo.ogImage`, `seo.canonicalPath`, `seo.noindex`
+ *     — the page's search/share metadata (`"true"` / `"false"` for noindex).
  *   - `<section>.<field>` — e.g. `hero.title`, `faq.heading`, `cards.0.body` (repeating blocks use an index).
  *   - Links and image paths are plain fields too (`hero.cta.href`, `hero.image`).
- * This edits text, links and image paths. Adding or reordering whole sections is a code change.
+ * This edits text, links and image paths. Show/hide for whole sections uses
+ * `sections.<id>.visible` (`"true"` / `"false"`) — see `sections.ts`. Adding or
+ * reordering sections is still a code change.
  */
 
 export interface PageCopyDef<T extends Record<string, string> = Record<string, string>> {

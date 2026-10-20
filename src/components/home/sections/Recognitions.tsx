@@ -24,8 +24,6 @@ export function Recognitions({ copy }: { copy: HomeCopy }) {
           ))}
         </CardRail>
       </Reveal>
-
-
     </Section>
   );
 }

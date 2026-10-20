@@ -45,8 +45,13 @@ declare namespace NodeJS {
     REVALIDATE_SECRET?: string;
     /** Supabase service-role key — full-privilege, server-only. */
     SUPABASE_SERVICE_ROLE_KEY?: string;
-    /** OpenAI key shared by persona inference, the chat planner, and /api/chat's general fallback. */
+    /** OpenAI key — only used when GUIDE_PROVIDER is `openai` or `auto`. */
     OPENAI_API_KEY?: string;
+    /**
+     * Chat / planner backend: `local` (default, no OpenAI), `openai`, or `auto`
+     * (Ollama then OpenAI).
+     */
+    GUIDE_PROVIDER?: string;
     /** Default OpenAI chat model for /api/chat, the planner and persona inference. */
     GUIDE_MODEL?: string;
     /** Disables model-based persona inference when set to 'false'. */

@@ -76,34 +76,43 @@ const RESERVE = {
 export function AdaptiveNudge({
   id,
   variants,
+  fallback,
   reserve = 'standard',
   minConfidence = 0.5,
   tone = 'default',
+  className = '',
 }: {
   id: string;
   variants: PersonaVariants<NudgeContent>;
+  /**
+   * Always-visible copy for unknown / low-confidence visitors (and first paint).
+   * Prefer this over an empty reserved gap when the slot sits mid-page.
+   */
+  fallback?: NudgeContent;
   reserve?: keyof typeof RESERVE;
   minConfidence?: number;
   /** Match the nudge to the light site, blog skin, or shared dark canvas. */
   tone?: 'default' | 'blog' | 'dark';
+  className?: string;
 }) {
   const { classification, hydrated } = usePersona();
   const shownRef = useRef(false);
 
   const persona = classification.persona;
   const eligible = hydrated && persona !== 'unknown' && classification.confidence >= minConfidence;
-  const nudge = eligible ? variants[persona] : undefined;
+  const personaNudge = eligible ? variants[persona] : undefined;
+  const nudge = personaNudge ?? fallback;
 
   useEffect(() => {
     if (!nudge || shownRef.current) return;
     shownRef.current = true;
     track('nudge_shown', {
       nudge_id: id,
-      persona,
+      persona: personaNudge ? persona : 'unknown',
       confidence: classification.confidence,
       rules_version: classification.version,
     });
-  }, [nudge, id, persona, classification.confidence, classification.version]);
+  }, [nudge, personaNudge, id, persona, classification.confidence, classification.version]);
 
   const nudgeHref = !nudge
     ? undefined
@@ -111,26 +120,37 @@ export function AdaptiveNudge({
       ? (`/chatbot?q=${encodeURIComponent(nudge.headline)}` as Route)
       : (nudge.ctaHref as Route | undefined);
   const skin = NUDGE_SKINS[tone];
+  // Hold height only until we know there is nothing to show — never leave an empty box mid-page.
+  const holdSpace = !hydrated && !fallback && reserve !== 'none';
+
+  if (!nudge || !nudgeHref) {
+    if (!holdSpace) return null;
+    return <div className={`slot-stable ${RESERVE[reserve]} ${className}`.trim()} data-slot={id} />;
+  }
 
   return (
-    <div className={`slot-stable ${RESERVE[reserve]}`} data-slot={id}>
-      {nudge && nudgeHref ? (
-        <aside className={skin.aside} aria-label="Suggested next step">
-          <div className="min-w-0">
-            <p className={skin.eyebrow}>Suggested for you</p>
-            <p className={skin.headline}>{nudge.headline}</p>
-            {nudge.body ? <p className={skin.body}>{nudge.body}</p> : null}
-          </div>
-          <Link
-            href={nudgeHref}
-            onClick={() => track('nudge_clicked', { nudge_id: id, persona, href: nudgeHref })}
-            className={skin.cta}
-          >
-            {nudge.ctaLabel}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </aside>
-      ) : null}
+    <div className={`slot-stable ${className}`.trim()} data-slot={id}>
+      <aside className={skin.aside} aria-label="Suggested next step">
+        <div className="min-w-0">
+          <p className={skin.eyebrow}>{personaNudge ? 'Suggested for you' : 'Need a hand?'}</p>
+          <p className={skin.headline}>{nudge.headline}</p>
+          {nudge.body ? <p className={skin.body}>{nudge.body}</p> : null}
+        </div>
+        <Link
+          href={nudgeHref}
+          onClick={() =>
+            track('nudge_clicked', {
+              nudge_id: id,
+              persona: personaNudge ? persona : 'unknown',
+              href: nudgeHref,
+            })
+          }
+          className={skin.cta}
+        >
+          {nudge.ctaLabel}
+          <span aria-hidden="true">→</span>
+        </Link>
+      </aside>
     </div>
   );
 }

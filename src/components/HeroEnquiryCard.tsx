@@ -6,10 +6,10 @@ import { useSiteCopy } from '@/components/providers/site-copy';
 /**
  * The lead-form card that sits in the open right-hand side of a page banner (/centres, /courses).
  *
- * Desktop only: below `lg` the banner is a single column, and each of these pages already has a
- * closing "Enquire now" call to action further down. Colours come from the host page's token set
- * — `centres` reads `--centres-*`, `dc` reads the shared `--dc-*` dark-canvas tokens — so the card
- * follows that page's light/dark theme like everything around it.
+ * Hidden on phones; shown from `lg` by default, or from 880px when `earlyShow` is set (banners that
+ * switch to two columns at that width, matching HomeHero). Colours come from the host page's token
+ * set — `centres` reads `--centres-*`, `dc` reads the shared `--dc-*` dark-canvas tokens — so the
+ * card follows that page's light/dark theme like everything around it.
  */
 const TONES = {
   // Each `eyebrow` matches that host banner's own eyebrow style (CentresHero / dc-eyebrow
@@ -45,7 +45,11 @@ export function HeroEnquiryCard({
   return (
     <aside
       aria-labelledby={titleId}
-      className={earlyShow ? 'hidden min-[880px]:block min-[880px]:w-[340px] min-[880px]:shrink-0 min-[880px]:py-7 lg:w-[400px] lg:pr-8 xl:w-[440px] xl:pr-10' : 'hidden lg:block lg:w-[400px] lg:shrink-0 lg:py-7 lg:pr-8 xl:w-[440px] xl:pr-10'}
+      className={
+        earlyShow
+          ? 'hidden min-[880px]:block min-[880px]:w-[340px] min-[880px]:shrink-0 min-[880px]:py-7 lg:w-[400px] lg:pr-8 xl:w-[440px] xl:pr-10 3xl:w-[480px] 4xl:w-[520px]'
+          : 'hidden lg:block lg:w-[400px] lg:shrink-0 lg:py-7 lg:pr-8 xl:w-[440px] xl:pr-10 3xl:w-[480px] 4xl:w-[520px]'
+      }
     >
       <div className={`rounded-[24px] border p-4 ${t.card}`}>
         <h2 id={titleId} className={`mb-3 ${t.eyebrow}`}>

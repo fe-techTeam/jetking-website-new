@@ -36,21 +36,12 @@ interface Option {
 type Status = 'idle' | 'submitting' | 'done' | 'error';
 
 /**
- * Matches the field styling used across the student/parent/professional/
- * franchise pages. Background/text are plain Tailwind utilities (those
- * don't collide with anything); border/focus are the `.stu-field` class in
- * student.css instead of more Tailwind classes, because the shared
- * `fieldControl` base (src/components/form.tsx) already sets its own
- * border/focus-ring via Tailwind classes, and `cx()` is a plain string join
- * with no Tailwind-merge dedup — an *additional* utility class doesn't
- * reliably win the cascade there, only real CSS specificity does. Measured
- * live: `fieldControl`'s own focus ring never painted at all (computed
- * `box-shadow: none` while focused — no visible indicator at all, WCAG
- * 2.4.7), and its resting border measured ~1.2:1 against the card, under
- * the 3:1 WCAG 1.4.11 needs for a field boundary.
+ * Kit-scoped field styling for /enquiry (page is kit Sections, not student-page).
+ * Border/focus live in `.kit-field` (kit.css) for the same specificity reasons
+ * as `.stu-field` — shared `fieldControl` utilities cannot be overridden by
+ * another Tailwind border class through plain `cx()` joins.
  */
-const fieldClass =
-  'stu-field bg-[var(--dc-card)] text-[var(--dc-ink)] placeholder:text-[var(--dc-ink-muted)]';
+const fieldClass = 'kit-field';
 
 export function EnquiryForm({
   courses,
@@ -226,7 +217,7 @@ export function EnquiryForm({
      */
     <form onSubmit={handleSubmit} className="grid gap-x-5 gap-y-5 sm:grid-cols-2 sm:items-start">
 <BotTrap />
-      <p className="max-w-[70ch] text-base text-[var(--dc-ink-secondary)] sm:col-span-2">
+      <p className="max-w-[70ch] text-base text-[var(--k-ink-2)] sm:col-span-2">
         {classification.persona === 'franchise' ? (
           <>
             {copy['form.intro.franchise.lead']}{' '}
@@ -242,11 +233,11 @@ export function EnquiryForm({
 
       {account.ready ? (
         accountUser ? (
-          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+          <p className="text-sm text-[var(--k-ink-3)] sm:col-span-2">
             {fill(copy['form.signedIn'], { name: accountUser.name })}
           </p>
         ) : (
-          <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+          <p className="text-sm text-[var(--k-ink-3)] sm:col-span-2">
             {copy['form.login.lead']}{' '}
             <button
               type="button"
@@ -408,7 +399,7 @@ export function EnquiryForm({
           ref={errorRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-[var(--radius-input)] border border-jk-200 bg-jk-50 px-4 py-3 text-sm font-medium text-jk-700 focus:outline-none sm:col-span-2"
+          className="rounded-[var(--radius-input)] border border-[var(--k-line-strong)] bg-[var(--k-red-wash)] px-4 py-3 text-sm font-medium text-[var(--k-red)] focus:outline-none sm:col-span-2"
         >
           {error}
         </p>
@@ -418,12 +409,12 @@ export function EnquiryForm({
         type="submit"
         size="lg"
         disabled={status === 'submitting'}
-        className="w-full bg-[var(--dc-accent)] hover:bg-jk-700 sm:col-span-2"
+        className="w-full bg-[var(--k-red-fill)] hover:bg-[var(--theme-accent-hover)] sm:col-span-2"
       >
         {status === 'submitting' ? copy['form.submitting'] : copy['form.submit']}
       </Button>
 
-      <p className="text-sm text-[var(--dc-ink-muted)] sm:col-span-2">
+      <p className="text-sm text-[var(--k-ink-3)] sm:col-span-2">
         {copy['form.privacy']}
       </p>
     </form>

@@ -18,12 +18,16 @@ export interface SeoValues {
   noindex: boolean;
 }
 
-export type SeoTarget = { kind: 'page'; id: string } | { kind: 'record'; collection: RecordCollection; id: string };
+export type SeoTarget =
+  | { kind: 'page'; id: string; /** Dot prefix — `seo` or `privacy.seo`. */ fieldPrefix?: string }
+  | { kind: 'record'; collection: RecordCollection; id: string };
 
 function check(values: SeoValues): string | null {
   if (!values.title.trim()) return 'The title cannot be empty.';
   if (!values.description.trim()) return 'The description cannot be empty.';
-  if (values.canonicalPath && !/^\/[^\s]*$|^https:\/\/\S+$/.test(values.canonicalPath)) return 'The canonical URL must be a path like /courses or an https:// link.';
+  if (values.canonicalPath && !/^\/[^\s]*$|^https:\/\/\S+$/.test(values.canonicalPath)) {
+    return 'The canonical URL must be a path like /courses or an https:// link.';
+  }
   return null;
 }
 
@@ -37,19 +41,47 @@ export async function saveSeo(target: SeoTarget, values: SeoValues): Promise<{ o
     if (target.kind === 'page') {
       const page = COPY_PAGES.find((p) => p.id === target.id);
       if (!page) return { ok: false, error: 'Unknown page.' };
-      const rows = (await listCollection('page_copy')) as unknown as Array<{ id: string; entries: Record<string, string>; status: string }>;
+      const prefix = target.fieldPrefix ?? 'seo';
+      const titleKey = `${prefix}.title`;
+      const descKey = `${prefix}.description`;
+      const ogKey = `${prefix}.ogImage`;
+      const noindexKey = `${prefix}.noindex`;
+      const canonicalKey = `${prefix}.canonicalPath`;
+      // Only write keys the page still declares — matches mergeCopy.
+      const declared = page.defaults as Record<string, string>;
+      for (const key of [titleKey, descKey, ogKey, noindexKey, canonicalKey]) {
+        if (!(key in declared)) {
+          return { ok: false, error: `This page does not declare ${key}, so the change would not apply.` };
+        }
+      }
+      const rows = (await listCollection('page_copy')) as unknown as Array<{
+        id: string;
+        entries: Record<string, string>;
+        status: string;
+      }>;
       const existing = rows.find((r) => r.id === target.id);
       const entries = {
         ...(existing?.entries ?? {}),
-        'seo.title': values.title.trim(),
-        'seo.description': values.description.trim(),
-        'seo.ogImage': values.ogImage.trim(),
-        'seo.noindex': values.noindex ? 'true' : 'false',
+        [titleKey]: values.title.trim(),
+        [descKey]: values.description.trim(),
+        [ogKey]: values.ogImage.trim(),
+        [noindexKey]: values.noindex ? 'true' : 'false',
+        [canonicalKey]: values.canonicalPath.trim(),
       };
-      await upsertRecord('page_copy', { id: target.id, entries, status: 'published' }, 'id', existing ? target.id : undefined, user.name);
+      await upsertRecord(
+        'page_copy',
+        { id: target.id, entries, status: 'published' },
+        'id',
+        existing ? target.id : undefined,
+        user.name,
+      );
     } else {
-      if (!(RECORD_COLLECTIONS as readonly string[]).includes(target.collection)) return { ok: false, error: 'Unknown collection.' };
-      const rows = (await listCollection(target.collection)) as unknown as Array<Record<string, unknown> & { slug: string; seo: Record<string, unknown> }>;
+      if (!(RECORD_COLLECTIONS as readonly string[]).includes(target.collection)) {
+        return { ok: false, error: 'Unknown collection.' };
+      }
+      const rows = (await listCollection(target.collection)) as unknown as Array<
+        Record<string, unknown> & { slug: string; seo: Record<string, unknown> }
+      >;
       const current = rows.find((r) => r.slug === target.id);
       if (!current) return { ok: false, error: 'Record not found.' };
       const seo = {
@@ -63,7 +95,13 @@ export async function saveSeo(target: SeoTarget, values: SeoValues): Promise<{ o
       await upsertRecord(target.collection, { ...current, seo }, 'slug', target.id, user.name);
     }
     await publishContent();
-    void recordAudit(user, 'cms.seo', target.kind === 'page' ? 'page_copy' : target.collection, target.id, `Updated SEO for ${target.id}`);
+    void recordAudit(
+      user,
+      'cms.seo',
+      target.kind === 'page' ? 'page_copy' : target.collection,
+      target.id,
+      `Updated SEO for ${target.id}`,
+    );
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : 'Save failed.' };

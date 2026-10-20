@@ -1,26 +1,60 @@
 import { definePageCopy } from '../define';
+import { seoFieldDefaults } from '../seo';
+import { sectionVisibilityDefaults } from '../sections';
 
 /**
  * Courses — editable text for the catalogue (`/courses`) and the fixed text on every course page
  * (`/courses/{slug}`). A course's own title, summary, outcomes, FAQs and SEO come from the course
  * record; everything here is the wording around them. `{name}` tokens are live values the page fills in.
+ *
+ * Catalogue toggles cover `/courses`; `course*` toggles cover every `/courses/[slug]` page.
  */
+export const COURSES_SECTIONS = [
+  // Catalogue (/courses)
+  'hero',
+  'explorer',
+  'guidance',
+  'cta',
+  // Course detail (/courses/[slug])
+  'courseHero',
+  'courseEnquiry',
+  'courseFacts',
+  'courseWhy',
+  'courseInternship',
+  'coursePhoto',
+  'courseUniversity',
+  'courseJourney',
+  'courseCurriculum',
+  'courseTools',
+  'courseCerts',
+  'courseRecords',
+  'courseCentres',
+  'courseClosing',
+  'courseFaqs',
+  'courseRelated',
+] as const;
+
 export const coursesCopy = definePageCopy({
   id: 'courses',
   label: 'Courses',
   path: '/courses',
   group: 'Pages',
-  description: 'The course catalogue and the fixed text on every course page.',
+  description:
+    'Course catalogue and fixed course-page chrome. guidance.fallback.* fills the Adaptive nudge when no course matches. Flexible learning labels also come from Page text → Professionals (flex.*). Use Show or hide sections for catalogue and course detail.',
   defaults: {
-    'seo.title': 'IT Courses in Cloud, Cyber Security, AI & DevOps | Jetking',
+    ...sectionVisibilityDefaults(COURSES_SECTIONS),
+    ...seoFieldDefaults(),
+
+    /* Live ranking title retained; AI/DevOps kept in the description for coverage. */
+    'seo.title': 'IT Career Courses | Cloud Computing & Ethical Hacking Course',
     'seo.description':
-      'Jetking IT courses in cloud, cyber security, AI, DevOps, gaming and networking — short-term courses to UG and PG degrees for students, graduates and professionals.',
+      'Take your IT career further with Jetking courses in cloud computing, ethical hacking, cyber security, AI and DevOps — short-term certificates to UG and PG degrees.',
 
     // ── Catalogue: trail, banner, closing ───────────────────────────────
     'breadcrumb.home': 'Home',
     'breadcrumb.courses': 'Courses',
 
-    'hero.image': '/home/journey-student-v2.jpg',
+    'hero.image': '/courses/index-hero.jpg',
     'hero.eyebrow': 'Courses',
     'hero.title': 'The Most In-Demand',
     'hero.titleAccent': 'Job-Ready Courses.',
@@ -56,6 +90,9 @@ export const coursesCopy = definePageCopy({
     'explorer.clearFilters': 'Clear all filters',
 
     // ── Catalogue: persona-adaptive next step ───────────────────────────
+    'guidance.fallback.headline': 'Not sure which course fits?',
+    'guidance.fallback.body': 'Tell Jetking AI your background and goals — it will point you to the right tracks.',
+    'guidance.fallback.ctaLabel': 'Ask Jetking AI',
     'guidance.student.headline': 'Comparing the cloud and cyber tracks?',
     'guidance.student.body': 'They look similar and suit different people. This explains the difference.',
     'guidance.student.ctaLabel': 'Read the comparison',
@@ -72,7 +109,7 @@ export const coursesCopy = definePageCopy({
     'guidance.franchise.ctaLabel': 'Go to franchise',
     'guidance.franchise.ctaHref': '/franchise',
 
-    'cta.image': '/home/campus-lab.jpg',
+    'cta.image': '/courses/photo-band.jpg',
     'cta.eyebrow': 'Still deciding',
     'cta.title': 'Not sure which course fits?',
     'cta.body': 'Talk to a counsellor about your goals, eligibility and the right track — no commitment needed.',
@@ -124,7 +161,7 @@ export const coursesCopy = definePageCopy({
 
     // ── Course page: photo band ─────────────────────────────────────────
     'coursePhoto.aria': 'Learn by doing',
-    'coursePhoto.image': '/home/journey-student-v2.jpg',
+    'coursePhoto.image': '/courses/photo-band.jpg',
     'coursePhoto.kicker': 'Learn by doing',
     'coursePhoto.text': 'Labs with mentors beside you, and a placement team behind you.',
     'coursePhoto.cta': 'Talk to a counsellor',
@@ -184,7 +221,7 @@ export const coursesCopy = definePageCopy({
     'courseCentres.shortTitle': 'Your learning journey, with a mini campus near your home',
     'courseUniversity.yenepoya.logo': '/university-partners/yenepoya.png',
     'courseClosing.image': '/home/counsellor.jpg',
-    'courseCentres.image': '/courses/centre-advantage.jpg',
+    'courseCentres.image': '/centres/lab.jpg',
     'courseCentres.imageAlt': 'Learners and a mentor working together in a Jetking lab',
     'courseCentres.advantages.0.title': 'Instructor-led physical labs',
     'courseCentres.advantages.0.body': 'Practise on real hardware, networks and cloud set-ups with an instructor beside you.',

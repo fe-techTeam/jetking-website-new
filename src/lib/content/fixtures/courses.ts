@@ -44,9 +44,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { student: 1, parent: 0.95, professional: 0.2 },
     seo: {
-      title: 'BCA in Cloud Computing & Cyber Security — 3 Years | Jetking',
+      title: 'BCA Degree in Cloud & Cyber Security with Placement Support',
       description:
-        'A 3-year UGC-approved BCA degree in cloud computing and cyber security. Global certifications, paid internships and placement support. Eligibility: 10+2 any stream.',
+        'Join Jetking’s BCA degree in Cloud & Cyber Security with AWS, Azure, CCNA, Linux, Python & AI. Labs, certifications and placement support. Eligibility: 10+2 any stream.',
     },
     featured: true,
     updatedAt: '2026-08-07',
@@ -78,9 +78,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { student: 0.9, professional: 0.6, parent: 0.7 },
     seo: {
-      title: 'MCA in Cloud Computing & Cyber Security — 2 Years | Jetking',
+      title: 'MCA Master Degree in Cloud & Cyber Security | UGC Approved',
       description:
-        'A 2-year UGC-recognised MCA in cloud computing and cyber security (Yenepoya University). Cloud administration, ethical hacking, forensics and AI.',
+        'Join Jetking’s MCA in Cloud Technology and Cyber Security with AWS, Azure, Python, Linux and ethical hacking. UGC-recognised; labs and placement support.',
     },
     featured: true,
     updatedAt: '2026-08-07',
@@ -275,9 +275,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { student: 0.85, professional: 0.4 },
     seo: {
-      title: 'Masters in Gaming & Metaverse Design — 2 Years | Jetking',
+      title: 'Best Animation, Gaming, & VFX Training Institute | Jetking',
       description:
-        'A 2-year Jetking masters in gaming and metaverse design covering animation, VFX, UX, AR/VR and game development with Unity and Unreal Engine.',
+        'Expert-led animation, gaming and VFX training — AR/VR, Unity and Unreal Engine — to build a creative tech career with Jetking.',
     },
     updatedAt: '2026-08-07',
   },
@@ -309,9 +309,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { professional: 1, student: 0.8 },
     seo: {
-      title: 'Certified Data Analyst Course — 4 Months | Jetking',
+      title: 'Best Data Analytics Course Institute in Mumbai, India',
       description:
-        'A 4-month data analyst certification — Excel, SQL, Power BI, Python and Tableau with a capstone. NSDC / Skill India recognised.',
+        'Join Jetking’s data analytics programme. Learn Excel, SQL, Python, Power BI and Tableau with practical skills and a capstone. NSDC / Skill India recognised.',
     },
     featured: true,
     updatedAt: '2026-08-07',
@@ -342,9 +342,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { student: 0.8, professional: 0.7, parent: 0.5 },
     seo: {
-      title: 'Routing & Switching Administrator (CCNA) — 2 Months | Jetking',
+      title: 'CCNA Training Course | Routing, Switching Administrator',
       description:
-        'A 2-month CCNA routing and switching certification with hands-on Cisco labs — IP connectivity, wireless and security. Open to 10+2 and graduates.',
+        'CCNA (Cisco Certified Network Associate) training covering routing, switching, IP services and hands-on Cisco labs. Open to 10+2 and graduates.',
     },
     updatedAt: '2026-08-07',
   },
@@ -406,9 +406,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { professional: 1, student: 0.8 },
     seo: {
-      title: 'Ethical Hacking Specialist (CEH v12) — 2 Months | Jetking',
+      title: 'Certified Ethical Hacking Courses & Training Institute',
       description:
-        'A 2-month ethical hacking certification aligned to CEH v12 — reconnaissance, penetration testing, web and wireless hacking. Open to 10+2 and graduates.',
+        'Enroll in Jetking’s ethical hacking course aligned to CEH v12 — reconnaissance, penetration testing, web and wireless hacking. Open to 10+2 and graduates.',
     },
     updatedAt: '2026-08-07',
   },
@@ -438,9 +438,9 @@ export const courses: Course[] = [
     fees: { disclosed: false, emiAvailable: true, note: 'Fees vary by centre and intake. Confirmed by a counsellor.' },
     personaRelevance: { professional: 1, student: 0.6 },
     seo: {
-      title: 'AWS Solution Specialist — 2 Months | Jetking',
+      title: 'Best AWS Solution Architect Training and Courses in India',
       description:
-        'A 2-month AWS Solutions Architect – Associate certification course. EC2, S3, VPC, IAM, databases and serverless with hands-on projects. Open to 10+2 and graduates.',
+        'Master AWS Solutions Architect skills with Jetking. Expert-led training on EC2, S3, VPC, IAM, databases and serverless with hands-on projects.',
     },
     updatedAt: '2026-08-07',
   },

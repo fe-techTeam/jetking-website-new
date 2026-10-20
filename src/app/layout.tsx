@@ -21,6 +21,7 @@ import { siteConfig } from '@/lib/site';
 import { content } from '@/lib/content';
 import { loadCopy } from '@/lib/content/copy/load';
 import { siteCopy } from '@/lib/content/copy/pages/site';
+import { isSectionVisible } from '@/lib/content/copy/sections';
 import { SiteCopyProvider } from '@/components/providers/site-copy';
 import '@/styles/globals.css';
 
@@ -67,6 +68,7 @@ const fira = Fira_Sans({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const copy = await loadCopy(siteCopy);
+  const showChrome = (id: string) => isSectionVisible(copy, id);
   const seoSettings = await content.getSeoSettings();
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
@@ -103,19 +105,25 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <AccountProvider>
                 <EnquirySheetServer>
                   <SilentPersonaInfer />
-                  <SiteChrome>
-                    <AnnouncementBarServer />
-                    <SiteHeaderServer />
-                  </SiteChrome>
+                  {showChrome('announcement') || showChrome('header') ? (
+                    <SiteChrome>
+                      {showChrome('announcement') ? <AnnouncementBarServer /> : null}
+                      {showChrome('header') ? <SiteHeaderServer /> : null}
+                    </SiteChrome>
+                  ) : null}
                   <main id="main">{children}</main>
-                  <FooterChrome>
-                    <SiteFooter />
-                  </FooterChrome>
-                  <SiteChrome>
-                    <MobileContactBar />
-                    <ExitIntentPopup />
-                    {showInspector ? <PersonaInspector /> : null}
-                  </SiteChrome>
+                  {showChrome('footer') ? (
+                    <FooterChrome>
+                      <SiteFooter />
+                    </FooterChrome>
+                  ) : null}
+                  {showChrome('mobileBar') || showChrome('exitIntent') || showInspector ? (
+                    <SiteChrome>
+                      {showChrome('mobileBar') ? <MobileContactBar /> : null}
+                      {showChrome('exitIntent') ? <ExitIntentPopup /> : null}
+                      {showInspector ? <PersonaInspector /> : null}
+                    </SiteChrome>
+                  ) : null}
                 </EnquirySheetServer>
               </AccountProvider>
             </PersonaProvider>

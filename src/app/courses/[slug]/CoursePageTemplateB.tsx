@@ -345,7 +345,7 @@ export function CoursePageTemplateB({
             <Heading index="" kicker={copy['courseTools.kicker']}>
               {copy['courseTools.title']}
             </Heading>
-            <ul className="mt-14 grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-5 lg:grid-cols-6">
+            <ul className="mt-14 grid grid-cols-2 gap-3 xs:grid-cols-3 sm:grid-cols-4 sm:gap-5 lg:grid-cols-6">
               {course.tools!.map((tool) => (
                 <li key={tool} className="cpb-lift rounded-[20px]">
                   <BrandTile name={tool} />
@@ -362,7 +362,7 @@ export function CoursePageTemplateB({
           <Heading index="" kicker={copy['courseCerts.kicker']}>
             {copy['courseCerts.title']}
           </Heading>
-          <ul className="mt-14 grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-5 lg:grid-cols-6">
+          <ul className="mt-14 grid grid-cols-2 gap-3 xs:grid-cols-3 sm:grid-cols-4 sm:gap-5 lg:grid-cols-6">
             {course.certifications.map((cert) => (
               <li key={cert} className="cpb-lift rounded-[20px]">
                 <BrandTile name={cert} />
@@ -531,14 +531,14 @@ export function CoursePageTemplateB({
               <Heading index="" kicker={copy['courseRelated.kicker']}>
                 {copy['courseRelated.title']}
               </Heading>
-              <Link href="/courses" className="tap inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold text-[var(--cp-red)] sm:min-h-6">
+              <Link href="/courses" className="tap inline-flex items-center gap-1.5 text-[14px] font-bold text-[var(--cp-red)]">
                 {copy['courseRelated.catalogueLink']}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
-            <ul className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {related.map((item) => (
-                <li key={item.slug}>
+                <li key={item.slug} className="min-w-0">
                   <CourseCard course={item} surface="course-related" compact cta={copy['courseRelated.viewCourse']} />
                 </li>
               ))}

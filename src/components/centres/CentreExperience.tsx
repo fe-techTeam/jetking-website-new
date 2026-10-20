@@ -35,11 +35,17 @@ export function CentreReasons({ tiles, showPlaceholders, placeholderNote }: { ti
         const Icon = tile.icon;
         const showPhoto = Boolean(tile.photoUrl) || showPlaceholders;
         return (
-          <li key={tile.title} className="flex flex-col overflow-hidden rounded-[20px] shadow-[var(--k-shadow)] sm:flex-row sm:min-h-[220px]">
+          <li key={tile.title} className="flex flex-col overflow-hidden rounded-[20px] shadow-[var(--k-shadow)] sm:min-h-[240px] sm:flex-row">
             {showPhoto ? (
-              <div className="relative min-h-[180px] sm:min-h-0 sm:w-1/2">
+              <div className="relative aspect-[4/3] w-full shrink-0 sm:aspect-auto sm:h-auto sm:min-h-[240px] sm:w-1/2">
                 {tile.photoUrl ? (
-                  <Image src={tile.photoUrl} alt={tile.photoAlt} fill sizes="(min-width: 768px) 25vw, 100vw" className="object-cover" />
+                  <Image
+                    src={tile.photoUrl}
+                    alt={tile.photoAlt}
+                    fill
+                    sizes="(min-width: 768px) 25vw, 100vw"
+                    className="object-cover object-center"
+                  />
                 ) : (
                   <PhotoPlaceholder label={tile.photoLabel} note={placeholderNote} flat />
                 )}
@@ -68,7 +74,7 @@ export interface GallerySlot {
 /** Up to four pictures of the centre. Slots without a picture show a labelled placeholder. */
 export function CentreGallery({ slots, label, note }: { slots: GallerySlot[]; label: string; note: string }) {
   return (
-    <ul aria-label={label} className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <ul aria-label={label} className="grid grid-cols-1 gap-3 xs:grid-cols-2 sm:gap-4 md:grid-cols-4">
       {slots.map((slot) => (
         <li key={slot.label} className="relative aspect-[4/3] overflow-hidden rounded-[20px]">
           {slot.url ? (

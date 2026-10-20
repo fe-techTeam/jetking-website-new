@@ -16,9 +16,10 @@ import { investorsCopy } from './pages/investors';
 import { legalCopy } from './pages/legal';
 import { sitemapCopy } from './pages/sitemap';
 import { siteCopy } from './pages/site';
+import { abcLabsCopy } from './pages/abc-labs';
 
 /** Every page whose text is editable in the admin, in the order the admin lists them. */
-export const COPY_PAGES: PageCopyDef[] = [homeCopy, studentCopy, parentCopy, professionalCopy, franchiseCopy, exploreCopy, aboutCopy, placementsCopy, coursesCopy, centresCopy, blogCopy, faqCopy, enquiryCopy, investorsCopy, legalCopy, sitemapCopy, siteCopy];
+export const COPY_PAGES: PageCopyDef[] = [homeCopy, studentCopy, parentCopy, professionalCopy, franchiseCopy, exploreCopy, aboutCopy, placementsCopy, coursesCopy, centresCopy, blogCopy, faqCopy, enquiryCopy, investorsCopy, legalCopy, sitemapCopy, abcLabsCopy, siteCopy];
 
 export function copyPageById(id: string): PageCopyDef | undefined {
   return COPY_PAGES.find((p) => p.id === id);

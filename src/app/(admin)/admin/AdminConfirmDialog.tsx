@@ -14,6 +14,7 @@ export function AdminConfirmDialog({
   onOpenChange,
   title,
   description,
+  children,
   confirmLabel = 'Delete',
   pendingLabel,
   cancelLabel = 'Cancel',
@@ -23,17 +24,21 @@ export function AdminConfirmDialog({
    *  which could just as easily be a promotion). */
   tone = 'destructive',
   pending = false,
+  confirmDisabled = false,
   onConfirm,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description: ReactNode;
+  /** Extra controls between the description and the action row (e.g. a centre picker). */
+  children?: ReactNode;
   confirmLabel?: string;
   pendingLabel?: string;
   cancelLabel?: string;
   tone?: 'destructive' | 'default';
   pending?: boolean;
+  confirmDisabled?: boolean;
   onConfirm: () => void;
 }) {
   return (
@@ -45,6 +50,7 @@ export function AdminConfirmDialog({
           <Dialog.Description className="mt-2 text-sm leading-relaxed text-foreground-secondary">
             {description}
           </Dialog.Description>
+          {children}
           <div className="mt-6 flex justify-end gap-3">
             <Dialog.Close asChild>
               <button
@@ -56,7 +62,7 @@ export function AdminConfirmDialog({
             </Dialog.Close>
             <button
               type="button"
-              disabled={pending}
+              disabled={pending || confirmDisabled}
               onClick={onConfirm}
               className={`min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-5 text-sm font-bold text-white shadow-[0_8px_18px_-8px_rgb(199_20_28/0.6)] transition-[filter,transform] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c7141c] disabled:opacity-45 ${
                 tone === 'default'

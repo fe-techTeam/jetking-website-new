@@ -11,9 +11,11 @@ Audited 21 Sep 2026 against `https://www.jetking.com` (live) and the dev build o
 | **404, no page and no redirect** | **60** | **5** |
 
 Fixed: legacy redirects (A3), the nine blog slugs kept as on live (A3), `/centres/prayagraj` (B1), default social image (B2), investors board link (B5), the three legal pages (A2).
-Still open: A1 (set the production host — an environment setting, not code), B3 (title rewrites), B4/B6 (content decisions), and the five URLs below.
+Still open: A1 (set the production host — an environment setting, not code), B3 (title rewrites), B4/B6 (content decisions).
 
-**Still 404 — need a client decision:** `/career`, `/life-at-jetkings`, `/jetking-jets`, `/centres/sewri` (the centre is not in the new content). `/blockchain-basics` is a "Page not found" page on live itself and is left as a 404.
+**Previously open — now redirected (20 Oct 2026):** `/career` → `/about-us`, `/life-at-jetkings` → `/about-us`, `/jetking-jets` → `/placements`, `/centres/sewri` → `/centres/dadar`, `/international-franchise` → `/franchise`, `/Courses` → `/courses`. Three newer live blog posts are migrated under their live slugs; only the typo `/blog/blog/…` path redirects. `/blockchain-basics` stays 404 (soft “Page not found” on live).
+
+**Redirect home (current):** every reviewed legacy mapping lives in `redirects.json` (loaded by `next.config` at build) plus optional runtime rules in Admin → Redirects. Audience landings `/student` `/parent` `/professional` → `/` (temporary). Closed gap programmes (diploma/MBD/MCTS/RHCSA brochure URLs) → `/courses`. Truncated blog slug aliases and single-dash variants redirect to the live post slugs. `data/redirect-gaps.json` is empty — no undecided URLs remain.
 
 ## How this was checked
 
@@ -76,26 +78,22 @@ The centre exists, but the new slug is `allahabad` (name "Jetking Prayagraj"). B
 `og:image` and `twitter:image` are missing on every page except blog posts that have a cover (180 of 416 posts have one). `twitter:card` is `summary_large_image` with no image, so shares render as a plain link.
 **Fix:** add a default image and fall back to it in `buildMetadata` (`src/lib/seo.ts`).
 
-### B3. Titles and descriptions differ from live
-Centre titles are identical to live and centre descriptions nearly so (the live "100% job placement" wording was softened to "strong placement support"). Course, section and home titles are all rewritten, e.g.
+### B3. Titles and descriptions differ from live — decided (20 Oct 2026)
+**Keep live ranking titles** on high-impression course/catalogue/placement pages (AWS, CEH, CCNA, data analytics, BCA, MCA, gaming/VFX, `/courses`, `/placements`). Soften “100% placement / guarantee” wording in descriptions for compliance.
+**Keep new titles** where live was weak or off-topic: home (`Jetking — Cloud…` beats bare “Jetking”), About (live title was a generic course pitch), Franchise, FAQ, Blog index.
+Centre titles remain aligned with live.
 
-| Page | Live | New |
-| --- | --- | --- |
-| AWS course | Best AWS Solution Architect Training and Courses in India | AWS Solution Specialist — 2 Months \| Jetking |
-| Ethical hacking | Certified Ethical Hacking Courses & Training Institute | Ethical Hacking Specialist (CEH v12) — 2 Months \| Jetking |
-| Courses | IT Career Courses \| Cloud Computing & Ethical Hacking Course | IT Courses — Cloud, Cyber Security & DevOps \| Jetking |
-| Home | Jetking | Jetking — Cloud, Cyber Security & IT Courses |
+### B4. Six posts exist only on the new site — keep
+`cloud-computing-career-after-12th`, `cyber-security-vs-cloud-computing`, `switching-to-it-career-at-30`, `what-parents-should-ask-it-institute`, `devops-skills-in-demand`, `it-training-franchise-india` are **intentional editorial** guidance posts (students / parents / switchers / franchise), not leftover seed data. Kept published.
 
-Some new titles are clearer; but rewriting a ranking title can move rankings. Worth deciding per page rather than by default. Length: 39 of 101 titles are over 60 characters and 47 descriptions over 160 (e.g. `/franchise` title is 77), so they will be cut off in results.
-
-### B4. Six posts exist only on the new site
-`cloud-computing-career-after-12th`, `cyber-security-vs-cloud-computing`, `switching-to-it-career-at-30`, `what-parents-should-ask-it-institute`, `devops-skills-in-demand`, `it-training-franchise-india`. They are in the sitemap, each about 1,000 characters long. Confirm they are intended content and not seed data.
+Also migrated three newer live articles that were missing: AWS certification roadmap 2026, cyber security courses Mumbai 2026, classrooms-to-careers / 80 years skill-based learning.
 
 ### B5. `/investors` board link — fixed (now points to `/about-us#about-leaders`)
 "Board of directors" links to `https://www.jetking.com/board-of-directors`, whose heading on live is "Lorem ipsum dolor sit amet, elit". Link to `/about-us` (leadership section) instead.
 
-### B6. Centres present on one site only
-Live has `/centres/sewri` (in no new content). The new site has `/centres/laxminagar` (not in the live sitemap). Confirm both are intended.
+### B6. Centres present on one site only — decided
+- **Sewri**: not in the new centre network → permanent redirect `/centres/sewri` → `/centres/dadar` (nearest Mumbai centre).
+- **Laxminagar**: real operating centre (`Jetking Laxminagar`, Delhi) → **keep** on the new site even if it was missing from the old live sitemap.
 
 ---
 
@@ -165,9 +163,8 @@ Live has `/centres/sewri` (in no new content). The new site has `/centres/laxmin
 `/program/bca-in-data-science-degree`, `/bca-data-science-brochure-signup-page`, `/courses/best-semiconductor-chip-design-courses`, `/diploma-in-fintech`, `/graphics-design-and-audio-video-editor`, `/motion-graphics-and-animation-professional`, `/masters-in-blockchain-development--5da35`.
 `/blockchain-basics` is a "Page not found" page on live itself; leave it as a 404.
 
-### No equivalent page — needs a client decision (redirect, or build the page)
-`/career`, `/life-at-jetkings`, `/jetking-jets`, `/core-plus`, `/coreplus-brochure-signup`, `/corporate-training`, `/institution-alliance`, `/centres/sewri`.
-Three of these (`core-plus`, `corporate-training`, `institution-alliance`) are titled "Get a Franchise" on live; `/franchise` is the likely target.
+### No equivalent page — redirected to closest topical landing
+`/career` → `/about-us`, `/life-at-jetkings` → `/about-us`, `/jetking-jets` → `/placements`, `/centres/sewri` → `/centres/dadar`, `/core-plus` / `/coreplus-brochure-signup` / `/corporate-training` / `/institution-alliance` / `/international-franchise` → `/franchise`.
 
 ---
 

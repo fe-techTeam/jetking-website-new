@@ -42,7 +42,9 @@ export default async function ChatbotOverviewPage() {
     const label = TYPE_LABEL[type] ?? type;
     grouped.set(label, (grouped.get(label) ?? 0) + n);
   }
-  const breakdown = [...grouped.entries()].sort((a, b) => b[1] - a[1]);
+  const breakdown = [...grouped.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, n]): [string, string] => [label, n.toLocaleString('en-IN')]);
   const builtLabel = index.builtAt ? new Date(index.builtAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : 'Never';
 
   return (

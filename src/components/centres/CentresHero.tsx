@@ -22,7 +22,7 @@ export function CentresHero({
 }) {
   return (
     <section className="shell relative pt-6 pb-10 xs:pt-8 sm:pt-10 lg:pt-12 lg:pb-12">
-      <div className="centres-hero-banner relative min-h-[min(72vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[440px] sm:rounded-[28px] lg:min-h-[520px]">
+      <div className="centres-hero-banner relative min-h-[min(72vw,420px)] overflow-hidden rounded-[24px] xs:min-h-[380px] xs:rounded-[28px] sm:min-h-[440px] sm:rounded-[28px] lg:min-h-[520px] 3xl:min-h-[600px] 4xl:min-h-[680px]">
         <Image
           src={copy['directoryHero.image']}
           alt=""
@@ -33,8 +33,8 @@ export function CentresHero({
         />
         <div aria-hidden="true" className="centres-hero-wash pointer-events-none absolute inset-0" />
 
-        <div className="relative z-[1] flex h-full min-h-[inherit] flex-col lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-          <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 lg:max-w-[60%] lg:px-12 lg:py-16 xl:px-14">
+        <div className="relative z-[1] flex h-full min-h-[inherit] flex-col min-[880px]:flex-row min-[880px]:items-center min-[880px]:justify-between min-[880px]:gap-6 lg:gap-8">
+          <div className="flex flex-1 flex-col justify-center px-6 py-10 xs:px-8 xs:py-12 sm:px-10 sm:py-14 min-[880px]:max-w-[56%] lg:max-w-[60%] lg:px-12 lg:py-16 xl:px-14">
             <p className="k-hero-eyebrow">
               {fill(copy['directoryHero.eyebrow'], { centres: centreCount })}
             </p>
@@ -67,6 +67,7 @@ export function CentresHero({
             source="centres-hero-form"
             tone="centres"
             titleId="centres-hero-form-title"
+            earlyShow
           />
         </div>
       </div>

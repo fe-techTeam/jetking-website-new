@@ -6,16 +6,11 @@ import { content } from '@/lib/content';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { legalCopy } from '@/lib/content/copy/pages/legal';
 import { loadCopy } from '@/lib/content/copy/load';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   const copy = await loadCopy(legalCopy);
-  return buildMetadata(
-    {
-      title: copy['privacy.seo.title'],
-      description: copy['privacy.seo.description'],
-    },
-    '/privacy-policy',
-  );
+  return buildMetadata(seoFromCopy(copy, undefined, 'privacy.seo'), '/privacy-policy');
 }
 
 export default async function PrivacyPolicyPage() {

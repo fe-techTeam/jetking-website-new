@@ -1,6 +1,6 @@
 import { content } from '@/lib/content';
 import { loadCopy } from '@/lib/content/copy/load';
-import { fill } from '@/lib/content/copy/define';
+import { seoFromCopy } from '@/lib/content/copy/seo';
 import { parentCopy } from '@/lib/content/copy/pages/parent';
 import { breadcrumbSchema, buildMetadata } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
@@ -11,15 +11,7 @@ import { ParentLanding } from '@/components/parent/ParentLanding';
 
 export async function generateMetadata() {
   const copy = await loadCopy(parentCopy);
-  return buildMetadata(
-    {
-      title: fill(copy['seo.title'], { siteName: siteConfig.name }),
-      description: copy['seo.description'],
-      // Audience pages are not listed or indexed; the main pages carry their content.
-      noindex: true,
-    },
-    '/parent',
-  );
+  return buildMetadata(seoFromCopy(copy, { siteName: siteConfig.name }), '/parent');
 }
 
 export default async function ParentPage() {

@@ -36,7 +36,7 @@ export function ProfessionalImpact({ copy }: { copy: typeof professionalCopy.def
         <p className="mt-2 max-w-[56ch] text-[16px] leading-relaxed text-[var(--k-ink-2)]">
           {copy['flex.lede']}
         </p>
-        <ul aria-labelledby="pro-flex-heading" className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <ul aria-labelledby="pro-flex-heading" className="mt-6 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:gap-4 md:grid-cols-4">
           {FLEXIBLE_OPTION_ICONS.map((Icon, i) => (
             <li key={i} className="kit kit-card flex items-center gap-3 p-4 sm:p-5">
               <span className="kit-iconwell" aria-hidden="true">
