@@ -54,8 +54,12 @@ function LeaderCard({
     return (
       <li data-reveal className="w-full sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-16px)]">
         <article className="kit kit-card flex h-full min-h-24 items-stretch overflow-hidden sm:min-h-0">
-          <div className="relative w-24 shrink-0 self-stretch bg-[var(--k-red-wash)] sm:w-28">
-            <LeaderAvatar leader={leader} />
+          {/* Every photo gets the same square frame (the photos are square), centred in the wash column, so no card crops
+              its photo differently from the next whatever the height of its text. */}
+          <div className="flex w-24 shrink-0 items-center self-stretch bg-[var(--k-red-wash)] sm:w-28">
+            <div className="relative aspect-square w-full">
+              <LeaderAvatar leader={leader} />
+            </div>
           </div>
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 p-4 sm:p-4">
             <h3 className="font-display text-[16px] leading-snug font-extrabold text-[var(--k-ink)] sm:text-[16px]">
