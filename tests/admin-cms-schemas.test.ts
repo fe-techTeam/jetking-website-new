@@ -12,6 +12,7 @@ import { seoSettingsDefaults } from '@/lib/content/fixtures/seo-settings';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
 import { logoListDefaults } from '@/lib/content/fixtures/logo-lists';
+import { navigationDefaults } from '@/lib/content/fixtures/navigation';
 import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
 import { investorsDefaults } from '@/lib/content/fixtures/investors-page';
 import { collectionByKey } from '@/app/(admin)/admin/registry';
@@ -33,6 +34,7 @@ const seeds: Record<string, unknown[]> = {
   investors_page: [investorsDefaults],
   legal_documents: legalDefaults,
   logo_lists: logoListDefaults,
+  site_navigation: navigationDefaults,
   seo_settings: [seoSettingsDefaults],
   chatbot_settings: [chatbotSettingsDefaults],
 };
@@ -137,5 +139,31 @@ describe('findUnsafeContent', () => {
       deep = deep.n as Record<string, unknown>;
     }
     expect(findUnsafeContent(root)).toMatch(/too deeply/);
+  });
+});
+
+describe('site_navigation (header menu)', () => {
+  const base = { id: 'header', title: 'Header menu', description: '', status: 'published' };
+  const ok = (items: unknown) => validateCmsRecord('site_navigation', { ...base, items }).ok;
+
+  it('ships exactly the menu that was live, in order', () => {
+    const header = navigationDefaults.find((m) => m.id === 'header')!;
+    expect(header.items.map((i) => i.href)).toEqual(['/about-us', '/courses', '/centres', '/placements', '/franchise', '/investors', '/jetking-abc-labs', '/blog']);
+    expect(header.items.every((i) => i.label.length > 0)).toBe(true);
+  });
+
+  it('accepts site paths and https links', () => {
+    expect(ok([{ label: 'Courses', href: '/courses' }, { label: 'Jetking.org', href: 'https://jetking.org' }])).toBe(true);
+    expect(ok([{ label: 'Search', href: '/courses?level=diploma#top' }])).toBe(true);
+  });
+
+  it('rejects dangerous or malformed links, empty labels, and too many or no items', () => {
+    for (const href of ['javascript:alert(1)', 'data:text/html,hi', '//evil.com', 'courses', 'ftp://x.com/a', '/a b', '/<script>', '']) {
+      expect(ok([{ label: 'X', href }]), href).toBe(false);
+    }
+    expect(ok([{ label: '', href: '/x' }])).toBe(false);
+    expect(ok([{ label: 'x'.repeat(41), href: '/x' }])).toBe(false);
+    expect(ok([])).toBe(false);
+    expect(ok(Array.from({ length: 13 }, (_, i) => ({ label: 'L' + i, href: '/p' + i })))).toBe(false);
   });
 });

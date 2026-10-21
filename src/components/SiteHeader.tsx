@@ -11,6 +11,7 @@ import { mainNav } from '@/lib/site';
 import { fill } from '@/lib/content/copy/define';
 import { useSiteCopy } from '@/components/providers/site-copy';
 import { copyLinks } from '@/components/providers/site-copy-links';
+import type { NavItem } from '@/lib/content/types';
 import { useTheme } from '@/components/providers/theme-provider';
 import { useAccount } from '@/components/account/AccountProvider';
 import { cx } from './ui';
@@ -32,7 +33,7 @@ export type { MenuCourse };
  * hamburger on desktop, where there is plenty of room for a link row, costs
  * discoverability for no real benefit at that width.
  */
-export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
+export function SiteHeader({ menuCourses, navItems }: { menuCourses: MenuCourse[]; navItems?: NavItem[] }) {
   const pathname = usePathname();
   const copy = useSiteCopy();
   const { resolvedTheme, toggleTheme } = useTheme();
@@ -41,10 +42,12 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
   const mounted = useHydrated();
   const drawerRef = useRef<HTMLElement>(null);
 
-  // Labels and links come from the site copy; `mainNav` is the shape (and which item is the Courses menu).
-  const nav = copyLinks(copy, 'header.nav', mainNav.length).map((item, i) => ({
+  // A published "Header menu" (CMS) wins; otherwise the labels and links come from the site copy, with `mainNav` as the shape.
+  const nav = (navItems && navItems.length > 0 ? navItems : copyLinks(copy, 'header.nav', mainNav.length)).map((item) => ({
     ...item,
-    isCourses: mainNav[i]?.href === '/courses',
+    isCourses: item.href === '/courses',
+    // Other websites open in a new tab so a visitor does not lose their place.
+    external: /^https?:\/\//i.test(item.href),
   }));
 
   const [menu, setMenu] = useState({ open: false, path: pathname });
@@ -134,6 +137,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                   <Link
                     key={item.href}
                     href={item.href as Route}
+                    {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     aria-current={active ? 'page' : undefined}
                     onClick={close}
                     className={cx(
@@ -237,6 +241,7 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
               <Link
                 key={item.href}
                 href={item.href as Route}
+                {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 aria-current={active ? 'page' : undefined}
                 className={cx(
                   'rounded-full px-3 py-2.5 text-sm font-bold tracking-[-0.01em] transition-colors duration-200 min-[1400px]:px-4',

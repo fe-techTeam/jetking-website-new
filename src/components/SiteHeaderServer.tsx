@@ -8,7 +8,7 @@ import { SiteHeader, type MenuCourse } from './SiteHeader';
  * component without reaching into the content layer.
  */
 export async function SiteHeaderServer() {
-  const courses = await content.listCourses();
+  const [courses, menu] = await Promise.all([content.listCourses(), content.getNavigation('header')]);
   const menuCourses: MenuCourse[] = courses.map((c) => ({
     slug: c.slug,
     title: c.shortTitle || c.title,
@@ -17,5 +17,6 @@ export async function SiteHeaderServer() {
     featured: Boolean(c.featured),
     categories: categoriesOf(c),
   }));
-  return <SiteHeader menuCourses={menuCourses} />;
+  // Only a Published "Header menu" takes over; otherwise the menu from Page text stays as it was.
+  return <SiteHeader menuCourses={menuCourses} navItems={menu?.items} />;
 }

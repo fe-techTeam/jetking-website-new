@@ -477,6 +477,24 @@ const logoListSchema = withStatus({
   ),
 });
 
+/** A site path or a full http(s) address — never `javascript:`, `data:` or anything else. */
+const NAV_HREF = /^(\/(?!\/)[A-Za-z0-9\-._~/%?#=&+]*|https?:\/\/[^\s<>"']+)$/;
+
+const navigationSchema = withStatus({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string(),
+  items: z
+    .array(
+      z.object({
+        label: z.string().trim().min(1, 'Every menu item needs a label').max(40, 'Keep labels under 40 characters'),
+        href: z.string().trim().regex(NAV_HREF, 'Use a page path starting with / (like /courses) or a full https:// address'),
+      }),
+    )
+    .min(1, 'Keep at least one menu item')
+    .max(12, 'A header menu works best with 12 items or fewer'),
+});
+
 const pageCopySchema = withStatus({
   id: z.string().min(1),
   entries: z.record(z.string(), z.string()),
@@ -577,6 +595,7 @@ const CMS_COLLECTION_SCHEMAS = {
   investors_page: investorsPageSchema,
   legal_documents: legalDocumentSchema,
   logo_lists: logoListSchema,
+  site_navigation: navigationSchema,
   page_copy: pageCopySchema,
   announcements: announcementSchema,
   seo_settings: seoSettingsSchema,

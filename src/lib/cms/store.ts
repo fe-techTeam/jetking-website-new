@@ -16,6 +16,7 @@ import type {
   InvestorsPageContent,
   LegalDoc,
   LogoList,
+  NavigationMenu,
   PageCopyRecord,
   PersonaRule,
   PlacementPage,
@@ -42,6 +43,7 @@ import { seoSettingsDefaults } from '@/lib/content/fixtures/seo-settings';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
 import { logoListDefaults } from '@/lib/content/fixtures/logo-lists';
+import { navigationDefaults } from '@/lib/content/fixtures/navigation';
 import { placementsDefaults } from '@/lib/content/fixtures/placements-page';
 import { investorsDefaults } from '@/lib/content/fixtures/investors-page';
 import { getSupabase } from '@/lib/supabase';
@@ -87,6 +89,7 @@ export interface CmsStore {
   investors_page: WithStatus<InvestorsPageContent>[];
   legal_documents: WithStatus<LegalDoc>[];
   logo_lists: WithStatus<LogoList>[];
+  site_navigation: WithStatus<NavigationMenu>[];
   page_copy: WithStatus<PageCopyRecord>[];
   announcements: WithStatus<Announcement>[];
   seo_settings: WithStatus<SeoSettings>[];
@@ -118,6 +121,8 @@ function seedStore(): CmsStore {
     investors_page: published([investorsDefaults]),
     legal_documents: published(legalDefaults),
     logo_lists: published(logoListDefaults),
+    // Starts as the menu that was already live, so nothing changes until an editor edits it.
+    site_navigation: published(navigationDefaults),
     // No overrides until an editor changes something: every page starts on its shipped text.
     page_copy: [],
     seo_settings: published([seoSettingsDefaults]),

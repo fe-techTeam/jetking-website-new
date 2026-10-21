@@ -784,6 +784,20 @@ export interface LogoList {
   items: LogoItem[];
 }
 
+/** One entry in an editable menu. `href` is a site path (`/courses`) or a full https address. */
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
+/** An editable site menu (today: the header). Used instead of the built-in one only while it is Published. */
+export interface NavigationMenu {
+  id: string;
+  title: string;
+  description: string;
+  items: NavItem[];
+}
+
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Content source contract                                                    */
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -849,4 +863,6 @@ export interface ContentSource {
 
   /** A logo / partner list by id. Never blank: falls back to the in-repo list if the CMS record is missing or a draft. */
   getLogoList(id: string): Promise<LogoList>;
+  /** The published menu with this id, or null when there is none (missing or still a draft) — the site then keeps its built-in menu. */
+  getNavigation(id: string): Promise<NavigationMenu | null>;
 }

@@ -513,6 +513,17 @@ const logo_lists: AdminFormConfig = {
   ],
 };
 
+const site_navigation: AdminFormConfig = {
+  requiredFields: ['id', 'title'],
+  blank: () => ({ id: '', title: '', description: '', items: [], status: 'draft' }),
+  lockedFields: ['id'],
+  itemTemplates: { items: { label: '', href: '/' } },
+  sections: [
+    { title: 'Menu', fields: ['id', 'title', 'description'] },
+    { title: 'Links', fields: ['items'] },
+  ],
+};
+
 /** Edited by the dedicated Page text editor, not the generic record form — present only to satisfy the collection map. */
 const page_copy: AdminFormConfig = {
   blank: () => ({ id: '', entries: {}, status: 'published' }),
@@ -647,6 +658,7 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   investors_page,
   legal_documents,
   logo_lists,
+  site_navigation,
   page_copy,
   announcements,
   seo_settings,

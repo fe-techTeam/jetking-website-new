@@ -213,6 +213,19 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     note: 'Start/end are ISO date-times, for example 2026-11-01T09:00:00+05:30. Leave empty for no limit. Several active: alert beats promo beats info, then the newest start.',
   },
   {
+    key: 'site_navigation',
+    route: 'navigation',
+    idKey: 'id',
+    label: 'Header menu',
+    icon: 'PanelTop',
+    group: GROUP.website,
+    description: 'The links in the site header and its slide-out menu: add, remove, rename and reorder them.',
+    live: true,
+    mode: 'fixed',
+    appearsOn: [{ label: 'Every page', href: '/' }],
+    note: 'Published = this menu is shown. Draft = the built-in menu from Page text is shown instead. The first four links also appear in the desktop bar; a link to /courses opens the courses menu.',
+  },
+  {
     key: 'logo_lists',
     route: 'logo-lists',
     idKey: 'id',
@@ -375,7 +388,7 @@ export interface SitePage {
 
 export const SITE_PAGES: SitePage[] = [
   { name: 'Announcement bar', path: 'every page', cms: ['announcements'] },
-  { name: 'Header, footer & search settings', path: 'every page', cms: ['page_copy', 'seo_settings'] },
+  { name: 'Header, footer & search settings', path: 'every page', cms: ['site_navigation', 'page_copy', 'seo_settings'] },
   {
     name: 'Home',
     path: '/',

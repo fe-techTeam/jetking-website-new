@@ -12,6 +12,7 @@ import type {
   HomepageVariant,
   LegalDoc,
   LogoList,
+  NavigationMenu,
   PersonaRule,
   PlacementPage,
   Policy,
@@ -216,6 +217,11 @@ export const adminSource: ContentSource = {
   async getLegalDocument(slug: string) {
     const rows = published(await listCollection('legal_documents', { publishedOnly: true })) as LegalDoc[];
     return rows.find((d) => d.slug === slug) ?? legalDefaults.find((d) => d.slug === slug) ?? null;
+  },
+
+  async getNavigation(id: string) {
+    const rows = published(await listCollection('site_navigation', { publishedOnly: true })) as NavigationMenu[];
+    return rows.find((m) => m.id === id) ?? null;
   },
 
   async getLogoList(id: string) {

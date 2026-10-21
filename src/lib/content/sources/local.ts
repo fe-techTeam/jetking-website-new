@@ -160,6 +160,10 @@ export const localSource: ContentSource = {
     return legalDefaults.find((d) => d.slug === slug) ?? null;
   },
 
+  async getNavigation() {
+    return null;
+  },
+
   async getLogoList(id: string) {
     return logoListFallback(id);
   },

@@ -17,6 +17,7 @@ export type CmsCollection =
   | 'investors_page'
   | 'legal_documents'
   | 'logo_lists'
+  | 'site_navigation'
   | 'page_copy'
   | 'announcements'
   | 'seo_settings'

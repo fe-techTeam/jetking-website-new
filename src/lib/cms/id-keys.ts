@@ -18,6 +18,7 @@ export const CMS_ID_KEYS: Record<CmsCollection, 'slug' | 'id'> = {
   investors_page: 'id',
   legal_documents: 'slug',
   logo_lists: 'id',
+  site_navigation: 'id',
   page_copy: 'id',
   announcements: 'id',
   seo_settings: 'id',
