@@ -132,8 +132,10 @@ describe('visual fallbacks', () => {
 describe('large screens (1920 to 4K)', () => {
   it('caps the page container and grows it only at the 1920 and 2560 breakpoints', () => {
     const css = src('src/styles/globals.css');
-    expect(css).toContain('--breakpoint-3xl: 1920px');
-    expect(css).toContain('--breakpoint-4xl: 2560px');
+    // Declared in rem (120rem = 1920px, 160rem = 2560px) so they sort after 2xl in Tailwind's breakpoint cascade;
+    // see the note in globals.css. Either unit is the same breakpoint.
+    expect(css).toMatch(/--breakpoint-3xl: (1920px|120rem)/);
+    expect(css).toMatch(/--breakpoint-4xl: (2560px|160rem)/);
     const flat = css.replace(/\s+/g, ' ');
     expect(flat).toContain('--container-3xl: 1800px');
     expect(flat).toContain('--container-4xl: 2100px');

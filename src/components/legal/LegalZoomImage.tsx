@@ -43,7 +43,7 @@ export function LegalZoomImage({
           />
           <span
             aria-hidden="true"
-            className="absolute right-2.5 bottom-2.5 grid h-9 w-9 place-items-center rounded-full bg-ink-900/78 text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 max-md:opacity-100"
+            className="absolute right-2.5 bottom-2.5 grid h-9 w-9 place-items-center rounded-full bg-ink-900/78 text-white opacity-100 shadow-md transition-opacity duration-200 md:opacity-0 md:group-hover:opacity-100 md:group-focus-visible:opacity-100"
           >
             <ZoomIn className="h-[18px] w-[18px]" strokeWidth={2} />
           </span>

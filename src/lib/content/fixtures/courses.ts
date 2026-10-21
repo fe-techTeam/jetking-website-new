@@ -46,7 +46,7 @@ export const courses: Course[] = [
     seo: {
       title: 'BCA Degree in Cloud & Cyber Security with Placement Support',
       description:
-        'Join Jetking’s BCA degree in Cloud & Cyber Security with AWS, Azure, CCNA, Linux, Python & AI. Labs, certifications and placement support. Eligibility: 10+2 any stream.',
+        'Join Jetking’s BCA in Cloud & Cyber Security with AWS, Azure, CCNA, Linux, Python & AI. Labs, certifications and placement support. Eligibility: 10+2 any stream.',
     },
     featured: true,
     updatedAt: '2026-08-07',
