@@ -51,22 +51,56 @@ const imageHosts = (process.env.IMAGE_REMOTE_HOSTS ?? 'www.jetking.com')
   .split(/[\s,]+/)
   .filter((host) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(host));
 
+/**
+ * The hosts the analytics/ad tags in `src/lib/tracking.ts` talk to — allowed only in the builds where those tags
+ * run (production, indexable, tracking not switched off). Anything else a Tag Manager container loads still has
+ * to be listed in CSP_SCRIPT_SRC / CSP_CONNECT_SRC / CSP_IMG_SRC.
+ */
+const trackingOn =
+  isProd && process.env.NEXT_PUBLIC_ALLOW_INDEXING !== 'false' && process.env.NEXT_PUBLIC_TRACKING_ENABLED !== 'false';
+const trackingHosts = trackingOn
+  ? {
+      script: ['https://www.googletagmanager.com', 'https://connect.facebook.net', 'https://www.google-analytics.com'],
+      connect: [
+        'https://www.googletagmanager.com',
+        'https://www.google-analytics.com',
+        'https://*.google-analytics.com',
+        'https://*.analytics.google.com',
+        'https://stats.g.doubleclick.net',
+        'https://*.g.doubleclick.net',
+        'https://www.google.com',
+        'https://www.facebook.com',
+        'https://connect.facebook.net',
+      ],
+      img: [
+        'https://www.googletagmanager.com',
+        'https://www.google-analytics.com',
+        'https://*.google-analytics.com',
+        'https://*.g.doubleclick.net',
+        'https://www.google.com',
+        'https://www.facebook.com',
+      ],
+      frame: ['https://www.googletagmanager.com', 'https://td.doubleclick.net'],
+    }
+  : { script: [], connect: [], img: [], frame: [] };
+
 const directive = (name: string, ...sources: string[]) => [name, ...new Set(sources.filter(Boolean))].join(' ');
 
 const contentSecurityPolicy = [
   "default-src 'self'",
   // 'unsafe-eval' only in development: React uses eval there to rebuild server stacks in the browser.
-  directive('script-src', "'self'", "'unsafe-inline'", isProd ? '' : "'unsafe-eval'", ...cspSources('CSP_SCRIPT_SRC')),
+  directive('script-src', "'self'", "'unsafe-inline'", isProd ? '' : "'unsafe-eval'", ...trackingHosts.script, ...cspSources('CSP_SCRIPT_SRC')),
   "style-src 'self' 'unsafe-inline'",
-  directive('img-src', "'self'", 'data:', 'blob:', ...imageHosts.map((host) => `https://${host}`), ...cspSources('CSP_IMG_SRC')),
+  directive('img-src', "'self'", 'data:', 'blob:', ...imageHosts.map((host) => `https://${host}`), ...trackingHosts.img, ...cspSources('CSP_IMG_SRC')),
   "font-src 'self' data:",
-  directive('connect-src', "'self'", ...cspSources('CSP_CONNECT_SRC')),
+  directive('connect-src', "'self'", ...trackingHosts.connect, ...cspSources('CSP_CONNECT_SRC')),
   // Course and testimonial videos are YouTube / Vimeo embeds.
   directive(
     'frame-src',
     'https://www.youtube.com',
     'https://www.youtube-nocookie.com',
     'https://player.vimeo.com',
+    ...trackingHosts.frame,
     ...cspSources('CSP_FRAME_SRC'),
   ),
   "media-src 'self' blob:",
@@ -110,8 +144,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['@xenova/transformers'],
 
   experimental: {
-    optimizePackageImports: ['lucide-react'],
-    // Media-library uploads travel through a server action (6 MB per file, several at a time).
+    optimizePackageImports: ['lucide-react'],    // Media-library uploads travel through a server action (6 MB per file, several at a time).
     serverActions: { bodySizeLimit: '24mb' },
   },
 

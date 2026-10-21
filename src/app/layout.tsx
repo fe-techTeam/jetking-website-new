@@ -16,6 +16,7 @@ import { JsonLd } from '@/components/ui';
 import { AppProviders } from '@/components/providers/app-providers';
 import { themeScript } from '@/components/providers/theme-script';
 import { iosInputZoomGuardScript } from '@/lib/ios-input-zoom-guard';
+import { TrackingScripts } from '@/components/TrackingScripts';
 import { organizationSchema, websiteSchema } from '@/lib/seo';
 import { siteConfig } from '@/lib/site';
 import { content } from '@/lib/content';
@@ -91,6 +92,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: iosInputZoomGuardScript }}
         />
+        <TrackingScripts />
         <AppProviders>
           <SiteCopyProvider copy={copy}>
             <JsonLd data={[organizationSchema(seoSettings.organization), websiteSchema()]} />
