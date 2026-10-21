@@ -19,6 +19,14 @@ declare namespace NodeJS {
     NEXT_PUBLIC_WHATSAPP_MESSAGE?: string;
     /** National enquiry line, E.164. */
     NEXT_PUBLIC_PHONE?: string;
+    /** National toll-free helpline; defaults to the published Jetking number. */
+    NEXT_PUBLIC_HELPLINE?: string;
+    /** Social profile URLs; each defaults to the official Jetking profile. */
+    NEXT_PUBLIC_SOCIAL_FACEBOOK?: string;
+    NEXT_PUBLIC_SOCIAL_INSTAGRAM?: string;
+    NEXT_PUBLIC_SOCIAL_YOUTUBE?: string;
+    NEXT_PUBLIC_SOCIAL_LINKEDIN?: string;
+    NEXT_PUBLIC_SOCIAL_TWITTER?: string;
     /** Public Supabase project URL, used by the browser Supabase client. */
     NEXT_PUBLIC_SUPABASE_URL?: string;
     /** Shows the debug/dev inspector UI when set. */
@@ -45,6 +53,14 @@ declare namespace NodeJS {
     REVALIDATE_SECRET?: string;
     /** Supabase service-role key — full-privilege, server-only. */
     SUPABASE_SERVICE_ROLE_KEY?: string;
+    /** OpenAI-compatible API base URL (proxy / gateway); defaults to https://api.openai.com/v1. */
+    OPENAI_BASE_URL?: string;
+    /** Extra CSP sources (space/comma separated) and next/image remote hosts — see next.config.ts. */
+    CSP_SCRIPT_SRC?: string;
+    CSP_CONNECT_SRC?: string;
+    CSP_FRAME_SRC?: string;
+    CSP_IMG_SRC?: string;
+    IMAGE_REMOTE_HOSTS?: string;
     /** OpenAI key — only used when GUIDE_PROVIDER is `openai` or `auto`. */
     OPENAI_API_KEY?: string;
     /**

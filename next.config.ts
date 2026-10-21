@@ -34,16 +34,41 @@ function loadRedirects(): RedirectEntry[] {
  * here — and nowhere else.
  */
 const isProd = process.env.NODE_ENV === 'production';
+
+/**
+ * Extra CSP sources from a space- or comma-separated env var, so a new third-party host (analytics, a chat widget,
+ * a CDN) is a settings change rather than a code change. Only well-formed host sources are kept — anything with a
+ * ';', a quote or a space inside is dropped, so a bad value can never inject a directive.
+ */
+function cspSources(name: string): string[] {
+  return (process.env[name] ?? '')
+    .split(/[\s,]+/)
+    .filter((source) => /^(https?:\/\/)?(\*\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(:\d{1,5})?$/i.test(source));
+}
+
+/** Hostnames next/image may fetch remote images from (and the CSP lets the page load them from). */
+const imageHosts = (process.env.IMAGE_REMOTE_HOSTS ?? 'www.jetking.com')
+  .split(/[\s,]+/)
+  .filter((host) => /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(host));
+
+const directive = (name: string, ...sources: string[]) => [name, ...new Set(sources.filter(Boolean))].join(' ');
+
 const contentSecurityPolicy = [
   "default-src 'self'",
   // 'unsafe-eval' only in development: React uses eval there to rebuild server stacks in the browser.
-  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"}`,
+  directive('script-src', "'self'", "'unsafe-inline'", isProd ? '' : "'unsafe-eval'", ...cspSources('CSP_SCRIPT_SRC')),
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://www.jetking.com",
+  directive('img-src', "'self'", 'data:', 'blob:', ...imageHosts.map((host) => `https://${host}`), ...cspSources('CSP_IMG_SRC')),
   "font-src 'self' data:",
-  "connect-src 'self'",
+  directive('connect-src', "'self'", ...cspSources('CSP_CONNECT_SRC')),
   // Course and testimonial videos are YouTube / Vimeo embeds.
-  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  directive(
+    'frame-src',
+    'https://www.youtube.com',
+    'https://www.youtube-nocookie.com',
+    'https://player.vimeo.com',
+    ...cspSources('CSP_FRAME_SRC'),
+  ),
   "media-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
@@ -96,7 +121,7 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    remotePatterns: [{ protocol: 'https', hostname: 'www.jetking.com' }],
+    remotePatterns: imageHosts.map((hostname) => ({ protocol: 'https' as const, hostname })),
   },
 
   typedRoutes: true,

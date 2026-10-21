@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { openaiChatUrl } from '@/lib/config/openai';
 import type { AcquisitionChannel } from './channel';
 import type { BehaviourInput, Classification, KnownPersonaId, SignalHit } from './types';
 import { PERSONA_IDS } from './types';
@@ -70,7 +71,7 @@ export async function inferPersonaWithModel(payload: InferPayload): Promise<Infe
   const model = process.env.PERSONA_INFER_MODEL ?? process.env.GUIDE_MODEL ?? 'gpt-4o-mini';
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(openaiChatUrl(), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

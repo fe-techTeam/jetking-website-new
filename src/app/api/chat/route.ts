@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { semanticSearch } from '@/features/knowledge/lib/embeddings';
 import { serverEnv } from '@/lib/config/env.server';
+import { openaiChatUrl } from '@/lib/config/openai';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
 import {
   cleanPassageText,
@@ -268,7 +269,7 @@ async function askOpenAI(
   temperature: number,
 ): Promise<OllamaReply | null> {
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(openaiChatUrl(), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',

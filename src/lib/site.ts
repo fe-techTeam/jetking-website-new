@@ -1,4 +1,5 @@
 /** Single source of truth for site-level constants. */
+import { publicEnv } from '@/lib/config/env';
 
 export const siteConfig = {
   name: 'Jetking',
@@ -15,7 +16,7 @@ export const siteConfig = {
    * (SiteHeader, EnquiryForm, …), and reading private `SITE_URL` here once
    * already caused a production outage across the server/client boundary.
    */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.jetking.com').replace(/\/$/, ''),
+  url: publicEnv.siteUrl,
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   /**
    * National enquiry line, E.164. Optional: when it is unset, "call us" affordances
@@ -23,8 +24,8 @@ export const siteConfig = {
    * button on an education site costs more than one extra click.
    */
   phone: process.env.NEXT_PUBLIC_PHONE ?? '',
-  /** National toll-free helpline, as published on Investors and the enrollment terms. */
-  helpline: '07666830000',
+  /** National toll-free helpline, as published on Investors and the enrollment terms. NEXT_PUBLIC_HELPLINE overrides it. */
+  helpline: process.env.NEXT_PUBLIC_HELPLINE?.trim() || '07666830000',
 } as const;
 
 /** WhatsApp only renders once a real number is configured, never the env placeholder. */

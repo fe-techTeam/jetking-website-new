@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { serverEnv } from '@/lib/config/env.server';
+import { openaiChatUrl } from '@/lib/config/openai';
 
 import { needsGuidance, type WantFlags } from './intent';
 import type { CounsellingSession } from './session';
@@ -156,7 +157,7 @@ function extractJson(raw: string): unknown | null {
 async function callOpenAiPlanner(apiKey: string, prompt: string): Promise<string | null> {
   const model = process.env.PLANNER_MODEL ?? process.env.GUIDE_MODEL ?? 'gpt-4o-mini';
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(openaiChatUrl(), {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
