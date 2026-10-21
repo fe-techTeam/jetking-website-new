@@ -7,6 +7,7 @@
  *
  * Run with: npm run seed:locations   (after npm run db:migrate)
  */
+import './load-env';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { centres, cities } from '../src/lib/db/schema';

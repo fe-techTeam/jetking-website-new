@@ -4,6 +4,7 @@
  *
  * Run with: npm run create:admin -- --name "Aditi Rao" --email aditi@jetking.example --password "..."
  */
+import './load-env';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';

@@ -2,6 +2,7 @@
  * Applies pending Drizzle migrations from drizzle/migrations against DATABASE_URL.
  * Run with: npm run db:migrate
  */
+import './load-env';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
