@@ -1920,6 +1920,123 @@
       "status": "published"
     },
     {
+      "slug": "suny-cyber-security",
+      "title": "Cyber Security — SUNY Certification Course",
+      "heroImage": {
+        "url": "/courses/suny-cyber-security.jpg",
+        "alt": "Cyber Security SUNY certification course"
+      },
+      "shortTitle": "Cyber Security (SUNY)",
+      "level": "certification",
+      "duration": "413 hours",
+      "eligibility": "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
+      "summary": "A 413-hour certificate course in network, system and information security, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
+      "outcomes": [],
+      "modules": [],
+      "certifications": [
+        "SUNY certification"
+      ],
+      "fees": {
+        "disclosed": false,
+        "emiAvailable": true,
+        "note": "Fees vary by centre and intake. Confirmed by a counsellor."
+      },
+      "personaRelevance": {
+        "student": 0.8,
+        "professional": 0.8
+      },
+      "seo": {
+        "title": "Cyber Security SUNY Certification Course | Jetking",
+        "description": "413-hour SUNY certification course in Cyber Security. Offline / hybrid certificate course at Jetking. Enquire for fees and batches."
+      },
+      "highlights": [
+        "413 hours of training",
+        "Offline / hybrid delivery",
+        "Certificate course (SUNY certification)"
+      ],
+      "university": "State University of New York (SUNY)",
+      "updatedAt": "2026-10-21",
+      "status": "published"
+    },
+    {
+      "slug": "suny-ethical-hacking",
+      "title": "Ethical Hacking — SUNY Certification Course",
+      "heroImage": {
+        "url": "/courses/suny-ethical-hacking.jpg",
+        "alt": "Ethical Hacking SUNY certification course"
+      },
+      "shortTitle": "Ethical Hacking (SUNY)",
+      "level": "certification",
+      "duration": "166 hours",
+      "eligibility": "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
+      "summary": "A 166-hour certificate course in ethical hacking and penetration testing, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
+      "outcomes": [],
+      "modules": [],
+      "certifications": [
+        "SUNY certification"
+      ],
+      "fees": {
+        "disclosed": false,
+        "emiAvailable": true,
+        "note": "Fees vary by centre and intake. Confirmed by a counsellor."
+      },
+      "personaRelevance": {
+        "student": 0.8,
+        "professional": 0.8
+      },
+      "seo": {
+        "title": "Ethical Hacking SUNY Certification Course | Jetking",
+        "description": "166-hour SUNY certification course in Ethical Hacking. Offline / hybrid certificate course at Jetking. Enquire for fees and batches."
+      },
+      "highlights": [
+        "166 hours of training",
+        "Offline / hybrid delivery",
+        "Certificate course (SUNY certification)"
+      ],
+      "university": "State University of New York (SUNY)",
+      "updatedAt": "2026-10-21",
+      "status": "published"
+    },
+    {
+      "slug": "suny-artificial-intelligence",
+      "title": "Artificial Intelligence — SUNY Certification Course",
+      "heroImage": {
+        "url": "/courses/suny-artificial-intelligence.jpg",
+        "alt": "Artificial Intelligence SUNY certification course"
+      },
+      "shortTitle": "Artificial Intelligence (SUNY)",
+      "level": "certification",
+      "duration": "446 hours",
+      "eligibility": "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
+      "summary": "A 446-hour certificate course in artificial intelligence, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
+      "outcomes": [],
+      "modules": [],
+      "certifications": [
+        "SUNY certification"
+      ],
+      "fees": {
+        "disclosed": false,
+        "emiAvailable": true,
+        "note": "Fees vary by centre and intake. Confirmed by a counsellor."
+      },
+      "personaRelevance": {
+        "student": 0.8,
+        "professional": 0.8
+      },
+      "seo": {
+        "title": "Artificial Intelligence SUNY Certification Course | Jetking",
+        "description": "446-hour SUNY certification course in Artificial Intelligence. Offline / hybrid certificate course at Jetking. Enquire for fees and batches."
+      },
+      "highlights": [
+        "446 hours of training",
+        "Offline / hybrid delivery",
+        "Certificate course (SUNY certification)"
+      ],
+      "university": "State University of New York (SUNY)",
+      "updatedAt": "2026-10-21",
+      "status": "published"
+    },
+    {
       "slug": "aws-solution-specialist",
       "title": "AWS Solution Specialist",
       "heroImage": {
