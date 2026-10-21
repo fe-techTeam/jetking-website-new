@@ -99,6 +99,13 @@
       "when": 1792512000000,
       "tag": "0013_unify_visitor_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792598400000,
+      "tag": "0014_custom_roles",
+      "breakpoints": true
     }
   ]
 }

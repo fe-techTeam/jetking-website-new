@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Route } from 'next';
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { content } from '@/lib/content';
 import { getBuildState, getIndexStatus, probeOllama } from '@/lib/chatbot/ops';
@@ -26,7 +26,7 @@ function Stat({ label, value, hint, tone }: { label: string; value: React.ReactN
 }
 
 export default async function ChatbotOverviewPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('chatbot', 'view');
   const index = getIndexStatus();
   const [settings, ollama, usage, chats, knowledge] = await Promise.all([
     content.getChatbotSettings(),

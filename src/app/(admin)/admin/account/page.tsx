@@ -1,11 +1,11 @@
-import { requireRole } from '../actions';
-import { isDatabaseConfigured, ROLE_LABEL } from '@/lib/auth/users';
+import { requireStaff } from '../actions';
+import { isDatabaseConfigured } from '@/lib/auth/users';
 import { ChangePasswordForm } from './ChangePasswordForm';
 
 export const metadata = { title: 'My account · Jetking Admin' };
 
 export default async function AdminAccountPage() {
-  const user = await requireRole(['admin', 'editor', 'centre_staff']);
+  const user = await requireStaff();
   const multiUser = isDatabaseConfigured();
 
   return (
@@ -13,7 +13,7 @@ export default async function AdminAccountPage() {
       <p className="adm-eyebrow">account</p>
       <h1 className="adm-title mt-3">My account</h1>
       <p className="adm-lede mt-3">
-        {user.name} · {user.email} · {ROLE_LABEL[user.role]}
+        {user.name} · {user.email} · {user.roleLabel}
       </p>
 
       <section className="adm-card mt-8 p-6">

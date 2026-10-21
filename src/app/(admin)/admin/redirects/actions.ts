@@ -1,14 +1,12 @@
 'use server';
 
 import { desc, eq } from 'drizzle-orm';
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { getDb } from '@/lib/db/client';
 import { redirects, type RedirectRow } from '@/lib/db/schema';
 import { clearRedirectCache, normalizeSource } from '@/lib/redirects/lookup';
 import { MAX_IMPORT_LINES, findRedirectLoop, validateRedirect } from '@/lib/redirects/validate';
 import { recordAudit } from '@/lib/audit/log';
-
-const ROLES = ['admin', 'editor'] as const;
 
 export interface RedirectItem {
   id: string;
@@ -31,7 +29,7 @@ const toItem = (r: RedirectRow): RedirectItem => ({
 });
 
 export async function listRedirects(): Promise<RedirectItem[]> {
-  await requireRole([...ROLES]);
+  await requireAccess('redirects', 'view');
   const db = getDb();
   if (!db) return [];
   return (await db.select().from(redirects).orderBy(desc(redirects.createdAt))).map(toItem);
@@ -44,7 +42,7 @@ export async function saveRedirect(input: {
   permanent: boolean;
   note: string;
 }): Promise<{ ok: true; item: RedirectItem } | { ok: false; error: string }> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('redirects', 'edit');
   const db = getDb();
   if (!db) return { ok: false, error: 'Redirects need the database (DATABASE_URL).' };
   const v = validateRedirect(input.source, input.destination);
@@ -72,7 +70,7 @@ export async function saveRedirect(input: {
 }
 
 export async function removeRedirect(id: string): Promise<void> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('redirects', 'edit');
   const db = getDb();
   if (!db) return;
   const [row] = await db.delete(redirects).where(eq(redirects.id, id)).returning();
@@ -82,7 +80,7 @@ export async function removeRedirect(id: string): Promise<void> {
 
 /** One rule per line: `/old , /new` (comma, tab or `->` between). Adds new sources, skips ones that already exist or are invalid. */
 export async function importRedirects(text: string): Promise<{ added: number; skipped: string[] }> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('redirects', 'edit');
   const db = getDb();
   if (!db) return { added: 0, skipped: ['Redirects need the database (DATABASE_URL).'] };
   const existing = new Set((await db.select({ s: redirects.source }).from(redirects)).map((r) => normalizeSource(r.s)));

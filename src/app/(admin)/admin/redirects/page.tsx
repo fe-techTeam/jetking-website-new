@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { isDatabaseConfigured } from '@/lib/db/client';
 import { listRedirects } from './actions';
@@ -18,7 +18,7 @@ function staticRedirectCount(): number {
 }
 
 export default async function RedirectsPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('redirects', 'view');
   const items = await listRedirects();
 
   return (

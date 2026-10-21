@@ -1,7 +1,7 @@
 import type { Route } from 'next';
 import { ArrowUpRight, Building2, GraduationCap, Layers, Newspaper, PenLine, Users } from 'lucide-react';
 import Link from 'next/link';
-import { requireRole, seedCmsFromFixtures } from './actions';
+import { requireStaff, seedCmsFromFixtures } from './actions';
 import { listCollection } from '@/lib/cms/store';
 import { isDatabaseConfigured } from '@/lib/leads/store';
 import { getLeadsSummary } from './leads/actions';
@@ -12,14 +12,18 @@ import { listRecentRevisions } from '@/lib/cms/revisions';
 import { listMedia } from '@/lib/media/store';
 
 export default async function AdminDashboard() {
-  // Every role lands here — this is `requireRole`'s own redirect target for
-  // "signed in but wrong role", so restricting it to a subset of roles would
-  // bounce anyone outside that subset straight back to itself.
-  const user = await requireRole(['admin', 'editor', 'centre_staff']);
+  // Every signed-in member lands here — it is the redirect target for "signed in but not allowed", so
+  // restricting it would bounce anyone outside the subset straight back to itself. What each member sees
+  // on it follows their access instead.
+  const user = await requireStaff();
+  const canEditContent = user.access.content !== 'none';
+  const canSeeLeads = user.access.leads !== 'none';
 
-  const rows = await Promise.all(
-    COLLECTIONS.filter((c) => c.dashboard !== false).map(async (c) => ({ ...c, items: await listCollection(c.key) })),
-  );
+  const rows = canEditContent
+    ? await Promise.all(
+        COLLECTIONS.filter((c) => c.dashboard !== false).map(async (c) => ({ ...c, items: await listCollection(c.key) })),
+      )
+    : [];
   const bars = rows.map((r) => ({
     label: r.label,
     value: r.items.length,
@@ -40,9 +44,7 @@ export default async function AdminDashboard() {
 
   // Goes through the leads action (not the store directly) so `centre_staff`
   // gets the same centre-scoped count here as on the Leads page itself.
-  const leadStats = isDatabaseConfigured() ? await getLeadsSummary() : null;
-
-  const canEditContent = user.role !== 'centre_staff';
+  const leadStats = canSeeLeads && isDatabaseConfigured() ? await getLeadsSummary() : null;
 
   // Recent edits and open drafts are for people who edit content, not centre staff.
   const recent = canEditContent ? await listRecentRevisions(8) : [];

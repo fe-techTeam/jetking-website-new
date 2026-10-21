@@ -31,8 +31,19 @@ import {
   getUserById,
   revokeUserSessions,
   touchLastActive,
-  type Role,
 } from '@/lib/auth/users';
+import { getCustomRole } from '@/lib/auth/custom-roles';
+import {
+  ROLE_LABEL,
+  hasAccess,
+  normalizeAccess,
+  presetAccess,
+  type Access,
+  type LeadScope,
+  type Role,
+  type Section,
+  type UserRole,
+} from '@/lib/auth/roles';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { recordAudit } from '@/lib/audit/log';
 import { htmlToBlocks, sanitizeRichHtml } from '@/lib/rich/html';
@@ -48,11 +59,11 @@ function assertKnownCollection(collection: CmsCollection): void {
   }
 }
 
-/** Who may touch a collection — the legal pages are admin-only, everything else admin + editor. Enforced
- *  here, not just by hiding the sidebar link, because these server actions can be called directly. */
-function rolesFor(collection: CmsCollection): Role[] {
+/** Who may touch a collection — the legal pages are admin-only, everything else needs "Website content" access.
+ *  Enforced here, not just by hiding the sidebar link, because these server actions can be called directly. */
+async function requireCollection(collection: CmsCollection, level: 'view' | 'edit'): Promise<CurrentUser> {
   assertKnownCollection(collection);
-  return collectionByKey(collection).roles ?? ['admin', 'editor'];
+  return requireContentAccess(collectionByKey(collection).roles, level);
 }
 
 /** The id field is a property of the collection, never of the caller: a raw action call passing e.g.
@@ -68,8 +79,14 @@ export interface CurrentUser {
   id: string;
   name: string;
   email: string;
-  role: Role;
+  role: UserRole;
+  /** Display name of the role — a built-in's label, or the custom role's own name. */
+  roleLabel: string;
   centreSlug: string | null;
+  /** What the user may do in each section; the source of truth for every permission check. */
+  access: Access;
+  /** 'centre' = sees only their own centre's leads. */
+  leadScope: LeadScope;
 }
 
 /** The pre-multi-user single shared password, used only when `DATABASE_URL`
@@ -130,12 +147,30 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     if (!user || user.status !== 'active') return null;
     // A cookie issued before the last sign-out / password change carries an older version: revoked.
     if (user.sessionVersion !== verified.version) return null;
+    if (user.role === 'custom') {
+      // A custom role that has gone missing grants nothing (deny by default).
+      const custom = user.customRoleId ? await getCustomRole(user.customRoleId) : undefined;
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: 'custom',
+        roleLabel: custom?.name ?? 'No role',
+        centreSlug: user.centreSlug,
+        access: custom ? custom.access : normalizeAccess(null),
+        leadScope: custom?.leadScope ?? 'all',
+      };
+    }
+    const role = user.role as Role;
     return {
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role as Role,
+      role,
+      roleLabel: ROLE_LABEL[role] ?? role,
       centreSlug: user.centreSlug,
+      access: presetAccess(role),
+      leadScope: role === 'centre_staff' ? 'centre' : 'all',
     };
   }
 
@@ -154,7 +189,16 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }
   if (!timingSafeEqual(session, expected)) return null;
 
-  return { id: 'local-admin', name: 'Admin', email: '', role: 'admin', centreSlug: null };
+  return {
+    id: 'local-admin',
+    name: 'Admin',
+    email: '',
+    role: 'admin',
+    roleLabel: ROLE_LABEL.admin,
+    centreSlug: null,
+    access: presetAccess('admin'),
+    leadScope: 'all',
+  };
 }
 
 export async function isAdminAuthenticated(): Promise<boolean> {
@@ -167,8 +211,28 @@ export async function isAdminAuthenticated(): Promise<boolean> {
 export async function requireRole(allowed: Role[]): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (!user) redirect('/admin/login' as Route);
-  if (!allowed.includes(user.role)) redirect('/admin' as Route);
+  if (!(allowed as readonly string[]).includes(user.role)) redirect('/admin' as Route);
   return user;
+}
+
+/** Any signed-in staff member, whatever their role — for the dashboard and "my account". */
+export async function requireStaff(): Promise<CurrentUser> {
+  const user = await getCurrentUser();
+  if (!user) redirect('/admin/login' as Route);
+  return user;
+}
+
+/** Signed in AND allowed `level` in `section` — pages ask for 'view', anything that changes data asks for 'edit'. */
+export async function requireAccess(section: Section, level: 'view' | 'edit' = 'view'): Promise<CurrentUser> {
+  const user = await requireStaff();
+  if (!hasAccess(user.access, section, level)) redirect('/admin' as Route);
+  return user;
+}
+
+/** Content collections: `adminOnlyRoles` (set on the legal pages) wins, otherwise "Website content" access decides. */
+export async function requireContentAccess(adminOnlyRoles: Role[] | undefined, level: 'view' | 'edit' = 'view'): Promise<CurrentUser> {
+  if (adminOnlyRoles) return requireRole(adminOnlyRoles);
+  return requireAccess('content', level);
 }
 
 export interface LoginState {
@@ -245,7 +309,7 @@ export async function saveCollectionItem(
    *  a genuinely new record. */
   previousId?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole(rolesFor(collection));
+  const user = await requireCollection(collection, 'edit');
   try {
     assertIdKey(collection, idKey);
     if (typeof json !== 'string' || json.length > MAX_RECORD_JSON_CHARS) return { ok: false, error: 'This record is too large to save.' };
@@ -319,7 +383,7 @@ export async function removeCollectionItem(
   idKey: string,
   id: string,
 ): Promise<void> {
-  const user = await requireRole(rolesFor(collection));
+  const user = await requireCollection(collection, 'edit');
   assertIdKey(collection, idKey);
   await deleteRecord(collection, idKey, id, user.name);
   await publishContent();
@@ -335,7 +399,7 @@ export async function seedCmsFromFixtures(): Promise<void> {
 }
 
 export async function getAdminCollection(collection: CmsCollection) {
-  await requireRole(rolesFor(collection));
+  await requireCollection(collection, 'view');
   return listCollection(collection);
 }
 
@@ -350,7 +414,7 @@ export interface HistoryEntry {
 
 /** Version history of one record, newest first. Empty without a database (history needs somewhere durable to live). */
 export async function getRecordHistory(collection: CmsCollection, recordId: string): Promise<HistoryEntry[]> {
-  await requireRole(rolesFor(collection));
+  await requireCollection(collection, 'view');
   const rows = await listRevisions(collection, recordId);
   return rows.map((r) => ({
     id: r.id,
@@ -363,7 +427,7 @@ export async function getRecordHistory(collection: CmsCollection, recordId: stri
 
 /** Records deleted from this collection and not currently present — what can be brought back. */
 export async function getDeletedRecords(collection: CmsCollection, idKey: string): Promise<HistoryEntry[]> {
-  await requireRole(rolesFor(collection));
+  await requireCollection(collection, 'view');
   assertIdKey(collection, idKey);
   const [deleted, live] = await Promise.all([listDeleted(collection), listCollection(collection)]);
   const liveIds = new Set((live as unknown as Record<string, unknown>[]).map((r) => String(r[idKey])));
@@ -388,7 +452,7 @@ export async function getRevisionRecord(
   collection: CmsCollection,
   revisionId: string,
 ): Promise<{ ok: true; record: Record<string, unknown> } | { ok: false; error: string }> {
-  await requireRole(rolesFor(collection));
+  await requireCollection(collection, 'view');
   const revision = await getRevision(revisionId);
   if (!revision || revision.collection !== collection) return { ok: false, error: 'That version no longer exists.' };
   return { ok: true, record: revision.data };
@@ -401,7 +465,7 @@ export async function setRecordStatus(
   id: string,
   status: 'published' | 'draft',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole(rolesFor(collection));
+  const user = await requireCollection(collection, 'edit');
   try {
     assertIdKey(collection, idKey);
     if (status !== 'published' && status !== 'draft') return { ok: false, error: 'Invalid status.' };

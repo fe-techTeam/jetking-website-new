@@ -77,6 +77,21 @@ export type NewLeadActivity = typeof leadActivities.$inferInsert;
  * real per-user login when `DATABASE_URL` is set; that legacy single-password
  * path stays as the fallback when it isn't (see `admin/actions.ts`).
  */
+/** An admin-defined role: a name plus a per-section access level. See `@/lib/auth/roles`. */
+export const customRoles = pgTable('custom_roles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  description: text('description').notNull().default(''),
+  /** { [section]: 'view' | 'edit' } — a missing section means no access. */
+  permissions: jsonb('permissions').$type<Record<string, string>>().notNull().default({}),
+  /** 'all' = every lead; 'centre' = only the member's own centre (like centre staff). */
+  leadScope: text('lead_scope').notNull().default('all'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type CustomRole = typeof customRoles.$inferSelect;
+
 export const adminUsers = pgTable(
   'admin_users',
   {
@@ -93,6 +108,8 @@ export const adminUsers = pgTable(
     lastActiveAt: timestamp('last_active_at', { withTimezone: true }),
     /** Embedded in the session cookie; bumping it signs the user out everywhere (logout, password change/reset). */
     sessionVersion: integer('session_version').notNull().default(0),
+    /** Only meaningful for role='custom' — the admin-defined role whose permissions apply. */
+    customRoleId: uuid('custom_role_id').references(() => customRoles.id, { onDelete: 'restrict' }),
   },
   (table) => [index('admin_users_role_idx').on(table.role)],
 );

@@ -27,6 +27,13 @@ declare namespace NodeJS {
     NEXT_PUBLIC_SOCIAL_YOUTUBE?: string;
     NEXT_PUBLIC_SOCIAL_LINKEDIN?: string;
     NEXT_PUBLIC_SOCIAL_TWITTER?: string;
+    /** 'true' shows "email me a reset link" in the visitor password-reset dialog (needs MAIL_* on the server). */
+    NEXT_PUBLIC_EMAIL_RESET_ENABLED?: string;
+    /** Analytics/ad tags (default: the ones jetking.com runs); empty switches one off. Production + indexable builds only. */
+    NEXT_PUBLIC_TRACKING_ENABLED?: string;
+    NEXT_PUBLIC_GTM_ID?: string;
+    NEXT_PUBLIC_GA_IDS?: string;
+    NEXT_PUBLIC_META_PIXEL_IDS?: string;
     /** Public Supabase project URL, used by the browser Supabase client. */
     NEXT_PUBLIC_SUPABASE_URL?: string;
     /** Shows the debug/dev inspector UI when set. */
@@ -53,6 +60,16 @@ declare namespace NodeJS {
     REVALIDATE_SECRET?: string;
     /** Supabase service-role key — full-privilege, server-only. */
     SUPABASE_SERVICE_ROLE_KEY?: string;
+    /** Outgoing SMTP email — see src/lib/mail. Off unless MAIL_DRIVER is 'smtp'. */
+    MAIL_DRIVER?: string;
+    MAIL_HOST?: string;
+    MAIL_PORT?: string;
+    MAIL_USERNAME?: string;
+    MAIL_PASSWORD?: string;
+    MAIL_FROM_NAME?: string;
+    MAIL_FROM_ADDRESS?: string;
+    /** 'TLS' (STARTTLS), 'SSL' (implicit) or 'NONE'. */
+    MAIL_ENCRYPTION?: string;
     /** OpenAI-compatible API base URL (proxy / gateway); defaults to https://api.openai.com/v1. */
     OPENAI_BASE_URL?: string;
     /** Extra CSP sources (space/comma separated) and next/image remote hosts — see next.config.ts. */

@@ -1,12 +1,11 @@
 'use server';
 
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { listCollection, upsertRecord } from '@/lib/cms/store';
 import { publishContent } from '@/lib/cms/publish';
 import { recordAudit } from '@/lib/audit/log';
 import { COPY_PAGES } from '@/lib/content/copy/registry';
 
-const ROLES = ['admin', 'editor'] as const;
 const RECORD_COLLECTIONS = ['courses', 'posts', 'centres', 'cities'] as const;
 type RecordCollection = (typeof RECORD_COLLECTIONS)[number];
 
@@ -33,7 +32,7 @@ function check(values: SeoValues): string | null {
 
 /** Saves one page's or record's SEO fields — the same fields the Page text and record editors write. */
 export async function saveSeo(target: SeoTarget, values: SeoValues): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('seo', 'edit');
   const problem = check(values);
   if (problem) return { ok: false, error: problem };
 

@@ -2,23 +2,21 @@
 
 import { headers } from 'next/headers';
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { requireRole } from '../actions';
+import { requireAccess, requireRole } from '../actions';
 import { getBuildState, startBuild, type BuildState } from '@/lib/chatbot/ops';
 import { getDb } from '@/lib/db/client';
 import { chatConversations, chatbotUnanswered, users } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
 
-const ROLES = ['admin', 'editor'] as const;
-
 export async function rebuildKnowledge(): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('chatbot', 'edit');
   const result = startBuild();
   if (result.ok) void recordAudit(user, 'chatbot.rebuild', 'chatbot', null, 'Started a knowledge rebuild');
   return result;
 }
 
 export async function getBuild(): Promise<BuildState> {
-  await requireRole([...ROLES]);
+  await requireAccess('chatbot', 'view');
   return getBuildState();
 }
 
@@ -32,7 +30,7 @@ export interface TestAnswer {
 
 /** Asks the live assistant a question exactly as a visitor would, so an editor can try a change before it matters. */
 export async function askTestQuestion(question: string): Promise<TestAnswer> {
-  await requireRole([...ROLES]);
+  await requireAccess('chatbot', 'view');
   const q = question.trim().slice(0, 500);
   if (!q) return { ok: false, text: 'Type a question first.', reasoning: [], gated: false };
   const h = await headers();
@@ -66,7 +64,7 @@ export interface UnansweredGroup {
 }
 
 export async function listUnanswered(showResolved: boolean): Promise<UnansweredGroup[]> {
-  await requireRole([...ROLES]);
+  await requireAccess('chatbot', 'view');
   const db = getDb();
   if (!db) return [];
   const rows = await db
@@ -86,7 +84,7 @@ export async function listUnanswered(showResolved: boolean): Promise<UnansweredG
 }
 
 export async function resolveUnanswered(question: string, resolved = true): Promise<void> {
-  const user = await requireRole([...ROLES]);
+  const user = await requireAccess('chatbot', 'edit');
   const db = getDb();
   if (!db) return;
   await db
@@ -107,7 +105,7 @@ export interface ChatSummary {
 }
 
 export async function listRecentChats(limit = 15): Promise<ChatSummary[]> {
-  await requireRole([...ROLES]);
+  await requireAccess('chatbot', 'view');
   const db = getDb();
   if (!db) return [];
   const rows = await db
@@ -142,7 +140,7 @@ export interface ChatbotUsage {
 }
 
 export async function getUsage(indexBuiltAt: string | null): Promise<ChatbotUsage> {
-  await requireRole([...ROLES]);
+  await requireAccess('chatbot', 'view');
   const db = getDb();
   if (!db) return { conversations: 0, conversationsWeek: 0, chatLeads: 0, unanswered: 0, contentChangedSinceBuild: false };
   const week = new Date(Date.now() - 7 * 86_400_000);

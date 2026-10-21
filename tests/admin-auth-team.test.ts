@@ -194,7 +194,7 @@ describe('adminResetPassword', () => {
   it('enforces min length and audits without leaking the password', async () => {
     expect(await adminResetPassword(OTHER, 'short')).toMatchObject({ ok: false });
     expect(h.resetUserPassword).not.toHaveBeenCalled();
-    expect(await adminResetPassword(OTHER, 'newpassword1')).toEqual({ ok: true });
+    expect(await adminResetPassword(OTHER, 'newpassword1')).toEqual({ ok: true, email: 'off' });
     expect(h.resetUserPassword).toHaveBeenCalledWith(OTHER, 'newpassword1');
     expect(JSON.stringify(h.audit.mock.calls)).not.toContain('newpassword1');
   });

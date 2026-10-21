@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Route } from 'next';
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { COLLECTIONS } from '../registry';
 import { listCollection } from '@/lib/cms/store';
@@ -19,7 +19,7 @@ function titleOf(record: Record<string, unknown>): string {
 
 /** Content search across every collection the signed-in role may open. */
 export default async function AdminSearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const user = await requireRole(['admin', 'editor']);
+  const user = await requireAccess('content', 'view');
   const { q = '' } = await searchParams;
   const query = q.trim().toLowerCase();
 
@@ -27,7 +27,7 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
     ? []
     : (
         await Promise.all(
-          COLLECTIONS.filter((c) => (c.roles ?? ['admin', 'editor']).includes(user.role)).map(async (c) => {
+          COLLECTIONS.filter((c) => !c.roles || (c.roles as readonly string[]).includes(user.role)).map(async (c) => {
             const rows = (await listCollection(c.key)) as unknown as Record<string, unknown>[];
             const hits = rows.filter((r) => JSON.stringify(r).toLowerCase().includes(query));
             return { collection: c, hits };

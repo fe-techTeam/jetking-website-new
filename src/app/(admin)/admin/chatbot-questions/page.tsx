@@ -1,4 +1,4 @@
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { isDatabaseConfigured } from '@/lib/db/client';
 import { listUnanswered } from '../chatbot/actions';
@@ -8,7 +8,7 @@ export const metadata = { title: 'Unanswered questions | Jetking Admin' };
 export const dynamic = 'force-dynamic';
 
 export default async function UnansweredPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('chatbot', 'view');
   const open = await listUnanswered(false);
 
   return (

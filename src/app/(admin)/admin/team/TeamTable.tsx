@@ -10,25 +10,89 @@ import {
   adminResetPassword,
   removeUser,
 } from './actions';
-import { ROLES, ROLE_DESCRIPTION, ROLE_LABEL, type Role } from '@/lib/auth/roles';
+import { ROLES, ROLE_DESCRIPTION, ROLE_LABEL, SECTIONS, SECTION_LABEL, type Role } from '@/lib/auth/roles';
+import type { CustomRoleView } from '@/lib/auth/custom-roles';
 import type { AdminUser } from '@/lib/db/schema';
 import type { CentreOption } from '@/lib/leads/centre-scope';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { FilterChip } from '../FilterChip';
+import { RolesPanel } from './RolesPanel';
 
 function formatDate(value: Date | string | null): string {
   if (!value) return '—';
   return new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function roleCounts(users: AdminUser[]): string {
-  const parts = ROLES.map((role) => {
-    const n = users.filter((u) => u.role === role).length;
-    if (n === 0) return null;
-    const label = ROLE_LABEL[role];
-    return `${n} ${n === 1 ? label.toLowerCase() : `${label.toLowerCase()}s`}`;
-  }).filter(Boolean);
+/** A role is picked as one string: a built-in (`editor`) or `custom:<role id>`. */
+function userRoleKey(u: AdminUser): string {
+  return u.role === 'custom' ? `custom:${u.customRoleId ?? ''}` : u.role;
+}
+
+function roleLabelOf(key: string, roles: CustomRoleView[]): string {
+  if (key.startsWith('custom:')) return roles.find((r) => `custom:${r.id}` === key)?.name ?? 'No role';
+  return ROLE_LABEL[key as Role] ?? key;
+}
+
+/** Does this role limit leads to one centre (so the person needs a centre)? */
+function needsCentre(key: string, roles: CustomRoleView[]): boolean {
+  if (key === 'centre_staff') return true;
+  const custom = key.startsWith('custom:') ? roles.find((r) => `custom:${r.id}` === key) : undefined;
+  return !!custom && custom.leadScope === 'centre' && custom.access.leads !== 'none';
+}
+
+function roleDescription(key: string, roles: CustomRoleView[]): string {
+  if (key.startsWith('custom:')) {
+    const role = roles.find((r) => `custom:${r.id}` === key);
+    if (!role) return '';
+    const parts = SECTIONS.filter((s) => role.access[s] !== 'none').map(
+      (s) => `${SECTION_LABEL[s]} (${role.access[s]})`,
+    );
+    return [role.description, parts.join(', ')].filter(Boolean).join(' — ');
+  }
+  return ROLE_DESCRIPTION[key as Role] ?? '';
+}
+
+function roleCounts(users: AdminUser[], roles: CustomRoleView[]): string {
+  const keys = [...ROLES, ...roles.map((r) => `custom:${r.id}`)];
+  const parts = keys
+    .map((key) => {
+      const n = users.filter((u) => userRoleKey(u) === key).length;
+      if (n === 0) return null;
+      const label = roleLabelOf(key, roles).toLowerCase();
+      return `${n} ${n === 1 ? label : `${label}s`}`;
+    })
+    .filter(Boolean);
   return parts.length ? parts.join(' · ') : 'No accounts yet';
+}
+
+function RoleOptions({ roles }: { roles: CustomRoleView[] }) {
+  return (
+    <>
+      <optgroup label="Built-in">
+        {ROLES.map((r) => (
+          <option key={r} value={r}>
+            {ROLE_LABEL[r]}
+          </option>
+        ))}
+      </optgroup>
+      {roles.length > 0 ? (
+        <optgroup label="Custom roles">
+          {roles.map((r) => (
+            <option key={r.id} value={`custom:${r.id}`}>
+              {r.name}
+            </option>
+          ))}
+        </optgroup>
+      ) : null}
+    </>
+  );
+}
+
+/** One sentence telling the admin whether the notification email went out. */
+function emailNote(status: 'sent' | 'failed' | 'off', address: string): string {
+  if (status === 'sent') return `A welcome email with the sign-in details was sent to ${address}.`;
+  if (status === 'failed') return `The welcome email to ${address} could not be sent — share the password with them directly.`;
+  return 'Email is not set up, so share the password with them directly.';
 }
 
 function suggestPassword(): string {
@@ -38,17 +102,27 @@ function suggestPassword(): string {
   return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join('');
 }
 
-export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]; centres: CentreOption[] }) {
+export function TeamTable({
+  initialUsers,
+  centres,
+  initialRoles,
+}: {
+  initialUsers: AdminUser[];
+  centres: CentreOption[];
+  initialRoles: CustomRoleView[];
+}) {
   const [users, setUsers] = useState(initialUsers);
+  const [roles, setRoles] = useState(initialRoles);
+  const [tab, setTab] = useState<'people' | 'roles'>('people');
   const [search, setSearch] = useState('');
-  const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
   const [showInvite, setShowInvite] = useState(false);
-  const [inviteRole, setInviteRole] = useState<Role>('editor');
+  const [inviteRole, setInviteRole] = useState<string>('editor');
   const [invitePassword, setInvitePassword] = useState('');
   const [pendingRemove, setPendingRemove] = useState<AdminUser | null>(null);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
     user: AdminUser;
-    role: Role;
+    role: string;
     centreSlug: string;
   } | null>(null);
   const [pendingDisable, setPendingDisable] = useState<AdminUser | null>(null);
@@ -64,7 +138,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
 
   const query = search.trim().toLowerCase();
   const filteredUsers = users.filter((u) => {
-    if (roleFilter !== 'all' && u.role !== roleFilter) return false;
+    if (roleFilter !== 'all' && userRoleKey(u) !== roleFilter) return false;
     if (!query) return true;
     return u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query);
   });
@@ -84,7 +158,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
       }
       setUsers((prev) => [result.user, ...prev]);
       setMessage(
-        `Created ${result.user.name} as ${ROLE_LABEL[result.user.role as Role]}. Add another account below, or close the form.`,
+        `Created ${result.user.name} as ${roleLabelOf(userRoleKey(result.user), roles)}. ${emailNote(result.email, result.user.email)} Add another account below, or close the form.`,
       );
       formRef.current?.reset();
       setInvitePassword('');
@@ -92,7 +166,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
     });
   }
 
-  function handleRoleChange(user: AdminUser, role: Role, centreSlug: string) {
+  function handleRoleChange(user: AdminUser, role: string, centreSlug: string) {
     start(async () => {
       const result = await changeUserRole(user.id, role, centreSlug);
       if (!result.ok) {
@@ -172,11 +246,15 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           <p className="adm-eyebrow">team</p>
           <h1 className="adm-title mt-3">Team &amp; access</h1>
           <p className="adm-lede mt-3">
-            Create as many staff accounts as you need — Admin, Editor, or Centre staff. Each person
-            signs in with their own email. Centre staff only see their centre&apos;s leads.
+            Create as many staff accounts as you need. Use a built-in role, or build your own under{' '}
+            <button type="button" onClick={() => setTab('roles')} className="cursor-pointer font-semibold text-[var(--accent)] underline-offset-2 hover:underline">
+              Roles
+            </button>{' '}
+            and choose exactly what each one can see and edit. Each person signs in with their own email.
           </p>
-          <p className="mt-2 text-sm text-foreground-muted">{roleCounts(users)}</p>
+          <p className="mt-2 text-sm text-foreground-muted">{roleCounts(users, roles)}</p>
         </div>
+        {tab === 'people' ? (
         <button
           type="button"
           onClick={() => setShowInvite((v) => !v)}
@@ -185,8 +263,30 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           {showInvite ? <X aria-hidden="true" className="mr-2 h-4 w-4" /> : <Plus aria-hidden="true" className="mr-2 h-4 w-4" />}
           {showInvite ? 'Close form' : 'Add team member'}
         </button>
+        ) : null}
       </div>
 
+      <div role="tablist" aria-label="Team sections" className="mt-6 flex gap-1 border-b border-border">
+        {(['people', 'roles'] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            role="tab"
+            aria-selected={tab === t}
+            onClick={() => setTab(t)}
+            className={`-mb-px min-h-11 cursor-pointer border-b-2 px-4 text-sm font-semibold transition-colors ${
+              tab === t ? 'border-[var(--accent)] text-foreground' : 'border-transparent text-foreground-muted hover:text-foreground'
+            }`}
+          >
+            {t === 'people' ? `People (${users.length})` : `Roles (${ROLES.length + roles.length})`}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'roles' ? (
+        <RolesPanel roles={roles} onChange={setRoles} />
+      ) : (
+      <>
       {showInvite ? (
         <form
           ref={formRef}
@@ -229,7 +329,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
               <button
                 type="button"
                 onClick={() => setInvitePassword(suggestPassword())}
-                className="admin-input h-auto shrink-0 cursor-pointer px-3 text-xs font-semibold text-foreground-secondary hover:text-foreground"
+                className="admin-input h-auto w-auto! shrink-0 cursor-pointer whitespace-nowrap px-4 text-xs font-semibold text-foreground-secondary hover:text-foreground"
               >
                 Generate
               </button>
@@ -241,17 +341,13 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
               name="role"
               className="admin-input"
               value={inviteRole}
-              onChange={(e) => setInviteRole(e.target.value as Role)}
+              onChange={(e) => setInviteRole(e.target.value)}
             >
-              {ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {ROLE_LABEL[r]}
-                </option>
-              ))}
+              <RoleOptions roles={roles} />
             </select>
-            <span className="text-xs text-foreground-muted">{ROLE_DESCRIPTION[inviteRole]}</span>
+            <span className="text-xs text-foreground-muted">{roleDescription(inviteRole, roles)}</span>
           </label>
-          {inviteRole === 'centre_staff' ? (
+          {needsCentre(inviteRole, roles) ? (
             <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
               <span className="label-mono">Centre</span>
               {centres.length > 0 ? (
@@ -275,7 +371,7 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
           <div className="sm:col-span-2">
             <button
               type="submit"
-              disabled={pending || (inviteRole === 'centre_staff' && centres.length === 0)}
+              disabled={pending || (needsCentre(inviteRole, roles) && centres.length === 0)}
               className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
             >
               {pending ? 'Creating…' : 'Create account'}
@@ -308,13 +404,13 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
             <FilterChip active={roleFilter === 'all'} onClick={() => setRoleFilter('all')}>
               All roles
             </FilterChip>
-            {ROLES.map((r) => (
+            {[...ROLES.map((r) => r as string), ...roles.map((r) => `custom:${r.id}`)].map((key) => (
               <FilterChip
-                key={r}
-                active={roleFilter === r}
-                onClick={() => setRoleFilter((prev) => (prev === r ? 'all' : r))}
+                key={key}
+                active={roleFilter === key}
+                onClick={() => setRoleFilter((prev) => (prev === key ? 'all' : key))}
               >
-                {ROLE_LABEL[r]}
+                {roleLabelOf(key, roles)}
               </FilterChip>
             ))}
           </div>
@@ -368,32 +464,32 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
                 </td>
                 <td className="px-4 py-3">
                   <select
-                    value={user.role}
+                    value={userRoleKey(user)}
                     disabled={pending}
                     onChange={(e) => {
-                      const role = e.target.value as Role;
-                      if (role === user.role) return;
+                      const role = e.target.value;
+                      if (role === userRoleKey(user)) return;
                       setPendingRoleChange({
                         user,
                         role,
-                        centreSlug: role === 'centre_staff' ? (user.centreSlug ?? '') : '',
+                        centreSlug: needsCentre(role, roles) ? (user.centreSlug ?? '') : '',
                       });
                     }}
                     className="admin-input h-9 w-auto py-0 text-xs"
+                    aria-label={`Role for ${user.name}`}
                   >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {ROLE_LABEL[r]}
-                      </option>
-                    ))}
+                    {user.role === 'custom' && !roles.some((x) => x.id === user.customRoleId) ? (
+                      <option value={userRoleKey(user)}>No role</option>
+                    ) : null}
+                    <RoleOptions roles={roles} />
                   </select>
                 </td>
                 <td className="px-4 py-3">
-                  {user.role === 'centre_staff' ? (
+                  {needsCentre(userRoleKey(user), roles) ? (
                     <select
                       value={user.centreSlug ?? ''}
                       disabled={pending}
-                      onChange={(e) => handleRoleChange(user, 'centre_staff', e.target.value)}
+                      onChange={(e) => handleRoleChange(user, userRoleKey(user), e.target.value)}
                       className="admin-input h-9 w-44 py-0 text-xs"
                     >
                       <option value="" disabled>
@@ -459,6 +555,9 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         </table>
       </div>
 
+      </>
+      )}
+
       <AdminConfirmDialog
         open={pendingRemove !== null}
         onOpenChange={(open) => !open && setPendingRemove(null)}
@@ -483,11 +582,11 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
               Change <span className="font-semibold text-foreground">{pendingRoleChange.user.name}</span>
               &apos;s role from{' '}
               <span className="font-semibold text-foreground">
-                {ROLE_LABEL[pendingRoleChange.user.role as Role]}
+                {roleLabelOf(userRoleKey(pendingRoleChange.user), roles)}
               </span>{' '}
-              to <span className="font-semibold text-foreground">{ROLE_LABEL[pendingRoleChange.role]}</span>?
+              to <span className="font-semibold text-foreground">{roleLabelOf(pendingRoleChange.role, roles)}</span>?
               <span className="mt-2 block text-foreground-muted">
-                {ROLE_DESCRIPTION[pendingRoleChange.role]}
+                {roleDescription(pendingRoleChange.role, roles)}
               </span>
             </>
           ) : null
@@ -496,11 +595,11 @@ export function TeamTable({ initialUsers, centres }: { initialUsers: AdminUser[]
         tone="default"
         pending={pending}
         confirmDisabled={
-          pendingRoleChange?.role === 'centre_staff' && !pendingRoleChange.centreSlug
+          !!pendingRoleChange && needsCentre(pendingRoleChange.role, roles) && !pendingRoleChange.centreSlug
         }
         onConfirm={confirmRoleChange}
       >
-        {pendingRoleChange?.role === 'centre_staff' ? (
+        {pendingRoleChange && needsCentre(pendingRoleChange.role, roles) ? (
           <label className="mt-4 flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Centre</span>
             {centres.length > 0 ? (
@@ -578,7 +677,15 @@ function ResetPasswordDialog({
         return;
       }
       setPassword('');
-      onDone(`Password reset for ${user.name}.`);
+      onDone(
+        `Password reset for ${user.name}. ${
+          result.email === 'sent'
+            ? `The new password was emailed to ${user.email}.`
+            : result.email === 'failed'
+              ? 'The email could not be sent — share the password with them directly.'
+              : 'Email is not set up — share the password with them directly.'
+        }`,
+      );
     });
   }
 

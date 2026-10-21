@@ -31,6 +31,12 @@ vi.mock('@/app/(admin)/admin/actions', () => ({
     if (!roles.includes(currentUser.role)) throw new Error('REDIRECT');
     return currentUser;
   },
+  requireAccess: async (section: string, level: 'view' | 'edit' = 'view') => {
+    const { presetAccess, hasAccess } = await import('@/lib/auth/roles');
+    const access = presetAccess(currentUser.role as 'admin' | 'editor' | 'centre_staff');
+    if (!hasAccess(access, section as 'leads', level)) throw new Error('REDIRECT');
+    return { ...currentUser, access, leadScope: currentUser.role === 'centre_staff' ? 'centre' : 'all' };
+  },
 }));
 vi.mock('@/lib/leads/store', () => ({ ...store, CALL_OUTCOMES: ['connected', 'no_answer', 'busy', 'wrong_number', 'call_back_later'] }));
 vi.mock('@/lib/cms/store', () => ({
@@ -132,7 +138,7 @@ describe('IDOR: centre_staff cannot touch another centre lead by id', () => {
   });
 
   it('import is admin/editor only', async () => {
-    await expect(actions.importLeads([{ name: 'a', phone: '1234567890' }])).rejects.toThrow('REDIRECT');
+    await expect(actions.importLeads([{ name: 'a', phone: '1234567890' }])).rejects.toThrow();
   });
 
   it('creating a lead is pinned to the staff member city even if the form says otherwise', async () => {

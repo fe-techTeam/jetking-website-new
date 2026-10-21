@@ -1,4 +1,4 @@
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { isDatabaseConfigured } from '@/lib/db/client';
 import { listMedia } from '@/lib/media/store';
@@ -7,7 +7,7 @@ import { MediaGrid } from './MediaLibrary';
 export const metadata = { title: 'Media library | Jetking Admin' };
 
 export default async function MediaPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('media', 'view');
   const items = await listMedia();
 
   return (

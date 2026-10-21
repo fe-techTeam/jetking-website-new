@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import '@/styles/admin.css';
 import { adminLogout, getCurrentUser } from './actions';
-import { ROLE_LABEL, type Role } from '@/lib/auth/users';
+import type { Role, Section } from '@/lib/auth/roles';
 import { AdminSidebarNav } from './AdminSidebarNav';
 import { AdminShell } from './AdminShell';
 import { UserMenu } from './UserMenu';
@@ -35,13 +35,14 @@ export const metadata = {
 // heading whenever `group` changes between consecutive (role-filtered) items, so this array's order
 // IS the sidebar's visual order. The content entries come from `registry.ts` so the sidebar can't
 // drift from the collection pages or the Website map.
-type NavItem = { href: Route; label: string; icon: string; group: string; roles?: Role[]; tag?: string };
+// `roles` = only those built-in roles (admin-only screens); `section` = anyone whose role gives access to that section.
+type NavItem = { href: Route; label: string; icon: string; group: string; roles?: Role[]; section?: Section; tag?: string };
 
 /** Extra Website-group screens that are not record collections, placed after the website's collections. */
 const WEBSITE_TOOLS: NavItem[] = [
-  { href: '/admin/media' as Route, label: 'Media library', icon: 'Image', group: GROUP.website, roles: ['admin', 'editor'] },
-  { href: '/admin/seo' as Route, label: 'SEO overview', icon: 'Search', group: GROUP.website, roles: ['admin', 'editor'] },
-  { href: '/admin/redirects' as Route, label: 'Redirects', icon: 'Link2', group: GROUP.website, roles: ['admin', 'editor'] },
+  { href: '/admin/media' as Route, label: 'Media library', icon: 'Image', group: GROUP.website, section: 'media' },
+  { href: '/admin/seo' as Route, label: 'SEO overview', icon: 'Search', group: GROUP.website, section: 'seo' },
+  { href: '/admin/redirects' as Route, label: 'Redirects', icon: 'Link2', group: GROUP.website, section: 'redirects' },
 ];
 
 const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
@@ -50,7 +51,8 @@ const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
     label: c.label,
     icon: c.icon,
     group: c.group,
-    roles: c.roles ?? ['admin', 'editor'],
+    roles: c.roles,
+    section: c.roles ? undefined : 'content',
     // Collections the website does not render say so in the sidebar, not only on their own page. The
     // Jetking Guide group's heading already says it, so only the others need a tag.
     tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
@@ -58,8 +60,8 @@ const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
 );
 /** The assistant's own screens, listed at the top of the Chatbot group. */
 const CHATBOT_TOOLS: NavItem[] = [
-  { href: '/admin/chatbot' as Route, label: 'Chatbot overview', icon: 'Bot', group: GROUP.guide, roles: ['admin', 'editor'] },
-  { href: '/admin/chatbot-questions' as Route, label: 'Unanswered questions', icon: 'Inbox', group: GROUP.guide, roles: ['admin', 'editor'] },
+  { href: '/admin/chatbot' as Route, label: 'Chatbot overview', icon: 'Bot', group: GROUP.guide, section: 'chatbot' },
+  { href: '/admin/chatbot-questions' as Route, label: 'Unanswered questions', icon: 'Inbox', group: GROUP.guide, section: 'chatbot' },
 ];
 
 const lastWebsite = COLLECTION_NAV.map((i) => i.group).lastIndexOf(GROUP.website);
@@ -74,16 +76,22 @@ const CONTENT_NAV: NavItem[] = [
 
 const NAV: NavItem[] = [
   { href: '/admin' as Route, label: 'Dashboard', icon: 'LayoutGrid', group: 'Main' },
-  { href: '/admin/website' as Route, label: 'Website map', icon: 'Globe', group: 'Main', roles: ['admin', 'editor'] },
+  { href: '/admin/website' as Route, label: 'Website map', icon: 'Globe', group: 'Main', section: 'content' },
   ...CONTENT_NAV,
-  { href: '/admin/leads' as Route, label: 'Leads', icon: 'Users', group: 'CRM' },
+  { href: '/admin/leads' as Route, label: 'Leads', icon: 'Users', group: 'CRM', section: 'leads' },
   { href: '/admin/team' as Route, label: 'Team & access', icon: 'KeyRound', group: 'Administration', roles: ['admin'] },
   { href: '/admin/audit' as Route, label: 'Audit log', icon: 'History', group: 'Administration', roles: ['admin'] },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();
-  const nav = user ? NAV.filter((item) => !item.roles || item.roles.includes(user.role)) : [];
+  const nav = user
+    ? NAV.filter(
+        (item) =>
+          (!item.roles || (item.roles as readonly string[]).includes(user.role)) &&
+          (!item.section || user.access[item.section] !== 'none'),
+      ).map((item) => (item.section && user.access[item.section] === 'view' && !item.tag ? { ...item, tag: 'View only' } : item))
+    : [];
 
   const sidebar = user ? (
     <aside className="adm-sidebar flex h-full w-[272px] shrink-0 flex-col p-4">
@@ -106,7 +114,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <AdminSidebarNav items={nav} />
 
       <div className="mt-auto pt-4">
-        <UserMenu variant="sidebar" name={user.name} role={ROLE_LABEL[user.role]} logoutAction={adminLogout} />
+        <UserMenu variant="sidebar" name={user.name} role={user.roleLabel} logoutAction={adminLogout} />
       </div>
     </aside>
   ) : null;
@@ -132,7 +140,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <AdminShell
             sidebar={sidebar}
             navItems={nav}
-            user={{ name: user.name, role: ROLE_LABEL[user.role] }}
+            user={{ name: user.name, role: user.roleLabel }}
             logoutAction={adminLogout}
             liveContent={(process.env.CONTENT_SOURCE ?? 'admin') === 'admin'}
           >

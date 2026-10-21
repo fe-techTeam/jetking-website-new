@@ -1,6 +1,8 @@
 'use server';
 
-import { requireRole, type CurrentUser } from '../actions';
+import { redirect } from 'next/navigation';
+import type { Route } from 'next';
+import { requireAccess, type CurrentUser } from '../actions';
 import {
   createLead,
   deleteLead,
@@ -29,13 +31,11 @@ import { recordAudit } from '@/lib/audit/log';
 import { listUsers } from '@/lib/auth/users';
 import { safeError } from '@/lib/pii';
 
-const STAFF_ROLES = ['admin', 'editor', 'centre_staff'] as const;
-
-/** `centre_staff` only ever see/touch leads from their own centre's city,
+/** Members with centre-scoped lead access (centre staff, or a custom role set to "own centre") only ever see/touch leads from their own centre's city,
  *  resolved once per call against the real CMS centre/city records (see
  *  `resolveCentreCity`) rather than guessed from the centre slug's text. */
 async function scopeCityFor(user: CurrentUser): Promise<string | null> {
-  if (user.role !== 'centre_staff') return null;
+  if (user.leadScope !== 'centre') return null;
   if (!user.centreSlug) return null;
   return resolveCentreCity(user.centreSlug);
 }
@@ -46,14 +46,14 @@ function inScope(scopeCity: string | null, centreSlug: string | null, lead: Lead
 
 /** Fails closed: a centre_staff user whose centre cannot be resolved sees no leads (never all of them). */
 function scopeLeads(user: CurrentUser, scopeCity: string | null, leads: Lead[]): Lead[] {
-  return scopeLeadList(user.role === 'centre_staff', scopeCity, user.centreSlug, leads);
+  return scopeLeadList(user.leadScope === 'centre', scopeCity, user.centreSlug, leads);
 }
 
 async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Lead> {
   if (!isUuid(leadId)) throw new Error('Lead not found.');
   const lead = await getLead(leadId);
   if (!lead) throw new Error('Lead not found.');
-  if (user.role === 'centre_staff') {
+  if (user.leadScope === 'centre') {
     const scopeCity = await scopeCityFor(user);
     if (!inScope(scopeCity, user.centreSlug, lead)) throw new Error('Lead not found.');
   }
@@ -61,14 +61,14 @@ async function requireLeadInScope(leadId: string, user: CurrentUser): Promise<Le
 }
 
 export async function getLeads(): Promise<Lead[]> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'view');
   const scopeCity = await scopeCityFor(user);
   return scopeLeads(user, scopeCity, await listLeads());
 }
 
 export async function getLeadsSummary(): Promise<LeadStats> {
-  const user = await requireRole([...STAFF_ROLES]);
-  if (user.role !== 'centre_staff') return getLeadStats();
+  const user = await requireAccess('leads', 'view');
+  if (user.leadScope !== 'centre') return getLeadStats();
 
   const scopeCity = await scopeCityFor(user);
   const scoped = scopeLeads(user, scopeCity, await listLeads());
@@ -78,7 +78,7 @@ export async function getLeadsSummary(): Promise<LeadStats> {
 }
 
 export async function getLeadTimeline(leadId: string): Promise<LeadActivity[]> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'view');
   await requireLeadInScope(leadId, user);
   return listLeadActivities(leadId);
 }
@@ -86,8 +86,8 @@ export async function getLeadTimeline(leadId: string): Promise<LeadActivity[]> {
 export async function submitLead(
   formData: FormData,
 ): Promise<{ ok: true; lead: Lead } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
-  const defaultCity = user.role === 'centre_staff' ? await scopeCityFor(user) : null;
+  const user = await requireAccess('leads', 'edit');
+  const defaultCity = user.leadScope === 'centre' ? await scopeCityFor(user) : null;
 
   const raw = {
     name: String(formData.get('name') ?? ''),
@@ -95,7 +95,7 @@ export async function submitLead(
     email: String(formData.get('email') ?? ''),
     courseInterest: String(formData.get('courseInterest') ?? ''),
     // centre_staff can only add leads inside their own centre's city, whatever the form says.
-    city: user.role === 'centre_staff' ? (defaultCity ?? '') : String(formData.get('city') ?? ''),
+    city: user.leadScope === 'centre' ? (defaultCity ?? '') : String(formData.get('city') ?? ''),
     source: String(formData.get('source') ?? 'form'),
     persona: String(formData.get('persona') ?? ''),
     notes: String(formData.get('notes') ?? ''),
@@ -143,7 +143,7 @@ export async function moveLeadStatus(
   leadId: string,
   status: string,
 ): Promise<{ ok: true; lead: Lead } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
 
   const parsedStatus = leadStatusSchema.safeParse(status);
   if (!parsedStatus.success) {
@@ -163,7 +163,7 @@ export async function moveLeadStatus(
 }
 
 export async function addNote(leadId: string, note: string): Promise<{ ok: true } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   if (typeof note !== 'string' || !note.trim()) return { ok: false, error: 'Note is empty.' };
   if (note.length > 5000) return { ok: false, error: 'Note is too long.' };
   let lead: Lead;
@@ -178,7 +178,7 @@ export async function addNote(leadId: string, note: string): Promise<{ ok: true 
 }
 
 export async function removeLead(leadId: string): Promise<void> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   const lead = await requireLeadInScope(leadId, user);
   await deleteLead(leadId);
   void recordAudit(user, 'lead.delete', 'lead', leadId, `Deleted lead "${lead.name}"`);
@@ -200,8 +200,8 @@ async function leadsInScope(ids: string[], user: CurrentUser): Promise<Lead[]> {
 
 /** Names a lead can be assigned to: active staff. A centre's own staff only ever see themselves. */
 export async function listAssignees(): Promise<string[]> {
-  const user = await requireRole([...STAFF_ROLES]);
-  if (user.role === 'centre_staff') return [user.name];
+  const user = await requireAccess('leads', 'view');
+  if (user.leadScope === 'centre') return [user.name];
   try {
     return (await listUsers()).filter((u) => u.status === 'active').map((u) => u.name).sort((a, b) => a.localeCompare(b));
   } catch {
@@ -210,7 +210,7 @@ export async function listAssignees(): Promise<string[]> {
 }
 
 export async function assignLeads(ids: string[], assignee: string | null): Promise<{ ok: true; leads: Lead[] } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   const target = assignee?.trim() || null;
   if (target && target.length > 120) return { ok: false, error: 'That name is too long.' };
   const scoped = await leadsInScope(ids, user);
@@ -224,7 +224,7 @@ export async function assignLeads(ids: string[], assignee: string | null): Promi
 }
 
 export async function scheduleFollowUp(id: string, iso: string | null): Promise<{ ok: true; lead: Lead } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   let when: Date | null = null;
   if (iso) {
     when = new Date(iso);
@@ -242,7 +242,7 @@ export async function scheduleFollowUp(id: string, iso: string | null): Promise<
 }
 
 export async function recordCall(id: string, outcome: string, note: string): Promise<{ ok: true; lead: Lead } | { ok: false; error: string }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   if (!(CALL_OUTCOMES as readonly string[]).includes(outcome)) return { ok: false, error: 'Choose what happened on the call.' };
   try {
     await requireLeadInScope(id, user);
@@ -256,7 +256,7 @@ export async function recordCall(id: string, outcome: string, note: string): Pro
 }
 
 export async function removeLeads(ids: string[]): Promise<{ deleted: number }> {
-  const user = await requireRole([...STAFF_ROLES]);
+  const user = await requireAccess('leads', 'edit');
   const scoped = await leadsInScope(ids, user);
   await deleteLeads(scoped.map((l) => l.id));
   void recordAudit(user, 'lead.delete', 'lead', null, `Deleted ${scoped.length} lead(s)`);
@@ -266,7 +266,9 @@ export async function removeLeads(ids: string[]): Promise<{ deleted: number }> {
 const clean = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
 
 export async function importLeads(rows: ImportRow[]): Promise<{ added: number; duplicates: number; invalid: number }> {
-  const user = await requireRole(['admin', 'editor']);
+  const user = await requireAccess('leads', 'edit');
+  // Bulk import is for people who see every lead, never a single centre's staff.
+  if (user.leadScope === 'centre') redirect('/admin' as Route);
   if (!Array.isArray(rows)) return { added: 0, duplicates: 0, invalid: 0 };
   const capped = rows.slice(0, 2000);
   const valid = capped.filter((r) => r && typeof r.name === 'string' && r.name.trim() && (clean(r.phone) || clean(r.email)));

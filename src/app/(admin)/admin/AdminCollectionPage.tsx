@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { CmsCollection } from '@/lib/cms/types';
-import { getAdminCollection, requireRole } from './actions';
+import { getAdminCollection, requireContentAccess } from './actions';
 import { RecordEditor } from './RecordEditor';
 import { listCollection } from '@/lib/cms/store';
 import { collectionByKey } from './registry';
@@ -20,7 +20,7 @@ export async function AdminCollectionPage({
 }) {
   const meta = collectionByKey(collection);
   if (meta.hidden) notFound();
-  await requireRole(meta.roles ?? ['admin', 'editor']);
+  await requireContentAccess(meta.roles, 'view');
   const hidden = new Set(meta.hiddenRecordIds ?? []);
   const items = (await getAdminCollection(collection)).filter((r) => !hidden.has(String((r as unknown as Record<string, unknown>)[meta.idKey])));
   const sp = await searchParams;

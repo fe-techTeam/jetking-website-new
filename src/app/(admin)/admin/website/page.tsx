@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowUpRight, Code2, Database } from 'lucide-react';
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { COLLECTIONS, SITE_PAGES, collectionByKey } from '../registry';
 
 export const metadata = { title: 'Website map | Jetking Admin' };
 
 export default async function WebsiteMapPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('content', 'view');
 
   const fullyCode = SITE_PAGES.filter((p) => p.cms.length === 0).length;
   const mixed = SITE_PAGES.filter((p) => p.cms.length > 0 && p.code).length;

@@ -1,4 +1,4 @@
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { AdminPageHeader } from '../AdminPageHeader';
 import { listCollection } from '@/lib/cms/store';
 import { COPY_PAGES } from '@/lib/content/copy/registry';
@@ -14,7 +14,7 @@ const LEGAL_DOCS: Array<{ prefix: string; label: string; path: string }> = [
 ];
 
 export default async function SeoOverviewPage() {
-  await requireRole(['admin', 'editor']);
+  await requireAccess('seo', 'view');
 
   const overrides = (await listCollection('page_copy')) as unknown as Array<{
     id: string;

@@ -1,4 +1,4 @@
-import { requireRole } from '../actions';
+import { requireAccess } from '../actions';
 import { isDatabaseConfigured } from '@/lib/leads/store';
 import { LEAD_STATUSES } from '@/lib/leads/schema';
 import type { LeadStatus } from '@/lib/leads/store';
@@ -10,7 +10,7 @@ export default async function AdminLeadsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
-  const user = await requireRole(['admin', 'editor', 'centre_staff']);
+  const user = await requireAccess('leads', 'view');
   const params = await searchParams;
   const initialStatusFilter = LEAD_STATUSES.includes(params.status as LeadStatus)
     ? (params.status as LeadStatus)
@@ -39,5 +39,5 @@ export default async function AdminLeadsPage({
   // of "what can this role see," not a second copy that could drift from it.
   const leads = await getLeads();
 
-  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} me={user.name} canImport={user.role !== 'centre_staff'} />;
+  return <LeadsBoard initialLeads={leads} initialStatusFilter={initialStatusFilter} me={user.name} canImport={user.leadScope !== 'centre' && user.access.leads === 'edit'} />;
 }

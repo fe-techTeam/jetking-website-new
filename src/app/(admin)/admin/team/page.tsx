@@ -1,6 +1,7 @@
 import { requireRole } from '../actions';
 import { isDatabaseConfigured, listUsers } from '@/lib/auth/users';
 import { listCentreOptions } from '@/lib/leads/centre-scope';
+import { listCustomRoles } from '@/lib/auth/custom-roles';
 import { TeamTable } from './TeamTable';
 
 export default async function TeamPage() {
@@ -25,6 +26,6 @@ export default async function TeamPage() {
     );
   }
 
-  const [users, centres] = await Promise.all([listUsers(), listCentreOptions()]);
-  return <TeamTable initialUsers={users} centres={centres} />;
+  const [users, centres, roles] = await Promise.all([listUsers(), listCentreOptions(), listCustomRoles()]);
+  return <TeamTable initialUsers={users} centres={centres} initialRoles={roles} />;
 }

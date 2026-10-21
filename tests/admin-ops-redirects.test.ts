@@ -81,6 +81,13 @@ vi.mock('../src/app/(admin)/admin/actions', () => ({
     if (!allowed.includes(state.role)) throw new Error('REDIRECT:/admin');
     return { id: 'u1', name: 'Tester', role: state.role };
   },
+  requireAccess: async (section: string, level: 'view' | 'edit' = 'view') => {
+    const { presetAccess, hasAccess } = await import('@/lib/auth/roles');
+    if (!state.role) throw new Error('REDIRECT:/admin/login');
+    const access = presetAccess(state.role as 'admin' | 'editor' | 'centre_staff');
+    if (!hasAccess(access, section as 'content', level)) throw new Error('REDIRECT:/admin');
+    return { id: 'u1', name: 'Tester', role: state.role, access, leadScope: state.role === 'centre_staff' ? 'centre' : 'all' };
+  },
 }));
 vi.mock('@/lib/db/client', () => {
   const chain = (result: () => unknown) => {

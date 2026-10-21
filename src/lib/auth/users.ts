@@ -3,9 +3,9 @@ import { desc, eq, sql } from 'drizzle-orm';
 import { getDb, isDatabaseConfigured } from '@/lib/db/client';
 import { adminUsers, type AdminUser } from '@/lib/db/schema';
 import { hashPassword } from './password';
-import { ROLES, ROLE_LABEL, type Role } from './roles';
+import { ROLES, ROLE_LABEL, type Role, type UserRole } from './roles';
 
-export { isDatabaseConfigured, ROLES, ROLE_LABEL, type Role };
+export { isDatabaseConfigured, ROLES, ROLE_LABEL, type Role, type UserRole };
 
 function requireDb() {
   const db = getDb();
@@ -38,8 +38,10 @@ export async function createUser(input: {
   name: string;
   email: string;
   password: string;
-  role: Role;
+  role: UserRole;
   centreSlug?: string;
+  /** Required when role is 'custom'. */
+  customRoleId?: string;
 }): Promise<AdminUser> {
   const db = requireDb();
   const passwordHash = await hashPassword(input.password);
@@ -51,6 +53,7 @@ export async function createUser(input: {
       passwordHash,
       role: input.role,
       centreSlug: input.centreSlug || null,
+      customRoleId: input.role === 'custom' ? (input.customRoleId ?? null) : null,
     })
     .returning();
   if (!row) throw new Error('Insert did not return a row.');
@@ -59,7 +62,13 @@ export async function createUser(input: {
 
 export async function updateUser(
   id: string,
-  input: { name?: string; role?: Role; centreSlug?: string | null; status?: 'active' | 'disabled' },
+  input: {
+    name?: string;
+    role?: UserRole;
+    centreSlug?: string | null;
+    customRoleId?: string | null;
+    status?: 'active' | 'disabled';
+  },
 ): Promise<AdminUser | undefined> {
   const db = requireDb();
   const [row] = await db
