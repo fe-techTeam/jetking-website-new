@@ -65,7 +65,7 @@ export function BlogLanding({
 
       {show('cta') ? (
         <Section tone="plain" labelledBy="blog-cta">
-          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,min(24rem,42%))]">
             <div className="p-6 sm:p-10">
               <p className="text-[13px] font-bold tracking-[0.12em] text-[var(--k-red)] uppercase">{copy['cta.eyebrow']}</p>
               <h2 id="blog-cta" className="section-title mt-2.5 text-[var(--k-ink)]">

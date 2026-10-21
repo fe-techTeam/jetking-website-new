@@ -893,7 +893,7 @@ export function CoursePageTemplate({
       {/* ── 13. Call to action ──────────────────────────────────────────── */}
       {show('courseClosing') ? (
       <section className="cp-section shell">
-        <div className="cp-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div className="cp-card overflow-hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,min(24rem,42%))]">
           <div className="p-6 sm:p-10">
             <h2 className="cp-h2">{copy['courseClosing.title']}</h2>
             <p className="cp-lede mt-3">{copy['courseClosing.body']}</p>

@@ -150,7 +150,7 @@ export default async function FaqPage() {
         {/* ── Still have a question ─────────────────────────────────────── */}
         {show('more') ? (
         <Section tone="plain" labelledBy="faq-more">
-          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,min(24rem,42%))]">
             <div className="p-6 sm:p-10 md:p-12">
               <p className="k-eyebrow">{copy['more.eyebrow']}</p>
               <h2 id="faq-more" className="section-title mt-2.5 font-display text-[var(--k-ink)]">
