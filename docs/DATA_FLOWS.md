@@ -122,15 +122,33 @@ flowchart TB
 | `/api/journey/save` (soft save) | Yes | Yes when CRM can accept the payload |
 | Admin → Add lead | Yes | Yes (same hand-off; centre staff scoped centre used when present) |
 | Admin CSV Import | Yes | No — archival only, avoids flooding CRM |
+| Admin → Push to CRM / reconcile | Yes (status update) | Yes — pushes panel leads not yet matched (`none` / `failed` / `rejected` / `skipped`) |
 
 Smartrain (`CRM_PROVIDER=smartrain`) requires email + a CRM-mapped centre; incomplete leads stay in admin with `crmStatus: skipped`.
+
+### CRM reconciliation
+
+The CRM has **no lookup API**. Matching is inferred from push outcomes:
+
+| Panel `crmStatus` | Meaning |
+| --- | --- |
+| `routed` | This enquiry was saved as its own CRM entry — matched |
+| `duplicate` | CRM API rejected (mobile unique today) — still unmatched; retry or create separately in CRM UI |
+| `none` / `failed` / `rejected` / `skipped` | Unmatched — eligible for push |
+
+Admins can **Push unmatched to CRM** from `/admin/leads` (or a single lead / selection). Ops can also run `npm run reconcile:crm-leads` (supports `--dry-run` and `--limit N`).
+
+**Same mobile, multiple places:** the admin panel stores **one row per enquiry**. Smartrain validation is `mobile … unique:users` and `email … unique:users` — uniqueness is on the CRM **users** table, not per centre. Changing `center` therefore cannot create a second CRM user for the same number. Those panel rows stay unmatched (`duplicate`) for retry if the CRM relaxes `unique:users`, or staff add a separate enquiry in the CRM UI (if the product allows it outside this endpoint).
 
 ---
 
 ## 4. Chatbot factual answer path
 
+Gated by CMS **`chatbot_settings.enabled`** (Admin → Assistant settings → **Show on website**). Shared helper: `src/lib/chatbot/availability.ts` (`isChatbotPubliclyEnabled`). When off: no public links, `/chatbot` 404s, `/api/chat` and conversation routes return 404.
+
 ```mermaid
 flowchart TB
+  CMS[Show on website?]
   Msg[User text]
   Guard[guardMessage]
   Sess[CounsellingSession cookie/state]
@@ -142,7 +160,8 @@ flowchart TB
   Rank[rankHits demote SEO chrome]
   Gen[Ollama JSON blocks OR passagesAnswer]
 
-  Msg --> Guard --> Sess --> Intent
+  CMS -->|off| Stop[404]
+  CMS -->|on| Msg --> Guard --> Sess --> Intent
   Intent --> R1 --> R2 --> R3 --> Sem --> Rank --> Gen
 ```
 

@@ -98,6 +98,7 @@ export const exploreCopy = definePageCopy({
     'levels.diploma': 'Diploma Courses',
     'levels.certification': 'Career Courses',
     'levels.short': 'Short Courses',
+    'levels.suny': 'State University of New York Courses',
 
     // Why people choose + testimonial slider
     'why.titleLead': 'Why People Choose',
@@ -136,8 +137,8 @@ export const exploreCopy = definePageCopy({
     'universities.title': 'Collaboration with top universities & learning entities',
     'universities.0.name': 'Yenepoya (Deemed to be University)',
     'universities.0.image': '/university-partners/yenepoya.png',
-    'universities.1.name': 'Tilak Maharashtra Vidyapeeth, Pune',
-    'universities.1.image': '/university-partners/tilak-maharashtra-vidyapeeth.png',
+    'universities.1.name': 'State University of New York',
+    'universities.1.image': '/university-partners/suny.png',
     'universities.2.name': 'Pearson',
     'universities.2.image': '/university-partners/pearson.png',
     'universities.3.name': 'Lincoln University College',

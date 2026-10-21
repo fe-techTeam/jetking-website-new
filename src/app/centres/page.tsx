@@ -39,11 +39,13 @@ export default async function CentresPage({
           slug: c.slug,
           name: c.name,
           citySlug: c.citySlug,
+          cityName: cities.find((city) => city.slug === c.citySlug)?.name ?? c.citySlug,
           addressLine: c.addressLine,
           locality: c.locality,
           state: c.state,
           pincode: c.pincode,
           phone: c.phone,
+          geo: c.geo,
         }))}
         initialQuery={typeof rawQuery === 'string' ? rawQuery : ''}
       />

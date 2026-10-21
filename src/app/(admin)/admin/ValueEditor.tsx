@@ -25,6 +25,7 @@ const IMAGE_FIELDS = /(^|[a-z])(image|img|photo|logo|thumbnail|avatar|cover|bann
 /** Field names whose data key predates the website's wording. The site says "courses" everywhere. */
 const LABEL_OVERRIDES: Record<string, string> = {
   featuredProgrammes: 'Featured courses',
+  hasDetailPage: 'Detail page',
   titleLead: 'Heading — first part',
   titleAccent: 'Heading — highlighted part',
   lede: 'Intro line',
@@ -42,6 +43,7 @@ const LABEL_OVERRIDES: Record<string, string> = {
   startsAt: 'Starts',
   endsAt: 'Ends',
   legacyPath: 'Old URL (legacy)',
+  disabledMessage: 'Message when hidden',
 };
 
 export function humanize(key: string): string {
@@ -326,19 +328,39 @@ export function ValueEditor({
   }
 
   if (typeof value === 'boolean') {
+    const chatbotAvailability = fieldKey === 'enabled' && context?.id === 'chatbot';
+    const showHide = fieldKey === 'hasDetailPage' || chatbotAvailability;
+    const onLabel = showHide ? 'Show' : 'Yes';
+    const offLabel = showHide ? 'Hide' : 'No';
     return (
-      <button
-        type="button"
-        role="switch"
-        aria-checked={value}
-        onClick={() => onChange(!value)}
-        className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium text-foreground-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
-      >
-        <span aria-hidden="true" className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${value ? 'bg-growth-600' : 'bg-border-medium'}`}>
-          <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform ${value ? 'translate-x-6' : 'translate-x-1'}`} />
-        </span>
-        {value ? 'Yes' : 'No'}
-      </button>
+      <div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={value}
+          onClick={() => onChange(!value)}
+          className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium text-foreground-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+        >
+          <span aria-hidden="true" className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${value ? 'bg-growth-600' : 'bg-border-medium'}`}>
+            <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow transition-transform ${value ? 'translate-x-6' : 'translate-x-1'}`} />
+          </span>
+          {value ? onLabel : offLabel}
+        </button>
+        {fieldKey === 'hasDetailPage' ? (
+          <p className="mt-1 text-xs text-foreground-muted">
+            {value
+              ? 'This course has its own page at /courses/…'
+              : 'Listed in the catalogue only — cards and menus open the enquiry form instead.'}
+          </p>
+        ) : null}
+        {chatbotAvailability ? (
+          <p className="mt-1 text-xs text-foreground-muted">
+            {value
+              ? 'Jetking AI is on the site: header button, Ask links, FAQ/sitemap links, and /chatbot all work.'
+              : 'Jetking AI is off everywhere: no public links, /chatbot returns 404, and chat APIs refuse requests.'}
+          </p>
+        ) : null}
+      </div>
     );
   }
 

@@ -21,7 +21,8 @@ export const sitemapCopy = definePageCopy({
   label: 'Sitemap page',
   path: '/sitemap',
   group: 'Pages',
-  description: 'The HTML sitemap page. Use Show or hide sections to turn blocks on or off.',
+  description:
+    'The HTML sitemap page. Use Show or hide sections to turn blocks on or off. Jetking AI links are listed only when Chatbot → Assistant settings → Show on website is on.',
   defaults: {
     ...sectionVisibilityDefaults(SITEMAP_SECTIONS),
     ...seoFieldDefaults(),

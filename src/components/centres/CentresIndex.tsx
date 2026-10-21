@@ -3,12 +3,16 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Building2, ChevronDown, Map as MapIcon, MapPin, Phone, Search, X } from 'lucide-react';
+import { Building2, ChevronDown, LocateFixed, Map as MapIcon, MapPin, Phone, Search, X } from 'lucide-react';
 import { track } from '@/lib/analytics';
 import { centrePath } from '@/lib/centre-path';
 import { usePersona } from '@/persona/PersonaProvider';
 import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
 import { subscribeCentresSearch } from './CentresHeroSearch';
+import {
+  subscribeCentresNearMe,
+  type NearMeDetail,
+} from './CentresNearMe';
 import { fill } from '@/lib/content/copy/define';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
@@ -17,11 +21,13 @@ type CentreSummary = {
   slug: string;
   name: string;
   citySlug: string;
+  cityName?: string;
   addressLine: string;
   locality: string;
   state: string;
   pincode: string;
   phone?: string;
+  geo?: { lat: number; lng: number } | null;
 };
 
 function matchesCity(city: CitySummary, needle: string): boolean {
@@ -81,6 +87,7 @@ export function CentresIndex({
   const [query, setQuery] = useState(initialQuery);
   const [activeState, setActiveState] = useState<string | null>(null);
   const [activeCity, setActiveCity] = useState<string | null>(null);
+  const [nearMe, setNearMe] = useState<NearMeDetail | null>(null);
   const trackedRef = useRef('');
 
   /*
@@ -93,17 +100,37 @@ export function CentresIndex({
   const [openFacet, setOpenFacet] = useState<'state' | 'city' | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  // First appearance in the CMS-ordered centres list drives city/state order
+  // (name / manual / shuffle from Centres settings).
+  const cityOrderIndex = useMemo(() => {
+    const map = new Map<string, number>();
+    centres.forEach((c, i) => {
+      if (!map.has(c.citySlug)) map.set(c.citySlug, i);
+    });
+    return map;
+  }, [centres]);
+
   const states = useMemo(() => {
     const map = new Map<string, number>();
     for (const city of cities) {
       const count = centres.filter((c) => c.citySlug === city.slug).length;
       map.set(city.state, (map.get(city.state) ?? 0) + count);
     }
-    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
-  }, [cities, centres]);
+    return [...map.entries()].sort(([a], [b]) => {
+      const aIdx = Math.min(
+        ...cities.filter((c) => c.state === a).map((c) => cityOrderIndex.get(c.slug) ?? Number.POSITIVE_INFINITY),
+      );
+      const bIdx = Math.min(
+        ...cities.filter((c) => c.state === b).map((c) => cityOrderIndex.get(c.slug) ?? Number.POSITIVE_INFINITY),
+      );
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      return a.localeCompare(b);
+    });
+  }, [cities, centres, cityOrderIndex]);
 
   // Results are grouped State > City — same shape as the sidebar facets, so
   // browsing the whole country reads as one hierarchy instead of two.
+  // When near-me is active, that state (and city within it) sort first.
   const citiesByState = useMemo(() => {
     const byState = new Map<string, CitySummary[]>();
     for (const city of cities) {
@@ -111,14 +138,29 @@ export function CentresIndex({
       if (list) list.push(city);
       else byState.set(city.state, [city]);
     }
-    return states.map(([state, count]) => ({
+    const rows = states.map(([state, count]) => ({
       state,
       count,
       cities: (byState.get(state) ?? [])
         .slice()
-        .sort((a, b) => a.name.localeCompare(b.name)),
+        .sort((a, b) => {
+          if (nearMe) {
+            if (a.slug === nearMe.citySlug) return -1;
+            if (b.slug === nearMe.citySlug) return 1;
+          }
+          const aIdx = cityOrderIndex.get(a.slug) ?? Number.POSITIVE_INFINITY;
+          const bIdx = cityOrderIndex.get(b.slug) ?? Number.POSITIVE_INFINITY;
+          if (aIdx !== bIdx) return aIdx - bIdx;
+          return a.name.localeCompare(b.name);
+        }),
     }));
-  }, [cities, states]);
+    if (!nearMe) return rows;
+    return rows.slice().sort((a, b) => {
+      if (a.state === nearMe.state) return -1;
+      if (b.state === nearMe.state) return 1;
+      return 0;
+    });
+  }, [cities, states, nearMe, cityOrderIndex]);
 
   /*
    * The results list itself is grouped State > City, each level its own
@@ -165,7 +207,31 @@ export function CentresIndex({
     window.history.replaceState(null, '', next);
   }, [query, hydrated]);
 
-  useEffect(() => subscribeCentresSearch((next) => setQuery(next)), []);
+  useEffect(() => subscribeCentresSearch((next) => {
+    setNearMe(null);
+    setQuery(next);
+  }), []);
+
+  useEffect(
+    () =>
+      subscribeCentresNearMe((detail) => {
+        setQuery('');
+        setNearMe(detail);
+        setActiveState(detail.state);
+        setActiveCity(detail.citySlug);
+        setOpenResultStates({ [detail.state]: true });
+        setOpenResultCities({ [detail.citySlug]: true });
+        // Wait a frame so filters/open state paint before scrolling to the card.
+        window.requestAnimationFrame(() => {
+          window.setTimeout(() => {
+            document
+              .getElementById(`centre-${detail.slug}`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 80);
+        });
+      }),
+    [],
+  );
 
   const needle = query.trim().toLowerCase();
 
@@ -226,6 +292,7 @@ export function CentresIndex({
   }, [cities, centres, needle, activeState, activeCity]);
 
   function onSearchChange(value: string) {
+    setNearMe(null);
     setQuery(value);
     const trimmed = value.trim();
     if (trimmed.length >= 2 && trimmed !== trackedRef.current) {
@@ -238,13 +305,30 @@ export function CentresIndex({
   }
 
   function clearFilters() {
+    setNearMe(null);
     setActiveState(null);
     setActiveCity(null);
     onSearchChange('');
   }
 
-  const hasActiveFilters = Boolean(activeState || activeCity || needle);
+  function clearNearMe() {
+    setNearMe(null);
+    setActiveState(null);
+    setActiveCity(null);
+  }
+
+  const hasActiveFilters = Boolean(activeState || activeCity || needle || nearMe);
   const unitFor = (n: number) => (n === 1 ? copy['units.centreOne'] : copy['units.centreMany']);
+
+  function centresForCity(citySlug: string) {
+    const list = centres.filter((c) => c.citySlug === citySlug);
+    if (!nearMe) return list;
+    return list.slice().sort((a, b) => {
+      if (a.slug === nearMe.slug) return -1;
+      if (b.slug === nearMe.slug) return 1;
+      return 0;
+    });
+  }
 
   return (
     <section
@@ -338,6 +422,7 @@ export function CentresIndex({
                 <FilterButton
                   active={!activeState}
                   onClick={() => {
+                    setNearMe(null);
                     setActiveState(null);
                     setActiveCity(null);
                   }}
@@ -350,6 +435,7 @@ export function CentresIndex({
                   <FilterButton
                     active={activeState === state}
                     onClick={() => {
+                      setNearMe(null);
                       setActiveState(state);
                       setActiveCity(null);
                     }}
@@ -375,7 +461,10 @@ export function CentresIndex({
               <li>
                 <FilterButton
                   active={!activeCity}
-                  onClick={() => setActiveCity(null)}
+                  onClick={() => {
+                    setNearMe(null);
+                    setActiveCity(null);
+                  }}
                   label={copy['directoryIndex.allCities']}
                   count={
                     activeState
@@ -390,7 +479,10 @@ export function CentresIndex({
                   <li key={city.slug}>
                     <FilterButton
                       active={activeCity === city.slug}
-                      onClick={() => setActiveCity(city.slug)}
+                      onClick={() => {
+                        setNearMe(null);
+                        setActiveCity(city.slug);
+                      }}
                       label={city.name}
                       count={cityCount}
                       icon={MapPin}
@@ -449,6 +541,7 @@ export function CentresIndex({
                   <SheetChip
                     active={!activeState}
                     onClick={() => {
+                      setNearMe(null);
                       setActiveState(null);
                       setActiveCity(null);
                     }}
@@ -460,6 +553,7 @@ export function CentresIndex({
                       key={state}
                       active={activeState === state}
                       onClick={() => {
+                        setNearMe(null);
                         setActiveState(state);
                         setActiveCity(null);
                       }}
@@ -471,7 +565,10 @@ export function CentresIndex({
                 <SheetFacet label={activeState ? fill(copy['directoryIndex.cityInState'], { state: activeState }) : copy['directoryIndex.cityLabel']}>
                   <SheetChip
                     active={!activeCity}
-                    onClick={() => setActiveCity(null)}
+                    onClick={() => {
+                      setNearMe(null);
+                      setActiveCity(null);
+                    }}
                     label={copy['directoryIndex.allCities']}
                     count={activeState ? (matchCountByState.get(activeState) ?? 0) : matchCountAll}
                   />
@@ -479,7 +576,10 @@ export function CentresIndex({
                     <SheetChip
                       key={city.slug}
                       active={activeCity === city.slug}
-                      onClick={() => setActiveCity(city.slug)}
+                      onClick={() => {
+                        setNearMe(null);
+                        setActiveCity(city.slug);
+                      }}
                       label={city.name}
                       count={matchCountByCity.get(city.slug) ?? 0}
                     />
@@ -496,6 +596,7 @@ export function CentresIndex({
                         key: 'state',
                         label: activeState,
                         onRemove: () => {
+                          setNearMe(null);
                           setActiveState(null);
                           setActiveCity(null);
                         },
@@ -507,13 +608,41 @@ export function CentresIndex({
                       {
                         key: 'city',
                         label: cities.find((c) => c.slug === activeCity)?.name ?? activeCity,
-                        onRemove: () => setActiveCity(null),
+                        onRemove: () => {
+                          setNearMe(null);
+                          setActiveCity(null);
+                        },
                       },
                     ]
                   : []),
               ]}
             />
           </div>
+
+          {nearMe ? (
+            <div
+              role="status"
+              className="mb-4 flex flex-col gap-3 rounded-[16px] border border-[var(--dc-accent-soft)]/35 bg-[var(--dc-accent-tint)] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5"
+            >
+              <p className="flex items-start gap-2.5 text-[14px] font-semibold text-[var(--dc-ink)] sm:items-center">
+                <LocateFixed
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--dc-accent-soft)] sm:mt-0"
+                  strokeWidth={2.25}
+                  aria-hidden="true"
+                />
+                <span>
+                  {fill(copy['directoryNearMe.found'], { name: nearMe.name })}
+                </span>
+              </p>
+              <button
+                type="button"
+                onClick={clearNearMe}
+                className="shrink-0 self-start text-[13px] font-bold text-[var(--dc-accent-soft)] transition-colors hover:text-[var(--dc-ink)] sm:self-auto"
+              >
+                {copy['directoryNearMe.clear']}
+              </button>
+            </div>
+          ) : null}
 
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <p
@@ -615,9 +744,7 @@ export function CentresIndex({
                               : ''
                           }
                         >
-                          {centres
-                            .filter((c) => c.citySlug === stateCities[0]!.slug)
-                            .map((centre) => (
+                          {centresForCity(stateCities[0]!.slug).map((centre) => (
                               <CentreCard
                                 key={centre.slug}
                                 centre={centre}
@@ -629,9 +756,7 @@ export function CentresIndex({
                         </ul>
                       ) : (
                         stateCities.map((city) => {
-                          const cityCentres = centres.filter(
-                            (c) => c.citySlug === city.slug,
-                          );
+                          const cityCentres = centresForCity(city.slug);
                           const cityVisible = cityMatchesFilters(
                             city,
                             cityCentres,

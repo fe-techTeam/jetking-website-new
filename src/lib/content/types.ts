@@ -36,7 +36,7 @@ export interface ImageRef {
 /* Courses                                                                    */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export type CourseLevel = 'degree' | 'diploma' | 'certification' | 'short';
+export type CourseLevel = 'degree' | 'diploma' | 'certification' | 'short' | 'suny';
 
 /**
  * Structured fee data. The AI Guide renders this through a deterministic
@@ -102,6 +102,11 @@ export interface Course {
   heroImage?: ImageRef;
   seo: Seo;
   featured?: boolean;
+  /**
+   * When false, the course appears in the catalogue / menus but has no detail page
+   * (`/courses/[slug]` 404s; cards and links go to enquiry instead). Default: true.
+   */
+  hasDetailPage?: boolean;
   updatedAt: string;
 
   /*
@@ -285,6 +290,11 @@ export interface Centre {
   /** Student testimonials from the live centre page. */
   testimonials?: CentreTestimonial[];
   geo?: { lat: number; lng: number };
+  /**
+   * Manual list position (lower first). Used when Centres settings → list sort is “Manual”.
+   * Stored in centre `details` jsonb — no DB migration.
+   */
+  sortOrder?: number;
   coursesOffered: string[];
   seo: Seo;
   updatedAt: string;
@@ -408,11 +418,26 @@ export interface SeoSettings {
   };
 }
 
+/**
+ * How the public centre directory (and other centre lists) are ordered — one document (id `centres`).
+ * Manual order uses each centre’s `sortOrder`; shuffle reshuffles on a fixed day interval.
+ */
+export interface CentresSettings {
+  id: 'centres';
+  listSort: 'name' | 'manual' | 'shuffle';
+  /** Days a shuffle order stays fixed before reshuffling (1 = daily, 7 = weekly). */
+  shuffleEveryDays: number;
+}
+
 /** How the Jetking AI assistant presents itself and what it says when it cannot answer — one document (id `chatbot`). */
 export interface ChatbotSettings {
   id: 'chatbot';
-  /** Off: the chat page shows `disabledMessage` and the API refuses new questions. */
+  /**
+   * Off: Jetking AI is unavailable site-wide — no public links, `/chatbot` 404s,
+   * and chat APIs return 404. Admin can still edit settings and knowledge.
+   */
   enabled: boolean;
+  /** Kept for staff notes; not shown on the public site when the assistant is off. */
   disabledMessage: string;
   name: string;
   welcomeMessage: string;
@@ -827,6 +852,8 @@ export interface ContentSource {
   getSeoSettings(): Promise<SeoSettings>;
   /** Assistant settings; the in-repo defaults when none is published. */
   getChatbotSettings(): Promise<ChatbotSettings>;
+  /** Centre-list sort mode; in-repo defaults when none is published. */
+  getCentresSettings(): Promise<CentresSettings>;
   /** Published Q&A entries written for the assistant. */
   listChatbotKnowledge(): Promise<ChatbotKnowledge[]>;
 

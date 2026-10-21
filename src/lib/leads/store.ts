@@ -23,6 +23,17 @@ export async function listLeads(): Promise<Lead[]> {
   return db.select().from(leads).orderBy(desc(leads.createdAt));
 }
 
+/** Leads whose CRM hand-off status is one of `statuses` (e.g. unmatched for reconcile). */
+export async function listLeadsByCrmStatus(statuses: readonly string[]): Promise<Lead[]> {
+  if (statuses.length === 0) return [];
+  const db = requireDb();
+  return db
+    .select()
+    .from(leads)
+    .where(inArray(leads.crmStatus, [...statuses]))
+    .orderBy(desc(leads.createdAt));
+}
+
 export async function getLead(id: string): Promise<Lead | undefined> {
   const db = requireDb();
   const [row] = await db.select().from(leads).where(eq(leads.id, id)).limit(1);

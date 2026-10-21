@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { Route } from 'next';
 import { Bot, MessageSquare } from 'lucide-react';
 import { useAccount } from '@/components/account/AccountProvider';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 import { Button, ButtonLink } from '@/components/ui';
 import { useLocations } from '@/features/jetking-ai/account/use-locations';
 import type { ConversationSummary } from '@/lib/chatbot/types';
@@ -17,6 +18,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'sh
  */
 export function AccountView() {
   const { user, ready, openAuth, logout } = useAccount();
+  const chatbotEnabled = useChatbotEnabled();
   const [chats, setChats] = useState<ConversationSummary[] | null>(null);
   const userId = user?.id;
   const tree = useLocations(Boolean(user?.city));
@@ -25,7 +27,7 @@ export function AccountView() {
   const centreName = cityNode?.centres.find((c) => c.slug === user?.centre)?.name;
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !chatbotEnabled) return;
     let cancelled = false;
     fetch('/api/chatbot/conversations')
       .then((r) => (r.ok ? r.json() : { conversations: [] }))
@@ -38,7 +40,7 @@ export function AccountView() {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, chatbotEnabled]);
 
   if (!ready) {
     return <p className="mt-6 text-foreground-muted">Loading…</p>;
@@ -89,38 +91,40 @@ export function AccountView() {
         </Button>
       </section>
 
-      <section aria-labelledby="account-chats" className="rounded-[20px] border border-border bg-surface p-6 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="account-chats" className="font-display text-xl font-extrabold text-foreground">
-            Saved Jetking AI chats
-          </h2>
-          <ButtonLink href={'/chatbot' as Route} size="sm">
-            <Bot className="h-4 w-4" aria-hidden="true" />
-            Open Jetking AI
-          </ButtonLink>
-        </div>
+      {chatbotEnabled ? (
+        <section aria-labelledby="account-chats" className="rounded-[20px] border border-border bg-surface p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="account-chats" className="font-display text-xl font-extrabold text-foreground">
+              Saved Jetking AI chats
+            </h2>
+            <ButtonLink href={'/chatbot' as Route} size="sm">
+              <Bot className="h-4 w-4" aria-hidden="true" />
+              Open Jetking AI
+            </ButtonLink>
+          </div>
 
-        {chats === null ? (
-          <p className="mt-5 text-foreground-muted">Loading your chats…</p>
-        ) : chats.length === 0 ? (
-          <p className="mt-5 text-[15px] leading-relaxed text-foreground-secondary">
-            No saved chats yet. Chats you have while logged in show up here, and you can pick them up again
-            in Jetking AI.
-          </p>
-        ) : (
-          <ul className="mt-5 divide-y divide-border">
-            {chats.map((chat) => (
-              <li key={chat.id} className="flex items-center gap-3 py-3">
-                <MessageSquare className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
-                <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-foreground">{chat.title}</span>
-                <time dateTime={chat.updatedAt} className="shrink-0 text-sm text-foreground-muted">
-                  {dateFormat.format(new Date(chat.updatedAt))}
-                </time>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {chats === null ? (
+            <p className="mt-5 text-foreground-muted">Loading your chats…</p>
+          ) : chats.length === 0 ? (
+            <p className="mt-5 text-[15px] leading-relaxed text-foreground-secondary">
+              No saved chats yet. Chats you have while logged in show up here, and you can pick them up again
+              in Jetking AI.
+            </p>
+          ) : (
+            <ul className="mt-5 divide-y divide-border">
+              {chats.map((chat) => (
+                <li key={chat.id} className="flex items-center gap-3 py-3">
+                  <MessageSquare className="h-4 w-4 shrink-0 text-foreground-muted" aria-hidden="true" />
+                  <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-foreground">{chat.title}</span>
+                  <time dateTime={chat.updatedAt} className="shrink-0 text-sm text-foreground-muted">
+                    {dateFormat.format(new Date(chat.updatedAt))}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }

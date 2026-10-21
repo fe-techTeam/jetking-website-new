@@ -830,7 +830,7 @@ export function CentreDetail({
         </Section>
       ) : null}
 
-      <StickyCentreBar anchorId="centre-hero-cta" centreSlug={centre.slug} phoneHref={phoneHref} copy={copy} />
+      <StickyCentreBar anchorId="centre-hero-cta" centreSlug={centre.slug} copy={copy} />
     </div>
   );
 }

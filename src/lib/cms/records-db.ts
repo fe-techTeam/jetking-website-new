@@ -1,6 +1,6 @@
 import 'server-only';
 import { and, asc, eq, sql } from 'drizzle-orm';
-import { getDb, isDbDown, markDbDown } from '@/lib/db/client';
+import { getDb, isDbDown, logDbFallback } from '@/lib/db/client';
 import { cmsRecords, cmsSeeded } from '@/lib/db/schema';
 
 /**
@@ -73,8 +73,7 @@ export async function listRecordRows(
     }
     return opts.publishedOnly ? all.rows.filter((r) => r.status === 'published') : all.rows;
   } catch (error) {
-    markDbDown();
-    console.error(`[cms:records] reading "${collection}" from Postgres failed — falling back to the file store.`, error);
+    logDbFallback('cms:records', `reading "${collection}" failed — using file store`, error);
     return null;
   }
 }

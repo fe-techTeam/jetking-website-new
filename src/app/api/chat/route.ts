@@ -462,10 +462,10 @@ export async function POST(req: Request): Promise<Response> {
     return Response.json({ ok: false, reason: 'bad-request' }, { status: 400 });
   }
 
-  // What the assistant says when it cannot answer, and whether it is on at all — edited in the admin (Chatbot → Assistant settings).
+  // Greeting / no-match copy and on/off — Admin → Assistant settings (CMS).
   const settings = await content.getChatbotSettings();
   if (!settings.enabled) {
-    return Response.json({ ok: true, text: settings.disabledMessage, reasoning: ['The assistant is switched off.'], followUps: [] });
+    return Response.json({ ok: false, reason: 'unavailable' }, { status: 404 });
   }
   const GATE_TEXT = settings.noMatchReply;
 

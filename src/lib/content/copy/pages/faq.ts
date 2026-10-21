@@ -15,7 +15,8 @@ export const faqCopy = definePageCopy({
   label: 'FAQ',
   path: '/faq',
   group: 'Pages',
-  description: 'The FAQ page heading and intro. Use Show or hide sections to turn blocks on or off.',
+  description:
+    'The FAQ page heading and intro. Use Show or hide sections to turn blocks on or off. The Ask Jetking AI link appears only when Chatbot → Assistant settings → Show on website is on.',
   defaults: {
     ...sectionVisibilityDefaults(FAQ_SECTIONS),
     ...seoFieldDefaults(),

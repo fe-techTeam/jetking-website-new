@@ -5,6 +5,7 @@ import type {
   AboutPageContent,
   Announcement,
   SeoSettings,
+  CentresSettings,
   ChatbotSettings,
   ChatbotKnowledge,
   Centre,
@@ -39,6 +40,7 @@ import {
   policies as seedPolicies,
 } from '@/lib/content/fixtures/kb';
 import { chatbotSettingsDefaults } from '@/lib/content/fixtures/chatbot';
+import { centresSettingsDefaults } from '@/lib/content/fixtures/centres-settings';
 import { seoSettingsDefaults } from '@/lib/content/fixtures/seo-settings';
 import { aboutDefaults } from '@/lib/content/fixtures/about';
 import { legalDefaults } from '@/lib/content/fixtures/legal';
@@ -93,6 +95,7 @@ export interface CmsStore {
   page_copy: WithStatus<PageCopyRecord>[];
   announcements: WithStatus<Announcement>[];
   seo_settings: WithStatus<SeoSettings>[];
+  centres_settings: WithStatus<CentresSettings>[];
   chatbot_settings: WithStatus<ChatbotSettings>[];
   chatbot_knowledge: WithStatus<ChatbotKnowledge>[];
 }
@@ -126,6 +129,7 @@ function seedStore(): CmsStore {
     // No overrides until an editor changes something: every page starts on its shipped text.
     page_copy: [],
     seo_settings: published([seoSettingsDefaults]),
+    centres_settings: published([centresSettingsDefaults]),
     chatbot_settings: published([chatbotSettingsDefaults]),
     chatbot_knowledge: [],
     // One disabled example so the editor has something to copy; nothing shows on the site until published.

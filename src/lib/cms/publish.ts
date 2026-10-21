@@ -17,6 +17,10 @@ export async function publishContent(opts?: { paths?: string[] }): Promise<void>
     '/privacy-policy',
     '/terms-conditions',
     '/enrollment-terms-and-conditions',
+    '/chatbot',
+    '/faq',
+    '/sitemap',
+    '/account',
     '/admin',
   ];
   for (const p of paths) {
@@ -26,7 +30,7 @@ export async function publishContent(opts?: { paths?: string[] }): Promise<void>
       // ignore outside request context
     }
   }
-  // Page text can change copy anywhere (including the header and footer), so refresh the whole site.
+  // Page text and chatbot Availability change chrome site-wide (header, Ask links, layout provider).
   try {
     revalidatePath('/', 'layout');
   } catch {

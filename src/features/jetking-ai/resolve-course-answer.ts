@@ -18,6 +18,7 @@ const LEVEL_LABEL: Record<CourseLevel, string> = {
   diploma: 'Diploma / Career',
   certification: 'Certification',
   short: 'Short course',
+  suny: 'State University of New York',
 };
 
 const CATALOGUE_RE =
@@ -117,7 +118,7 @@ function formatCatalogue(courses: Course[], heading: string): string {
     list.push(c);
     byLevel.set(c.level, list);
   }
-  const order: CourseLevel[] = ['degree', 'diploma', 'certification', 'short'];
+  const order: CourseLevel[] = ['degree', 'diploma', 'certification', 'short', 'suny'];
   const lines: string[] = [`## ${heading}`, ''];
   for (const level of order) {
     const group = byLevel.get(level);

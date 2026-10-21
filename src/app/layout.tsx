@@ -24,6 +24,8 @@ import { loadCopy } from '@/lib/content/copy/load';
 import { siteCopy } from '@/lib/content/copy/pages/site';
 import { isSectionVisible } from '@/lib/content/copy/sections';
 import { SiteCopyProvider } from '@/components/providers/site-copy';
+import { ChatbotEnabledProvider } from '@/components/providers/chatbot-enabled';
+import { isChatbotPubliclyEnabled } from '@/lib/chatbot/availability';
 import '@/styles/globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -70,7 +72,10 @@ const fira = Fira_Sans({
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const copy = await loadCopy(siteCopy);
   const showChrome = (id: string) => isSectionVisible(copy, id);
-  const seoSettings = await content.getSeoSettings();
+  const [seoSettings, chatbotEnabled] = await Promise.all([
+    content.getSeoSettings(),
+    isChatbotPubliclyEnabled(),
+  ]);
   // Demo/debug only — never ship to visitors unless explicitly opted in on staging.
   const showInspector = process.env.NEXT_PUBLIC_SHOW_INSPECTOR === 'true';
 
@@ -95,40 +100,42 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <TrackingScripts />
         <AppProviders>
           <SiteCopyProvider copy={copy}>
-            <JsonLd data={[organizationSchema(seoSettings.organization), websiteSchema()]} />
-            <a
-              href="#main"
-              className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-            >
-              {copy['a11y.skipToContent']}
-            </a>
+            <ChatbotEnabledProvider enabled={chatbotEnabled}>
+              <JsonLd data={[organizationSchema(seoSettings.organization), websiteSchema()]} />
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-jk-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+              >
+                {copy['a11y.skipToContent']}
+              </a>
 
-            <PersonaProvider>
-              <AccountProvider>
-                <EnquirySheetServer>
-                  <SilentPersonaInfer />
-                  {showChrome('announcement') || showChrome('header') ? (
-                    <SiteChrome>
-                      {showChrome('announcement') ? <AnnouncementBarServer /> : null}
-                      {showChrome('header') ? <SiteHeaderServer /> : null}
-                    </SiteChrome>
-                  ) : null}
-                  <main id="main">{children}</main>
-                  {showChrome('footer') ? (
-                    <FooterChrome>
-                      <SiteFooter />
-                    </FooterChrome>
-                  ) : null}
-                  {showChrome('mobileBar') || showChrome('exitIntent') || showInspector ? (
-                    <SiteChrome>
-                      {showChrome('mobileBar') ? <MobileContactBar /> : null}
-                      {showChrome('exitIntent') ? <ExitIntentPopup /> : null}
-                      {showInspector ? <PersonaInspector /> : null}
-                    </SiteChrome>
-                  ) : null}
-                </EnquirySheetServer>
-              </AccountProvider>
-            </PersonaProvider>
+              <PersonaProvider>
+                <AccountProvider>
+                  <EnquirySheetServer>
+                    <SilentPersonaInfer />
+                    {showChrome('announcement') || showChrome('header') ? (
+                      <SiteChrome>
+                        {showChrome('announcement') ? <AnnouncementBarServer /> : null}
+                        {showChrome('header') ? <SiteHeaderServer /> : null}
+                      </SiteChrome>
+                    ) : null}
+                    <main id="main">{children}</main>
+                    {showChrome('footer') ? (
+                      <FooterChrome>
+                        <SiteFooter />
+                      </FooterChrome>
+                    ) : null}
+                    {showChrome('mobileBar') || showChrome('exitIntent') || showInspector ? (
+                      <SiteChrome>
+                        {showChrome('mobileBar') ? <MobileContactBar /> : null}
+                        {showChrome('exitIntent') ? <ExitIntentPopup /> : null}
+                        {showInspector ? <PersonaInspector /> : null}
+                      </SiteChrome>
+                    ) : null}
+                  </EnquirySheetServer>
+                </AccountProvider>
+              </PersonaProvider>
+            </ChatbotEnabledProvider>
           </SiteCopyProvider>
         </AppProviders>
       </body>

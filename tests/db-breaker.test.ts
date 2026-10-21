@@ -15,6 +15,7 @@ beforeEach(() => {
   resetDbBreaker();
   h.select.mockReset();
   vi.spyOn(console, 'error').mockImplementation(() => {});
+  vi.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
 describe('shared database breaker (keeps a build/page from waiting on a down database)', () => {

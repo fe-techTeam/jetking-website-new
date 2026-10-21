@@ -16,6 +16,7 @@ import { AskAiLink } from '@/components/AskAiLink';
 import { Section } from '@/components/kit';
 import { CourseExplorer } from './CourseExplorer';
 import { isSectionVisible } from '@/lib/content/copy/sections';
+import { isChatbotPubliclyEnabled } from '@/lib/chatbot/availability';
 
 export async function generateMetadata() {
   return pageMetadata(coursesCopy, '/courses');
@@ -23,10 +24,11 @@ export async function generateMetadata() {
 
 export default async function CoursesPage() {
   const [copy, professional] = await Promise.all([loadCopy(coursesCopy), loadCopy(professionalCopy)]);
-  const [courses, centres, cities] = await Promise.all([
+  const [courses, centres, cities, chatbotEnabled] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
     content.listCities(),
+    isChatbotPubliclyEnabled(),
   ]);
   const levelCount = new Set(courses.map((c) => c.level)).size;
   const domains = [
@@ -137,19 +139,28 @@ export default async function CoursesPage() {
           </div>
           ) : null}
 
-          {/* Single next-step nudge — no audience/persona variants. */}
+          {/* Single next-step nudge — Jetking AI when CMS Availability is on, else enquiry. */}
           {show('guidance') ? (
             <AdaptiveNudge
               id="courses-guidance-nudge"
               className="mt-10 max-w-2xl"
               reserve="none"
               tone="dark"
-              fallback={{
-                headline: copy['guidance.fallback.headline'],
-                body: copy['guidance.fallback.body'],
-                ctaLabel: copy['guidance.fallback.ctaLabel'],
-                ctaAction: 'guide',
-              }}
+              fallback={
+                chatbotEnabled
+                  ? {
+                      headline: copy['guidance.fallback.headline'],
+                      body: copy['guidance.fallback.body'],
+                      ctaLabel: copy['guidance.fallback.ctaLabel'],
+                      ctaAction: 'guide',
+                    }
+                  : {
+                      headline: copy['guidance.fallback.headline'],
+                      body: copy['cta.body'],
+                      ctaLabel: copy['cta.button'],
+                      ctaHref: '/enquiry',
+                    }
+              }
               variants={{}}
             />
           ) : null}

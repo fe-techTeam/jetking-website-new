@@ -7,6 +7,7 @@ import { usePersona } from './PersonaProvider';
 import type { KnownPersonaId } from './types';
 import { track } from '@/lib/analytics';
 import { useFlip } from '@/components/motion/flip';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 /**
  * ══════════════════════════════════════════════════════════════════════════════
  * THE ONLY SANCTIONED WAY CONTENT ADAPTS
@@ -96,6 +97,7 @@ export function AdaptiveNudge({
   className?: string;
 }) {
   const { classification, hydrated } = usePersona();
+  const chatbotEnabled = useChatbotEnabled();
   const shownRef = useRef(false);
 
   const persona = classification.persona;
@@ -117,7 +119,9 @@ export function AdaptiveNudge({
   const nudgeHref = !nudge
     ? undefined
     : nudge.ctaAction === 'guide'
-      ? (`/chatbot?q=${encodeURIComponent(nudge.headline)}` as Route)
+      ? chatbotEnabled
+        ? (`/chatbot?q=${encodeURIComponent(nudge.headline)}` as Route)
+        : undefined
       : (nudge.ctaHref as Route | undefined);
   const skin = NUDGE_SKINS[tone];
   // Hold height only until we know there is nothing to show — never leave an empty box mid-page.

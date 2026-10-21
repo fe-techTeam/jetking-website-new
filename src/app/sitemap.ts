@@ -52,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const urls: MetadataRoute.Sitemap = [
     ...staticRoutes,
     ...courses
-      .filter((c) => !c.seo.noindex)
+      .filter((c) => !c.seo.noindex && c.hasDetailPage !== false)
       .map((course) => ({
         url: absoluteUrl(`/courses/${course.slug}`),
         lastModified: new Date(course.updatedAt),

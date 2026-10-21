@@ -77,7 +77,7 @@ export const REASONS = [
 /** Real logos, fetched from the "Collaboration With Top Universities and Learning Entities" section live on jetking.com (2026-08-21). */
 export const UNIVERSITY_PARTNERS = [
   { name: 'Yenepoya (Deemed to be University)', src: '/university-partners/yenepoya.png' },
-  { name: 'Tilak Maharashtra Vidyapeeth, Pune', src: '/university-partners/tilak-maharashtra-vidyapeeth.png' },
+  { name: 'State University of New York', src: '/university-partners/suny.png' },
   { name: 'Pearson', src: '/university-partners/pearson.png' },
   { name: 'Lincoln University College', src: '/university-partners/lincoln-university.png' },
 ] as const;

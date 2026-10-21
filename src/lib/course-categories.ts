@@ -13,6 +13,8 @@ export const COURSE_LEVELS: ReadonlyArray<{ id: CourseLevel; label: string }> = 
   { id: 'diploma', label: 'Diploma' },
   { id: 'certification', label: 'Certification' },
   { id: 'short', label: 'Short course' },
+  // Full partner name first — most visitors won't know what "SUNY" alone means.
+  { id: 'suny', label: 'State University of New York' },
 ];
 
 export const COURSE_LEVEL_LABEL = Object.fromEntries(COURSE_LEVELS.map((l) => [l.id, l.label])) as Record<
@@ -20,8 +22,18 @@ export const COURSE_LEVEL_LABEL = Object.fromEntries(COURSE_LEVELS.map((l) => [l
   string
 >;
 
+/** Chip on course cards — same wording as the filter so SUNY is never unexplained. */
+export const COURSE_LEVEL_BADGE: Record<CourseLevel, string> = {
+  degree: 'Degree',
+  diploma: 'Diploma',
+  certification: 'Certification',
+  short: 'Short course',
+  suny: 'State University of New York',
+};
+
 export type CourseCategoryId =
   | 'degree'
+  | 'suny'
   | 'cloud'
   | 'cyber-security'
   | 'networking'
@@ -30,7 +42,7 @@ export type CourseCategoryId =
   | 'design-gaming'
   | 'marketing';
 
-export type CourseTechnologyId = Exclude<CourseCategoryId, 'degree'>;
+export type CourseTechnologyId = Exclude<CourseCategoryId, 'degree' | 'suny'>;
 
 /** Technology names as shown in the /courses "Technology" filter; the header menu uses the same list. */
 export const COURSE_TECHNOLOGIES: ReadonlyArray<{ id: CourseTechnologyId; label: string }> = [
@@ -57,6 +69,7 @@ export interface CourseCategory {
 
 export const COURSE_CATEGORIES: readonly CourseCategory[] = [
   { id: 'degree', label: COURSE_LEVEL_LABEL.degree, href: '/courses?level=degree', params: { level: 'degree' }, level: 'degree' },
+  { id: 'suny', label: COURSE_LEVEL_LABEL.suny, href: '/courses?level=suny', params: { level: 'suny' }, level: 'suny' },
   { id: 'cloud', label: TECH_LABEL.cloud, href: '/courses?tech=cloud', params: { tech: 'cloud' }, match: /cloud|\baws\b|azure/ },
   {
     id: 'cyber-security',
@@ -96,7 +109,28 @@ export const COURSE_CATEGORIES: readonly CourseCategory[] = [
   },
 ];
 
+/** True when the course is a SUNY partnership programme (slug/title or stored level). */
+export function isSunyCourse(course: { slug: string; title: string; level?: CourseLevel }): boolean {
+  if (course.level === 'suny') return true;
+  const haystack = `${course.slug} ${course.title}`.toLowerCase().replace(/-/g, ' ');
+  return /\bsuny\b/.test(haystack);
+}
+
+/**
+ * Level used for filters, badges and menus.
+ * CMS records saved before the SUNY level existed still say `certification`;
+ * those are treated as SUNY when the slug/title says so.
+ */
+export function courseLevel(course: { slug: string; title: string; level: CourseLevel }): CourseLevel {
+  if (isSunyCourse(course)) return 'suny';
+  return course.level;
+}
+
 export function categoriesOf(course: { slug: string; title: string; level: CourseLevel }): CourseCategoryId[] {
   const haystack = `${course.slug} ${course.title}`.toLowerCase().replace(/-/g, ' ');
+  // SUNY partnership courses use their own level — don't also bucket them under Cyber / AI tech.
+  if (isSunyCourse(course)) {
+    return ['suny'];
+  }
   return COURSE_CATEGORIES.filter((c) => (c.level ? course.level === c.level : c.match?.test(haystack))).map((c) => c.id);
 }

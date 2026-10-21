@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import type { Course, Testimonial } from '@/lib/content/types';
 import { RecommendedCourses } from '@/components/student/RecommendedCourses';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 import { siteConfig } from '@/lib/site';
 import { fill } from '@/lib/content/copy/define';
 import type { ParentCopy } from '@/lib/content/copy/pages/parent';
@@ -93,6 +94,7 @@ export function ParentLanding({
   testimonials?: Testimonial[];
   copy: ParentCopy;
 }) {
+  const chatbotEnabled = useChatbotEnabled();
   const stats = trustStats(counts, copy);
   const storyAvatars = [copy['stories.avatar.0'], copy['stories.avatar.1'], copy['stories.avatar.2']];
   return (
@@ -310,13 +312,23 @@ export function ParentLanding({
                 />
                 {copy['help.question']}
               </p>
-              <Link
-                href={copy['help.chat.href'] as Route}
-                className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--k-red-fill)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
-              >
-                <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-                {copy['help.chat.label']}
-              </Link>
+              {chatbotEnabled ? (
+                <Link
+                  href={copy['help.chat.href'] as Route}
+                  className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--k-red-fill)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                  {copy['help.chat.label']}
+                </Link>
+              ) : (
+                <EnquiryLink
+                  source="parent-help"
+                  className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[var(--k-red-fill)] px-5 text-[14px] font-bold text-white transition-colors hover:bg-jk-700"
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                  Enquire now
+                </EnquiryLink>
+              )}
             </div>
           </div>
         </Section>

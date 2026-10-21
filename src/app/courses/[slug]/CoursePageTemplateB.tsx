@@ -19,6 +19,10 @@ import { ZoomImage } from './ZoomImage';
 import { SnapSlider } from './SnapSlider';
 import { CentrePicker } from './CentrePicker';
 import { FeeDepthTracker } from './FeeDepthTracker';
+import { homeCopy } from '@/lib/content/copy/pages/home';
+
+/** Temporary: every course detail banner uses the homepage hero until per-course art is ready. */
+const COURSE_DETAIL_BANNER = homeCopy.defaults['hero.image'];
 
 /*
  * Course page — template B ("studio"). Same CMS content as the standard template, composed for a premium,
@@ -156,12 +160,15 @@ export function CoursePageTemplateB({
     <div className="cp">
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="cpb-mesh relative overflow-hidden pt-6 pb-28 text-white sm:pt-8 lg:pb-40">
-        {course.heroImage ? (
-          <>
-            <Image src={course.heroImage.url} alt={course.heroImage.alt} fill priority sizes="(min-width: 768px) 100vw, 1px" className="hidden object-cover object-right opacity-50 md:block" />
-            <span aria-hidden="true" className="absolute inset-0 hidden bg-gradient-to-r from-[var(--cp-black)] from-35% via-[var(--cp-black)]/75 to-transparent md:block" />
-          </>
-        ) : null}
+        <Image
+          src={COURSE_DETAIL_BANNER}
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) 100vw, 1px"
+          className="hidden object-cover object-[center_28%] opacity-50 md:block"
+        />
+        <span aria-hidden="true" className="absolute inset-0 hidden bg-gradient-to-r from-[var(--cp-black)] from-35% via-[var(--cp-black)]/75 to-transparent md:block" />
 
         <div className="shell relative">
           <div className="[&_a]:!text-white/70 [&_li]:!text-white/70 [&_span]:!text-white/70">
@@ -539,7 +546,16 @@ export function CoursePageTemplateB({
             <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {related.map((item) => (
                 <li key={item.slug} className="min-w-0">
-                  <CourseCard course={item} surface="course-related" compact cta={copy['courseRelated.viewCourse']} />
+                  <CourseCard
+                    course={item}
+                    surface="course-related"
+                    compact
+                    cta={
+                      item.hasDetailPage === false
+                        ? copy['courseRelated.enquireCourse']
+                        : copy['courseRelated.viewCourse']
+                    }
+                  />
                 </li>
               ))}
             </ul>

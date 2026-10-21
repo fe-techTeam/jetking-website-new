@@ -44,7 +44,7 @@ Read like a serious publication, not a brochure. Jetking sells a decision that c
 |------|-------|-------|-------|
 | Primary | `--color-foreground` | `#101828` | 16.6:1 |
 | Secondary | `--color-foreground-secondary` | `#475467` | 8.6:1 |
-| Muted | `--color-foreground-muted` | `#667085` | 5.7:1 |
+| Muted | `--color-foreground-muted` | `#5F6B7D` | ≥4.5:1 on tinted cards / 5.7:1+ on white |
 | Disabled | `--color-foreground-disabled` | `#98A2B3` | decorative / disabled only |
 
 ### Hairlines
@@ -80,11 +80,12 @@ There is no dark mode. There *is* a dark **section**: apply `.surface-inverse`, 
 
 | Role | Face |
 |------|------|
-| Display | Bricolage Grotesque |
-| Body | Plus Jakarta Sans |
-| Mono | System mono — used only for labels and figures |
+| Display / body / mono | **Fira Sans** (one family site-wide; `--font-sans` / `--font-display` / `--font-mono` all resolve to it) |
+| Fallback | Arial, Helvetica, sans-serif |
 
-Headings: weight 700, `letter-spacing: -0.032em`, `text-wrap: balance`.
+Weights loaded: 400 · 500 · 600 · 700 · 800. Headings: weight 700+, slight negative tracking on large titles, `text-wrap: balance`.
+
+Client-facing palette & usage guide: [`docs/BRAND_GUIDELINES.md`](../docs/BRAND_GUIDELINES.md).
 
 | Token | Size | Line height | Typical use |
 |-------|------|-------------|-------------|

@@ -5,6 +5,7 @@ import type {
   ContentSource,
   Announcement,
   SeoSettings,
+  CentresSettings,
   ChatbotKnowledge,
   Course,
   Faculty,
@@ -20,7 +21,9 @@ import type {
   TrustSignal,
 } from '../types';
 import { listCollection } from '@/lib/cms/store';
+import { sortCentresList } from '@/lib/centre-sort';
 import { chatbotSettingsDefaults } from '../fixtures/chatbot';
+import { centresSettingsDefaults } from '../fixtures/centres-settings';
 import { seoSettingsDefaults } from '../fixtures/seo-settings';
 import { legalDefaults } from '../fixtures/legal';
 import { logoListFallback } from '../fixtures/logo-lists';
@@ -55,10 +58,19 @@ export const adminSource: ContentSource = {
     return rows.find((c) => c.slug === slug) ?? null;
   },
 
+  async getCentresSettings() {
+    const [record] = await listCollection('centres_settings', { publishedOnly: true });
+    if (!record) return centresSettingsDefaults;
+    const publishedRow = published([record])[0] as CentresSettings | undefined;
+    if (!publishedRow) return centresSettingsDefaults;
+    return { ...centresSettingsDefaults, ...publishedRow };
+  },
+
   async listCentres(opts) {
     let rows = published(await listCollection('centres', { publishedOnly: true })) as Centre[];
     if (opts?.citySlug) rows = rows.filter((c) => c.citySlug === opts.citySlug);
-    return rows.sort((a, b) => a.name.localeCompare(b.name));
+    const settings = await this.getCentresSettings();
+    return sortCentresList(rows, settings);
   },
 
   async getCentre(citySlug: string, slug: string) {

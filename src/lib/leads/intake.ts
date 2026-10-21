@@ -120,8 +120,30 @@ export async function saveEnquiry(input: EnquiryInput): Promise<{ id: string; du
 
 export type CrmHandoffStatus = 'routed' | 'failed' | 'duplicate' | 'rejected' | 'skipped';
 
-export async function setCrmStatus(id: string, status: CrmHandoffStatus): Promise<void> {
+export async function setCrmStatus(id: string, status: CrmHandoffStatus, detail?: string | null): Promise<void> {
   const db = getDb();
   if (!db) return;
-  await db.update(leads).set({ crmStatus: status }).where(eq(leads.id, id));
+  const crmDetail =
+    status === 'routed'
+      ? null
+      : detail?.trim()
+        ? detail.trim().slice(0, 500)
+        : null;
+  await db.update(leads).set({ crmStatus: status, crmDetail }).where(eq(leads.id, id));
+}
+
+/**
+ * Timeline note when the CRM API rejects a save because the mobile already exists.
+ * The panel still keeps a separate row per place/form; staff can retry the push
+ * (or create the entry in the CRM UI) so each enquiry can be its own CRM record.
+ */
+export async function noteCrmPersonExists(id: string, place: string): Promise<void> {
+  const db = getDb();
+  if (!db) return;
+  const where = place.trim() || 'another place';
+  await db.insert(leadActivities).values({
+    leadId: id,
+    kind: 'note',
+    body: `CRM API rejected this save — mobile already exists. Enquiry (${where}) stays on the panel. Create a separate CRM entry for this place/course (CRM UI) or retry the push if the API allows the same mobile again.`,
+  });
 }

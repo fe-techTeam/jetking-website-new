@@ -4,18 +4,25 @@ import { normalizeMobile } from '@/lib/phone';
 /**
  * Hand-off of website enquiries to the external CRM (`POST …/externalInquirySave`, JSON).
  *
- * The CRM's contract (as given by its owner, and confirmed by a test request):
- *   mobile (required), email (required), first_name (required), last_name,
- *   state (required), city (required), center (required), course
- * where state / city / center / course are the CRM's own NUMERIC ids, not names.
+ * CRM Laravel validation (source of truth from the CRM team):
+ *   mobile     => required|digits_between:10,12|unique:users
+ *   email      => required|email|unique:users
+ *   first_name => required
+ *   state      => required|numeric|exists:cities,state_id
+ *   city       => required|numeric|exists:cities,id
+ *   center     => required|numeric|exists:branch,id
+ * Optional on our side: last_name, course (CRM numeric course id).
  *
- * Behaviour observed from the live endpoint: no authentication; always HTTP 200; failures come back in the
- * body as `{"action":"error","messages":{"mobile":["The mobile has already been taken."]}}`. So the HTTP
- * status alone says nothing — the body decides.
+ * Important: `unique:users` on mobile and email means one CRM *user* per number/email.
+ * Changing `center` / city / state does NOT create a second row — uniqueness is global
+ * on the users table, not per branch. Live probes confirm “mobile already been taken”
+ * even when center differs.
  *
- * Each site centre maps to a CRM branch (and the branch's city and state) in `centre-ids.json`, built from
- * the legacy branch / cities / states exports. A lead with no mappable centre, or no email, is NOT sent
- * with invented values: it is kept here and marked `skipped` with the reason.
+ * Behaviour: no auth; always HTTP 200; failures are in the JSON body
+ * (`action: "error"`, `messages.mobile` / `messages.email`). HTTP status alone says nothing.
+ *
+ * Centre slug → CRM branch/city/state ids live in `centre-ids.json`. Missing email or
+ * unmapped centre → we do not invent values; the panel lead is marked `skipped`.
  */
 
 type CentreIds = { center: number; city: number; state: number; crm: string };
@@ -131,7 +138,8 @@ export async function sendToCrm(
   const result = (body ?? {}) as { action?: unknown; messages?: unknown };
   if (result.action === 'error') {
     const { text, duplicateMobile } = describeMessages(result.messages);
-    // The CRM already has this person: retrying cannot help and nothing was lost.
+    // Unique-mobile constraint on this endpoint today. A separate panel enquiry
+    // (other centre/course) may still need its own CRM entry — callers keep it retryable.
     if (duplicateMobile) return { status: 'duplicate', detail: 'mobile already in the CRM' };
     return { status: 'rejected', detail: text };
   }

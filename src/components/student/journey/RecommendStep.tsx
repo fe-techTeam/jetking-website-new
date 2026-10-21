@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import type { Route } from 'next';
 import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
 import type { StudentDiscovery } from '@/persona/studentJourney';
 import { interestIntent } from '@/persona/studentJourney';
+import { courseHref } from '@/lib/course-href';
 import { track } from '@/lib/analytics';
 import { fill } from '@/lib/content/copy/define';
 import type { StudentCopy } from '@/lib/content/copy/pages/student';
@@ -26,6 +26,7 @@ export function RecommendStep({
   copy: StudentCopy;
 }) {
   const intent = interestIntent(discovery.interest);
+  const selected = courses.find((c) => c.slug === selectedSlug);
 
   return (
     <div className="space-y-8">
@@ -123,13 +124,15 @@ export function RecommendStep({
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
             </span>
           </button>
-          <Link
-            href={`/courses/${selectedSlug}` as Route}
-            className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[var(--dc-hairline-strong)] px-6 text-[14px] font-bold text-[var(--dc-ink-secondary)] transition-colors hover:border-[var(--dc-accent-soft)]"
-            onClick={() => track('journey_course_detail', { slug: selectedSlug })}
-          >
-            {copy['recommend.details']}
-          </Link>
+          {selected ? (
+            <Link
+              href={courseHref(selected)}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[var(--dc-hairline-strong)] px-6 text-[14px] font-bold text-[var(--dc-ink-secondary)] transition-colors hover:border-[var(--dc-accent-soft)]"
+              onClick={() => track('journey_course_detail', { slug: selectedSlug })}
+            >
+              {copy['recommend.details']}
+            </Link>
+          ) : null}
         </div>
       ) : (
         <p className="text-[14px] text-[var(--dc-ink-muted)]">

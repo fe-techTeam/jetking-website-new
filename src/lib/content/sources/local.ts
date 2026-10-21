@@ -1,5 +1,7 @@
 import { chatbotSettingsDefaults } from '../fixtures/chatbot';
+import { centresSettingsDefaults } from '../fixtures/centres-settings';
 import { seoSettingsDefaults } from '../fixtures/seo-settings';
+import { sortCentresList } from '@/lib/centre-sort';
 import type {
   Centre,
   City,
@@ -49,9 +51,13 @@ export const localSource: ContentSource = {
     return cities.find((c) => c.slug === slug) ?? null;
   },
 
+  async getCentresSettings() {
+    return centresSettingsDefaults;
+  },
+
   async listCentres(opts): Promise<Centre[]> {
     const all = opts?.citySlug ? centres.filter((c) => c.citySlug === opts.citySlug) : centres;
-    return [...all].sort((a, b) => a.name.localeCompare(b.name));
+    return sortCentresList([...all], centresSettingsDefaults);
   },
 
   async getCentre(citySlug: string, slug: string): Promise<Centre | null> {

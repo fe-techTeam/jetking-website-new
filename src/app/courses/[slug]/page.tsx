@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { content } from '@/lib/content';
 import { coursesCopy } from '@/lib/content/copy/pages/courses';
 import { loadCopy } from '@/lib/content/copy/load';
+import { courseHasDetailPage } from '@/lib/course-href';
 import { breadcrumbSchema, buildMetadata, courseSchema, faqSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { CourseViewTracker } from './CourseViewTracker';
@@ -11,7 +12,7 @@ import { StickyCourseCta } from './StickyCourseCta';
 
 export async function generateStaticParams() {
   const courses = await content.listCourses();
-  return courses.map((course) => ({ slug: course.slug }));
+  return courses.filter(courseHasDetailPage).map((course) => ({ slug: course.slug }));
 }
 
 export async function generateMetadata({
@@ -21,7 +22,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const course = await content.getCourse(slug);
-  if (!course) return {};
+  if (!course || !courseHasDetailPage(course)) return {};
   // A per-course social card (course title, level, duration and photo) instead of the shared site image.
   return buildMetadata({ ...course.seo, ogImage: course.seo.ogImage ?? `/og/course/${course.slug}` }, `/courses/${course.slug}`);
 }
@@ -29,7 +30,7 @@ export async function generateMetadata({
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const course = await content.getCourse(slug);
-  if (!course) notFound();
+  if (!course || !courseHasDetailPage(course)) notFound();
 
   const copy = await loadCopy(coursesCopy);
   const [allCourses, centres, cities, siteFaqs, placements] = await Promise.all([
@@ -55,7 +56,8 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
   const offeringCentres = centres.filter((c) => c.coursesOffered.includes(course.slug));
   // Same level first, then the rest of the catalogue, so the row is full (four across on a laptop).
-  const others = allCourses.filter((c) => c.slug !== course.slug);
+  // Prefer courses that still have a detail page for the related row.
+  const others = allCourses.filter((c) => c.slug !== course.slug && courseHasDetailPage(c));
   const related = [...others.filter((c) => c.level === course.level), ...others.filter((c) => c.level !== course.level)].slice(0, 4);
 
   const trail: Crumb[] = [
@@ -88,7 +90,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
         placements={placements}
         copy={copy}
       />
-      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} copy={copy} />
+      <StickyCourseCta anchorId="course-hero-cta" copy={copy} />
     </>
   );
 }

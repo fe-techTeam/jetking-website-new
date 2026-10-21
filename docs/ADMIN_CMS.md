@@ -26,7 +26,7 @@ flowchart LR
 | Content collections | `/admin/courses`, `/centres`, … | CRUD + publish |
 | Page text | `/admin/page-text` | String overrides for marketing chrome |
 | Leads | `/admin/leads` | CRM pipeline |
-| Chatbot | `/admin/chatbot*` | Settings, custom answers, console |
+| Chatbot | `/admin/chatbot*` | Show on website, greeting, custom answers, console |
 | SEO / redirects | `/admin/seo`, `/admin/redirects` | Indexing & 301s |
 | Media | `/admin/media` | Uploads (DB-backed when configured) |
 | Team | `/admin/team` | Users & roles (admin only) |
@@ -223,6 +223,7 @@ flowchart TB
 | Partner logo strip | **Logos & partners** |
 | robots / indexing policy | **SEO settings** |
 | Old URL → new URL | **Redirects** |
+| Show/hide Jetking AI site-wide (links + `/chatbot` + APIs) | **Assistant settings** → **Show on website** |
 | Chatbot greeting / off-topic line | **Assistant settings** |
 | Forced Q&A for chat | **Custom answers** |
 | Follow up a phone enquiry | **Leads** |
@@ -254,6 +255,8 @@ Page text stores **flat string maps** per page id. Collections store **structure
 ## 7. Leads CRM
 
 Live leads are written to **both** the admin panel (`leads`) and the external CRM (`handoffLeadToCrm` in `src/lib/leads/crm-handoff.ts`). The panel row is saved first so a CRM outage never loses the enquiry.
+
+If a panel lead is not yet `routed`, staff can **Push to CRM** from the lead detail, selection bar, or **Push unmatched to CRM** on the board. A successful save marks `routed`. If the API rejects the same mobile, status is `duplicate` but the row stays eligible for retry (each enquiry should be its own CRM entry). CLI: `npm run reconcile:crm-leads`.
 
 ```mermaid
 stateDiagram-v2
@@ -300,12 +303,12 @@ When Postgres is configured, uploaded bytes live in the database so assets **sur
 
 | Screen | Function |
 | --- | --- |
-| `/admin/chatbot` | Ops console: model reachability, usage, recent chats |
-| `/admin/chatbot-settings` | Greeting, off-topic reply, feature flags |
+| `/admin/chatbot` | Ops console: Shown/Hidden status, model reachability, usage, recent chats |
+| `/admin/chatbot-settings` | **Show on website** (site-wide on/off), greeting, starter chips, no-match / off-topic replies |
 | `/admin/chatbot-knowledge` / custom answers | Curated Q→A overlays |
-| `/admin/chatbot-questions` | Unanswered / review queue (when wired) |
+| `/admin/chatbot-questions` | Unanswered / review queue |
 
-Runtime answering still uses structured resolvers + local KB — see [CHATBOT.md](./CHATBOT.md) and [DATA_FLOWS.md](./DATA_FLOWS.md).
+**Show on website** (`chatbot_settings.enabled`) is the single public switch: when off, every visitor entry point is hidden, `/chatbot` returns 404, and chat APIs refuse requests. Staff can still edit settings and knowledge. Full detail: [CHATBOT.md](./CHATBOT.md) · answer path: [DATA_FLOWS.md](./DATA_FLOWS.md).
 
 ---
 

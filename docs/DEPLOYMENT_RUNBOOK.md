@@ -153,7 +153,8 @@ After pulling a release: `npm ci`, `npm run db:migrate` (new migrations), `npm r
 | Admin → Team & access → add a member | Welcome email arrives (or the page says email is not set up) |
 | Site → Login → Forgot password → email | Reset link arrives, works once, then is rejected |
 | Page source / Tag Assistant | GTM, GA4, Google Ads and Meta pixel load on the production domain, and **not** on previews |
-| `/chatbot` | Course/fees/placement answers from catalogue (no OpenAI) |
+| `/chatbot` (Show on website **on**) | Course/fees/placement answers from catalogue (no OpenAI) |
+| `/chatbot` (Show on website **off**) | **404**; header / Ask / FAQ / sitemap chatbot links absent |
 | `/robots.txt` / `/sitemap.xml` | Correct host |
 
 ---

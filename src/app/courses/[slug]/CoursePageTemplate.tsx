@@ -15,7 +15,6 @@ import {
   Monitor,
   Phone,
   Users,
-  Wrench,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Centre, City, Course, PlacementsPageContent } from '@/lib/content/types';
@@ -37,6 +36,10 @@ import { CourseCard } from '@/components/CourseCard';
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { CentrePicker } from './CentrePicker';
 import { isSectionVisible } from '@/lib/content/copy/sections';
+import { homeCopy } from '@/lib/content/copy/pages/home';
+
+/** Temporary: every course detail banner uses the homepage hero until per-course art is ready. */
+const COURSE_DETAIL_BANNER = homeCopy.defaults['hero.image'];
 
 /*
  * Course page template (degree and short-term) — built from the client's "Website Design Feedback" deck.
@@ -197,10 +200,14 @@ export function CoursePageTemplate({
   ].map((a, i) => ({ ...a, icon: CENTRE_ADVANTAGE_ICONS[i]! }));
 
   const quickFacts: Array<{ title: string; body: string; icon: LucideIcon }> = [
+    {
+      title: copy['courseFacts.jobGuaranteeTitle'],
+      body: copy['courseFacts.jobGuaranteeBody'],
+      icon: BadgeCheck,
+    },
     ...(isDegree
       ? [
           { title: copy['courseFacts.degreeTitle'], body: copy['courseFacts.degreeBody'], icon: GraduationCap },
-          { title: copy['courseFacts.learnTitle'], body: copy['courseFacts.learnBody'], icon: Wrench },
           { title: copy['courseFacts.handsOnTitle'], body: copy['courseFacts.handsOnBody'], icon: Monitor },
           { title: copy['courseFacts.placementTitle'], body: fill(copy['courseFacts.placementBody'], { partners: PLACEMENT_PARTNERS }), icon: Briefcase },
         ]
@@ -331,21 +338,18 @@ export function CoursePageTemplate({
       {/* ── 1. Top banner with enquiry form ─────────────────────────────── */}
       {show('courseHero') ? (
       <section className="cp-band-sky relative overflow-hidden pt-6 pb-10 sm:pt-8 lg:pb-14">
-        {course.heroImage ? (
-          <>
-            <Image
-              src={course.heroImage.url}
-              alt={course.heroImage.alt}
-              fill
-              sizes="(min-width: 768px) 100vw, 1px"
-              className="hidden object-cover object-right md:block"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 hidden bg-gradient-to-r from-[var(--cp-sky)] from-35% via-[var(--cp-sky)]/80 to-transparent md:block"
-            />
-          </>
-        ) : null}
+        <Image
+          src={COURSE_DETAIL_BANNER}
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) 100vw, 1px"
+          className="hidden object-cover object-[center_28%] md:block"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-[var(--cp-sky)] from-35% via-[var(--cp-sky)]/80 to-transparent md:block"
+        />
         <div className="shell relative">
           <Breadcrumbs trail={trail} />
           <div className="mt-7 grid gap-8 min-[880px]:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] min-[880px]:items-start min-[880px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_minmax(0,24rem)] xl:gap-10">
@@ -430,17 +434,24 @@ export function CoursePageTemplate({
       {/* ── 2. Key programme highlights ─────────────────────────────────── */}
       {show('courseFacts') ? (
       <section className="shell pt-10 pb-[clamp(2.25rem,5vw,3.5rem)]" aria-label={copy['courseFacts.aria']}>
-        <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        <ul className="grid grid-cols-2 items-stretch gap-3 md:grid-cols-4 md:gap-4">
           {quickFacts.map((fact, i) => {
             const Icon = fact.icon;
             return (
-              <li key={fact.title} className="cp-card flex flex-col items-start gap-2.5 p-3.5 xs:gap-3 xs:p-4 sm:flex-row sm:gap-4 sm:p-5">
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl xs:h-11 xs:w-11 ${HIGHLIGHT_ACCENTS[i]}`}>
+              <li
+                key={fact.title}
+                className="cp-card flex h-full flex-col items-start gap-2.5 p-3.5 xs:gap-3 xs:p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5"
+              >
+                <span
+                  className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl xs:h-11 xs:w-11 ${HIGHLIGHT_ACCENTS[i % HIGHLIGHT_ACCENTS.length]}`}
+                >
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="cp-h3">{fact.title}</p>
-                  <p className="mt-0.5 text-[13px] leading-snug text-[var(--cp-muted)] xs:text-[14px]">{fact.body}</p>
+                  <p className="mt-0.5 text-[13px] leading-snug text-[var(--cp-muted)] xs:text-[14px]">
+                    {fact.body}
+                  </p>
                 </div>
               </li>
             );
@@ -952,7 +963,16 @@ export function CoursePageTemplate({
             <ul className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
               {related.map((item) => (
                 <li key={item.slug} className="min-w-0">
-                  <CourseCard course={item} surface="course-related" compact cta={copy['courseRelated.viewCourse']} />
+                  <CourseCard
+                    course={item}
+                    surface="course-related"
+                    compact
+                    cta={
+                      item.hasDetailPage === false
+                        ? copy['courseRelated.enquireCourse']
+                        : copy['courseRelated.viewCourse']
+                    }
+                  />
                 </li>
               ))}
             </ul>

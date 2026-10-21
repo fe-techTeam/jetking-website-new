@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const h = vi.hoisted(() => ({
   setCrmStatus: vi.fn(),
+  noteCrmPersonExists: vi.fn(),
   sendToCrm: vi.fn(),
   toCrmPayload: vi.fn(),
   listCities: vi.fn(),
@@ -12,6 +13,10 @@ const h = vi.hoisted(() => ({
 vi.mock('@/lib/leads/intake', () => ({
   setCrmStatus: (...a: unknown[]) => {
     h.setCrmStatus(...a);
+    return Promise.resolve();
+  },
+  noteCrmPersonExists: (...a: unknown[]) => {
+    h.noteCrmPersonExists(...a);
     return Promise.resolve();
   },
 }));
@@ -73,7 +78,24 @@ describe('handoffLeadToCrm', () => {
     });
     expect(r.routed).toBe(true);
     expect(h.sendToCrm).toHaveBeenCalledOnce();
-    expect(h.setCrmStatus).toHaveBeenCalledWith('l1', 'routed');
+    expect(h.setCrmStatus).toHaveBeenCalledWith('l1', 'routed', null);
+  });
+
+  it('marks duplicate and notes the panel when CRM already has the mobile', async () => {
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    vi.stubEnv('CRM_PROVIDER', 'smartrain');
+    h.sendToCrm.mockResolvedValueOnce({ status: 'duplicate', detail: 'mobile already in the CRM' });
+    const r = await handoffLeadToCrm({
+      leadId: 'l-dup',
+      name: 'Asha',
+      phone: '9876543210',
+      email: 'a@b.com',
+      centreSlug: 'dadar',
+      city: 'Mumbai',
+    });
+    expect(r).toMatchObject({ routed: false, status: 'duplicate' });
+    expect(h.setCrmStatus).toHaveBeenCalledWith('l-dup', 'duplicate', expect.stringMatching(/unique:users/i));
+    expect(h.noteCrmPersonExists).toHaveBeenCalledWith('l-dup', expect.stringContaining('dadar'));
   });
 
   it('marks skipped when Smartrain cannot build a payload', async () => {
@@ -87,7 +109,7 @@ describe('handoffLeadToCrm', () => {
       centreSlug: 'dadar',
     });
     expect(r).toMatchObject({ routed: false, status: 'skipped' });
-    expect(h.setCrmStatus).toHaveBeenCalledWith('l2', 'skipped');
+    expect(h.setCrmStatus).toHaveBeenCalledWith('l2', 'skipped', 'email missing (required by the CRM)');
     expect(h.sendToCrm).not.toHaveBeenCalled();
   });
 
@@ -107,6 +129,6 @@ describe('handoffLeadToCrm', () => {
       'https://crm.example/hooks',
       expect.objectContaining({ method: 'POST' }),
     );
-    expect(h.setCrmStatus).toHaveBeenCalledWith('l3', 'routed');
+    expect(h.setCrmStatus).toHaveBeenCalledWith('l3', 'routed', null);
   });
 });

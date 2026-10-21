@@ -445,7 +445,7 @@ Without it the panel falls back to `data/cms/store.json`. Migrations: `npm run d
 | Announcement bar with schedule window, tone, dismissible | `/admin/announcements` |
 | SEO overview — every page/record's title, description, share image, canonical and noindex with length/duplicate checks and a search preview; edit in place | `/admin/seo` |
 | SEO settings — indexing master switch, robots.txt extras, block AI crawlers, sitemap exclusions, default share image, Twitter handle, Google/Bing verification, Organization schema | `/admin/seo-settings` |
-| Chatbot — overview (knowledge size, freshness, rebuild, test console, saved chats), Assistant settings (on/off, greeting, starter questions, no-match and off-topic replies), Custom answers (Q&A the assistant is taught), Unanswered questions (what visitors asked that nothing answers) | `/admin/chatbot`, `/admin/chatbot-settings`, `/admin/chatbot-knowledge`, `/admin/chatbot-questions` |
+| Chatbot — overview (Shown/Hidden on the website, knowledge size, rebuild, test console, saved chats), Assistant settings (**Show on website** site-wide switch, greeting, starter questions, no-match and off-topic replies), Custom answers (Q&A the assistant is taught), Unanswered questions (what visitors asked that nothing answers) | `/admin/chatbot`, `/admin/chatbot-settings`, `/admin/chatbot-knowledge`, `/admin/chatbot-questions` |
 | Redirects (301/302 looked up in the proxy, ~30 s to take effect, bulk import, loop check) | `/admin/redirects` |
 | Content search across all collections; `?open=<id>` deep links | `/admin/search` |
 | Dashboard recent edits and open drafts | `/admin` |

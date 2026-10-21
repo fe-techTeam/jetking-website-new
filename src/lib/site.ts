@@ -28,11 +28,20 @@ export const siteConfig = {
   helpline: process.env.NEXT_PUBLIC_HELPLINE?.trim() || '07666830000',
 } as const;
 
-/** WhatsApp only renders once a real number is configured, never the env placeholder. */
-export const whatsappHref =
-  siteConfig.whatsappNumber && !/^91?9{9,}$/.test(siteConfig.whatsappNumber)
-    ? `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, '')}`
-    : null;
+/**
+ * Build a `wa.me` link from a phone string (CMS or env). Skips empty / placeholder
+ * numbers (all 9s). Indian 10-digit and 0-prefixed helpline forms get a `91` prefix.
+ */
+export function whatsappHrefFromNumber(raw: string | undefined | null): string | null {
+  let digits = (raw ?? '').replace(/\D/g, '');
+  if (!digits || /^91?9{9,}$/.test(digits)) return null;
+  if (digits.length === 11 && digits.startsWith('0')) digits = `91${digits.slice(1)}`;
+  else if (digits.length === 10) digits = `91${digits}`;
+  return `https://wa.me/${digits}`;
+}
+
+/** Env fallback when Page text → contact.whatsapp is empty. */
+export const whatsappHref = whatsappHrefFromNumber(siteConfig.whatsappNumber);
 
 export function absoluteUrl(path: string): string {
   const normalised = path.startsWith('/') ? path : `/${path}`;

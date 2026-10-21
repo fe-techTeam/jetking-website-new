@@ -51,7 +51,7 @@ mindmap
 | `/about-us` | Company / leadership (+ families band) | `about_page`, page_copy |
 | `/blog`, `/blog/[slug]` | Articles | posts |
 | `/enquiry` | Lead form | courses, centres, cities |
-| `/chatbot` | Jetking AI | chatbot settings + knowledge |
+| `/chatbot` | Jetking AI (only when Assistant settings → Show on website is on; otherwise 404) | `chatbot_settings`, knowledge |
 | `/franchise` | Franchise pitch | page_copy, FAQs, testimonials |
 | `/explore` | Optional extra landing (often noindex) | page_copy, logos |
 | `/sitemap` | HTML sitemap | page_copy (`Learn more` links — not audience paths) |
@@ -162,7 +162,9 @@ Shared copy that used to live under those landings is edited in Page text as **A
 
 ## 7. Login & signup (visitors)
 
-Public visitors use a **shared account** for the website and `/chatbot` (header → Login / Sign up, or `/account`). Forgotten passwords are reset by an emailed single-use link and/or an SMS code (see [AUTH.md](./AUTH.md)).
+Public visitors use a **shared account** for the website and `/chatbot` when Jetking AI is shown (header → Login / Sign up, or `/account`). Forgotten passwords are reset by an emailed single-use link and/or an SMS code (see [AUTH.md](./AUTH.md)).
+
+**Jetking AI visibility** is CMS-only: **Admin → Assistant settings → Show on website**. Page text still holds Ask Jetking AI *wording*; that switch controls whether links and `/chatbot` exist for visitors (see [CHATBOT.md](./CHATBOT.md)).
 
 **Header and tracking.** The header menu is editable in the admin (**Header menu**); the first four links show in the desktop bar and the courses link opens the mega menu. Analytics and ad tags (GTM, GA4, Google Ads, Meta pixels) are added by `src/components/TrackingScripts.tsx` from `src/lib/tracking.ts`, only on the indexable production site.
 
@@ -232,4 +234,5 @@ Legacy URL inventory and gaps: [SEO_ROUTING_AUDIT.md](./SEO_ROUTING_AUDIT.md).
 - [ARCHITECTURE.md](./ARCHITECTURE.md)
 - [AUTH.md](./AUTH.md) — signup / login / OTP
 - [ADMIN_CMS.md](./ADMIN_CMS.md) — who edits what
+- [CHATBOT.md](./CHATBOT.md) — Jetking AI show/hide and answer path
 - [DATA_FLOWS.md](./DATA_FLOWS.md)

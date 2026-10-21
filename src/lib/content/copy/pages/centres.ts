@@ -49,6 +49,15 @@ export const centresCopy = definePageCopy({
     'directorySearch.label': 'Search cities',
     'directorySearch.placeholder': 'Search cities, states, localities...',
     'directorySearch.submitLabel': 'Search centres',
+    'directoryNearMe.label': 'Centre near me',
+    'directoryNearMe.locating': 'Finding nearest centre…',
+    'directoryNearMe.found': 'Nearest: {name}',
+    'directoryNearMe.clear': 'Show all centres',
+    'directoryNearMe.denied': 'Location access was blocked. Allow it in your browser settings, or search by city.',
+    'directoryNearMe.unavailable': 'Location is not available in this browser. Search by city instead.',
+    'directoryNearMe.error': 'Could not read your location. Try again, or search by city.',
+    'directoryNearMe.none': 'No mapped centres found near you. Try searching by city.',
+    'directoryNearMe.badge': 'Nearest to you',
 
     // ── Directory: filters and results ──────────────────────────────────
     'directoryIndex.eyebrow': 'Browse by city',
@@ -273,8 +282,10 @@ export const centresCopy = definePageCopy({
     'centreJump.faqs': 'FAQs',
     'centreJump.visit': 'Visit',
 
-    'centreBar.callLabel': 'Call this centre',
+    'centreBar.callLabel': 'Call our helpline',
     'centreBar.call': 'Call',
+    'centreBar.whatsapp': 'WhatsApp',
+    'centreBar.whatsappLabel': 'Chat on WhatsApp',
     'centreBar.enquire': 'Enquire now',
   },
 });

@@ -8,7 +8,7 @@ A **single Next.js 16 App Router** project that includes:
 | --- | --- | --- |
 | Marketing / career website | `/`, `/courses`, `/centres`, … | Public visitors |
 | Staff CMS + CRM | `/admin` | Admins, editors, centre staff |
-| Jetking AI assistant | `/chatbot` (+ embeddable UI) | Public visitors |
+| Jetking AI assistant | `/chatbot` (CMS **Show on website**; otherwise 404) | Public visitors |
 | Public APIs | `/api/*` | Enquiry, chat, auth, OTP, revalidate |
 
 There is **one codebase, one deploy**. Content is not cloned into a separate headless CMS product — the admin panel *is* the CMS.
@@ -149,8 +149,11 @@ Publish semantics: each collection row has a `status` (`draft` | `published`). O
 
 ## 7. Chatbot answer pipeline
 
+Public availability is CMS-managed: **Admin → Assistant settings → Show on website** (`chatbot_settings.enabled`). When off, `/chatbot` and `/api/chat` are unavailable (404) and all public links stay hidden — see [CHATBOT.md](./CHATBOT.md).
+
 ```mermaid
 flowchart TB
+  Gate{CMS Show on website?}
   Q[User message]
   G[conversation-guard<br/>greeting / injection / guarantee / competitor]
   Loc[resolveCentreAnswer]
@@ -160,6 +163,8 @@ flowchart TB
   Search[semanticSearch + rankHits]
   LLM[Ollama or passages fallback]
 
+  Gate -->|no| Off[404 / no public links]
+  Gate -->|yes| Q
   Q --> G
   G -->|reply| Out[Response]
   G -->|continue| Loc

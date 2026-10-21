@@ -32,8 +32,35 @@ export function isDbDown(): boolean {
   return Date.now() < downUntil;
 }
 
-export function markDbDown(): void {
+/**
+ * Trip the read breaker. Returns `true` only on the first failure in an outage window so
+ * callers can log once instead of dumping a stack for every concurrent collection read.
+ */
+export function markDbDown(): boolean {
+  const alreadyDown = Date.now() < downUntil;
   downUntil = Date.now() + RETRY_AFTER_MS;
+  return !alreadyDown;
+}
+
+/** Short, once-per-outage log for expected local/dev fallbacks (e.g. Postgres not running). */
+export function logDbFallback(scope: string, detail: string, error?: unknown): void {
+  if (!markDbDown()) return;
+  const code =
+    error && typeof error === 'object' && 'code' in error && typeof (error as { code: unknown }).code === 'string'
+      ? (error as { code: string }).code
+      : error &&
+          typeof error === 'object' &&
+          'cause' in error &&
+          error.cause &&
+          typeof error.cause === 'object' &&
+          'code' in error.cause &&
+          typeof (error.cause as { code: unknown }).code === 'string'
+        ? (error.cause as { code: string }).code
+        : null;
+  const suffix = code ? ` (${code})` : '';
+  console.warn(
+    `[${scope}] Postgres unreachable${suffix} — ${detail} (retry in ${Math.round(RETRY_AFTER_MS / 1000)}s).`,
+  );
 }
 
 /** Test hook. */

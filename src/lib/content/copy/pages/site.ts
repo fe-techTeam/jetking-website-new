@@ -6,9 +6,10 @@ import { siteConfig } from '@/lib/site';
  * Site-wide (header, footer, contact) — editable text. Fields are added here with their current wording as the default; the
  * page component reads them from the copy it is given instead of hard-coding the string.
  *
- * Env-driven values stay env-driven by default: `contact.phone` falls back from NEXT_PUBLIC_PHONE to the
- * published helpline exactly as the footer and the mobile bar did before. The WhatsApp number
- * (NEXT_PUBLIC_WHATSAPP_NUMBER) is not a field — it is read from `siteConfig` in code.
+ * Contact numbers are CMS-editable under Page text → Site-wide (header, footer, contact):
+ *   - `contact.phone` — national toll-free Call CTAs (sticky bars, footer)
+ *   - `contact.whatsapp` — WhatsApp sticky CTAs
+ * Defaults come from NEXT_PUBLIC_PHONE / NEXT_PUBLIC_WHATSAPP_NUMBER / helpline when unset.
  */
 export const SITE_SECTIONS = [
   'header',
@@ -23,7 +24,8 @@ export const siteCopy = definePageCopy({
   label: 'Site-wide (header, footer, contact)',
   path: undefined,
   group: 'Site',
-  description: 'Navigation, footer, contact details, social links, calls to action and error pages. Use Show or hide sections to turn site chrome on or off.',
+  description:
+    'Navigation, footer, contact details, social links, calls to action and error pages. Edit Contact numbers › Toll-free Call number and WhatsApp number for every sticky Call / WhatsApp button. Use Show or hide sections to turn site chrome on or off. Jetking AI visibility (header button and Ask links) is controlled under Chatbot → Assistant settings → Show on website — not here.',
   defaults: {
     ...sectionVisibilityDefaults(SITE_SECTIONS),
 
@@ -81,10 +83,14 @@ export const siteCopy = definePageCopy({
     // Contact details
     'contact.address': '5th Floor, Amore Building, Junction of 2nd & 4th Road, Khar, Mumbai – 400052, India',
     'contact.email': 'info@jetking.com',
-    'contact.phone': siteConfig.phone || siteConfig.helpline,
+    /** National toll-free line for Call CTAs — edit in admin to change sticky Call everywhere. */
+    'contact.phone': siteConfig.phone || siteConfig.helpline || '07666830000',
+    /** Shared WhatsApp line for sticky WhatsApp CTAs. */
+    'contact.whatsapp': siteConfig.whatsappNumber || siteConfig.helpline || '07666830000',
 
     // Mobile contact bar
-    'mobileBar.call.label': 'Call us',
+    'mobileBar.call.label': 'Call',
+    'mobileBar.whatsapp.label': 'WhatsApp',
     'mobileBar.whatsapp.ariaLabel': 'Chat on WhatsApp',
     'mobileBar.enquire.label': 'Enquire now',
 

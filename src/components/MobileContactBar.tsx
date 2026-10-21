@@ -3,20 +3,21 @@
 import { EnquiryLink } from '@/components/EnquirySheet';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { ArrowRight, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
-import { whatsappHref } from '@/lib/site';
+import { whatsappHrefFromNumber } from '@/lib/site';
 import { useSiteCopy } from '@/components/providers/site-copy';
+import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 
 /**
  * Routes with their own conversion path: the enquiry form itself, course pages
- * (StickyCourseCta), centre pages (StickyCentreBar: that centre's own number and enquiry), and the
- * franchise/investor audiences, who aren't enquiring about courses.
+ * (StickyCourseCta), centre pages (StickyCentreBar), and the franchise/investor audiences,
+ * who aren't enquiring about courses. Call / WhatsApp always use the site-wide CMS numbers.
  */
 const EXCLUDED = [/^\/enquiry/, /^\/courses\/[^/]+/, /^\/centres\/[^/]+/, /^\/franchise/, /^\/investors/, /^\/account/];
 
 /**
- * Phone/tablet bottom bar: call the helpline or start an enquiry from anywhere. Slides in once
+ * Phone/tablet bottom bar: call, WhatsApp, or start an enquiry. Slides in once
  * the hero has scrolled away, like StickyCourseCta.
  */
 export function MobileContactBar() {
@@ -60,6 +61,7 @@ export function MobileContactBar() {
   if (excluded) return null;
   const shown = scrolled && !obscuring;
   const phone = copy['contact.phone'];
+  const whatsappHref = whatsappHrefFromNumber(copy['contact.whatsapp']);
 
   return (
     <div
@@ -68,13 +70,13 @@ export function MobileContactBar() {
         shown ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      <div className="shell flex items-center gap-2.5 py-3">
+      <div className="shell flex items-center gap-2 py-3 xs:gap-2.5">
         <a
           href={`tel:${phone}`}
           onClick={() => track('phone_clicked', { surface: 'mobile-contact-bar', path: pathname })}
-          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-[var(--theme-hairline-strong)] px-4 text-[14px] font-bold text-[var(--theme-ink)] transition-colors hover:bg-[var(--theme-surface)]"
+          className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-[var(--theme-hairline-strong)] px-2.5 text-[13px] font-bold text-[var(--theme-ink)] transition-colors hover:bg-[var(--theme-surface)] xs:gap-2 xs:px-3 xs:text-[14px]"
         >
-          <Phone className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+          <Phone className="h-4 w-4 shrink-0" strokeWidth={2.25} aria-hidden="true" />
           {copy['mobileBar.call.label']}
         </a>
         {whatsappHref ? (
@@ -84,18 +86,19 @@ export function MobileContactBar() {
             rel="noopener noreferrer"
             aria-label={copy['mobileBar.whatsapp.ariaLabel']}
             onClick={() => track('whatsapp_clicked', { surface: 'mobile-contact-bar', path: pathname })}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--theme-hairline-strong)] text-[var(--theme-parent-ink)] transition-colors hover:bg-[var(--theme-surface)]"
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-2.5 text-[13px] font-bold text-[#128C7E] transition-colors hover:bg-[#25D366]/18 xs:gap-2 xs:px-3 xs:text-[14px] dark:text-[#25D366]"
           >
-            <MessageCircle className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
+            <WhatsAppIcon className="h-4 w-4 shrink-0" />
+            {copy['mobileBar.whatsapp.label']}
           </a>
         ) : null}
         <EnquiryLink
           source="mobile-contact-bar"
           onClick={() => track('enquiry_started', { surface: 'mobile-contact-bar', path: pathname })}
-          className="inline-flex h-11 flex-[1.4] items-center justify-center gap-1.5 rounded-full bg-[var(--theme-accent)] px-4 text-[14px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)]"
+          className="inline-flex h-11 min-w-0 flex-[1.25] items-center justify-center gap-1 rounded-full bg-[var(--theme-accent)] px-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[var(--theme-accent-hover)] xs:gap-1.5 xs:px-3 xs:text-[14px]"
         >
           {copy['mobileBar.enquire.label']}
-          <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+          <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={2.25} aria-hidden="true" />
         </EnquiryLink>
       </div>
     </div>

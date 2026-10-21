@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { content } from '@/lib/content';
 import { coursesCopy } from '@/lib/content/copy/pages/courses';
 import { loadCopy } from '@/lib/content/copy/load';
+import { courseHasDetailPage } from '@/lib/course-href';
 import { breadcrumbSchema } from '@/lib/seo';
 import { JsonLd, type Crumb } from '@/components/ui';
 import { CoursePageTemplateB } from '../CoursePageTemplateB';
@@ -15,13 +16,13 @@ import { StickyCourseCta } from '../StickyCourseCta';
 
 export async function generateStaticParams() {
   const courses = await content.listCourses();
-  return courses.map((course) => ({ slug: course.slug }));
+  return courses.filter(courseHasDetailPage).map((course) => ({ slug: course.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const course = await content.getCourse(slug);
-  if (!course) return {};
+  if (!course || !courseHasDetailPage(course)) return {};
   return {
     title: { absolute: `${course.title} — design 2 preview` },
     robots: { index: false, follow: false },
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CourseDesignTwoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const course = await content.getCourse(slug);
-  if (!course) notFound();
+  if (!course || !courseHasDetailPage(course)) notFound();
 
   const copy = await loadCopy(coursesCopy);
   const [allCourses, centres, cities, siteFaqs, placements] = await Promise.all([
@@ -74,7 +75,7 @@ export default async function CourseDesignTwoPage({ params }: { params: Promise<
         placements={placements}
         copy={copy}
       />
-      <StickyCourseCta anchorId="course-hero-cta" title={course.shortTitle || course.title} duration={course.duration} copy={copy} />
+      <StickyCourseCta anchorId="course-hero-cta" copy={copy} />
     </>
   );
 }

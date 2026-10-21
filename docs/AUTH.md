@@ -49,15 +49,17 @@ flowchart TB
 
 ## 2. Visitor accounts (website + chatbot)
 
-**One register/login covers the public website and Jetking AI.**  
+**One register/login covers the public website and Jetking AI** (when the assistant is shown).  
 `/api/chatbot/auth` re-exports the same handlers as `/api/users/auth` (migration `0013_unify_visitor_accounts`).
+
+Jetking AI itself can be turned off site-wide in **Admin → Assistant settings → Show on website**. Accounts still work for the website and `/account`; chat UI and saved-chat APIs are unavailable while the assistant is hidden.
 
 ### UI
 
 | Surface | Component |
 | --- | --- |
 | Main site | `SiteAuthDialog` (`src/components/account/SiteAuthDialog.tsx`) |
-| Chatbot | Auth dialog under `src/features/jetking-ai/account/` |
+| Chatbot | Auth dialog under `src/features/jetking-ai/account/` (only when Show on website is on) |
 | Client hook | `use-site-account.ts` / `use-chat-account.ts` |
 
 Modes in the dialog: **Login** · **Sign up** · **Reset password**.  
@@ -180,7 +182,7 @@ Password hashing: shared `src/lib/auth/password.ts` (PBKDF2) — same algorithm 
 ### What login unlocks
 
 - `/account` profile
-- Saved chatbot conversations
+- Saved chatbot conversations (only when Assistant settings → Show on website is on)
 - Prefill / recognition on enquiry when signed in
 
 ---

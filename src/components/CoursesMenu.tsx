@@ -10,8 +10,10 @@ import {
   COURSE_LEVELS,
   COURSE_LEVEL_LABEL as LEVEL_LABEL,
   COURSE_TECHNOLOGIES,
+  courseLevel,
   type CourseCategoryId,
 } from '@/lib/course-categories';
+import { courseHref } from '@/lib/course-href';
 import { fill } from '@/lib/content/copy/define';
 import { useSiteCopy } from '@/components/providers/site-copy';
 import { cx } from './ui';
@@ -23,6 +25,8 @@ export interface MenuCourse {
   duration: string;
   featured: boolean;
   categories: CourseCategoryId[];
+  /** When false, menu links go to enquiry instead of a detail page. */
+  hasDetailPage?: boolean;
 }
 
 interface MenuItem {
@@ -44,7 +48,7 @@ const LEVEL_ITEMS: MenuItem[] = COURSE_LEVELS.map((l) => ({
   viewAllName: l.id === 'short' ? 'short' : l.label.toLowerCase(),
   href: `/courses?level=${l.id}`,
   params: { level: l.id },
-  has: (course) => course.level === l.id,
+  has: (course) => courseLevel(course) === l.id,
 }));
 
 const TECH_ITEMS: MenuItem[] = COURSE_TECHNOLOGIES.map((t) => ({
@@ -166,11 +170,12 @@ function Inner({ label, href, onDarkLead, courses }: { label: string; href: stri
                 <p className="label-mono text-[12px] text-foreground-muted">{active.label}</p>
                 <ul className="mt-3 grid gap-x-6 sm:grid-cols-2" aria-label={fill(copy['header.coursesMenu.listAriaLabel'], { group: active.label })}>
                   {list.map((course) => {
+                    const href = courseHref(course);
                     const here = pathname === `/courses/${course.slug}`;
                     return (
                       <li key={course.slug}>
                         <Link
-                          href={`/courses/${course.slug}` as Route}
+                          href={href}
                           aria-current={here ? 'page' : undefined}
                           className={cx(
                             'block rounded-xl px-3 py-2.5 transition-colors hover:bg-surface',

@@ -33,7 +33,7 @@ export function ProgramShowcase({ courses, copy }: { courses: Course[]; copy: Ho
     { id: 'featured', label: copy['programs.tab.featured'] },
     { id: 'degrees', label: copy['programs.tab.degree'] },
     { id: 'careers', label: copy['programs.tab.career'] },
-    ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree').map((c) => ({ id: c.id, label: c.label })),
+    ...COURSE_CATEGORIES.filter((c) => c.id !== 'degree' && c.id !== 'suny').map((c) => ({ id: c.id, label: c.label })),
   ];
   const tabs = TABS.filter((t) => courses.some((c) => inTab(c, t)));
   const activeTab = tabs.find((t) => t.id === tab) ?? tabs[0];

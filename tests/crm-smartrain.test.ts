@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import ids from '@/lib/crm/centre-ids.json';
 import { centres } from '@/lib/content/fixtures/locations';
 import { crmIdsForCentre, normalizeMobile, sendToCrm, splitName, toCrmPayload } from '@/lib/crm/smartrain';
-import { crmStatusLabel } from '@/lib/leads/transfer';
+import { crmStatusLabel, crmSyncDisplay } from '@/lib/leads/transfer';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -97,7 +97,7 @@ describe('sendToCrm', () => {
     expect(out.detail).toContain('email');
   });
 
-  it('a mobile the CRM already has is a duplicate, not a failure (nothing is lost, retrying cannot help)', async () => {
+  it('a mobile the CRM already has is reported as duplicate (API unique constraint)', async () => {
     const f = async () => json({ action: 'error', messages: { mobile: ['The mobile has already been taken.'] } });
     expect(await sendToCrm('https://crm.example/x', payload, f as never)).toEqual({
       status: 'duplicate',
@@ -125,10 +125,20 @@ describe('sendToCrm', () => {
 
 describe('status labels', () => {
   it('has a readable label for every hand-off status', () => {
-    expect(crmStatusLabel('routed')).toBe('Sent');
-    expect(crmStatusLabel('duplicate')).toBe('Already in CRM');
-    expect(crmStatusLabel('rejected')).toBe('Rejected by CRM');
-    expect(crmStatusLabel('skipped')).toContain('missing');
-    expect(crmStatusLabel('none')).toBe('Not configured');
+    expect(crmStatusLabel('routed')).toBe('Synced');
+    expect(crmStatusLabel('duplicate')).toBe('Not synced');
+    expect(crmStatusLabel('rejected')).toBe('Not synced');
+    expect(crmStatusLabel('skipped')).toBe('Not synced');
+    expect(crmStatusLabel('none')).toBe('Not synced');
+  });
+
+  it('crmSyncDisplay prefers stored detail and falls back by status', () => {
+    expect(crmSyncDisplay('routed', null)).toEqual({ synced: true, label: 'Synced', reason: null });
+    expect(crmSyncDisplay('skipped', 'email missing (required by the CRM)')).toEqual({
+      synced: false,
+      label: 'Not synced',
+      reason: 'email missing (required by the CRM)',
+    });
+    expect(crmSyncDisplay('duplicate', null).reason).toMatch(/unique:users/i);
   });
 });

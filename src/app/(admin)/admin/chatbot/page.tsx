@@ -58,15 +58,26 @@ export default async function ChatbotOverviewPage() {
             <Link href={'/admin/chatbot-settings' as Route} className="min-h-11 inline-flex items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">
               Settings
             </Link>
-            <a href="/chatbot" target="_blank" rel="noopener noreferrer" className="min-h-11 inline-flex items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">
-              Open chat page ↗
-            </a>
+            {settings.enabled ? (
+              <a href="/chatbot" target="_blank" rel="noopener noreferrer" className="min-h-11 inline-flex items-center rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)]">
+                Open chat page ↗
+              </a>
+            ) : (
+              <Link href={'/admin/chatbot-settings' as Route} className="min-h-11 inline-flex items-center rounded-[var(--admin-radius)] border border-[#f9dbaf] bg-[#fffaeb] px-4 text-sm font-semibold text-[#b54708] hover:border-[#f79009]">
+                Turn on in Settings
+              </Link>
+            )}
           </>
         }
       />
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Assistant" value={settings.enabled ? 'On' : 'Off'} tone={settings.enabled ? 'good' : 'warn'} hint={settings.name} />
+        <Stat
+          label="On the website"
+          value={settings.enabled ? 'Shown' : 'Hidden'}
+          tone={settings.enabled ? 'good' : 'warn'}
+          hint={settings.enabled ? settings.name : 'Hidden everywhere — turn on in Assistant settings'}
+        />
         <Stat label="Knowledge" value={`${index.passages.toLocaleString('en-IN')} passages`} hint={`Rebuilt ${builtLabel}`} />
         <Stat label="Answers come from" value={index.generalAnswers ? 'Site + general' : 'Website only'} tone={index.generalAnswers ? 'warn' : 'good'} hint={`Match threshold ${index.answerGate}`} />
         <Stat label="Language model" value={ollama.up ? 'Connected' : 'Not running'} hint={ollama.up ? ollama.models[0] ?? 'Ollama' : 'Answers use the passages directly'} />

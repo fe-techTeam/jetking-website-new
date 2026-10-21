@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import type { Course } from '@/lib/content/types';
-import { COURSE_LEVEL_LABEL } from '@/lib/course-categories';
+import { COURSE_LEVEL_BADGE, courseLevel } from '@/lib/course-categories';
+import { courseHasDetailPage, courseHref } from '@/lib/course-href';
 import { track } from '@/lib/analytics';
 import { TransitionLink } from '@/components/motion/TransitionLink';
 
@@ -15,6 +16,8 @@ import { TransitionLink } from '@/components/motion/TransitionLink';
  *
  * Put it inside a list item or `<article>`; it renders the link only. `as` is the heading level, so a
  * card under a section's h2 is an h3.
+ *
+ * When `hasDetailPage` is false the card links to enquiry and never shows a "View course" label.
  */
 export function CourseCard({
   course,
@@ -26,14 +29,17 @@ export function CourseCard({
   tag,
   title,
   description,
-  cta = 'View course',
+  cta,
   compact = false,
 }: {
-  course: Pick<Course, 'slug' | 'title' | 'level' | 'duration' | 'eligibility' | 'heroImage'>;
+  course: Pick<
+    Course,
+    'slug' | 'title' | 'level' | 'duration' | 'eligibility' | 'heroImage' | 'hasDetailPage' | 'university' | 'summary'
+  >;
   /** Where the card sits, recorded with the click (`explorer-card`, `home-showcase`, …). */
   surface: string;
   as?: 'h2' | 'h3';
-  /** Where the card goes; defaults to the course page. */
+  /** Where the card goes; defaults to the course page, or enquiry when the detail page is hidden. */
   href?: string;
   /** `list`: on phones a thumbnail beside the text, so a long list stays short. `stack`: photo on top at every width (swipe rows). */
   layout?: 'list' | 'stack';
@@ -42,21 +48,35 @@ export function CourseCard({
   /** Replaces the level label. */
   tag?: string;
   title?: string;
-  /** Replaces the eligibility line. */
+  /** Replaces the eligibility / summary line. */
   description?: string;
+  /** Action label. Ignored for "View course" when the course has no detail page. */
   cta?: string;
   /** A shorter card: a flatter photo (also in the swipe-row `stack` layout), tighter padding and a one-line description. For long lists of cards. */
   compact?: boolean;
 }) {
-  const text = description ?? course.eligibility;
+  // Prefer a real blurb (summary / university) over a generic eligibility line when one is set.
+  const text =
+    description ?? (course.summary?.trim() || course.university?.trim() || course.eligibility);
   const stack = layout === 'stack';
+  const hasDetail = courseHasDetailPage(course);
+  const linkHref = href ?? courseHref(course);
+  // Never promise a detail page the course does not have.
+  const linkCta = hasDetail
+    ? (cta ?? 'View course')
+    : cta && cta !== 'View course'
+      ? cta
+      : 'Enquire now';
+  const level = courseLevel(course);
+  const levelBadge = tag ?? COURSE_LEVEL_BADGE[level];
+  const longBadge = levelBadge.length > 18;
   // No photo, or one that fails to load: the Jetking wordmark stands in, so a card never shows an empty box.
   const [photoFailed, setPhotoFailed] = useState(false);
   const showPhoto = Boolean(course.heroImage) && !photoFailed;
 
   return (
     <TransitionLink
-      href={href ?? `/courses/${course.slug}`}
+      href={linkHref}
       onClick={() => track('course_viewed', { course_slug: course.slug, surface })}
       className="dc-card-shell dc-card-interactive group/card block h-full"
     >
@@ -99,8 +119,14 @@ export function CourseCard({
 
         <div className={`flex min-w-0 flex-1 flex-col ${compact ? 'p-4 sm:p-5' : stack ? 'p-5 sm:p-7' : 'p-4 sm:p-7'}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <span className="inline-flex rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 text-[12px] font-bold tracking-[0.06em] text-[var(--dc-accent-soft)] uppercase">
-              {tag ?? COURSE_LEVEL_LABEL[course.level]}
+            <span
+              className={`inline-flex max-w-full rounded-full border border-[var(--dc-accent-border)] bg-[var(--dc-accent-tint)] px-2.5 py-1 font-bold text-[var(--dc-accent-soft)] ${
+                longBadge
+                  ? 'text-left text-[11px] leading-snug tracking-normal normal-case'
+                  : 'text-[12px] tracking-[0.06em] uppercase'
+              }`}
+            >
+              {levelBadge}
             </span>
             <span className="numeral text-[12.5px] font-semibold text-[var(--dc-ink-muted)]">{course.duration}</span>
           </div>
@@ -109,12 +135,18 @@ export function CourseCard({
             {title ?? course.title}
           </Heading>
 
-          <p className={`mt-2 ${compact ? 'sm:line-clamp-1' : ''} line-clamp-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] ${stack ? '' : 'max-sm:hidden'}`}>
+          <p
+            className={`mt-2 flex-1 text-[14px] leading-relaxed text-[var(--dc-ink-muted)] ${
+              hasDetail
+                ? `${compact ? 'sm:line-clamp-1' : ''} line-clamp-2 ${stack ? '' : 'max-sm:hidden'}`
+                : ''
+            }`}
+          >
             {text}
           </p>
 
           <div className={`mt-auto flex items-center justify-between gap-3 ${compact ? (stack ? 'pt-3' : 'pt-2.5 sm:pt-4') : stack ? 'pt-5' : 'pt-2.5 sm:pt-6'}`}>
-            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">{cta}</span>
+            <span className="text-[13.5px] font-bold text-[var(--dc-accent-soft)]">{linkCta}</span>
             <span
               aria-hidden="true"
               className={`dc-cta h-10 w-10 shrink-0 place-items-center rounded-full ${stack ? 'grid' : 'hidden sm:grid'}`}

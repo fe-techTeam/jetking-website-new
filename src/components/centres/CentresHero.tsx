@@ -5,11 +5,13 @@ import type { centresCopy } from '@/lib/content/copy/pages/centres';
 import { HeroEnquiryCard } from '@/components/HeroEnquiryCard';
 import type { EnquiryCentre } from '@/components/QuickEnquiryForm';
 import { CentresHeroSearch } from './CentresHeroSearch';
+import { CentresNearMe, type NearMeCentre } from './CentresNearMe';
 
 export function CentresHero({
   cityCount,
   centreCount,
   centres,
+  nearMeCentres,
   initialQuery = '',
   copy,
 }: {
@@ -18,6 +20,8 @@ export function CentresHero({
   centreCount: number;
   /** Feeds the banner's lead form (state → centre). */
   centres: EnquiryCentre[];
+  /** Directory centres with locality/geo for the near-me CTA. */
+  nearMeCentres: NearMeCentre[];
   initialQuery?: string;
 }) {
   return (
@@ -49,6 +53,7 @@ export function CentresHero({
 
             <div className="mt-7 w-full sm:mt-8">
               <CentresHeroSearch initialQuery={initialQuery} copy={copy} />
+              <CentresNearMe centres={nearMeCentres} copy={copy} />
             </div>
 
             <p className="mt-5 numeral text-[13.5px] font-bold tracking-[0.12em] text-[var(--dc-ink-muted)] uppercase sm:mt-6">

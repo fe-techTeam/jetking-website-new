@@ -1,6 +1,7 @@
 import { content } from '@/lib/content';
 import { plainText } from '@/lib/rich/text';
 import { centrePath } from '@/lib/centre-path';
+import { courseHref } from '@/lib/course-href';
 import type { BodyBlock } from '@/lib/content/types';
 import type { Chunk } from './types';
 
@@ -53,7 +54,7 @@ export async function buildCorpus(): Promise<Chunk[]> {
       id: `course:${course.slug}`,
       type: 'course',
       title: course.title,
-      url: `/courses/${course.slug}`,
+      url: courseHref(course),
       sourceSlug: course.slug,
       text: [
         `Course: ${course.title}.`,

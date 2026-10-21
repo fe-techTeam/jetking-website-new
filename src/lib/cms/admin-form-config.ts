@@ -40,6 +40,8 @@ export interface AdminFormConfig {
   requiredFields?: string[];
   /** Top-level fields shown read-only — identity keys that must not be renamed (a singleton's `id`). */
   lockedFields?: string[];
+  /** Override the humanized field label in the form (e.g. `enabled` → “Show on website”). */
+  fieldLabels?: Record<string, string>;
 }
 
 const seoBlank = () => ({ title: '', description: '', canonicalPath: '', ogImage: '', noindex: false });
@@ -67,6 +69,7 @@ const courses: AdminFormConfig = {
     heroImage: imageBlank(),
     seo: seoBlank(),
     featured: false,
+    hasDetailPage: true,
     updatedAt: today(),
     highlights: [],
     tools: [],
@@ -94,13 +97,25 @@ const courses: AdminFormConfig = {
         { value: 'diploma', label: 'Diploma' },
         { value: 'certification', label: 'Certification' },
         { value: 'short', label: 'Short' },
+        { value: 'suny', label: 'State University of New York' },
       ],
     },
   },
   sections: [
     {
       title: 'Basics',
-      fields: ['slug', 'title', 'shortTitle', 'level', 'duration', 'eligibility', 'summary', 'university', 'featured'],
+      fields: [
+        'slug',
+        'title',
+        'shortTitle',
+        'level',
+        'duration',
+        'eligibility',
+        'summary',
+        'university',
+        'featured',
+        'hasDetailPage',
+      ],
     },
     {
       title: 'Curriculum & outcomes',
@@ -165,6 +180,7 @@ const centres: AdminFormConfig = {
     faqs: [],
     testimonials: [],
     geo: { lat: 0, lng: 0 },
+    sortOrder: 100,
     coursesOffered: [],
     seo: seoBlank(),
     updatedAt: today(),
@@ -188,6 +204,7 @@ const centres: AdminFormConfig = {
         'slug',
         'name',
         'citySlug',
+        'sortOrder',
         'addressLine',
         'locality',
         'state',
@@ -613,12 +630,40 @@ const seo_settings: AdminFormConfig = {
   ],
 };
 
+const centres_settings: AdminFormConfig = {
+  requiredFields: ['listSort', 'shuffleEveryDays'],
+  blank: () => ({
+    id: 'centres',
+    listSort: 'name',
+    shuffleEveryDays: 1,
+    status: 'published',
+  }),
+  lockedFields: ['id'],
+  selectFields: {
+    listSort: {
+      label: 'List sort',
+      options: [
+        { value: 'name', label: 'Name (A–Z)' },
+        { value: 'manual', label: 'Manual (sort order on each centre)' },
+        { value: 'shuffle', label: 'Shuffle (changes every N days)' },
+      ],
+    },
+  },
+  sections: [
+    {
+      title: 'Directory order',
+      fields: ['listSort', 'shuffleEveryDays'],
+    },
+  ],
+};
+
 const chatbot_settings: AdminFormConfig = {
   requiredFields: ['name', 'welcomeMessage', 'noMatchReply', 'offTopicReply'],
   blank: () => ({
     id: 'chatbot',
     enabled: true,
-    disabledMessage: '',
+    disabledMessage:
+      'Jetking AI is taking a short break. Please use the enquiry form and a counsellor will get back to you.',
     name: 'Jetking AI',
     welcomeMessage: '',
     welcomeChips: [],
@@ -629,8 +674,11 @@ const chatbot_settings: AdminFormConfig = {
   }),
   itemTemplates: { welcomeChips: { label: '', query: '' } },
   lockedFields: ['id'],
+  // disabledMessage is retained in the schema for older records; public hide is a hard 404.
+  hiddenFields: ['disabledMessage'],
+  fieldLabels: { enabled: 'Show on website' },
   sections: [
-    { title: 'Availability', fields: ['enabled', 'disabledMessage'] },
+    { title: 'Availability', fields: ['enabled'] },
     { title: 'Greeting', fields: ['name', 'welcomeMessage', 'welcomeChips', 'inputPlaceholder'] },
     { title: 'When it cannot answer', fields: ['noMatchReply', 'offTopicReply'] },
   ],
@@ -662,6 +710,7 @@ export const ADMIN_FORM_CONFIG: Record<CmsCollection, AdminFormConfig> = {
   page_copy,
   announcements,
   seo_settings,
+  centres_settings,
   chatbot_settings,
   chatbot_knowledge,
 };

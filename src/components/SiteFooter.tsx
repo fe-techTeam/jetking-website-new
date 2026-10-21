@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, Mail, MapPin, Phone } from 'lucide-react';
 import { content } from '@/lib/content';
+import { courseHref } from '@/lib/course-href';
 import { SOCIAL_LINKS } from '@/lib/social';
 import { SocialIcon } from '@/components/SocialIcon';
 import { LEGAL_LINKS } from '@/lib/legal';
@@ -134,7 +135,7 @@ export async function SiteFooter() {
           <div className="border-t border-border sm:grid sm:grid-cols-3 sm:gap-x-6 sm:border-0 lg:contents">
             <FooterNav label={copy['footer.courses.heading']}>
               {featuredCourses.map((course) => (
-                <FooterLink key={course.slug} href={`/courses/${course.slug}`}>
+                <FooterLink key={course.slug} href={courseHref(course)}>
                   {course.shortTitle}
                 </FooterLink>
               ))}

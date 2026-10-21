@@ -18,7 +18,22 @@ export interface EditablePage {
 
 type Overrides = Record<string, Record<string, string>>;
 
-const SEGMENT_LABELS: Record<string, string> = { seo: 'SEO & sharing', cta: 'Call to action', faq: 'FAQ', ogImage: 'Share image' };
+const SEGMENT_LABELS: Record<string, string> = {
+  seo: 'SEO & sharing',
+  cta: 'Call to action',
+  faq: 'FAQ',
+  ogImage: 'Share image',
+  contact: 'Contact numbers',
+  mobileBar: 'Mobile sticky bar',
+};
+
+/** Full-key labels when the dotted path alone is unclear for editors. */
+const FIELD_LABELS: Record<string, string> = {
+  'contact.phone': 'Toll-free Call number (sticky Call buttons & footer)',
+  'contact.whatsapp': 'WhatsApp number (sticky WhatsApp buttons)',
+  'contact.email': 'Email',
+  'contact.address': 'Head office address',
+};
 
 function humanizeSegment(segment: string): string {
   if (/^\d+$/.test(segment)) return `Item ${Number(segment) + 1}`;
@@ -29,6 +44,10 @@ function humanizeSegment(segment: string): string {
 
 /** `hero.cta.href` → section "Hero", field "Call to action › Href". Single-segment keys sit under "General". */
 function describeKey(key: string): { section: string; label: string } {
+  if (FIELD_LABELS[key]) {
+    const parts = key.split('.');
+    return { section: humanizeSegment(parts[0]!), label: FIELD_LABELS[key]! };
+  }
   const parts = key.split('.');
   if (parts.length === 1) return { section: 'General', label: humanizeSegment(parts[0]!) };
   const [first, ...rest] = parts;

@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-type L = { id: string; name: string; city: string | null; centreSlug: string | null; status: string };
+type L = { id: string; name: string; city: string | null; centreSlug: string | null; status: string; crmStatus: string; phone?: string | null; email?: string | null };
 const ID = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const LEADS: L[] = [
-  { id: ID(1), name: 'Pune A', city: 'Pune', centreSlug: 'pune-shivajinagar', status: 'new' },
-  { id: ID(2), name: 'Mumbai B', city: 'Mumbai', centreSlug: 'mumbai-andheri', status: 'new' },
-  { id: ID(3), name: 'Pune other centre', city: ' pune ', centreSlug: null, status: 'contacted' },
-  { id: ID(4), name: 'Chennai via centre', city: 'Chennai', centreSlug: 'pune-shivajinagar', status: 'lost' },
+  { id: ID(1), name: 'Pune A', city: 'Pune', centreSlug: 'pune-shivajinagar', status: 'new', crmStatus: 'failed', phone: '9800000001', email: 'a@pune.test' },
+  { id: ID(2), name: 'Mumbai B', city: 'Mumbai', centreSlug: 'mumbai-andheri', status: 'new', crmStatus: 'none', phone: '9800000002', email: 'b@mum.test' },
+  { id: ID(3), name: 'Pune other centre', city: ' pune ', centreSlug: null, status: 'contacted', crmStatus: 'routed', phone: '9800000003', email: 'c@pune.test' },
+  { id: ID(4), name: 'Chennai via centre', city: 'Chennai', centreSlug: 'pune-shivajinagar', status: 'lost', crmStatus: 'skipped', phone: '9800000004', email: null },
 ];
 
 let currentUser: { name: string; role: string; centreSlug: string | null };
@@ -24,6 +24,12 @@ const store = vi.hoisted(() => ({
   createLead: vi.fn(),
   importLeadRows: vi.fn(),
   getLeadStats: vi.fn(),
+  listLeadsByCrmStatus: vi.fn(),
+}));
+const crm = vi.hoisted(() => ({
+  pushLeadRowToCrm: vi.fn(),
+  handoffLeadToCrm: vi.fn(),
+  sleep: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@/app/(admin)/admin/actions', () => ({
@@ -39,6 +45,17 @@ vi.mock('@/app/(admin)/admin/actions', () => ({
   },
 }));
 vi.mock('@/lib/leads/store', () => ({ ...store, CALL_OUTCOMES: ['connected', 'no_answer', 'busy', 'wrong_number', 'call_back_later'] }));
+vi.mock('@/lib/leads/crm-handoff', () => ({
+  handoffLeadToCrm: (...a: unknown[]) => crm.handoffLeadToCrm(...a),
+}));
+vi.mock('@/lib/leads/crm-reconcile', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/leads/crm-reconcile')>('@/lib/leads/crm-reconcile');
+  return {
+    ...actual,
+    pushLeadRowToCrm: (...a: unknown[]) => crm.pushLeadRowToCrm(...a),
+    sleep: (...a: unknown[]) => crm.sleep(...a),
+  };
+});
 vi.mock('@/lib/cms/store', () => ({
   listCollection: async (c: string) =>
     c === 'centres'
@@ -51,7 +68,8 @@ vi.mock('@/lib/auth/users', () => ({ listUsers: async () => [] }));
 const actions = await import('@/app/(admin)/admin/leads/actions');
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
+  vi.unstubAllEnvs();
   store.listLeads.mockResolvedValue(LEADS);
   store.getLead.mockImplementation(async (id: string) => LEADS.find((l) => l.id === id));
   store.assignLead.mockImplementation(async (id: string) => LEADS.find((l) => l.id === id));
@@ -59,6 +77,12 @@ beforeEach(() => {
   store.createLead.mockImplementation(async (d: unknown) => ({ id: ID(9), name: 'x', ...(d as object) }));
   store.importLeadRows.mockResolvedValue({ added: 1, duplicates: 0 });
   store.listLeadActivities.mockResolvedValue([]);
+  store.listLeadsByCrmStatus.mockImplementation(async (statuses: string[]) =>
+    LEADS.filter((l) => statuses.includes(l.crmStatus)),
+  );
+  crm.pushLeadRowToCrm.mockResolvedValue({ routed: true, status: 'routed' });
+  crm.handoffLeadToCrm.mockResolvedValue({ routed: true, status: 'routed' });
+  crm.sleep.mockResolvedValue(undefined);
 });
 
 const as = (role: string, centreSlug: string | null = null) => (currentUser = { name: 'Tester', role, centreSlug });
@@ -183,5 +207,77 @@ describe('validation', () => {
     const passed = store.importLeadRows.mock.calls[0]![0];
     expect(passed.length).toBeLessThanOrEqual(2000);
     expect(passed.every((r: { name: string }) => typeof r.name === 'string' && r.name.trim())).toBe(true);
+  });
+});
+
+describe('CRM reconcile / push', () => {
+  it('pushLeadToCrm refuses out-of-scope leads for centre_staff', async () => {
+    as('centre_staff', 'pune-shivajinagar');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    expect((await actions.pushLeadToCrm(ID(2))).ok).toBe(false);
+    expect(crm.pushLeadRowToCrm).not.toHaveBeenCalled();
+  });
+
+  it('pushLeadToCrm skips leads already matched in CRM', async () => {
+    as('admin');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    const r = await actions.pushLeadToCrm(ID(3));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toMatch(/already saved/i);
+    expect(crm.pushLeadRowToCrm).not.toHaveBeenCalled();
+  });
+
+  it('pushLeadToCrm pushes an unmatched in-scope lead', async () => {
+    as('admin');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    crm.pushLeadRowToCrm.mockResolvedValueOnce({ routed: true, status: 'routed', detail: 'ok' });
+    store.getLead.mockResolvedValueOnce(LEADS[0]).mockResolvedValueOnce({ ...LEADS[0], crmStatus: 'routed' });
+    const r = await actions.pushLeadToCrm(ID(1));
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.status).toBe('routed');
+      expect(r.lead.crmStatus).toBe('routed');
+    }
+    expect(crm.pushLeadRowToCrm).toHaveBeenCalledOnce();
+  });
+
+  it('reconcileLeadsWithCrm on selected ids only pushes unmatched in-scope leads', async () => {
+    as('centre_staff', 'pune-shivajinagar');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    crm.pushLeadRowToCrm
+      .mockResolvedValueOnce({ routed: true, status: 'routed' })
+      .mockResolvedValueOnce({ routed: false, status: 'duplicate', detail: 'mobile already in the CRM' });
+
+    const r = await actions.reconcileLeadsWithCrm([ID(1), ID(2), ID(3), ID(4)]);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      // ID(2) out of scope; ID(3) already routed — only 1 and 4.
+      expect(r.counts.attempted).toBe(2);
+      expect(r.counts.pushed).toBe(1);
+      expect(r.counts.blockedSameMobile).toBe(1);
+    }
+    expect(crm.pushLeadRowToCrm).toHaveBeenCalledTimes(2);
+  });
+
+  it('full reconcile without ids is admin/editor only', async () => {
+    as('centre_staff', 'pune-shivajinagar');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    const r = await actions.reconcileLeadsWithCrm();
+    expect(r.ok).toBe(false);
+    expect(crm.pushLeadRowToCrm).not.toHaveBeenCalled();
+  });
+
+  it('full reconcile pushes unmatched backlog for admin', async () => {
+    as('admin');
+    vi.stubEnv('CRM_ENDPOINT', 'https://crm.example/save');
+    crm.pushLeadRowToCrm.mockResolvedValue({ routed: true, status: 'routed' });
+    const r = await actions.reconcileLeadsWithCrm();
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      // LEADS unmatched: 1 failed, 2 none, 4 skipped (3 is routed)
+      expect(r.counts.attempted).toBe(3);
+      expect(r.counts.pushed).toBe(3);
+    }
+    expect(store.listLeadsByCrmStatus).toHaveBeenCalled();
   });
 });

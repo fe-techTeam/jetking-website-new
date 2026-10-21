@@ -13,6 +13,7 @@ import { verifyOtpCode } from '@/lib/otp/client';
 import { OTP_ENABLED } from '@/components/MobileOtpField';
 import type { SiteAccount } from './use-site-account';
 import { useLocationPicker, useLocations } from '@/features/jetking-ai/account/use-locations';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 
 export type AuthMode = 'login' | 'signup' | 'reset';
 
@@ -51,6 +52,7 @@ export function SiteAuthDialog({
 }) {
   const id = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const chatbotEnabled = useChatbotEnabled();
   const { visitor } = usePersona();
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
@@ -289,7 +291,9 @@ export function SiteAuthDialog({
         : 'We will text a code to your registered mobile. You can start with your email or mobile number.'
     : isLogin
       ? 'Log in with email and password, or a one-time code on your mobile.'
-      : 'One account for the website and Jetking AI. Your details pre-fill enquiries, and your chats are saved.';
+      : chatbotEnabled
+        ? 'One account for the website and Jetking AI. Your details pre-fill enquiries, and your chats are saved.'
+        : 'One account for the website. Your details pre-fill enquiries so counsellors can reach you faster.';
 
   return (
     <div className="fixed inset-0 z-[90] flex items-end justify-center sm:items-center sm:p-4">

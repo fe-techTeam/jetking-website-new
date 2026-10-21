@@ -1,6 +1,6 @@
 import 'server-only';
 import { eq } from 'drizzle-orm';
-import { getDb, isDbDown, markDbDown } from '@/lib/db/client';
+import { getDb, isDbDown, logDbFallback } from '@/lib/db/client';
 import { centres as centresTable, cities as citiesTable } from '@/lib/db/schema';
 import { centreFromRow, centreToRow, cityFromRow, cityToRow } from '@/lib/cms/locations-map';
 
@@ -42,8 +42,7 @@ export async function listLocationRows(
     const records = rows.map(cityFromRow) as unknown as Record<string, unknown>[];
     return opts?.publishedOnly ? records.filter((r) => r.status === 'published') : records;
   } catch (error) {
-    markDbDown();
-    console.error(`[cms:locations] reading "${collection}" from Postgres failed — falling back to the file store.`, error);
+    logDbFallback('cms:locations', `reading "${collection}" failed — using file store`, error);
     return null;
   }
 }

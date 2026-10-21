@@ -1,6 +1,7 @@
 import { content } from '@/lib/content';
 import { plainText } from '@/lib/rich/text';
 import { centrePath } from '@/lib/centre-path';
+import { courseHref, courseHasDetailPage } from '@/lib/course-href';
 import { FOUNDED_YEAR } from '@/lib/brand-facts';
 import { absoluteUrl, siteConfig } from '@/lib/site';
 
@@ -17,6 +18,7 @@ const LEVEL_LABEL = {
   diploma: 'Diploma',
   certification: 'Certification',
   short: 'Short course',
+  suny: 'State University of New York',
 } as const;
 
 const oneLine = (text: string) => text.replace(/\s+/g, ' ').trim();
@@ -61,14 +63,18 @@ export async function GET() {
     '',
     '## Courses',
     '',
-    ...courses.map(
-      (course) =>
-        `- [${course.title}](${absoluteUrl(`/courses/${course.slug}`)}): ${LEVEL_LABEL[course.level]}, ${course.duration}. ` +
+    ...courses.map((course) => {
+      const url = courseHasDetailPage(course)
+        ? absoluteUrl(`/courses/${course.slug}`)
+        : absoluteUrl(courseHref(course));
+      return (
+        `- [${course.title}](${url}): ${LEVEL_LABEL[course.level]}, ${course.duration}. ` +
         oneLine(course.seo.description) +
         (course.eligibility && !/eligib/i.test(course.seo.description)
           ? ` Eligibility: ${oneLine(course.eligibility)}`
-          : ''),
-    ),
+          : '')
+      );
+    }),
     '',
     '## Centres',
     '',

@@ -4,10 +4,13 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { Sparkles } from 'lucide-react';
 import { useSiteCopy } from '@/components/providers/site-copy';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 
 /** "Not sure which course?" nudge into Jetking AI. The caller sets an AA-safe text colour. */
 export function AskAiLink({ className = '' }: { className?: string }) {
   const copy = useSiteCopy();
+  const chatbotEnabled = useChatbotEnabled();
+  if (!chatbotEnabled) return null;
   return (
     <Link
       href={copy['askAi.href'] as Route}

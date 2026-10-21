@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { ArrowRight, BookOpen, ChevronDown, Compass, MapPin, ShieldCheck } from 'lucide-react';
 import type { Course, CourseLevel, LogoItem, Post } from '@/lib/content/types';
+import { courseLevel } from '@/lib/course-categories';
 import { siteConfig } from '@/lib/site';
 import { fill } from '@/lib/content/copy/define';
 import type { exploreCopy } from '@/lib/content/copy/pages/explore';
@@ -76,12 +77,12 @@ const ORBIT = [
 /** "Our Affiliation" — real logos live on the jetking.com homepage (fetched 2026-08-21); names and image paths come from the page copy. */
 const AFFILIATION_COUNT = 4;
 
-const LEVEL_ORDER: CourseLevel[] = ['degree', 'diploma', 'certification', 'short'];
+const LEVEL_ORDER: CourseLevel[] = ['degree', 'diploma', 'certification', 'short', 'suny'];
 
 function groupCoursesByLevel(courses: Course[]): Array<{ level: CourseLevel; courses: Course[] }> {
   return LEVEL_ORDER.map((level) => ({
     level,
-    courses: courses.filter((c) => c.level === level),
+    courses: courses.filter((c) => courseLevel(c) === level),
   })).filter((group) => group.courses.length > 0);
 }
 
@@ -215,6 +216,7 @@ export function ExploreLanding({
     diploma: copy['levels.diploma'],
     certification: copy['levels.certification'],
     short: copy['levels.short'],
+    suny: copy['levels.suny'],
   };
   const orbitItems = ORBIT.map((item, i) => ({
     ...item,
@@ -224,7 +226,7 @@ export function ExploreLanding({
   const universityPartners = Array.from({ length: 4 }, (_, i) => ({
     name: byKey[`universities.${i}.name`] ?? '',
     src: byKey[`universities.${i}.image`] ?? '',
-  }));
+  })).filter((p) => p.name.trim());
   const affiliations = Array.from({ length: AFFILIATION_COUNT }, (_, i) => ({
     name: byKey[`affiliation.${i}.name`] ?? '',
     src: byKey[`affiliation.${i}.image`] ?? '',

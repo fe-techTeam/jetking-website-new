@@ -14,6 +14,7 @@ import { copyLinks } from '@/components/providers/site-copy-links';
 import type { NavItem } from '@/lib/content/types';
 import { useTheme } from '@/components/providers/theme-provider';
 import { useAccount } from '@/components/account/AccountProvider';
+import { useChatbotEnabled } from '@/components/providers/chatbot-enabled';
 import { cx } from './ui';
 import { CoursesMenu, type MenuCourse } from './CoursesMenu';
 import { useDialog } from './useDialog';
@@ -36,6 +37,7 @@ export type { MenuCourse };
 export function SiteHeader({ menuCourses, navItems }: { menuCourses: MenuCourse[]; navItems?: NavItem[] }) {
   const pathname = usePathname();
   const copy = useSiteCopy();
+  const chatbotEnabled = useChatbotEnabled();
   const { resolvedTheme, toggleTheme } = useTheme();
   const account = useAccount();
   const [scrolled, setScrolled] = useState(false);
@@ -314,22 +316,24 @@ export function SiteHeader({ menuCourses, navItems }: { menuCourses: MenuCourse[
               </button>
             )
           ) : null}
-          <Link
-            href={'/chatbot' as Route}
-            className={cx(
-              'inline-flex h-11 items-center justify-center gap-2 rounded-full border px-3 text-sm font-bold transition-[background-color,border-color,color,box-shadow] xs:h-12 xs:px-4 sm:h-[52px] sm:px-5',
-              onDarkLead
-                ? 'border-white/20 bg-white/10 text-white hover:bg-white/16'
-                : 'border-border-medium bg-background text-foreground hover:border-border-strong hover:bg-surface',
-            )}
-            aria-label={copy['header.ai.ariaLabel']}
-          >
-            <Bot
-              className="h-5 w-5 text-jk-500"
-              aria-hidden="true"
-            />
-            <span className="hidden sm:inline lg:hidden min-[1700px]:inline">{copy['header.ai.label']}</span>
-          </Link>
+          {chatbotEnabled ? (
+            <Link
+              href={'/chatbot' as Route}
+              className={cx(
+                'inline-flex h-11 items-center justify-center gap-2 rounded-full border px-3 text-sm font-bold transition-[background-color,border-color,color,box-shadow] xs:h-12 xs:px-4 sm:h-[52px] sm:px-5',
+                onDarkLead
+                  ? 'border-white/20 bg-white/10 text-white hover:bg-white/16'
+                  : 'border-border-medium bg-background text-foreground hover:border-border-strong hover:bg-surface',
+              )}
+              aria-label={copy['header.ai.ariaLabel']}
+            >
+              <Bot
+                className="h-5 w-5 text-jk-500"
+                aria-hidden="true"
+              />
+              <span className="hidden sm:inline lg:hidden min-[1700px]:inline">{copy['header.ai.label']}</span>
+            </Link>
+          ) : null}
           <EnquiryLink
             source="site-header"
             className="hidden h-[52px] items-center justify-center rounded-full bg-jk-600 px-5 text-sm font-bold whitespace-nowrap text-white transition-colors hover:bg-jk-700 lg:inline-flex"

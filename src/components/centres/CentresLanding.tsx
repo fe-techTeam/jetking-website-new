@@ -17,11 +17,13 @@ type CentreSummary = {
   slug: string;
   name: string;
   citySlug: string;
+  cityName: string;
   addressLine: string;
   locality: string;
   state: string;
   pincode: string;
   phone?: string;
+  geo?: { lat: number; lng: number } | null;
 };
 
 function CentresBottomCta({ copy }: { copy: typeof centresCopy.defaults }) {
@@ -112,6 +114,7 @@ export function CentresLanding({
           cityCount={cities.length}
           centreCount={centres.length}
           centres={toEnquiryCentres(centres, cities)}
+          nearMeCentres={centres}
           initialQuery={initialQuery}
         />
       ) : null}

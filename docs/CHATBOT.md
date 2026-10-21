@@ -15,6 +15,19 @@ retriever grounds Jetking answers in a committed site snapshot, while a local Ol
 writes the response. Questions outside the Jetking corpus can use the same local model's
 general knowledge; Jetking-specific facts are never allowed to come from that fallback.
 
+### Show / hide on the live site (CMS)
+
+**Admin → Assistant settings → Show on website** (`chatbot_settings.enabled`) is the single
+switch (helper: `src/lib/chatbot/availability.ts`). When off:
+
+- every public link is hidden (header, Ask Jetking AI, FAQ, sitemap, account chats)
+- courses “guidance” nudges fall back to enquiry instead of `/chatbot`
+- `/chatbot` returns 404
+- `/api/chat` and conversation APIs return 404
+
+Greeting copy and custom answers stay editable in the admin even while the assistant is hidden.
+Publish after changing the switch so the site layout refreshes.
+
 ---
 
 ## Getting started

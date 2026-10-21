@@ -40,7 +40,7 @@ export const coursesCopy = definePageCopy({
   path: '/courses',
   group: 'Pages',
   description:
-    'Course catalogue and fixed course-page chrome. guidance.fallback.* fills the Adaptive nudge when no course matches. Flexible learning labels also come from Page text → Professionals (flex.*). Use Show or hide sections for catalogue and course detail.',
+    'Course catalogue and fixed course-page chrome. guidance.fallback.* fills the Adaptive nudge when Jetking AI is on (Assistant settings → Show on website); otherwise the nudge links to enquiry. Flexible learning labels also come from Page text → Professionals (flex.*). Use Show or hide sections for catalogue and course detail.',
   defaults: {
     ...sectionVisibilityDefaults(COURSES_SECTIONS),
     ...seoFieldDefaults(),
@@ -84,7 +84,10 @@ export const coursesCopy = definePageCopy({
     'explorer.courseOne': 'course',
     'explorer.courseMany': 'courses',
     'explorer.matching': 'matching',
+    'explorer.resultsHeading': '{filter}',
+    'explorer.resultsHeadingBoth': '{level} · {technology}',
     'explorer.viewCourse': 'View course',
+    'explorer.enquireCourse': 'Enquire now',
     'explorer.emptyTitle': 'No course matches those filters',
     'explorer.emptyBody': 'Try a different level, technology, or search term.',
     'explorer.clearFilters': 'Clear all filters',
@@ -129,6 +132,8 @@ export const coursesCopy = definePageCopy({
 
     // ── Course page: at a glance ────────────────────────────────────────
     'courseFacts.aria': 'Course at a glance',
+    'courseFacts.jobGuaranteeTitle': '100% Job Guarantee',
+    'courseFacts.jobGuaranteeBody': 'Assured placement support',
     'courseFacts.degreeTitle': 'Degree',
     'courseFacts.degreeBody': 'From Top University',
     'courseFacts.learnTitle': 'Learn',
@@ -302,6 +307,7 @@ export const coursesCopy = definePageCopy({
     'courseRelated.title': 'Explore more courses',
     'courseRelated.catalogueLink': 'Full catalogue',
     'courseRelated.viewCourse': 'View course',
+    'courseRelated.enquireCourse': 'Enquire now',
 
     'courseJump.overview': 'Overview',
     'courseJump.centres': 'Centres',

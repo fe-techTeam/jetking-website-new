@@ -9,7 +9,9 @@ import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { isSectionVisible } from '@/lib/content/copy/sections';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { Section, SectionHeader } from '@/components/kit';
-import { COURSE_LEVEL_LABEL } from '@/lib/course-categories';
+import { COURSE_LEVEL_LABEL, courseLevel } from '@/lib/course-categories';
+import { courseHref } from '@/lib/course-href';
+import { isChatbotPubliclyEnabled } from '@/lib/chatbot/availability';
 import { BookOpen, Compass, MapPin, Newspaper, type LucideIcon } from 'lucide-react';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,12 +29,13 @@ export default async function SitemapPage() {
     { name: 'Home', path: '/' },
     { name: copy['breadcrumb.label'], path: '/sitemap' },
   ];
-  const PAGE_GROUPS = readPageGroups(copy);
-  const [courses, centres, posts] = await Promise.all([
+  const [courses, centres, posts, chatbotEnabled] = await Promise.all([
     content.listCourses(),
     content.listCentres(),
     content.listPosts(),
+    isChatbotPubliclyEnabled(),
   ]);
+  const PAGE_GROUPS = readPageGroups(copy, { includeChatbot: chatbotEnabled });
 
   const centresByState = new Map<string, typeof centres>();
   for (const centre of [...centres].sort((a, b) => a.name.localeCompare(b.name))) {
@@ -47,10 +50,10 @@ export default async function SitemapPage() {
     .filter((post) => !post.seo.noindex && (!post.seo.canonicalPath || post.seo.canonicalPath === `/blog/${post.slug}`))
     .sort((a, b) => a.title.localeCompare(b.title));
 
-  const courseGroups = [...new Set(courses.map((c) => c.level))].map((level) => ({
+  const courseGroups = [...new Set(courses.map((c) => courseLevel(c)))].map((level) => ({
     level,
     label: COURSE_LEVEL_LABEL[level],
-    list: courses.filter((c) => c.level === level),
+    list: courses.filter((c) => courseLevel(c) === level),
   }));
   const JUMPS: { id: string; label: string; count?: number; Icon: LucideIcon }[] = [
     ...(show('pages') ? [{ id: 'pages', label: copy['pages.title'], count: PAGE_GROUPS.reduce((n, g) => n + g.links.length, 0), Icon: Compass }] : []),
@@ -158,7 +161,7 @@ export default async function SitemapPage() {
                   <ul className="mt-2">
                     {g.list.map((course) => (
                       <li key={course.slug}>
-                        <Link href={`/courses/${course.slug}` as Route} className="flex min-h-10 items-center text-[15px] text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-red)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--k-red)]">
+                        <Link href={courseHref(course)} className="flex min-h-10 items-center text-[15px] text-[var(--k-ink-2)] transition-colors hover:text-[var(--k-red)] hover:underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--k-red)]">
                           {course.title}
                         </Link>
                       </li>
@@ -247,7 +250,10 @@ function AllLink({ href, children }: { href: string; children: React.ReactNode }
 }
 
 /** Read `groups.{n}.title` + `groups.{n}.links.{i}.{label,href}` until the first missing index. */
-function readPageGroups(copy: Record<string, string>): { title: string; links: { label: string; href: string }[] }[] {
+function readPageGroups(
+  copy: Record<string, string>,
+  opts: { includeChatbot: boolean },
+): { title: string; links: { label: string; href: string }[] }[] {
   const groups: { title: string; links: { label: string; href: string }[] }[] = [];
   for (let g = 0; ; g++) {
     const title = copy[`groups.${g}.title`];
@@ -257,6 +263,7 @@ function readPageGroups(copy: Record<string, string>): { title: string; links: {
       const label = copy[`groups.${g}.links.${i}.label`];
       const href = copy[`groups.${g}.links.${i}.href`];
       if (!label || !href) break;
+      if (!opts.includeChatbot && href === '/chatbot') continue;
       links.push({ label, href });
     }
     if (links.length) groups.push({ title, links });

@@ -27,27 +27,56 @@ export interface ExportableLead {
   utmContent: string | null;
   landingPage: string | null;
   crmStatus: string;
+  crmDetail?: string | null;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
 
 export const SOURCE_LABEL: Record<string, string> = { form: 'Website form', chatbot: 'Chatbot', centre: 'Centre', franchise: 'Franchise' };
-/** How a lead's hand-off to the external CRM reads in the admin and in exports. */
+
+/** Short status for the CRM sync column / exports. */
 export function crmStatusLabel(status: string): string {
   switch (status) {
     case 'routed':
-      return 'Sent';
+      return 'Synced';
     case 'duplicate':
-      return 'Already in CRM';
+      return 'Not synced';
     case 'rejected':
-      return 'Rejected by CRM';
+      return 'Not synced';
     case 'failed':
-      return 'Failed';
+      return 'Not synced';
     case 'skipped':
-      return 'Not sent (missing details)';
+      return 'Not synced';
     default:
-      return 'Not configured';
+      return 'Not synced';
   }
+}
+
+/** Fallback reason when `crm_detail` was never stored (older rows). */
+export function crmStatusFallbackReason(status: string): string | null {
+  switch (status) {
+    case 'routed':
+      return null;
+    case 'duplicate':
+      return 'Mobile already exists in CRM (unique:users) — changing centre does not create a second user';
+    case 'rejected':
+      return 'CRM rejected the enquiry (validation error)';
+    case 'failed':
+      return 'CRM request failed (network, timeout, or bad response)';
+    case 'skipped':
+      return 'Not sent — missing email or CRM centre mapping';
+    case 'none':
+      return 'Not pushed yet — CRM not configured or hand-off not attempted';
+    default:
+      return 'Not synced to CRM';
+  }
+}
+
+/** Synced badge + why (for table cells and detail). */
+export function crmSyncDisplay(status: string, detail?: string | null): { synced: boolean; label: string; reason: string | null } {
+  const synced = status === 'routed';
+  const reason = synced ? null : (detail?.trim() || crmStatusFallbackReason(status));
+  return { synced, label: synced ? 'Synced' : 'Not synced', reason };
 }
 
 export const STATUS_LABEL: Record<string, string> = { new: 'New', contacted: 'Contacted', enrolled: 'Enrolled', lost: 'Lost' };
@@ -83,7 +112,13 @@ export const EXPORT_COLUMNS: ExportColumn[] = [
   { key: 'utmMedium', label: 'Campaign medium', default: false, get: (l) => l.utmMedium },
   { key: 'utmCampaign', label: 'Campaign name', default: false, get: (l) => l.utmCampaign },
   { key: 'landingPage', label: 'Landing page', default: false, get: (l) => l.landingPage },
-  { key: 'crm', label: 'CRM hand-off', default: false, get: (l) => crmStatusLabel(l.crmStatus) },
+  { key: 'crm', label: 'CRM sync', default: true, get: (l) => crmSyncDisplay(l.crmStatus, l.crmDetail).label },
+  {
+    key: 'crmDetail',
+    label: 'CRM sync reason',
+    default: true,
+    get: (l) => crmSyncDisplay(l.crmStatus, l.crmDetail).reason,
+  },
   { key: 'updatedAt', label: 'Last updated', default: false, get: (l) => date(l.updatedAt) },
   { key: 'id', label: 'Lead ID', default: false, get: (l) => l.id },
 ];

@@ -34,6 +34,8 @@ Every enquiry (website forms, chatbot, centre pages, admin “Add lead”, journ
 
 Everything stays under **your brand** (Jetking), on **your domain** when you go live.
 
+For colours, fonts, logo rules, and how to use them on print, social, and decks, see **[BRAND_GUIDELINES.md](./BRAND_GUIDELINES.md)**.
+
 ---
 
 ## 2. What visitors see on the website
@@ -52,16 +54,16 @@ Everything stays under **your brand** (Jetking), on **your domain** when you go 
 | **Franchise** | Partner / franchise interest |
 | **Explore** | Optional “why Jetking” landing |
 | **Investors / Legal** | Disclosures, privacy, terms |
-| **Chatbot** | Ask Jetking AI in plain language (English or Hinglish) |
+| **Chatbot** | Ask Jetking AI in plain language (English or Hinglish) — only when staff have it **shown** in admin |
 
 There are **no separate “For students / For parents / For professionals” sections** on the live site. Those old URLs redirect to the home page. Everyone sees the same Jetking website.
 
 ### What visitors can do
 
 1. Browse courses and centres  
-2. Ask the chatbot for guidance  
+2. Ask the chatbot for guidance (when Jetking AI is shown in admin)  
 3. Submit an enquiry (name, phone, course interest, city/centre)  
-4. Optionally **create an account** (email or mobile) to save chatbot chats and return later  
+4. Optionally **create an account** (email or mobile); saved chatbot chats appear when Jetking AI is shown  
 5. Call or WhatsApp using the numbers you configure  
 
 ### Important honesty rules (built in)
@@ -74,7 +76,9 @@ There are **no separate “For students / For parents / For professionals” sec
 
 ## 3. Jetking AI chatbot (visitor experience)
 
-Visitors open **Chat** / `/chatbot` and can ask things like:
+Staff can **show or hide** Jetking AI for the whole website in **Admin → Assistant settings → Show on website**. When hidden, the header button and every public link disappear, and `/chatbot` is not available.
+
+When it is on, visitors open **Chat** / `/chatbot` and can ask things like:
 
 - “What courses do you offer?”  
 - “Cloud computing courses after 12th”  
@@ -107,7 +111,7 @@ flowchart TB
 ## 4. Visitor login & signup (optional)
 
 Visitors do **not** need an account to browse or enquire.  
-If they sign up, **one account** works for both the website and the chatbot.
+If they sign up, **one account** works for the website and the chatbot (when Jetking AI is shown).
 
 | Action | What they provide |
 | --- | --- |
@@ -115,7 +119,7 @@ If they sign up, **one account** works for both the website and the chatbot.
 | **Log in** | Email + password **or** mobile OTP |
 | **Forgot password** | OTP to their registered mobile, then new password |
 
-After login they can use **/account** and see **saved chatbot conversations**.
+After login they can use **/account**; **saved chatbot conversations** appear there when Jetking AI is shown.
 
 > Staff admin login is completely separate (see §6). A visitor cannot access the admin panel with a website account.
 
@@ -186,7 +190,7 @@ Centre staff can be limited to **only their centre’s leads**. Bulk CSV **Impor
 | **SEO settings** | Indexing / sitemap behaviour |
 | **Redirects** | Old URL → new URL (important for SEO migration) |
 | **Legal pages** | Privacy, terms, enrollment terms |
-| **Chatbot settings** | Greeting and “can’t answer” message |
+| **Chatbot settings** | **Show on website** (on/off for the whole site), greeting, and “can’t answer” message |
 | **Leads** | Follow up every enquiry |
 | **Team** | Invite editors and centre staff (Admin only) |
 | **Media** | Upload images used on pages |
@@ -246,6 +250,7 @@ Use this as a checklist in stakeholder meetings:
 - [ ] Placement wording approved (no “100% guarantee” language)  
 - [ ] Fee messaging approved (counsellor confirms; no fake prices)  
 - [ ] Legal pages (privacy / terms) signed off  
+- [ ] Whether Jetking AI is **shown** or **hidden** on the live site (Admin → Assistant settings → Show on website)  
 - [ ] Go-live date and who can approve DNS cutover  
 
 ---

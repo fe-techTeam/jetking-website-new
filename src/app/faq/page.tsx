@@ -19,6 +19,7 @@ import { loadCopy, pageMetadata } from '@/lib/content/copy/load';
 import { Breadcrumbs, JsonLd, type Crumb } from '@/components/ui';
 import { FaqList, Section, SectionHeader } from '@/components/kit';
 import { isSectionVisible } from '@/lib/content/copy/sections';
+import { isChatbotPubliclyEnabled } from '@/lib/chatbot/availability';
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(faqCopy, '/faq');
@@ -57,7 +58,11 @@ export default async function FaqPage() {
     franchise: copy['topics.franchise'],
   };
   // Franchise questions are answered on the Franchise page; this page is for students and families.
-  const faqs = (await content.listFaqs()).filter((f) => f.topic !== 'franchise');
+  const [faqsRaw, chatbotEnabled] = await Promise.all([
+    content.listFaqs(),
+    isChatbotPubliclyEnabled(),
+  ]);
+  const faqs = faqsRaw.filter((f) => f.topic !== 'franchise');
   const topics = [...new Set(faqs.map((f) => f.topic))];
   const show = (id: string) => isSectionVisible(copy, id);
 
@@ -166,12 +171,14 @@ export default async function FaqPage() {
                 >
                   {copy['more.cta.label']}
                 </EnquiryLink>
-                <Link
-                  href={copy['more.chat.href'] as Route}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
-                >
-                  {copy['more.chat.label']}
-                </Link>
+                {chatbotEnabled ? (
+                  <Link
+                    href={copy['more.chat.href'] as Route}
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-[var(--k-line-strong)] bg-[var(--k-bg)] px-6 text-[15px] font-bold text-[var(--k-ink)] transition-colors hover:border-[var(--k-red)]"
+                  >
+                    {copy['more.chat.label']}
+                  </Link>
+                ) : null}
               </div>
             </div>
             <div className="relative aspect-[4/3] md:self-center">

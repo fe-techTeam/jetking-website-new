@@ -21,5 +21,6 @@ export type CmsCollection =
   | 'page_copy'
   | 'announcements'
   | 'seo_settings'
+  | 'centres_settings'
   | 'chatbot_settings'
   | 'chatbot_knowledge';

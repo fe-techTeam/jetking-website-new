@@ -1,6 +1,7 @@
 import type { Centre, Course } from '@/lib/content/types';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
 import { CourseCard } from '@/components/CourseCard';
+import { courseHref } from '@/lib/course-href';
 
 interface CentreCourseItem {
   key: string;
@@ -109,7 +110,7 @@ export function CentreCourseGroups({
       kind,
       tag: kind === 'degree' ? copy['centreCourses.degreeTag'] : copy['centreCourses.careerTag'],
       duration: joinMeta(readableDuration(prog.duration ?? course?.duration), prog.mode),
-      href: course ? `/courses/${course.slug}` : '#centre-hero-cta',
+      href: course ? courseHref(course) : '#centre-hero-cta',
       slug: course?.slug ?? '',
       level: course?.level ?? (kind === 'degree' ? 'degree' : 'certification'),
       heroImage: course?.heroImage,
@@ -126,7 +127,7 @@ export function CentreCourseGroups({
       kind,
       tag: kind === 'degree' ? copy['centreCourses.degreeTag'] : copy['centreCourses.careerTag'],
       duration: joinMeta(readableDuration(course.duration)),
-      href: `/courses/${course.slug}`,
+      href: courseHref(course),
       slug: course.slug,
       level: course.level,
       heroImage: course.heroImage,
@@ -158,6 +159,7 @@ export function CentreCourseGroups({
                     level: item.level,
                     duration: item.duration,
                     eligibility: item.description ?? '',
+                    summary: item.description ?? '',
                     heroImage: item.heroImage,
                   }}
                   surface="centre-courses"

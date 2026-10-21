@@ -3,6 +3,7 @@ import path from 'node:path';
 import { ImageResponse } from 'next/og';
 import { content } from '@/lib/content';
 import { COURSE_LEVEL_LABEL } from '@/lib/course-categories';
+import { courseHasDetailPage } from '@/lib/course-href';
 
 /**
  * Social preview card for a course (1200x630): title, level and duration over the course photo, with the
@@ -27,7 +28,7 @@ async function dataUri(publicPath: string, mime: string): Promise<string | null>
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const course = await content.getCourse(slug);
-  if (!course) return new Response('Not found', { status: 404 });
+  if (!course || !courseHasDetailPage(course)) return new Response('Not found', { status: 404 });
 
   const logo = await dataUri('/brand/jetking-wordmark.png', 'image/png');
   const title = course.shortTitle || course.title;

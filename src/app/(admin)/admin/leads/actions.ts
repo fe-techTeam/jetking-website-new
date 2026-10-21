@@ -17,6 +17,7 @@ import {
   logLeadCall,
   deleteLeads,
   importLeadRows,
+  listLeadsByCrmStatus,
   CALL_OUTCOMES,
   type CallOutcome,
   type ImportRow,
@@ -26,6 +27,17 @@ import {
 import { resolveCentreCity, leadInScope, scopeLeadList, isUuid } from '@/lib/leads/centre-scope';
 import { leadInputSchema, leadStatusSchema } from '@/lib/leads/schema';
 import { handoffLeadToCrm } from '@/lib/leads/crm-handoff';
+import {
+  CRM_RECONCILE_BATCH_LIMIT,
+  CRM_RECONCILE_GAP_MS,
+  emptyReconcileCounts,
+  filterUnmatchedLeads,
+  pushLeadRowToCrm,
+  sleep,
+  tallyHandoff,
+  type ReconcileCounts,
+} from '@/lib/leads/crm-reconcile';
+import { CRM_UNMATCHED_STATUSES, needsCrmPush } from '@/lib/leads/crm-status';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
 import { listUsers } from '@/lib/auth/users';
@@ -275,4 +287,106 @@ export async function importLeads(rows: ImportRow[]): Promise<{ added: number; d
   const result = await importLeadRows(valid, user.name);
   void recordAudit(user, 'lead.import', 'lead', null, `Imported ${result.added} lead(s) (${result.duplicates} duplicates skipped)`);
   return { ...result, invalid: rows.length - valid.length };
+}
+
+/* ── CRM reconciliation (push panel leads that are not matched in CRM) ── */
+
+/**
+ * Push one lead to the CRM when this panel enquiry is not yet `routed`.
+ * Same mobile may need a separate CRM entry (other centre/course). If the API
+ * rejects with “mobile already taken”, status stays `duplicate` and remains
+ * eligible for retry. Never invents a lookup — Smartrain only exposes save.
+ */
+export async function pushLeadToCrm(
+  leadId: string,
+): Promise<{ ok: true; lead: Lead; status: string; detail?: string } | { ok: false; error: string }> {
+  const user = await requireAccess('leads', 'edit');
+  let lead: Lead;
+  try {
+    lead = await requireLeadInScope(leadId, user);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Lead not found.' };
+  }
+  if (!needsCrmPush(lead.crmStatus)) {
+    return { ok: false, error: 'This enquiry was already saved to the CRM.' };
+  }
+  if (!process.env.CRM_ENDPOINT) {
+    return { ok: false, error: 'CRM_ENDPOINT is not configured.' };
+  }
+
+  try {
+    const result = await pushLeadRowToCrm(lead);
+    const updated = (await getLead(lead.id)) ?? lead;
+    void recordAudit(
+      user,
+      'lead.crm_push',
+      'lead',
+      lead.id,
+      `CRM push for "${lead.name}" → ${result.status}${result.detail ? ` (${result.detail})` : ''}`,
+    );
+    return { ok: true, lead: updated, status: result.status, detail: result.detail };
+  } catch (e) {
+    console.error('[leads:crm-push-failed]', safeError(e));
+    return { ok: false, error: 'Could not reach the CRM.' };
+  }
+}
+
+export type ReconcileResult =
+  | { ok: true; counts: ReconcileCounts; leads: Lead[] }
+  | { ok: false; error: string };
+
+/**
+ * Reconcile admin-panel leads with the CRM: for each unmatched row, attempt a
+ * push. Matched = `routed` only (this enquiry saved as its own CRM entry).
+ *
+ * - With `ids`: only those leads (in scope, still unmatched), capped.
+ * - Without `ids`: every unmatched lead visible to this user (centre-scoped
+ *   staff only see their centre; full backlog reconcile is admin/editor only).
+ */
+export async function reconcileLeadsWithCrm(ids?: string[]): Promise<ReconcileResult> {
+  const user = await requireAccess('leads', 'edit');
+  if (!process.env.CRM_ENDPOINT) {
+    return { ok: false, error: 'CRM_ENDPOINT is not configured.' };
+  }
+
+  let candidates: Lead[];
+  if (ids && Array.isArray(ids) && ids.length > 0) {
+    candidates = filterUnmatchedLeads(await leadsInScope(ids, user));
+  } else {
+    // Full backlog: same gate as CSV import — not for a single centre's staff.
+    if (user.leadScope === 'centre') {
+      return { ok: false, error: 'Select specific leads to push, or ask an admin to run a full reconcile.' };
+    }
+    const scopeCity = await scopeCityFor(user);
+    candidates = scopeLeads(user, scopeCity, await listLeadsByCrmStatus(CRM_UNMATCHED_STATUSES));
+  }
+
+  const batch = candidates.slice(0, CRM_RECONCILE_BATCH_LIMIT);
+  const counts = emptyReconcileCounts();
+  const updated: Lead[] = [];
+
+  for (let i = 0; i < batch.length; i++) {
+    const lead = batch[i]!;
+    try {
+      const result = await pushLeadRowToCrm(lead);
+      tallyHandoff(counts, result);
+      updated.push((await getLead(lead.id)) ?? lead);
+    } catch (e) {
+      console.error('[leads:crm-reconcile-failed]', lead.id, safeError(e));
+      counts.attempted += 1;
+      counts.stillUnmatched += 1;
+      updated.push(lead);
+    }
+    if (i < batch.length - 1) await sleep(CRM_RECONCILE_GAP_MS);
+  }
+
+  void recordAudit(
+    user,
+    'lead.crm_reconcile',
+    'lead',
+    null,
+    `CRM reconcile: ${counts.attempted} attempted, ${counts.pushed} pushed, ${counts.blockedSameMobile} blocked (same mobile), ${counts.stillUnmatched} still unmatched`,
+  );
+
+  return { ok: true, counts, leads: updated };
 }

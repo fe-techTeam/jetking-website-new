@@ -2,16 +2,18 @@
 
 import {
   ArrowDown, ArrowLeft, ArrowUp, Bot, CalendarClock, Check, CircleAlert, Clock, Copy, Download, Eye, Globe, Inbox, Mail,
-  MapPin, MessageCircle, MoreHorizontal, Phone, PhoneCall, Plus, Search, StickyNote, Trash2, Upload, User, UserPlus, Users, X,
+  MapPin, MessageCircle, MoreHorizontal, Phone, PhoneCall, Plus, RefreshCw, Search, StickyNote, Trash2, Upload, User, UserPlus, Users, X,
   ArrowRightLeft, Building2, GraduationCap, Megaphone,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent, type ReactNode } from 'react';
 import {
   submitLead, moveLeadStatus, addNote, removeLead, removeLeads, getLeadTimeline, assignLeads, scheduleFollowUp, recordCall, listAssignees,
+  pushLeadToCrm, reconcileLeadsWithCrm,
 } from './actions';
 import type { Lead, LeadActivity } from '@/lib/db/schema';
 import type { LeadStatus } from '@/lib/leads/store';
-import { SOURCE_LABEL, STATUS_LABEL as STATUS_TEXT, crmStatusLabel } from '@/lib/leads/transfer';
+import { needsCrmPush } from '@/lib/leads/crm-status';
+import { SOURCE_LABEL, STATUS_LABEL as STATUS_TEXT, crmStatusLabel, crmSyncDisplay } from '@/lib/leads/transfer';
 import { AdminConfirmDialog } from '../AdminConfirmDialog';
 import { ExportDialog } from './ExportDialog';
 import { ImportDialog } from './ImportDialog';
@@ -70,6 +72,18 @@ function FollowUp({ at, closed, now }: { at: Date | string | null; closed: boole
       {overdue ? <CircleAlert aria-hidden="true" className="h-3.5 w-3.5" /> : <CalendarClock aria-hidden="true" className="h-3.5 w-3.5" />}
       {day(at)}
       {overdue ? <span className="sr-only"> (overdue)</span> : null}
+    </span>
+  );
+}
+
+function CrmSyncCell({ status, detail }: { status: string; detail?: string | null }) {
+  const { synced, label, reason } = crmSyncDisplay(status, detail);
+  return (
+    <span className="flex min-w-0 max-w-[14rem] flex-col gap-0.5" title={reason ?? label}>
+      <span className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[11px] font-bold ${synced ? 'bg-[var(--color-growth-50)] text-[#067647]' : 'bg-[var(--color-error-50)] text-[#b42318]'}`}>
+        {label}
+      </span>
+      {reason ? <span className="line-clamp-2 text-[11px] leading-snug text-foreground-muted">{reason}</span> : null}
     </span>
   );
 }
@@ -310,6 +324,61 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
     void navigator.clipboard?.writeText(text);
     setMessage(`${what} copied.`);
   }
+  function summariseReconcile(counts: { attempted: number; pushed: number; blockedSameMobile: number; stillUnmatched: number }) {
+    const parts = [
+      counts.pushed ? `${counts.pushed} pushed` : null,
+      counts.blockedSameMobile ? `${counts.blockedSameMobile} blocked (same mobile in CRM API)` : null,
+      counts.stillUnmatched ? `${counts.stillUnmatched} still unmatched` : null,
+    ].filter(Boolean);
+    return counts.attempted === 0
+      ? 'No unmatched leads to push.'
+      : `CRM reconcile: ${parts.join(', ') || `${counts.attempted} checked`}.`;
+  }
+  function pushOneToCrm(id: string) {
+    setError(null);
+    start(async () => {
+      const r = await pushLeadToCrm(id);
+      if (!r.ok) return setError(r.error);
+      patch(r.lead);
+      setMessage(
+        r.status === 'routed'
+          ? 'Pushed to CRM.'
+          : r.status === 'duplicate'
+            ? 'CRM API blocked this save (mobile already exists). Panel enquiry kept — create a separate CRM entry or retry when the API allows the same mobile.'
+            : `CRM hand-off: ${crmStatusLabel(r.status)}${r.detail ? ` (${r.detail})` : ''}.`,
+      );
+    });
+  }
+  function reconcileSelected() {
+    const ids = checked.filter((id) => {
+      const lead = leads.find((l) => l.id === id);
+      return lead && needsCrmPush(lead.crmStatus);
+    });
+    if (ids.length === 0) return setMessage('No selected leads need a CRM push.');
+    setError(null);
+    start(async () => {
+      const r = await reconcileLeadsWithCrm(ids);
+      if (!r.ok) return setError(r.error);
+      r.leads.forEach(patch);
+      setChecked([]);
+      setMessage(summariseReconcile(r.counts));
+    });
+  }
+  function reconcileAllUnmatched() {
+    setError(null);
+    start(async () => {
+      const r = await reconcileLeadsWithCrm();
+      if (!r.ok) return setError(r.error);
+      r.leads.forEach(patch);
+      setMessage(summariseReconcile(r.counts));
+    });
+  }
+
+  const unmatchedCount = useMemo(() => leads.filter((l) => needsCrmPush(l.crmStatus)).length, [leads]);
+  const selectedUnmatched = useMemo(
+    () => selectedLeads.filter((l) => needsCrmPush(l.crmStatus)).length,
+    [selectedLeads],
+  );
 
   const banner = (
     <>
@@ -339,6 +408,11 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
             </div>
             <div className="flex flex-wrap gap-2">
               {canImport ? <button type="button" onClick={() => setImportOpen(true)} className={btn}><Upload aria-hidden="true" className="h-4 w-4" />Import</button> : null}
+              {canImport && unmatchedCount > 0 ? (
+                <button type="button" disabled={pending} onClick={reconcileAllUnmatched} className={btn} title="Push panel leads that are not yet matched in the CRM">
+                  <RefreshCw aria-hidden="true" className="h-4 w-4" />Push unmatched to CRM ({unmatchedCount})
+                </button>
+              ) : null}
               <button type="button" onClick={() => setExportOpen(true)} disabled={leads.length === 0} className={btn}><Download aria-hidden="true" className="h-4 w-4" />Export</button>
               <button type="button" onClick={() => setShowNew((v) => !v)} className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-5 text-sm font-bold">
                 {showNew ? <X aria-hidden="true" className="h-4 w-4" /> : <Plus aria-hidden="true" className="h-4 w-4" />}{showNew ? 'Cancel' : 'New lead'}
@@ -430,6 +504,11 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                 </select>
               </label>
               <button type="button" onClick={() => setExportOpen(true)} className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)]"><Download aria-hidden="true" className="h-4 w-4" />Export</button>
+              {selectedUnmatched > 0 ? (
+                <button type="button" disabled={pending} onClick={reconcileSelected} className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-secondary hover:text-[var(--accent-ink)] disabled:opacity-45">
+                  <RefreshCw aria-hidden="true" className="h-4 w-4" />Push to CRM ({selectedUnmatched})
+                </button>
+              ) : null}
               <button type="button" onClick={() => setPendingDelete({ ids: checked, label: `${checked.length} leads` })} className="inline-flex min-h-9 cursor-pointer items-center gap-1.5 text-sm font-semibold text-foreground-muted hover:text-[#b42318]"><Trash2 aria-hidden="true" className="h-4 w-4" />Delete</button>
               <button type="button" onClick={() => setChecked([])} className="ml-auto cursor-pointer text-sm font-semibold text-foreground-muted hover:text-foreground">Clear selection</button>
             </div>
@@ -446,6 +525,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                     <th scope="col" className="px-3 py-3">Interested in</th>
                     <th scope="col" className="hidden px-3 py-3 lg:table-cell">Source</th>
                     <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'status' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('status')} className="cursor-pointer font-bold uppercase hover:text-foreground">Status{sortMark('status')}</button></th>
+                    <th scope="col" className="hidden px-3 py-3 md:table-cell lg:table-cell">CRM sync</th>
                     <th scope="col" className="hidden px-3 py-3 lg:table-cell">Owner</th>
                     <th scope="col" className="hidden px-3 py-3 xl:table-cell" aria-sort={sort.key === 'followUpAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('followUpAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Follow-up{sortMark('followUpAt')}</button></th>
                     <th scope="col" className="px-3 py-3" aria-sort={sort.key === 'createdAt' ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}><button type="button" onClick={() => sortBy('createdAt')} className="cursor-pointer font-bold uppercase hover:text-foreground">Received{sortMark('createdAt')}</button></th>
@@ -473,6 +553,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                         </td>
                         <td className="hidden px-3 py-3 whitespace-nowrap text-foreground-secondary lg:table-cell"><span className="inline-flex items-center gap-1.5"><SrcIcon aria-hidden="true" className="h-4 w-4 text-foreground-muted" />{SOURCE_LABEL[l.source] ?? l.source}</span></td>
                         <td className="px-3 py-3"><StatusSelect lead={l} disabled={pending} onChange={(s) => changeStatus(l.id, s)} /></td>
+                        <td className="hidden px-3 py-3 md:table-cell"><CrmSyncCell status={l.crmStatus} detail={l.crmDetail} /></td>
                         <td className="hidden px-3 py-3 lg:table-cell"><Owner name={l.assignedTo} /></td>
                         <td className="hidden px-3 py-3 whitespace-nowrap xl:table-cell"><FollowUp at={l.followUpAt} closed={!open(l)} now={now} /></td>
                         <td className="px-3 py-3 whitespace-nowrap text-xs text-foreground-muted">{when(l.createdAt)}</td>
@@ -497,7 +578,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                     );
                   })}
                   {pageRows.length === 0 ? (
-                    <tr><td colSpan={9} className="px-4 py-14 text-center text-foreground-muted"><Inbox aria-hidden="true" className="mx-auto mb-2 h-8 w-8 opacity-50" />{leads.length === 0 ? 'No leads yet. They appear here as soon as someone submits an enquiry.' : 'No leads match these filters.'}</td></tr>
+                    <tr><td colSpan={10} className="px-4 py-14 text-center text-foreground-muted"><Inbox aria-hidden="true" className="mx-auto mb-2 h-8 w-8 opacity-50" />{leads.length === 0 ? 'No leads yet. They appear here as soon as someone submits an enquiry.' : 'No leads match these filters.'}</td></tr>
                   ) : null}
                 </tbody>
               </table>
@@ -517,6 +598,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                   </button>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <StatusSelect lead={l} disabled={pending} onChange={(s) => changeStatus(l.id, s)} />
+                    <CrmSyncCell status={l.crmStatus} detail={l.crmDetail} />
                     <Owner name={l.assignedTo} />
                     <FollowUp at={l.followUpAt} closed={!open(l)} now={now} />
                   </div>
@@ -526,6 +608,7 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                     <RowMenu label={`Actions for ${l.name}`}>
                       <MenuItem icon={Eye} onClick={() => openLead(l.id)}>Open lead</MenuItem>
                       {l.email ? <MenuItem icon={Mail} href={`mailto:${l.email}`}>Email</MenuItem> : null}
+                      {needsCrmPush(l.crmStatus) ? <MenuItem icon={RefreshCw} onClick={() => pushOneToCrm(l.id)}>Push to CRM</MenuItem> : null}
                       <MenuItem icon={UserPlus} onClick={() => assign([l.id], me)}>Assign to me</MenuItem>
                       <MenuItem icon={CalendarClock} onClick={() => followUp(l.id, inDays(1))}>Follow up tomorrow</MenuItem>
                       <MenuItem icon={Trash2} danger onClick={() => setPendingDelete({ ids: [l.id], label: l.name })}>Delete</MenuItem>
@@ -600,17 +683,33 @@ export function LeadsBoard({ initialLeads, initialStatusFilter, me, canImport }:
                 ['Phone', selected.phone], ['Email', selected.email], ['Interested in', selected.courseInterest], ['City', selected.city], ['State', selected.state], ['Centre', selected.centreName],
                 ['Qualification', selected.qualification === 'graduate' ? 'Graduate or above' : selected.qualification], ['Came from', selected.form],
                 ['Campaign', [selected.utmSource, selected.utmMedium, selected.utmCampaign].filter(Boolean).join(' / ')], ['Landing page', selected.landingPage],
-                ['CRM hand-off', crmStatusLabel(selected.crmStatus) + (['failed', 'rejected', 'skipped'].includes(selected.crmStatus) ? ' — follow up manually' : '')],
+                ['CRM sync', crmSyncDisplay(selected.crmStatus, selected.crmDetail).label],
               ] as const).filter(([, v]) => v).map(([label, v]) => (
                 <div key={label}>
                   <dt className="text-xs font-bold tracking-wide text-foreground-muted uppercase">{label}</dt>
                   <dd className="mt-1 flex items-center gap-2 break-words text-foreground">
-                    {v}
+                    {label === 'CRM sync' ? <CrmSyncCell status={selected.crmStatus} detail={selected.crmDetail} /> : v}
                     {(label === 'Phone' || label === 'Email') && v ? <button type="button" aria-label={`Copy ${label.toLowerCase()}`} onClick={() => copy(v, label)} className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded text-foreground-muted hover:bg-surface hover:text-foreground"><Copy aria-hidden="true" className="h-3.5 w-3.5" /></button> : null}
                   </dd>
                 </div>
               ))}
             </dl>
+            {needsCrmPush(selected.crmStatus) ? (
+              <div className="mt-5 border-t border-border pt-4">
+                {crmSyncDisplay(selected.crmStatus, selected.crmDetail).reason ? (
+                  <p className="mb-3 text-sm text-foreground-secondary">
+                    <span className="font-semibold text-foreground">Why not synced: </span>
+                    {crmSyncDisplay(selected.crmStatus, selected.crmDetail).reason}
+                  </p>
+                ) : null}
+                <button type="button" disabled={pending} onClick={() => pushOneToCrm(selected.id)} className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] border border-border px-4 text-sm font-semibold text-foreground-secondary hover:border-[var(--accent)] hover:text-[var(--accent-ink)] disabled:opacity-45">
+                  <RefreshCw aria-hidden="true" className="h-4 w-4" />{pending ? 'Pushing…' : 'Push to CRM'}
+                </button>
+                <p className="mt-2 text-xs text-foreground-muted">
+                  Each panel enquiry should become its own CRM entry, even with the same mobile. Today the CRM API rejects a second save for an existing number — those rows stay on the panel for a separate CRM entry (UI) or a retry once the API allows it.
+                </p>
+              </div>
+            ) : null}
             {selected.message ? (
               <div className="mt-5 border-t border-border pt-4 text-sm">
                 <p className="text-xs font-bold tracking-wide text-foreground-muted uppercase">Message from the visitor</p>

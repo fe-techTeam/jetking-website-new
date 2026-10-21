@@ -8,7 +8,14 @@ import { useFlip } from '@/components/motion/flip';
 import { CourseCard } from '@/components/CourseCard';
 import { track } from '@/lib/analytics';
 import { ActiveFilterChips, FilterSheet, SheetChip, SheetFacet } from '@/components/FilterSheet';
-import { COURSE_LEVELS, COURSE_TECHNOLOGIES, categoriesOf } from '@/lib/course-categories';
+import {
+  COURSE_LEVELS,
+  COURSE_TECHNOLOGIES,
+  categoriesOf,
+  courseLevel,
+  type CourseTechnologyId,
+} from '@/lib/course-categories';
+import { courseHasDetailPage } from '@/lib/course-href';
 import { fill } from '@/lib/content/copy/define';
 import type { coursesCopy } from '@/lib/content/copy/pages/courses';
 
@@ -41,14 +48,7 @@ const LEVELS: Array<{ id: CourseLevel | 'all'; label: string }> = [
   ...COURSE_LEVELS,
 ];
 
-type Technology =
-  | 'cloud'
-  | 'cyber-security'
-  | 'networking'
-  | 'data'
-  | 'design-gaming'
-  | 'marketing'
-  | 'hardware-os';
+type Technology = CourseTechnologyId;
 
 const TECHNOLOGIES: Array<{ id: Technology | 'all'; label: string }> = [
   { id: 'all', label: 'All technologies' },
@@ -59,10 +59,11 @@ const TECHNOLOGIES: Array<{ id: Technology | 'all'; label: string }> = [
  * There is no dedicated category field in the course schema, so the facet is
  * derived from each course's slug + title — grounded in real course names
  * rather than an invented taxonomy. A course can match more than one
- * technology (e.g. the Cloud & Cyber Security degrees match both).
+ * technology (e.g. the Cloud & Cyber Security degrees match both). SUNY
+ * partnership courses are kept in their own category only.
  */
 function courseTechnologies(course: Course): Technology[] {
-  return categoriesOf(course).filter((id): id is Technology => id !== 'degree');
+  return categoriesOf(course).filter((id): id is Technology => id !== 'degree' && id !== 'suny');
 }
 
 function matchesQuery(course: Course, needle: string): boolean {
@@ -186,7 +187,8 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
     for (const course of courses) {
       if (technology !== 'all' && !courseTechnologies(course).includes(technology)) continue;
       if (!matchesQuery(course, needle)) continue;
-      map.set(course.level, (map.get(course.level) ?? 0) + 1);
+      const lvl = courseLevel(course);
+      map.set(lvl, (map.get(lvl) ?? 0) + 1);
       total += 1;
     }
     map.set('all', total);
@@ -197,7 +199,7 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
     const map = new Map<string, number>();
     let total = 0;
     for (const course of courses) {
-      if (level !== 'all' && course.level !== level) continue;
+      if (level !== 'all' && courseLevel(course) !== level) continue;
       if (!matchesQuery(course, needle)) continue;
       for (const tech of courseTechnologies(course)) map.set(tech, (map.get(tech) ?? 0) + 1);
       total += 1;
@@ -212,7 +214,7 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
         ordered
           .filter(
             (course) =>
-              (level === 'all' || course.level === level) &&
+              (level === 'all' || courseLevel(course) === level) &&
               (technology === 'all' || courseTechnologies(course).includes(technology)) &&
               matchesQuery(course, needle),
           )
@@ -249,6 +251,19 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
   const activeLevelLabel = levelOptions.find((x) => x.id === level)?.label;
   const activeTechnologyLabel = technologyOptions.find((x) => x.id === technology)?.label;
   const unitFor = (n: number) => (n === 1 ? copy['explorer.courseOne'] : copy['explorer.courseMany']);
+  // A real heading when a level/tech filter is on (e.g. "State University of New York"), so the
+  // grid is not only introduced by the small "3 courses matching" count line.
+  const resultsHeading =
+    level !== 'all' && technology !== 'all'
+      ? fill(copy['explorer.resultsHeadingBoth'], {
+          level: activeLevelLabel ?? level,
+          technology: activeTechnologyLabel ?? technology,
+        })
+      : level !== 'all'
+        ? fill(copy['explorer.resultsHeading'], { filter: activeLevelLabel ?? level })
+        : technology !== 'all'
+          ? fill(copy['explorer.resultsHeading'], { filter: activeTechnologyLabel ?? technology })
+          : null;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,17.5rem)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] xl:gap-12">
@@ -414,17 +429,28 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
           />
         </div>
 
-        <p
-          aria-live="polite"
-          className="numeral text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
+        <div
+          className={`mb-5 flex flex-wrap gap-x-4 gap-y-2 sm:mb-6 ${
+            resultsHeading ? 'items-end justify-between' : 'items-center'
+          }`}
         >
-          {visible.size} {unitFor(visible.size)}
-          {hasActiveFilters ? ` ${copy['explorer.matching']}` : null}
-        </p>
+          {resultsHeading ? (
+            <h2 className="min-w-0 flex-1 font-display text-[22px] leading-tight font-extrabold tracking-[-0.02em] text-balance text-[var(--dc-ink)] sm:text-[26px]">
+              {resultsHeading}
+            </h2>
+          ) : null}
+          <p
+            aria-live="polite"
+            className="numeral shrink-0 pb-0.5 text-[12px] font-bold tracking-[0.1em] text-[var(--dc-ink-muted)] uppercase"
+          >
+            {visible.size} {unitFor(visible.size)}
+            {hasActiveFilters ? ` ${copy['explorer.matching']}` : null}
+          </p>
+        </div>
 
         <div
           ref={listRef}
-          className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+          className="grid gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
         >
           {ordered.map((course) => {
             const isVisible = visible.has(course.slug);
@@ -441,7 +467,16 @@ export function CourseExplorer({ courses, copy }: { courses: Course[]; copy: typ
                 hidden={!isVisible}
                 className="relative h-full"
               >
-                <CourseCard course={course} surface="explorer-card" as="h2" cta={copy['explorer.viewCourse']} />
+                <CourseCard
+                  course={course}
+                  surface="explorer-card"
+                  as="h2"
+                  cta={
+                    courseHasDetailPage(course)
+                      ? copy['explorer.viewCourse']
+                      : copy['explorer.enquireCourse']
+                  }
+                />
               </article>
             );
           })}

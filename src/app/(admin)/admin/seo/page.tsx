@@ -82,6 +82,7 @@ export default async function SeoOverviewPage() {
       title?: string;
       name?: string;
       status: string;
+      hasDetailPage?: boolean;
       seo: {
         title: string;
         description: string;
@@ -91,6 +92,8 @@ export default async function SeoOverviewPage() {
       };
     }>;
     for (const r of list) {
+      // Catalogue-only courses have no /courses/[slug] page to index.
+      if (collection === 'courses' && r.hasDetailPage === false) continue;
       rows.push({
         kind: 'record',
         collection,

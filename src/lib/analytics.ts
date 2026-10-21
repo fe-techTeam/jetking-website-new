@@ -42,6 +42,7 @@ export type EventName =
   | 'course_clicked'
   | 'apply_clicked'
   | 'centre_searched'
+  | 'centre_near_me'
   | 'blog_searched'
   | 'phone_clicked'
   | 'brochure_downloaded'

@@ -53,7 +53,7 @@ const courseSchema = withStatus({
   slug: z.string().min(1),
   title: z.string().min(1),
   shortTitle: z.string().min(1),
-  level: z.enum(['degree', 'diploma', 'certification', 'short']),
+  level: z.enum(['degree', 'diploma', 'certification', 'short', 'suny']),
   duration: z.string().min(1),
   eligibility: z.string().min(1),
   summary: z.string().min(1),
@@ -71,6 +71,8 @@ const courseSchema = withStatus({
   heroImage: imageRefSchema.optional(),
   seo: seoSchema,
   featured: z.boolean().optional(),
+  /** When false, the course stays in the catalogue but has no `/courses/[slug]` page. */
+  hasDetailPage: z.boolean().optional(),
   updatedAt: z.string(),
   highlights: z.array(z.string()).optional(),
   tools: z.array(z.string()).optional(),
@@ -181,6 +183,8 @@ const centreSchema = withStatus({
       }),
     )
     .optional(),
+  /** Lower numbers appear first when Centres settings list sort is “Manual”. */
+  sortOrder: z.number().optional(),
   faqs: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
   testimonials: z
     .array(z.object({ quote: z.string(), name: z.string(), role: z.string().optional() }))
@@ -558,6 +562,12 @@ const seoSettingsSchema = withStatus({
   }),
 });
 
+const centresSettingsSchema = withStatus({
+  id: z.literal('centres'),
+  listSort: z.enum(['name', 'manual', 'shuffle']),
+  shuffleEveryDays: z.number().int().min(1).max(365),
+});
+
 const chatbotSettingsSchema = withStatus({
   id: z.literal('chatbot'),
   enabled: z.boolean(),
@@ -599,6 +609,7 @@ const CMS_COLLECTION_SCHEMAS = {
   page_copy: pageCopySchema,
   announcements: announcementSchema,
   seo_settings: seoSettingsSchema,
+  centres_settings: centresSettingsSchema,
   chatbot_settings: chatbotSettingsSchema,
   chatbot_knowledge: chatbotKnowledgeSchema,
 } satisfies Record<CmsCollection, z.ZodTypeAny>;

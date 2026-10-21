@@ -319,7 +319,7 @@ export function RecordEditor({
     });
     if (missing.length > 0) {
       setError(
-        `Fill in: ${missing.map((k) => config.selectFields?.[k]?.label ?? humanize(k)).join(", ")}.`,
+        `Fill in: ${missing.map((k) => config.fieldLabels?.[k] ?? config.selectFields?.[k]?.label ?? humanize(k)).join(", ")}.`,
       );
       setMessage(null);
       document
@@ -639,7 +639,7 @@ export function RecordEditor({
                 <div className="flex flex-wrap items-center gap-2">
                   {originalId ? (
                     <>
-                      {viewPath && published ? (
+                      {viewPath && published && draft.hasDetailPage !== false ? (
                         <a
                           href={viewPath.replace(
                             /\{(\w+)\}/g,
@@ -740,7 +740,8 @@ export function RecordEditor({
                           {section.fields.length === 1 &&
                           section.title === humanize(key) ? null : (
                             <label className="mb-1.5 block text-xs font-semibold text-foreground-secondary">
-                              {config.selectFields?.[key]?.label ??
+                              {config.fieldLabels?.[key] ??
+                                config.selectFields?.[key]?.label ??
                                 humanize(key)}
                               {config.requiredFields?.includes(key) ? (
                                 <span

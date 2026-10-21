@@ -1,7 +1,7 @@
 import 'server-only';
 import { content } from '@/lib/content';
 import { crmIdsForCentre, sendToCrm, toCrmPayload, type CrmStatus } from '@/lib/crm/smartrain';
-import { setCrmStatus, type CrmHandoffStatus } from '@/lib/leads/intake';
+import { noteCrmPersonExists, setCrmStatus, type CrmHandoffStatus } from '@/lib/leads/intake';
 import { leadForLog, safeError } from '@/lib/pii';
 
 /**
@@ -74,7 +74,7 @@ export async function handoffLeadToCrm(input: CrmHandoffInput): Promise<HandoffR
     });
     if (!built.ok) {
       console.warn('[crm:skipped]', built.reason);
-      if (leadId) await setCrmStatus(leadId, 'skipped').catch(() => {});
+      if (leadId) await setCrmStatus(leadId, 'skipped', built.reason).catch(() => {});
       return { routed: false, status: 'skipped', detail: built.reason };
     }
     const outcome = await sendToCrm(endpoint, built.payload);
@@ -82,8 +82,21 @@ export async function handoffLeadToCrm(input: CrmHandoffInput): Promise<HandoffR
       console.error('[crm:failed]', outcome.status, outcome.detail);
     }
     const status = outcome.status as CrmStatus;
-    if (leadId) await setCrmStatus(leadId, status).catch(() => {});
-    return { routed: status === 'routed', status, detail: outcome.detail };
+    const detail =
+      status === 'routed'
+        ? null
+        : status === 'duplicate'
+          ? 'Mobile already exists in CRM (unique:users) — changing centre does not create a second user'
+          : outcome.detail;
+    if (leadId) {
+      await setCrmStatus(leadId, status, detail).catch(() => {});
+      // Same mobile, new place/course: CRM will not create another lead — keep the panel row and note it.
+      if (status === 'duplicate') {
+        const place = [centreSlug, input.city].filter(Boolean).join(' / ') || 'unknown place';
+        await noteCrmPersonExists(leadId, place).catch(() => {});
+      }
+    }
+    return { routed: status === 'routed', status, detail: detail ?? undefined };
   }
 
   const body =
@@ -108,11 +121,12 @@ export async function handoffLeadToCrm(input: CrmHandoffInput): Promise<HandoffR
       signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok) throw new Error(`CRM returned ${response.status}`);
-    if (leadId) await setCrmStatus(leadId, 'routed').catch(() => {});
+    if (leadId) await setCrmStatus(leadId, 'routed', null).catch(() => {});
     return { routed: true, status: 'routed' };
   } catch (error) {
+    const detail = error instanceof Error && error.name === 'TimeoutError' ? 'timed out' : 'network or CRM error';
     console.error('[crm:failed]', leadForLog(body), safeError(error));
-    if (leadId) await setCrmStatus(leadId, 'failed').catch(() => {});
-    return { routed: false, status: 'failed' };
+    if (leadId) await setCrmStatus(leadId, 'failed', detail).catch(() => {});
+    return { routed: false, status: 'failed', detail };
   }
 }

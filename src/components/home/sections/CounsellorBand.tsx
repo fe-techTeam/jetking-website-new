@@ -1,9 +1,11 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
 import { ArrowRight, Headphones, Phone } from "lucide-react";
 import { TrackedAnchor } from "@/components/TrackedAnchor";
-import { siteConfig } from "@/lib/site";
+import { useSiteCopy } from "@/components/providers/site-copy";
 import type { HomeCopy } from "@/lib/content/copy/pages/home";
 
 /**
@@ -13,7 +15,9 @@ import type { HomeCopy } from "@/lib/content/copy/pages/home";
  * message sits on the right, with no card around either.
  */
 export function CounsellorBand({ copy }: { copy: HomeCopy }) {
-  const helplineHref = `tel:${siteConfig.helpline.replace(/[^\d+]/g, "")}`;
+  const site = useSiteCopy();
+  const phone = site["contact.phone"];
+  const helplineHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
 
   return (
     <section
@@ -73,7 +77,7 @@ export function CounsellorBand({ copy }: { copy: HomeCopy }) {
                   strokeWidth={2}
                   aria-hidden="true"
                 />
-                {siteConfig.helpline}
+                {phone}
               </TrackedAnchor>
             </div>
           </div>

@@ -43,8 +43,10 @@ export const leads = pgTable(
     assignedTo: text('assigned_to'),
     /** When the next follow-up is due; the Leads screen flags it once it passes. */
     followUpAt: timestamp('follow_up_at', { withTimezone: true }),
-    /** Hand-off to the external CRM: 'none' (not configured) | 'routed' | 'failed'. The lead is stored here regardless. */
+    /** Hand-off to the external CRM: 'none' | 'routed' | 'failed' | 'duplicate' | 'rejected' | 'skipped'. */
     crmStatus: text('crm_status').notNull().default('none'),
+    /** Last CRM hand-off reason (PII-free): why it synced or why it did not. Cleared when routed. */
+    crmDetail: text('crm_detail'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },

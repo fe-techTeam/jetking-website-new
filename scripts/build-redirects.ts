@@ -78,6 +78,7 @@ function buildInventory(): Array<{ path: string; slug: string; keywords: string[
   const routes = [...staticRoutes];
 
   for (const course of courses) {
+    if (course.hasDetailPage === false) continue;
     routes.push({
       path: `/courses/${course.slug}`,
       slug: course.slug,

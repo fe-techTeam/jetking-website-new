@@ -13,7 +13,7 @@ import type { Course } from '../types';
  * `fees.disclosed: false` stays the default: the live site does not publish fee
  * figures, so the AI Guide must hand off to a counsellor rather than quote a
  * number (risk R4). Levels map the site's tabs: Degree → degree, Career → diploma,
- * Certification → certification, Short → short.
+ * Certification → certification, Short → short, SUNY → suny.
  */
 export const courses: Course[] = [
   /* ── Degree courses ─────────────────────────────────────────────────────── */
@@ -421,7 +421,7 @@ export const courses: Course[] = [
       alt: "Cyber Security SUNY certification course"
     },
     shortTitle: "Cyber Security (SUNY)",
-    level: "certification",
+    level: "suny",
     duration: "413 hours",
     eligibility: "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
     summary: "A 413-hour certificate course in network, system and information security, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
@@ -449,6 +449,7 @@ export const courses: Course[] = [
       "Certificate course (SUNY certification)"
     ],
     university: "State University of New York (SUNY)",
+    hasDetailPage: false,
     updatedAt: "2026-10-21"
   },
   {
@@ -459,7 +460,7 @@ export const courses: Course[] = [
       alt: "Ethical Hacking SUNY certification course"
     },
     shortTitle: "Ethical Hacking (SUNY)",
-    level: "certification",
+    level: "suny",
     duration: "166 hours",
     eligibility: "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
     summary: "A 166-hour certificate course in ethical hacking and penetration testing, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
@@ -487,6 +488,7 @@ export const courses: Course[] = [
       "Certificate course (SUNY certification)"
     ],
     university: "State University of New York (SUNY)",
+    hasDetailPage: false,
     updatedAt: "2026-10-21"
   },
   {
@@ -497,7 +499,7 @@ export const courses: Course[] = [
       alt: "Artificial Intelligence SUNY certification course"
     },
     shortTitle: "Artificial Intelligence (SUNY)",
-    level: "certification",
+    level: "suny",
     duration: "446 hours",
     eligibility: "Eligibility is confirmed by a Jetking counsellor for your centre and intake.",
     summary: "A 446-hour certificate course in artificial intelligence, part of Jetking's SUNY (State University of New York) certification courses. Delivered offline or in hybrid mode at Jetking centres.",
@@ -525,6 +527,7 @@ export const courses: Course[] = [
       "Certificate course (SUNY certification)"
     ],
     university: "State University of New York (SUNY)",
+    hasDetailPage: false,
     updatedAt: "2026-10-21"
   },
   {

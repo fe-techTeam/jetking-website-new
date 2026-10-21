@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getSessionUser } from '@/lib/chatbot/session';
 import { deleteConversation, getConversation } from '@/lib/chatbot/store';
+import { isChatbotPubliclyEnabled } from '@/lib/chatbot/availability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,9 @@ export const dynamic = 'force-dynamic';
 type Context = { params: Promise<{ id: string }> };
 
 async function resolve(context: Context) {
+  if (!(await isChatbotPubliclyEnabled())) {
+    return { error: NextResponse.json({ ok: false, error: 'Jetking AI is unavailable.' }, { status: 404 }) };
+  }
   const user = await getSessionUser();
   if (!user) {
     return { error: NextResponse.json({ ok: false, error: 'Log in to see your chats.' }, { status: 401 }) };

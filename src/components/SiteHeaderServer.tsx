@@ -1,5 +1,5 @@
 import { content } from '@/lib/content';
-import { categoriesOf } from '@/lib/course-categories';
+import { categoriesOf, courseLevel } from '@/lib/course-categories';
 import { SiteHeader, type MenuCourse } from './SiteHeader';
 
 /**
@@ -12,10 +12,11 @@ export async function SiteHeaderServer() {
   const menuCourses: MenuCourse[] = courses.map((c) => ({
     slug: c.slug,
     title: c.shortTitle || c.title,
-    level: c.level,
+    level: courseLevel(c),
     duration: c.duration,
     featured: Boolean(c.featured),
     categories: categoriesOf(c),
+    hasDetailPage: c.hasDetailPage,
   }));
   // Only a Published "Header menu" takes over; otherwise the menu from Page text stays as it was.
   return <SiteHeader menuCourses={menuCourses} navItems={menu?.items} />;

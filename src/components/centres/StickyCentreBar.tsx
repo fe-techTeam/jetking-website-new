@@ -3,24 +3,28 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { track } from '@/lib/analytics';
+import { whatsappHrefFromNumber } from '@/lib/site';
+import { useSiteCopy } from '@/components/providers/site-copy';
+import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
 /**
- * Phone/tablet bottom bar for the long centre page: Call this centre and Enquire. Appears once the
- * hero's action row (`anchorId`) has scrolled out of view and steps aside while the site footer is
- * on screen. Hidden from lg up, where the hero actions are never far away.
+ * Phone/tablet bottom bar for the long centre page: Call + WhatsApp use the site-wide
+ * CMS numbers (toll-free / WhatsApp), not this centre’s local line. Enquire scrolls to
+ * the hero form. Appears once the hero actions scroll away; hidden from lg up.
  */
 export function StickyCentreBar({
   anchorId,
   centreSlug,
-  phoneHref,
   copy,
 }: {
   copy: typeof centresCopy.defaults;
   anchorId: string;
   centreSlug: string;
-  phoneHref: string | null;
 }) {
+  const site = useSiteCopy();
+  const phone = site['contact.phone'];
+  const whatsappHref = whatsappHrefFromNumber(site['contact.whatsapp']);
   const [pastHero, setPastHero] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
 
@@ -47,24 +51,39 @@ export function StickyCentreBar({
         shown ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      <div className="shell flex items-center gap-3 py-3">
-        {phoneHref ? (
+      <div className="shell flex items-center gap-2 py-3 xs:gap-2.5">
+        {phone ? (
           <a
-            href={phoneHref}
+            href={`tel:${phone}`}
             aria-label={copy['centreBar.callLabel']}
-            onClick={() => track('phone_clicked', { centre_slug: centreSlug, type: 'sticky-bar' })}
-            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] px-4 text-[14px] font-bold text-[var(--dc-ink)] transition-colors hover:bg-[var(--dc-surface)] max-xs:w-11 max-xs:px-0"
+            onClick={() => track('phone_clicked', { centre_slug: centreSlug, type: 'sticky-bar-helpline' })}
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-[var(--dc-hairline-strong)] px-2.5 text-[13px] font-bold text-[var(--dc-ink)] transition-colors hover:bg-[var(--dc-surface)] xs:gap-2 xs:px-3 xs:text-[14px]"
           >
-            <Phone className="h-[18px] w-[18px]" strokeWidth={2.25} aria-hidden="true" />
-            <span className="max-xs:sr-only">{copy['centreBar.call']}</span>
+            <Phone className="h-4 w-4 shrink-0" strokeWidth={2.25} aria-hidden="true" />
+            {copy['centreBar.call']}
+          </a>
+        ) : null}
+        {whatsappHref ? (
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={copy['centreBar.whatsappLabel']}
+            onClick={() =>
+              track('whatsapp_clicked', { centre_slug: centreSlug, surface: 'sticky-centre-bar' })
+            }
+            className="inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-[#25D366]/40 bg-[#25D366]/10 px-2.5 text-[13px] font-bold text-[#128C7E] transition-colors hover:bg-[#25D366]/18 xs:gap-2 xs:px-3 xs:text-[14px] dark:text-[#25D366]"
+          >
+            <WhatsAppIcon className="h-4 w-4 shrink-0" />
+            {copy['centreBar.whatsapp']}
           </a>
         ) : null}
         <a
           href={`#${anchorId}`}
-          className="dc-cta inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-5 text-[14px] font-bold"
+          className="dc-cta inline-flex h-11 min-w-0 flex-[1.25] items-center justify-center gap-1 rounded-full px-2.5 text-[13px] font-bold xs:gap-1.5 xs:px-3 xs:text-[14px]"
         >
           {copy['centreBar.enquire']}
-          <ArrowRight className="h-4 w-4" strokeWidth={2.25} aria-hidden="true" />
+          <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={2.25} aria-hidden="true" />
         </a>
       </div>
     </div>
