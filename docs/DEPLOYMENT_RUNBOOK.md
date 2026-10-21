@@ -48,6 +48,7 @@ flowchart LR
 | Postgres | **Yes for real prod** | Admin users, leads, CMS, OTP, media, redirects |
 | Domain + TLS | Yes | Cloudflare → host |
 | CRM webhook | Strongly recommended | Dual-write with admin Leads (`handoffLeadToCrm`) |
+| SMTP mailbox | Recommended | Staff welcome / password emails, visitor reset link (`MAIL_*`) |
 | Ollama | Optional | Freer chatbot phrasing; without it: structured + KB passages |
 | OpenAI | **Not required** | Opt-in via `GUIDE_PROVIDER=openai\|auto` |
 
@@ -55,7 +56,7 @@ flowchart LR
 
 ## 3. Environment checklist (production)
 
-Generate secrets with `openssl rand -hex 32`.
+Generate secrets with `openssl rand -hex 32`. The complete, grouped list is in [ENVIRONMENT.md](./ENVIRONMENT.md); copy from [`.env.production.example`](../.env.production.example) (section 1 required, 2 recommended, 3 optional).
 
 | Variable | Notes |
 | --- | --- |
@@ -75,6 +76,9 @@ Generate secrets with `openssl rand -hex 32`.
 | `NEXT_PUBLIC_PHONE` / `NEXT_PUBLIC_WHATSAPP_NUMBER` | Real numbers |
 | `GUIDE_PROVIDER` | `local` (default, no OpenAI) |
 | `RATE_LIMIT_ALLOW_MEMORY` | `true` if single instance without Redis |
+| `MAIL_DRIVER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_NAME`, `MAIL_ENCRYPTION` | Email (use an App Password for Gmail); `MAIL_PASSWORD` is **Sensitive** |
+| `NEXT_PUBLIC_EMAIL_RESET_ENABLED` | `true` to show "email me a reset link" to visitors |
+| Tracking (`NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_GA_IDS`, `NEXT_PUBLIC_META_PIXEL_IDS`) | Defaults are the live site's tags; they load only when indexing is allowed. Do not set `NEXT_PUBLIC_ALLOW_INDEXING=false` on production. |
 
 Copy from `.env.example` — never commit `.env.local`.
 
@@ -102,7 +106,7 @@ sequenceDiagram
 
 1. Create/attach Postgres (Vercel Storage / Neon).
 2. Set Production env vars.
-3. `npm run db:migrate` + `create:admin` against Production URL.
+3. `npm run db:migrate` (applies every migration, including `0014_custom_roles`), `npm run seed:locations`, then `create:admin`, against the Production URL.
 4. Deploy Production; test on `*.vercel.app` first.
 5. In Cloudflare, change `www` from ClickFunnels CNAME to Vercel target.
 6. Run `npm run verify:seo -- --base https://www.jetking.com`.
@@ -140,6 +144,9 @@ Chatbot without OpenAI: leave `GUIDE_PROVIDER=local`. Optionally run Ollama on a
 | `/enquiry` | Lead appears in `/admin/leads` **and** is handed to CRM when configured |
 | Admin → Add lead | Same dual write (panel + CRM) |
 | `/admin/login` | New admin can sign in |
+| Admin → Team & access → add a member | Welcome email arrives (or the page says email is not set up) |
+| Site → Login → Forgot password → email | Reset link arrives, works once, then is rejected |
+| Page source / Tag Assistant | GTM, GA4, Google Ads and Meta pixel load on the production domain, and **not** on previews |
 | `/chatbot` | Course/fees/placement answers from catalogue (no OpenAI) |
 | `/robots.txt` / `/sitemap.xml` | Correct host |
 

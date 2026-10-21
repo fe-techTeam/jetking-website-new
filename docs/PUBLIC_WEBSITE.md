@@ -162,7 +162,9 @@ Shared copy that used to live under those landings is edited in Page text as **A
 
 ## 7. Login & signup (visitors)
 
-Public visitors use a **shared account** for the website and `/chatbot` (header → Login / Sign up, or `/account`).
+Public visitors use a **shared account** for the website and `/chatbot` (header → Login / Sign up, or `/account`). Forgotten passwords are reset by an emailed single-use link and/or an SMS code (see [AUTH.md](./AUTH.md)).
+
+**Header and tracking.** The header menu is editable in the admin (**Header menu**); the first four links show in the desktop bar and the courses link opens the mega menu. Analytics and ad tags (GTM, GA4, Google Ads, Meta pixels) are added by `src/components/TrackingScripts.tsx` from `src/lib/tracking.ts`, only on the indexable production site.
 
 Full detail (signup fields, email vs OTP login, reset, cookies, secrets): **[AUTH.md](./AUTH.md)**.
 

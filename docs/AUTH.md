@@ -128,10 +128,26 @@ Requires OTP/SMS config (`OTP_ENABLED`, `SMS_*`, `OTP_SECRET`) for real SMS. In 
 
 ### Forgot / reset password
 
+Two ways, either or both can be on:
+
+**By email link** (needs `MAIL_*` and `NEXT_PUBLIC_EMAIL_RESET_ENABLED=true`)
+
+1. `reset_email_send` — email only. If an account exists, a link `/account/reset-password?token=…` is emailed.
+2. The visitor opens the link, enters a new password (min 8), and `reset_email_confirm` updates the hash and signs them in.
+
+The token is signed (HMAC with `USER_SESSION_SECRET`, domain-separated), expires after 30 minutes, and carries a
+fingerprint of the current password hash — so it works **once** and stops working the moment the password changes.
+No table is needed. The answer to the request is identical whether or not the email has an account, the email is
+sent after the response (no timing difference), each mailbox is limited to 3 requests per hour, and the page sends
+`Referrer-Policy: no-referrer` so the token never leaks.
+
+**By SMS code** (needs OTP configured)
+
 1. `reset_send` — email and/or phone; OTP goes to the mobile on the account.
 2. `reset_verify` — OTP proof + `newPassword` (min 8) → update hash → can sign in again.
 
-Unknown emails still return a generic success shape (no account enumeration).
+Unknown emails still return a generic success shape (no account enumeration). "Forgot password?" is shown when
+at least one of the two ways is enabled.
 
 ### Logout & “who am I”
 
@@ -193,6 +209,9 @@ flowchart TB
 | `admin` | Full CMS, leads, team, audit |
 | `editor` | Content + all leads; no team management |
 | `centre_staff` | Leads for their `centreSlug` only |
+| custom role | Whatever an admin ticked per section (never team / audit / legal pages) — see [ADMIN_CMS.md](./ADMIN_CMS.md) |
+
+Staff emails: when `MAIL_*` is configured, creating a team member emails them a welcome message (sign-in link, their email, the temporary password the admin chose), and an admin password reset emails the new temporary password. The admin sees whether the email was sent; if email is off they share the password directly. Members should change it under **My account**.
 
 Bootstrap first admin (with DB):
 
@@ -218,6 +237,7 @@ Rotating `ADMIN_SESSION_SECRET` or bumping `sessionVersion` on a user signs them
 | `CHATBOT_SESSION_SECRET` | Legacy / related chat paths (unified visitors use `USER_SESSION_SECRET`) |
 | `OTP_SECRET` | OTP tokens when mobile login / enquiry OTP is on |
 | `SMS_*` | SMS gateway for OTP |
+| `MAIL_*` | SMTP for staff and visitor password emails (use an App Password for Gmail) |
 
 Never reuse the admin password as a visitor account. Never commit secrets.
 
@@ -231,6 +251,10 @@ Never reuse the admin password as a visitor account. Never commit secrets.
 | `src/app/api/chatbot/auth/route.ts` | Re-exports visitor auth |
 | `src/lib/users/session.ts` | Visitor cookie |
 | `src/lib/users/store.ts` | `users` persistence |
+| `src/lib/users/reset-token.ts` | Single-use email reset token |
+| `src/lib/mail/` | SMTP sender and email templates |
+| `src/app/account/reset-password/` | Page the reset link opens |
+| `src/lib/auth/roles.ts`, `custom-roles.ts` | Built-in presets, sections, custom roles |
 | `src/components/account/SiteAuthDialog.tsx` | Website dialog |
 | `src/app/(admin)/admin/actions.ts` | Staff login / logout |
 | `src/lib/auth/session.ts` | Admin cookie |

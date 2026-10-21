@@ -17,6 +17,7 @@ One Next.js application serves the **public website**, the **staff admin CMS/CRM
 | [AUTH.md](./AUTH.md) | Visitor signup/login (site + chatbot) and staff `/admin` login |
 | [DATA_FLOWS.md](./DATA_FLOWS.md) | Content store, lead dual-write (panel + CRM), chatbot, enquiry |
 | [DEPLOYMENT_RUNBOOK.md](./DEPLOYMENT_RUNBOOK.md) | Go-live (Vercel or self-host), env vars, DNS cutover |
+| [ENVIRONMENT.md](./ENVIRONMENT.md) | Every environment variable, grouped: required / recommended / optional |
 | [CHATBOT.md](./CHATBOT.md) | Jetking AI retrieval, Ollama, index rebuild |
 | [ADMIN_PANEL.md](./ADMIN_PANEL.md) | Admin UI details, design system, collection notes |
 | [SHARED_DATABASE.md](./SHARED_DATABASE.md) | Postgres setup for teams |

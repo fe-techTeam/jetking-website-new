@@ -77,6 +77,29 @@ flowchart TB
 | `admin` | IT / digital team lead |
 | `editor` | Content / marketing |
 | `centre_staff` | Branch counsellor (leads for one centre) |
+| **Custom role** | Anything an admin defines under **Team & access → Roles** |
+
+#### Custom roles
+
+An admin can create roles of their own (for example "Content writer" or "Marketing"). A custom role is a
+name, an optional description, and one level per section — **No access**, **View** or **View & edit**:
+
+| Section | Covers |
+| --- | --- |
+| Website content | Courses, centres, blog, pages, FAQs, announcements, header menu and the other content editors (not the legal pages) |
+| Leads | The enquiries inbox |
+| Media library | Uploads |
+| SEO | SEO overview and per-page settings |
+| Redirects | URL redirects |
+| Chatbot | Assistant settings, answers, policies, unanswered questions |
+
+For Leads a role can also be limited to **one centre** (the member is then given a centre, like centre staff).
+Team accounts, the audit log, the legal pages and "reset content" are **always admin-only** — no custom role can
+grant them. Pages need *View*; anything that saves, uploads or deletes needs *View & edit* (checked on the server
+for every action, and the sidebar hides sections a role cannot open and marks *View only* ones). Access is read
+fresh on every request, so editing a role or moving someone to another role applies immediately. A role cannot be
+deleted while people still have it. Stored in `custom_roles` (migration `0014`); a user whose role was removed
+gets no access (deny by default).
 
 Bootstrap first admin:
 
@@ -167,6 +190,7 @@ flowchart TB
     AN[Announcements]
     LO[Logos and partners]
     FA[FAQs]
+    HM[Header menu]
   end
   subgraph Chatbot_group
     CS[Assistant settings]
@@ -194,6 +218,8 @@ flowchart TB
 | Placement disclaimer / process steps | **Placements page** |
 | Leadership / timeline | **About page** |
 | Top announcement bar | **Announcements** |
+| Header menu links (add / remove / reorder) | **Header menu** |
+| Footer wording and link text | **Page text** → Site |
 | Partner logo strip | **Logos & partners** |
 | robots / indexing policy | **SEO settings** |
 | Old URL → new URL | **Redirects** |
@@ -317,6 +343,7 @@ npm run verify:seo -- --base https://www.jetking.com
 | Audit log | ✓ | limited / ✓* | — |
 | SEO / redirects | ✓ | ✓ | — |
 | Chatbot settings | ✓ | ✓ | — |
+| Custom role | per section: none / view / edit — never team, audit, legal pages |
 
 \*Exact audit visibility follows route `roles` in registry — admins always full.
 
@@ -329,7 +356,7 @@ npm run verify:seo -- --base https://www.jetking.com
 | Login | Shared `ADMIN_PASSWORD` / `changeme` | Per-user email+password |
 | Content | `data/cms/store.json` + fixtures | Postgres CMS tables |
 | Leads | Limited / logged | Full CRM |
-| Team page | N/A | Invite editors |
+| Team page | N/A | Invite staff, create custom roles; welcome emails when `MAIL_*` is set |
 
 See [SHARED_DATABASE.md](./SHARED_DATABASE.md).
 

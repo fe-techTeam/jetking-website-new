@@ -158,6 +158,8 @@ components can import it without pulling the Postgres driver into the browser bu
 | **editor** | Full — create, edit, publish, delete | All leads | No access (redirected to Dashboard) | No access | Full, incl. "Reset from fixtures" |
 | **centre_staff** | No access (redirected to Dashboard) | **Own centre only** | No access | No access | Read-only stats; no "Reset from fixtures" |
 
+**Custom roles** (Team & Access → Roles) add any number of extra roles with a per-section level — *No access*, *View* or *View & edit* — for Website content, Leads, Media, SEO, Redirects and Chatbot, plus an optional "own centre's leads only" limit. Team, audit, legal pages and "reset from fixtures" stay admin-only. Pages are guarded with `requireAccess(section, 'view')` and every mutating action with `requireAccess(section, 'edit')` (`src/app/(admin)/admin/actions.ts`); built-in roles map to the same model via `presetAccess()` in `src/lib/auth/roles.ts`, so behaviour for Admin / Editor / Centre staff is unchanged.
+
 `centre_staff` scoping resolves their `centreSlug` to its real city through the CMS `centres` /
 `cities` collections, then does an exact, case-insensitive match against a lead's `city` field
 (leads don't carry a centre id directly) — see `src/lib/leads/centre-scope.ts`
@@ -277,8 +279,9 @@ described above uniformly to the list, the Dashboard's lead count, and every mut
 `/admin/team`, admin-only. Real account management, not a mockup:
 
 - **Search** (name/email) plus role filter chips, matching the Leads toolbar pattern.
-- **Invite** — name, email, temporary password, role, and (for `centre_staff`) a centre picked
-  from a `<select>` of real CMS centres.
+- **People / Roles tabs.** *People* is the account table; *Roles* lists the built-in roles and lets an admin create, edit and delete custom ones (a role in use cannot be deleted).
+- **Invite** — name, email, temporary password, role (built-in or custom), and (for `centre_staff` or a custom role limited to one centre) a centre picked
+  from a `<select>` of real CMS centres. When `MAIL_*` is configured a welcome email with the sign-in details is sent, and the admin is told whether it went out.
 - **Change role / centre** inline via a `<select>` per row. Changing a **role** now prompts an
   `AdminConfirmDialog` ("Change role from X to Y?") before it takes effect — the one inline
   `<select>` in the panel that fires a real, hard-to-notice mutation on a single click, so it's
@@ -289,7 +292,7 @@ described above uniformly to the list, the Dashboard's lead count, and every mut
   since it's the low-risk, immediately-reversible direction. A disabled account is rejected at
   both login and on its next `getCurrentUser()` check, so it's revoked mid-session, not just
   blocked from signing in again.
-- **Reset password** — a small modal, admin-set.
+- **Reset password** — a small modal, admin-set; the new password is emailed to the member when `MAIL_*` is configured.
 - **Remove** — with a confirm dialog. An admin can't demote, disable, or remove their own
   account (`src/app/(admin)/admin/team/actions.ts`).
 
@@ -396,10 +399,11 @@ token overrides.
 | `DATABASE_SSL` | No | Set to `false` for a local Postgres without TLS |
 | `ADMIN_SESSION_SECRET` | With `DATABASE_URL` | Signs multi-user session cookies, independent of any one user's password |
 | `ADMIN_PASSWORD` | Without `DATABASE_URL` | Legacy shared-password gate; defaults to `changeme` outside production |
+| `MAIL_DRIVER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_NAME`, `MAIL_ENCRYPTION` | No | SMTP for welcome / password-reset emails to staff (off unless `MAIL_DRIVER=smtp`) |
 | `CONTENT_SOURCE` | No (defaults to `admin`) | `admin` makes the **public site** read from this CMS store instead of repo fixtures |
 | `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | No | Optional — CMS content write-through to Supabase tables (unrelated to the Postgres/leads/auth path above) |
 
-See `.env.example` for the full annotated list.
+See [ENVIRONMENT.md](./ENVIRONMENT.md) and `.env.example` for the full list.
 
 ---
 

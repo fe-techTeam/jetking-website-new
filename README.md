@@ -14,7 +14,7 @@ The original website implementation is preserved, and the original chatbot
 features, local knowledge base, embeddings, assets, scripts, and model setup
 now run inside the same application and dependency graph.
 
-**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel; AI assistant = Jetking AI at `/chatbot` (local embeddings + BM25, Ollama or OpenAI); analytics via `track()` → GA4/GTM + PostHog.
+**Status:** full Phase 1 architecture implemented. CMS = in-repo Admin Panel (content, leads, **custom staff roles**, editable **header menu**); AI assistant = Jetking AI at `/chatbot` (local embeddings + BM25, Ollama or OpenAI); analytics via `track()` + the live site's GTM / GA4 / Google Ads / Meta tags; email (SMTP) for staff and visitor password flows; Smartrain CRM hand-off and mobile OTP on enquiry forms.
 
 ```bash
 npm install
@@ -33,6 +33,9 @@ npm run dev          # http://localhost:3000
 | `npm run crawl:legacy -- --base <url>` | Inventory the existing site → `data/legacy-urls.json` |
 | `npm run build:redirects` | Propose a redirect map from that inventory |
 | `npm run migrate:cms` | Seed Admin CMS store from local fixtures |
+| `npm run db:migrate` | Apply database migrations (reads `.env.local`; run once per database and after pulling new migrations) |
+| `npm run seed:locations` | Seed the centres / cities tables |
+| `npm run create:admin -- --name … --email … --password …` | Create the first admin account (needs `DATABASE_URL`) |
 | `npm run sync:chatbot-content` | Refresh the assistant knowledge content |
 | `npm run check:chatbot-answers` | Verify grounded assistant answers |
 | `npm run model:setup` / `npm run model:check` | Set up or verify the optional local Ollama model |
@@ -81,7 +84,9 @@ Personalising server-rendered HTML would mean serving different content to Googl
 | Embeddings | OpenAI `text-embedding-3-small` |
 | Vectors | Supabase pgvector (hybrid with BM25) |
 | Answers | GPT-4o |
-| Analytics | `track()` → GTM/GA4 + PostHog |
+| Analytics | `track()` → `dataLayer`; GTM, GA4, Google Ads and Meta pixels load from `src/lib/tracking.ts` (production only) |
+| Email | SMTP via `src/lib/mail` (`MAIL_*`), off unless configured |
+| Staff access | Built-in roles + admin-defined **custom roles** (per-section view / edit) |
 
 ---
 
@@ -97,8 +102,11 @@ src/
 │  ├─ cms/                   Admin file/Postgres store + publish hooks
 │  ├─ supabase.ts            Thin Supabase client
 │  ├─ analytics.ts           Vendor-neutral track()
+│  ├─ tracking.ts            Which GTM / GA4 / Ads / Meta tags load, and when
+│  ├─ mail/                  SMTP sender + email templates
+│  ├─ auth/                  Staff sessions, roles, custom roles (per-section access)
 │  ├─ seo.ts
-│  └─ site.ts                Site constants, mainNav
+│  └─ site.ts                Site constants, built-in mainNav (the header menu is editable in the CMS)
 │  ├─ course-categories.ts   Course category rules (header menu, homepage tabs)
 ├─ components/home/          Homepage: v2 hero, v3 section stack (see Homepage)
 ├─ app/
@@ -161,7 +169,9 @@ link row. Courses opens a mega menu (`src/components/CoursesMenu.tsx`): categori
 courses in the highlighted category on the right, like a typical edtech course menu. Courses are
 loaded by `SiteHeaderServer.tsx`; category rules live in `src/lib/course-categories.ts` (shared
 with the homepage programme tabs). The current category and course are marked. The full nav stays in the
-drawer at every width.
+drawer at every width. The menu itself is editable in the admin under **Website → Header menu**
+(add, remove, rename, reorder; external `https://` links open in a new tab). While that record is
+**Published** it replaces the built-in menu; set it to Draft to fall back to the menu in Page text.
 
 ---
 
@@ -191,15 +201,24 @@ from `dakshil-15/jetking-platform`). The working branch for the redesign is `fro
 
 ## Environment
 
-See `.env.example`. Critical keys:
+Everything environment-specific is an env variable — see **[docs/ENVIRONMENT.md](./docs/ENVIRONMENT.md)**.
 
-- `NEXT_PUBLIC_SITE_URL` — baked into canonicals at build time
-- `PERSONA_COOKIE_SECRET` — HMAC for `jk_persona`
-- `OPENAI_API_KEY` — `/api/chat` hosted-model fallback and persona inference (absent → local Ollama only)
-- `CONTENT_SOURCE=admin` — read published CMS data
-- `REVALIDATE_SECRET` — protect publish webhooks
-- `ADMIN_PASSWORD` — simple staff gate when Supabase Auth is unset
-- `RATE_LIMIT_ALLOW_MEMORY=true` — required for single-instance prod with in-memory limiter
+- **Local:** `cp .env.example .env.local`.
+- **Production (Vercel):** copy from [`.env.production.example`](./.env.production.example) — section 1 required, section 2 recommended, section 3 optional defaults. Real values only in Vercel (mark secrets *Sensitive*); redeploy after changes.
+- A test fails if code reads a variable that the production template does not list, so the template stays complete.
+
+The essentials: `NEXT_PUBLIC_SITE_URL`, five session/cookie secrets, `CONTENT_SOURCE=admin`, `DATABASE_URL` (then `npm run db:migrate` and `npm run seed:locations`), `MAIL_*` for email, `OPENAI_API_KEY` for the assistant.
+
+## Admin panel at a glance
+
+| Area | What it does |
+|---|---|
+| Content | Courses, centres, cities, blog, pages, FAQs, announcements, logos, legal, SEO, redirects, media; **Header menu**; **Page text** for header/footer wording |
+| Leads | Enquiry inbox with centre scoping, CRM hand-off (Smartrain), optional mobile-OTP verified forms |
+| Team & access | Staff accounts with built-in roles (Admin, Editor, Centre staff) **and custom roles** you create (name + No access / View / View & edit for Website content, Leads, Media, SEO, Redirects, Chatbot; leads can be limited to one centre). New members and password resets are emailed when `MAIL_*` is set. |
+| Audit log | Who changed what (admin only) |
+
+See [docs/ADMIN_CMS.md](./docs/ADMIN_CMS.md) and [docs/AUTH.md](./docs/AUTH.md).
 
 ---
 
