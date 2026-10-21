@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { clientKey, createRateLimiter } from '@/lib/rate-limit';
@@ -7,6 +7,7 @@ import {
   DuplicateEmailError,
   createUser,
   getUserByEmail,
+  getUserById,
   getUsersByPhone,
   updatePassword,
   type StoredUser,
@@ -16,6 +17,10 @@ import type { SiteUser } from '@/lib/users/types';
 import { normalizeMobile } from '@/lib/phone';
 import { OTP_RESEND_SECONDS } from '@/lib/otp/config';
 import { isVerifiedFor, sendOtp, verifyOtp } from '@/lib/otp/service';
+import { isMailConfigured, sendMail } from '@/lib/mail';
+import { visitorResetEmail } from '@/lib/mail/templates';
+import { RESET_TTL_MINUTES, createResetToken, fingerprintMatches, readResetToken } from '@/lib/users/reset-token';
+import { absoluteUrl } from '@/lib/site';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -73,6 +78,9 @@ const bodySchema = z.discriminatedUnion('action', [
     email: optionalEmail,
     phone: z.string().min(1).max(20).optional(),
   }),
+  /** Email a single-use reset link (works without SMS). The answer never reveals whether the account exists. */
+  z.object({ action: z.literal('reset_email_send'), email: emailSchema }),
+  z.object({ action: z.literal('reset_email_confirm'), token: z.string().min(20).max(400), newPassword: z.string().min(8).max(200) }),
   z.object({
     action: z.literal('reset_verify'),
     phone: z.string().min(1).max(20),
@@ -86,6 +94,8 @@ const bodySchema = z.discriminatedUnion('action', [
 const signupLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 10 });
 const loginLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 10 });
 const otpLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 15 });
+/** Per mailbox, so one address cannot be flooded with reset emails from many clients. */
+const resetEmailLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 3 });
 
 const NO_STORE = { 'cache-control': 'no-store' };
 
@@ -374,6 +384,38 @@ export async function POST(request: Request) {
     }
 
     return json(otpSentPayload(ten, sent));
+  }
+
+  if (input.action === 'reset_email_send') {
+    // Identical response in every case (unknown email, mail off, rate-limited) so this cannot be used to probe
+    // which emails have accounts; the work happens after the response, so timing does not give it away either.
+    const generic = { ok: true as const, emailed: true as const };
+    const mailbox = await resetEmailLimiter.check(`reset-email:${input.email}`);
+    if (!mailbox.allowed || !isMailConfigured()) return json(generic);
+    after(async () => {
+      try {
+        const user = await getUserByEmail(input.email);
+        if (!user) return;
+        const resetUrl = absoluteUrl(`/account/reset-password?token=${encodeURIComponent(createResetToken(user))}`);
+        await sendMail({ to: user.email, ...visitorResetEmail({ name: user.name, resetUrl, minutes: RESET_TTL_MINUTES }) });
+      } catch (error) {
+        console.error('[users:reset-email-failed]', error instanceof Error ? error.message : 'unknown error');
+      }
+    });
+    return json(generic);
+  }
+
+  if (input.action === 'reset_email_confirm') {
+    const invalid = json({ ok: false, error: 'This reset link is invalid or has expired. Please request a new one.' }, 400);
+    const token = readResetToken(input.token);
+    if (!token) return invalid;
+    const user = await getUserById(token.userId);
+    // The fingerprint ties the link to the password it was issued for, so it works exactly once.
+    if (!user || !fingerprintMatches(user.passwordHash, token.fingerprint)) return invalid;
+    const updated = await updatePassword(user.id, await hashPassword(input.newPassword));
+    if (!updated) return json({ ok: false, error: 'Could not update your password. Please try again.' }, 500);
+    await startSession(updated.id);
+    return json({ ok: true, user: publicUser(updated) });
   }
 
   if (input.action === 'reset_verify') {

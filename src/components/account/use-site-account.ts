@@ -181,6 +181,23 @@ export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
     [authenticate],
   );
 
+  /** Asks for a reset link by email. Always reports success, whether or not the address has an account. */
+  const resetEmailSend = useCallback(async (email: string): Promise<{ ok: true } | { ok: false; error: string }> => {
+    try {
+      const { res, data } = await postAuth({ action: 'reset_email_send', email });
+      if (!res.ok || !data.ok) return { ok: false, error: data.error ?? 'Something went wrong. Please try again.' };
+      return { ok: true };
+    } catch {
+      return { ok: false, error: NETWORK_ERROR };
+    }
+  }, []);
+
+  const resetEmailConfirm = useCallback(
+    (input: { token: string; newPassword: string }) =>
+      authenticate({ action: 'reset_email_confirm', token: input.token, newPassword: input.newPassword }),
+    [authenticate],
+  );
+
   const signup = useCallback(
     (input: SiteSignupInput) =>
       authenticate({
@@ -213,6 +230,8 @@ export function useSiteAccount({ enabled = true }: SiteAccountOptions = {}) {
     loginOtpVerify,
     resetSend,
     resetVerify,
+    resetEmailSend,
+    resetEmailConfirm,
     signup,
     logout,
   };

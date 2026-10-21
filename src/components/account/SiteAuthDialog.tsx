@@ -15,6 +15,14 @@ import type { SiteAccount } from './use-site-account';
 import { useLocationPicker, useLocations } from '@/features/jetking-ai/account/use-locations';
 
 export type AuthMode = 'login' | 'signup' | 'reset';
+
+/**
+ * Whether visitors can get a password-reset LINK by email. Set `NEXT_PUBLIC_EMAIL_RESET_ENABLED=true` together
+ * with working `MAIL_*` settings on the server (without them the request is accepted but no email goes out).
+ */
+const EMAIL_RESET_ENABLED = process.env.NEXT_PUBLIC_EMAIL_RESET_ENABLED === 'true';
+/** "Forgot password?" is offered when at least one way to reset exists. */
+const RESET_ENABLED = OTP_ENABLED || EMAIL_RESET_ENABLED;
 type LoginMethod = 'email' | 'mobile';
 type OtpStep = 'identify' | 'code' | 'password';
 
@@ -38,7 +46,7 @@ export function SiteAuthDialog({
   onClose: () => void;
   account: Pick<
     SiteAccount,
-    'login' | 'signup' | 'loginOtpSend' | 'loginOtpVerify' | 'resetSend' | 'resetVerify'
+    'login' | 'signup' | 'loginOtpSend' | 'loginOtpVerify' | 'resetSend' | 'resetVerify' | 'resetEmailSend'
   >;
 }) {
   const id = useId();
@@ -83,8 +91,8 @@ export function SiteAuthDialog({
     setChallengePhone(null);
     setOtpToken(null);
     setDevCode(undefined);
-    if (next === 'reset' && !OTP_ENABLED) {
-      setError('Password reset by SMS is not available right now. Ask a counsellor for help, or try email login.');
+    if (next === 'reset' && !RESET_ENABLED) {
+      setError('Password reset is not available right now. Ask a counsellor for help.');
       onModeChange('login');
       return;
     }
@@ -189,6 +197,20 @@ export function SiteAuthDialog({
     finishSignedIn(result.user, 'account_login');
   }
 
+  async function sendResetLink() {
+    if (pending || !email.trim()) return;
+    setPending(true);
+    setError('');
+    setInfo('');
+    const result = await account.resetEmailSend(email.trim());
+    setPending(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+    setInfo(`If an account exists for ${email.trim()}, we have emailed a link to reset the password. It works once and expires in 30 minutes — check your spam folder too.`);
+  }
+
   async function sendResetOtp() {
     if (pending) return;
     setPending(true);
@@ -260,7 +282,11 @@ export function SiteAuthDialog({
   const title =
     isReset ? 'Reset your password' : isLogin ? 'Welcome back' : 'Create your Jetking account';
   const lede = isReset
-    ? 'We will text a code to your registered mobile. You can start with your email or mobile number.'
+    ? EMAIL_RESET_ENABLED && OTP_ENABLED
+      ? 'We can email you a reset link, or text a code to your registered mobile.'
+      : EMAIL_RESET_ENABLED
+        ? 'Enter your account email and we will send you a link to choose a new password.'
+        : 'We will text a code to your registered mobile. You can start with your email or mobile number.'
     : isLogin
       ? 'Log in with email and password, or a one-time code on your mobile.'
       : 'One account for the website and Jetking AI. Your details pre-fill enquiries, and your chats are saved.';
@@ -465,7 +491,7 @@ export function SiteAuthDialog({
             <Button type="submit" size="md" disabled={pending} className="w-full">
               {pending ? 'Please wait…' : 'Log in'}
             </Button>
-            {OTP_ENABLED ? (
+            {RESET_ENABLED ? (
               <button
                 type="button"
                 onClick={() => switchMode('reset')}
@@ -585,7 +611,11 @@ export function SiteAuthDialog({
           <div className="mt-5 space-y-4">
             {otpStep === 'identify' ? (
               <>
-                <Field label="Email" htmlFor={`${id}-remail`} hint="Or leave blank and use mobile below.">
+                <Field
+                  label="Email"
+                  htmlFor={`${id}-remail`}
+                  hint={OTP_ENABLED ? 'Or leave blank and use mobile below.' : undefined}
+                >
                   <Input
                     id={`${id}-remail`}
                     type="email"
@@ -594,6 +624,7 @@ export function SiteAuthDialog({
                     autoComplete="email"
                   />
                 </Field>
+                {OTP_ENABLED ? (
                 <Field label="Mobile number" htmlFor={`${id}-rphone`} hint="Required if you do not enter an email.">
                   <Input
                     id={`${id}-rphone`}
@@ -605,6 +636,7 @@ export function SiteAuthDialog({
                     placeholder="98765 43210"
                   />
                 </Field>
+                ) : null}
                 {needsEmail ? (
                   <p className="text-xs text-foreground-muted">
                     Several accounts share this number — email is required.
@@ -616,15 +648,31 @@ export function SiteAuthDialog({
                     {error}
                   </p>
                 ) : null}
-                <Button
-                  type="button"
-                  size="md"
-                  disabled={pending || (!email.trim() && !phone.trim())}
-                  className="w-full"
-                  onClick={() => void sendResetOtp()}
-                >
-                  {pending ? 'Sending…' : 'Send reset code'}
-                </Button>
+                {EMAIL_RESET_ENABLED ? (
+                  <Button type="button" size="md" disabled={pending || !email.trim()} className="w-full" onClick={() => void sendResetLink()}>
+                    {pending ? 'Sending…' : 'Email me a reset link'}
+                  </Button>
+                ) : null}
+                {OTP_ENABLED && EMAIL_RESET_ENABLED ? (
+                  <button
+                    type="button"
+                    disabled={pending || (!email.trim() && !phone.trim())}
+                    onClick={() => void sendResetOtp()}
+                    className="w-full cursor-pointer text-center text-sm font-semibold text-foreground-secondary hover:text-foreground disabled:opacity-45"
+                  >
+                    Text me a code instead
+                  </button>
+                ) : OTP_ENABLED ? (
+                  <Button
+                    type="button"
+                    size="md"
+                    disabled={pending || (!email.trim() && !phone.trim())}
+                    className="w-full"
+                    onClick={() => void sendResetOtp()}
+                  >
+                    {pending ? 'Sending…' : 'Send reset code'}
+                  </Button>
+                ) : null}
               </>
             ) : null}
 
