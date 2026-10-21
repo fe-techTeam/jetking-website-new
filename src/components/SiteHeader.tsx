@@ -240,8 +240,8 @@ export function SiteHeader({ menuCourses }: { menuCourses: MenuCourse[] }) {
                 aria-current={active ? 'page' : undefined}
                 className={cx(
                   'rounded-full px-3 py-2.5 text-sm font-bold tracking-[-0.01em] transition-colors duration-200 min-[1400px]:px-4',
-                  /* Only the first four fit beside the actions until the header is this wide; the rest live in the menu. */
-                  index >= 4 && 'hidden min-[1600px]:inline',
+                  /* The top bar carries the first four; everything else lives in the menu at every screen size. */
+                  index >= 4 && 'hidden',
                   active
                     ? onDarkLead
                       ? 'text-white'
