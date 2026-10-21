@@ -102,11 +102,16 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
 
   async redirects() {
-    return loadRedirects().map((entry) => ({
-      source: entry.source,
-      destination: entry.destination,
-      permanent: entry.permanent ?? true,
-    }));
+    // Next.js matches redirect sources without regard to case, so a rule like "/Courses" -> "/courses" also
+    // matches "/courses" and sends it to itself: an endless redirect on a live page. Drop any such rule.
+    const path = (p: string) => (p.split(/[?#]/)[0] ?? '').toLowerCase().replace(/\/+$/, '') || '/';
+    return loadRedirects()
+      .filter((entry) => path(entry.source) !== path(entry.destination))
+      .map((entry) => ({
+        source: entry.source,
+        destination: entry.destination,
+        permanent: entry.permanent ?? true,
+      }));
   },
 
   async headers() {

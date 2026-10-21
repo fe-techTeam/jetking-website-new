@@ -1,10 +1,5 @@
 [
   {
-    "source": "/Courses",
-    "destination": "/courses",
-    "permanent": true
-  },
-  {
     "source": "/animation-graphics-metaverse-design-course",
     "destination": "/courses/gaming-metaverse-design",
     "permanent": true
