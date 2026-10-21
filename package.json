@@ -16,6 +16,7 @@
     "build:redirects": "tsx scripts/build-redirects.ts",
     "migrate:cms": "tsx scripts/migrate-cms.ts",
     "seed:locations": "tsx scripts/seed-locations.ts",
+    "sync:courses": "tsx scripts/sync-courses.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate-db.ts",
     "create:admin": "tsx scripts/create-admin-user.ts",

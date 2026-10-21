@@ -134,6 +134,12 @@ Chatbot without OpenAI: leave `GUIDE_PROVIDER=local`. Optionally run Ollama on a
 
 ---
 
+### Updating an existing server
+
+After pulling a release: `npm ci`, `npm run db:migrate` (new migrations), `npm run build`, restart. A database seeded earlier keeps its own courses, so run `npm run sync:courses` to add courses that were added to the code since (existing records and admin edits are left alone).
+
+---
+
 ## 6. Post-deploy smoke test
 
 | Check | Expect |

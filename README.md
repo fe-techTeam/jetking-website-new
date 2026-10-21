@@ -35,6 +35,7 @@ npm run dev          # http://localhost:3000
 | `npm run migrate:cms` | Seed Admin CMS store from local fixtures |
 | `npm run db:migrate` | Apply database migrations (reads `.env.local`; run once per database and after pulling new migrations) |
 | `npm run seed:locations` | Seed the centres / cities tables |
+| `npm run sync:courses` | Add courses that ship in `data/cms/store.json` but are missing from the database (never changes existing ones; `--dry-run` to preview) |
 | `npm run create:admin -- --name … --email … --password …` | Create the first admin account (needs `DATABASE_URL`) |
 | `npm run sync:chatbot-content` | Refresh the assistant knowledge content |
 | `npm run check:chatbot-answers` | Verify grounded assistant answers |
