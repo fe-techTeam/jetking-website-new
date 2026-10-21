@@ -85,7 +85,21 @@ function setVisitorCookie(response: NextResponse, req: NextRequest): void {
   });
 }
 
+/**
+ * Legacy URLs that differ from their new path only by letter case. Next.js's own redirects() match sources
+ * case-insensitively, so a config rule "/Courses" -> "/courses" also matches "/courses" and loops it; the exact-case
+ * match has to happen here instead.
+ */
+const CASE_SENSITIVE_REDIRECTS: Record<string, string> = { '/Courses': '/courses' };
+
 export async function proxy(req: NextRequest) {
+  const caseTarget = CASE_SENSITIVE_REDIRECTS[req.nextUrl.pathname];
+  if (caseTarget) {
+    const target = new URL(caseTarget, req.url);
+    target.search = req.nextUrl.search;
+    return NextResponse.redirect(target, 308);
+  }
+
   // Redirects managed in the admin (/admin/redirects) apply to everyone, crawlers included — that is the
   // point of a 301. Never to the admin itself, so a bad rule can't lock editors out.
   if (!req.nextUrl.pathname.startsWith('/admin')) {
