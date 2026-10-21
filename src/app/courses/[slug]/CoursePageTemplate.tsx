@@ -913,7 +913,7 @@ export function CoursePageTemplate({
               </a>
             </p>
           </div>
-          <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[18rem]">
+          <div className="relative aspect-[4/3] md:self-center">
             <Image src={copy['courseClosing.image']} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-center" />
           </div>
         </div>

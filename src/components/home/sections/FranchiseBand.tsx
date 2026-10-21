@@ -39,13 +39,13 @@ export function FranchiseBand({ copy }: { copy: HomeCopy }) {
         </div>
       </div>
 
-      <div className="relative min-h-[280px] overflow-hidden bg-[var(--k-card)] sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px] 3xl:min-h-[560px] 4xl:min-h-[640px]">
+      <div className="relative min-h-[280px] overflow-hidden bg-white sm:min-h-[360px] md:min-h-[420px] lg:min-h-[460px] 3xl:min-h-[560px] 4xl:min-h-[640px]">
         <Image
           src={copy['franchise.image']}
           alt=""
           fill
           sizes="(min-width: 2560px) 1050px, (min-width: 1920px) 900px, (min-width: 768px) 50vw, 100vw"
-          className="object-cover object-center"
+          className="object-contain object-center"
         />
       </div>
     </section>

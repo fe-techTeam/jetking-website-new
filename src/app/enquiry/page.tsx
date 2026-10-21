@@ -57,7 +57,7 @@ export default async function EnquiryPage() {
             {show('next') ? (
               <div className="border-t border-[var(--k-line-strong)] bg-[var(--k-tint)] p-6 sm:p-8 md:border-t-0 md:border-l md:p-10">
                 <div className="md:sticky md:top-28">
-                  <div className="relative mb-7 h-44 overflow-hidden rounded-[var(--k-r)] sm:h-56 md:h-64">
+                  <div className="relative mb-7 aspect-[4/3] overflow-hidden rounded-[var(--k-r)]">
                     <Image
                       src={copy['next.image']}
                       alt=""

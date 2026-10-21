@@ -21,7 +21,7 @@ export function CounsellorBand({ copy }: { copy: HomeCopy }) {
       className="kit bg-[var(--k-bg)] text-[var(--k-ink)]"
     >
       <div className="shell grid items-center gap-8 md:grid-cols-2 md:gap-10 lg:gap-14">
-        <div className="relative aspect-[4/3] w-full md:aspect-auto md:min-h-[400px] md:self-stretch lg:min-h-[440px] 3xl:min-h-[520px] 4xl:min-h-[580px]">
+        <div className="relative aspect-[4/3] w-full">
           <Image
             src={copy["counsellor.image"]}
             alt=""

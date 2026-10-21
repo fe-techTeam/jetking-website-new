@@ -162,7 +162,7 @@ export default async function CoursesPage() {
         {show('cta') ? (
         <Section tone="plain" labelledBy="courses-cta">
           <div className="kit-card overflow-hidden md:grid md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[17rem]">
+            <div className="relative aspect-video md:self-center">
               <Image src={copy['cta.image']} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover object-[center_40%]" />
             </div>
             <div className="p-6 sm:p-10">

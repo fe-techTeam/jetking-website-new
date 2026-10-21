@@ -246,7 +246,7 @@ export function BlogArticle({
               </Link>
             </div>
           </div>
-          <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[18rem]">
+          <div className="relative aspect-[4/3] md:self-center">
             <Image
               src={copy['articleCta.image']}
               alt=""
