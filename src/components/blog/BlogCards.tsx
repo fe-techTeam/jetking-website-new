@@ -100,14 +100,14 @@ export function PostCard({
         href={`/blog/${post.slug}` as Route}
         className="blog-card blog-card-interactive group/post flex h-full flex-col overflow-hidden rounded-[var(--dc-cut)]"
       >
-        <div className="blog-card-media relative aspect-[840/300] overflow-hidden">
+        <div className="blog-card-media relative aspect-[12/5] overflow-hidden">
           {cover ? (
             <Image
               src={cover.url}
               alt={cover.alt || post.title}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover object-center transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03]"
+              className="object-contain object-center transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover/post:scale-[1.03]"
             />
           ) : (
             <BlogLogoBanner />

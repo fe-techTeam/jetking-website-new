@@ -47,13 +47,13 @@ function Block({ block }: { block: BodyBlock }) {
     case 'image':
       return (
         <figure className="blog-prose-figure">
-          <div className="blog-card-media relative aspect-[840/300] overflow-hidden rounded-[16px]">
+          <div className="blog-card-media relative aspect-[12/5] overflow-hidden rounded-[16px]">
             <Image
               src={block.image.url}
               alt={block.image.alt}
               fill
               sizes="(min-width: 1280px) 1440px, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           {block.image.alt ? <figcaption>{block.image.alt}</figcaption> : null}
@@ -112,7 +112,7 @@ export function BlogArticle({
           </ol>
         </nav>
 
-        <div className="blog-hero-banner blog-card-media relative aspect-[840/300] overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[28px]">
+        <div className="blog-hero-banner blog-card-media relative aspect-[12/5] overflow-hidden rounded-[24px] xs:rounded-[28px] sm:rounded-[28px]">
           {cover ? (
             <Image
               src={cover.url}
@@ -120,7 +120,7 @@ export function BlogArticle({
               fill
               priority
               sizes="(min-width: 2560px) 2100px, (min-width: 1920px) 1800px, (min-width: 1536px) 1600px, (min-width: 1280px) 1440px, 100vw"
-              className="object-cover object-[center_28%]"
+              className="object-contain object-center"
             />
           ) : (
             <BlogLogoBanner />
