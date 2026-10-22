@@ -42,6 +42,10 @@ export async function createUser(input: {
   centreSlug?: string;
   /** Required when role is 'custom'. */
   customRoleId?: string;
+  /** Per-person access (role 'custom' without a customRoleId). */
+  personalAccess?: Record<string, string>;
+  personalLeadScope?: string;
+  personalLabel?: string;
 }): Promise<AdminUser> {
   const db = requireDb();
   const passwordHash = await hashPassword(input.password);
@@ -54,6 +58,9 @@ export async function createUser(input: {
       role: input.role,
       centreSlug: input.centreSlug || null,
       customRoleId: input.role === 'custom' ? (input.customRoleId ?? null) : null,
+      personalAccess: input.role === 'custom' && !input.customRoleId ? (input.personalAccess ?? null) : null,
+      personalLeadScope: input.role === 'custom' && !input.customRoleId ? (input.personalLeadScope ?? null) : null,
+      personalLabel: input.role === 'custom' && !input.customRoleId ? (input.personalLabel ?? null) : null,
     })
     .returning();
   if (!row) throw new Error('Insert did not return a row.');
@@ -67,6 +74,9 @@ export async function updateUser(
     role?: UserRole;
     centreSlug?: string | null;
     customRoleId?: string | null;
+    personalAccess?: Record<string, string> | null;
+    personalLeadScope?: string | null;
+    personalLabel?: string | null;
     status?: 'active' | 'disabled';
   },
 ): Promise<AdminUser | undefined> {

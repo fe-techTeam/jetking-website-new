@@ -81,8 +81,8 @@ export default async function AdminDashboard() {
           Welcome back, {firstName}
         </h1>
         <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/80">
-          {totalContent} records across {rows.length} collections. {draftSummary} Saving updates the
-          live site straight away.
+          {totalContent} items across {rows.length} sections. {draftSummary} Publishing updates the
+          live site straight away; drafts stay hidden.
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2.5">
@@ -111,13 +111,13 @@ export default async function AdminDashboard() {
       <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard
           icon={Layers}
-          label="Total content"
+          label="Items on the site"
           value={totalContent}
           meter={{ percent: publishedPercent, caption: `${publishedPercent}% published` }}
         />
         <StatCard
           icon={PenLine}
-          label="Drafts awaiting review"
+          label="Drafts (hidden from site)"
           value={draftCount}
           badge={draftCount > 0 ? 'Needs review' : 'All clear'}
           badgeTone={draftCount > 0 ? 'warn' : 'good'}
@@ -141,8 +141,8 @@ export default async function AdminDashboard() {
       <div className="mt-4 grid gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3 [&>section]:h-full">
           <BarChartCard
-            title="Content by type"
-            description="Record count per collection, across draft and published."
+            title="Content by section"
+            description="How many items each section holds, draft and published."
             bars={bars}
           />
         </div>
@@ -178,7 +178,8 @@ export default async function AdminDashboard() {
                     </Link>
                     <span className="text-foreground-muted">
                       {' '}
-                      · {r.action === 'delete' ? 'deleted' : r.action === 'restore' ? 'restored' : 'saved'} in {r.collection.replace(/_/g, ' ')}
+                      · {r.action === 'delete' ? 'deleted' : r.action === 'restore' ? 'restored' : 'saved'} in{' '}
+                      {COLLECTIONS.find((c) => c.key === r.collection)?.label ?? r.collection.replace(/_/g, ' ')}
                     </span>
                     <span className="block text-xs text-foreground-muted">
                       {when(r.createdAt)} · {r.actorName}
@@ -217,7 +218,15 @@ export default async function AdminDashboard() {
         </div>
       ) : null}
 
-      {user.role === 'admin' ? <ResetFixturesCard action={seedCmsFromFixtures} /> : null}
+      {user.role === 'admin' ? (
+        // Rarely needed and destructive, so it stays out of sight until an admin asks for it.
+        <details className="group mt-6">
+          <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-foreground-muted hover:text-foreground">
+            Advanced options (admins only)
+          </summary>
+          <ResetFixturesCard action={seedCmsFromFixtures} />
+        </details>
+      ) : null}
     </div>
   );
 }

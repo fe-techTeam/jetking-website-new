@@ -44,6 +44,20 @@ const LABEL_OVERRIDES: Record<string, string> = {
   endsAt: 'Ends',
   legacyPath: 'Old URL (legacy)',
   disabledMessage: 'Message when hidden',
+  faqs: 'FAQs',
+  id: 'Internal name (not shown to visitors)',
+  href: 'Link address',
+  linkHref: 'Link address',
+  linkLabel: 'Link text',
+  seo: 'Search engine listing',
+  url: 'Image file',
+  alt: 'Image description (for screen readers)',
+  emiAvailable: 'EMI available',
+  updatedAt: 'Last updated',
+  whyNow: 'Why this course, why now',
+  ogImage: 'Social share image',
+  canonicalPath: 'Preferred page address',
+  noindex: 'Hide from search engines',
 };
 
 export function humanize(key: string): string {

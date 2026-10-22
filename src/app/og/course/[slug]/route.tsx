@@ -4,6 +4,9 @@ import { ImageResponse } from 'next/og';
 import { content } from '@/lib/content';
 import { COURSE_LEVEL_LABEL } from '@/lib/course-categories';
 import { courseHasDetailPage } from '@/lib/course-href';
+import { loadCopy } from '@/lib/content/copy/load';
+import { siteCopy } from '@/lib/content/copy/pages/site';
+import { getMediaBytes } from '@/lib/media/store';
 
 /**
  * Social preview card for a course (1200x630): title, level and duration over the course photo, with the
@@ -25,12 +28,30 @@ async function dataUri(publicPath: string, mime: string): Promise<string | null>
   }
 }
 
+/** The header logo chosen in Page text → Site (uploads included); the bundled wordmark if it can't be read. */
+async function brandLogo(): Promise<string | null> {
+  try {
+    const chosen = (await loadCopy(siteCopy))['header.logo.image'];
+    const upload = chosen?.match(/^\/media\/([\w-]+)\.(png|jpg)$/);
+    if (upload) {
+      const media = await getMediaBytes(upload[1]!);
+      if (media) return `data:${media.mime};base64,${media.data.toString('base64')}`;
+    } else if (chosen && /\.(png|jpg)$/i.test(chosen) && chosen.startsWith('/')) {
+      const uri = await dataUri(chosen, chosen.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg');
+      if (uri) return uri;
+    }
+  } catch {
+    /* fall through to the default */
+  }
+  return dataUri('/brand/jetking-wordmark.png', 'image/png');
+}
+
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const course = await content.getCourse(slug);
   if (!course || !courseHasDetailPage(course)) return new Response('Not found', { status: 404 });
 
-  const logo = await dataUri('/brand/jetking-wordmark.png', 'image/png');
+  const logo = await brandLogo();
   const title = course.shortTitle || course.title;
   const fontSize = title.length > 60 ? 54 : title.length > 36 ? 64 : 76;
 

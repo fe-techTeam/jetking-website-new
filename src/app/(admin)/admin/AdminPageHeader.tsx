@@ -22,7 +22,7 @@ export function AdminPageHeader({
         <h1 className="adm-title mt-3">{title}</h1>
         {description ? <p className="adm-lede mt-3">{description}</p> : null}
       </div>
-      {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
+      {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2 sm:flex-nowrap">{actions}</div> : null}
     </header>
   );
 }

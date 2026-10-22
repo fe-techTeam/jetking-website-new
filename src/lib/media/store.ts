@@ -1,7 +1,7 @@
 import 'server-only';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { getDb } from '@/lib/db/client';
-import { mediaAssets } from '@/lib/db/schema';
+import { centres, cities, cmsRecords, mediaAssets } from '@/lib/db/schema';
 
 /**
  * The media library: images and PDFs uploaded in the admin, stored in Postgres and served from
@@ -117,4 +117,35 @@ export async function deleteMedia(id: string): Promise<void> {
   const db = getDb();
   if (!db) return;
   await db.delete(mediaAssets).where(eq(mediaAssets.id, id));
+}
+
+export interface MediaUsage {
+  collection: string;
+  recordId: string;
+}
+
+/** Every record whose saved content mentions this file's `/media/{id}` path (CMS records, centres, cities). */
+export async function findMediaUsage(id: string): Promise<MediaUsage[]> {
+  const db = getDb();
+  if (!db) return [];
+  const needle = `%/media/${id}%`;
+  const [records, centreRows, cityRows] = await Promise.all([
+    db
+      .select({ collection: cmsRecords.collection, recordId: cmsRecords.recordId })
+      .from(cmsRecords)
+      .where(sql`${cmsRecords.data}::text like ${needle}`),
+    db
+      .select({ slug: centres.slug })
+      .from(centres)
+      .where(sql`(${centres.details}::text || ${centres.seo}::text) like ${needle}`),
+    db
+      .select({ slug: cities.slug })
+      .from(cities)
+      .where(sql`(${cities.seo}::text || ${cities.intro}) like ${needle}`),
+  ]);
+  return [
+    ...records,
+    ...centreRows.map((r) => ({ collection: 'centres', recordId: r.slug })),
+    ...cityRows.map((r) => ({ collection: 'cities', recordId: r.slug })),
+  ];
 }

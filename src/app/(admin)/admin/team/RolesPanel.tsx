@@ -36,6 +36,40 @@ interface Draft {
 
 const BLANK: Draft = { id: null, name: '', description: '', access: EMPTY_ACCESS, leadScope: 'all' };
 
+/** Ready-made starting points for "New role" — each fills the form, which can be changed before saving. */
+const TEMPLATES: { name: string; description: string; access: Access; leadScope: LeadScope }[] = [
+  {
+    name: 'Sub admin',
+    description: 'Runs the whole panel day to day, except team accounts, the activity log and legal pages.',
+    access: { content: 'edit', leads: 'edit', media: 'edit', seo: 'edit', redirects: 'edit', chatbot: 'edit' },
+    leadScope: 'all',
+  },
+  {
+    name: 'Content manager',
+    description: 'Edits the website, images and SEO. No leads.',
+    access: { content: 'edit', leads: 'none', media: 'edit', seo: 'edit', redirects: 'none', chatbot: 'none' },
+    leadScope: 'all',
+  },
+  {
+    name: 'Sales manager',
+    description: 'Works every enquiry in Leads. Can view website content.',
+    access: { content: 'view', leads: 'edit', media: 'none', seo: 'none', redirects: 'none', chatbot: 'none' },
+    leadScope: 'all',
+  },
+  {
+    name: 'Marketing',
+    description: 'SEO, redirects, images and chatbot answers.',
+    access: { content: 'view', leads: 'none', media: 'edit', seo: 'edit', redirects: 'edit', chatbot: 'edit' },
+    leadScope: 'all',
+  },
+  {
+    name: 'Viewer',
+    description: 'Can look at everything but change nothing.',
+    access: { content: 'view', leads: 'view', media: 'view', seo: 'view', redirects: 'view', chatbot: 'view' },
+    leadScope: 'all',
+  },
+];
+
 function summary(role: CustomRoleView): string[] {
   return SECTIONS.filter((s) => role.access[s] !== 'none').map(
     (s) => `${SECTION_LABEL[s]} · ${role.access[s] === 'edit' ? 'edit' : 'view'}`,
@@ -145,6 +179,25 @@ export function RolesPanel({
               <X aria-hidden="true" className="h-4 w-4" />
             </button>
           </div>
+
+          {!draft.id ? (
+            <div>
+              <p className="label-mono mb-2">Start from a template (optional)</p>
+              <div className="flex flex-wrap gap-2">
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.name}
+                    type="button"
+                    title={t.description}
+                    onClick={() => setDraft({ id: null, ...t })}
+                    className="min-h-9 cursor-pointer rounded-full border border-border px-3 text-xs font-semibold text-foreground-secondary transition-colors hover:border-border-strong hover:text-foreground"
+                  >
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1.5 text-sm">

@@ -48,6 +48,8 @@ export const GROUP = {
   website: 'Website',
   personalisation: 'Personalisation',
   guide: 'Chatbot',
+  /** Records that no public page shows. Folded away in the menu so day-to-day editing stays uncluttered. */
+  background: 'Background data',
 } as const;
 
 const ALL_COLLECTIONS: AdminCollection[] = [
@@ -225,7 +227,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     description: 'A slim bar at the very top of every page. Shows the most urgent published announcement whose dates are active.',
     live: true,
     appearsOn: [{ label: 'Every page', href: '/' }],
-    note: 'Start/end are ISO date-times, for example 2026-11-01T09:00:00+05:30. Leave empty for no limit. Several active: alert beats promo beats info, then the newest start.',
+    note: 'Pick a start and end date-time, or leave them empty for no limit. Several active: alert beats promo beats info, then the newest start.',
   },
   {
     key: 'site_navigation',
@@ -274,7 +276,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     idKey: 'id',
     label: 'Trust signals',
     icon: 'BadgeCheck',
-    group: GROUP.website,
+    group: GROUP.background,
     description: 'Headline figures (students, placements, centres…) with the source that verifies each.',
     live: false,
     appearsOn: [],
@@ -342,7 +344,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     idKey: 'slug',
     label: 'Policies',
     icon: 'ShieldCheck',
-    group: GROUP.guide,
+    group: GROUP.background,
     description: 'Policy summaries the Jetking Guide chatbot answers from.',
     live: false,
     appearsOn: [],
@@ -354,7 +356,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     idKey: 'slug',
     label: 'Faculty',
     icon: 'UserCog',
-    group: GROUP.guide,
+    group: GROUP.background,
     description: 'Faculty profiles the Jetking Guide chatbot can cite.',
     live: false,
     appearsOn: [],
@@ -366,7 +368,7 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     idKey: 'id',
     label: 'Placement notes',
     icon: 'Trophy',
-    group: GROUP.guide,
+    group: GROUP.background,
     description: 'Placement summaries and stats the Jetking Guide chatbot answers from.',
     live: false,
     appearsOn: [],

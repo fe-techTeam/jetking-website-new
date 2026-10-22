@@ -150,7 +150,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                     {r.draft ? <span className="ml-2 text-xs font-medium text-[#b54708]">Draft</span> : null}
                   </p>
                   <p className="truncate text-xs text-foreground-muted">{r.path}</p>
-                  <p className="mt-1 truncate text-sm text-foreground-secondary">{r.title || '—'}</p>
+                  <p className="mt-1 truncate text-sm text-foreground-secondary">{r.title ? r.title.replaceAll('{siteName}', 'Jetking') : '—'}</p>
                   {r.note ? <p className="mt-1 text-[11px] leading-snug text-[#b54708]">{r.note}</p> : null}
                   {issues.length > 0 ? (
                     <p className="mt-1 flex flex-wrap gap-1.5">
@@ -201,7 +201,7 @@ export function SeoTable({ rows: initial }: { rows: SeoRow[] }) {
                   <div className="rounded-[var(--admin-radius)] border border-border bg-background p-4" aria-label="Search result preview">
                     <p className="text-xs font-semibold text-foreground-muted">Search result preview</p>
                     <p className="mt-3 truncate text-xs text-foreground-muted">{(r.canonicalPath || r.path)}</p>
-                    <p className="mt-1 text-[18px] leading-snug text-[#1a0dab]">{draft.title.slice(0, 70) || 'Title'}</p>
+                    <p className="mt-1 text-[18px] leading-snug text-[#1a0dab]">{draft.title.replaceAll('{siteName}', 'Jetking').slice(0, 70) || 'Title'}</p>
                     <p className="mt-1 text-sm leading-snug text-foreground-secondary">{draft.description.slice(0, 170) || 'Description'}</p>
                     {r.kind === 'page' ? <p className="mt-3 text-[11px] text-foreground-muted">Tokens like {'{siteName}'} are filled in on the live page.</p> : null}
                   </div>

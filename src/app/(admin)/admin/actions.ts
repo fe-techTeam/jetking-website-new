@@ -34,9 +34,11 @@ import {
 } from '@/lib/auth/users';
 import { getCustomRole } from '@/lib/auth/custom-roles';
 import {
+  PERSONAL_LABEL,
   ROLE_LABEL,
   hasAccess,
   normalizeAccess,
+  normalizeLeadScope,
   presetAccess,
   type Access,
   type LeadScope,
@@ -120,6 +122,7 @@ function dummyHash(): Promise<string> {
 
 /** Deliberately tight — a real admin fails a password rarely; this is a brute-force brake. */
 const loginLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 8 });
+const emailLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 10 });
 
 /**
  * Resolves the signed-in staff member, or `null`. Two modes, chosen once per
@@ -150,6 +153,18 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     if (user.role === 'custom') {
       // A custom role that has gone missing grants nothing (deny by default).
       const custom = user.customRoleId ? await getCustomRole(user.customRoleId) : undefined;
+      if (!user.customRoleId && user.personalAccess) {
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: 'custom',
+          roleLabel: user.personalLabel || PERSONAL_LABEL,
+          centreSlug: user.centreSlug,
+          access: normalizeAccess(user.personalAccess),
+          leadScope: normalizeLeadScope(user.personalLeadScope),
+        };
+      }
       return {
         id: user.id,
         name: user.name,
@@ -254,7 +269,18 @@ export async function adminLogin(_prevState: LoginState, formData: FormData): Pr
 
   if (isDatabaseConfigured()) {
     const email = String(formData.get('email') ?? '').trim();
-    const user = email ? await getUserByEmail(email) : undefined;
+    // Also throttle per account, so guesses spread over many IP addresses still hit a wall.
+    if (email && !(await emailLimiter.check(`admin-login-email:${email.toLowerCase().slice(0, 200)}`)).allowed) {
+      return { error: 'Too many attempts. Please wait a few minutes and try again.' };
+    }
+    let user: Awaited<ReturnType<typeof getUserByEmail>>;
+    try {
+      user = email ? await getUserByEmail(email) : undefined;
+    } catch (e) {
+      // Database down or unreachable: say so on the form instead of crashing to the site's error page.
+      console.error('Admin sign-in could not reach the database:', e);
+      return { error: 'We can’t reach the database right now, so sign-in is unavailable. Please try again in a minute or contact support.' };
+    }
     // Always run one PBKDF2 verification, even for an unknown email, so response time doesn't reveal
     // which emails have accounts.
     const validPassword = await verifyPassword(password, user ? user.passwordHash : await dummyHash());

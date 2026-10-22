@@ -94,7 +94,7 @@ describe('inviteUser', () => {
   it.each([
     [{ name: '' }, /Name/],
     [{ email: 'nope' }, /email/],
-    [{ password: 'short' }, /8 characters/],
+    [{ password: 'short' }, /10 characters/],
     [{ role: 'root' }, /Invalid role/],
     [{ role: 'centre_staff', centreSlug: '' }, /need a centre/],
     [{ role: 'centre_staff', centreSlug: 'atlantis' }, /exist/],

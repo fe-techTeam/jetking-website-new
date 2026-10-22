@@ -74,7 +74,7 @@ export function BlogIndex({
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setHydrated(true);
+    setHydrated(true); // eslint-disable-line react-hooks/set-state-in-effect -- flips once after mount so URL sync waits for hydration
   }, []);
 
   const needle = query.trim().toLowerCase();

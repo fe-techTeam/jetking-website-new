@@ -45,6 +45,7 @@ export async function saveRedirect(input: {
   const user = await requireAccess('redirects', 'edit');
   const db = getDb();
   if (!db) return { ok: false, error: 'Redirects need the database (DATABASE_URL).' };
+  if (input.id !== undefined && !/^[0-9a-f-]{36}$/i.test(String(input.id))) return { ok: false, error: 'Redirect not found.' };
   const v = validateRedirect(input.source, input.destination);
   if (!v.ok) return v;
 
@@ -72,7 +73,7 @@ export async function saveRedirect(input: {
 export async function removeRedirect(id: string): Promise<void> {
   const user = await requireAccess('redirects', 'edit');
   const db = getDb();
-  if (!db) return;
+  if (!db || !/^[0-9a-f-]{36}$/i.test(String(id))) return;
   const [row] = await db.delete(redirects).where(eq(redirects.id, id)).returning();
   clearRedirectCache();
   if (row) void recordAudit(user, 'redirect.delete', 'redirect', id, `Deleted redirect ${row.source} → ${row.destination}`);

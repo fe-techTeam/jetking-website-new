@@ -22,7 +22,14 @@ import {
   updateCustomRole,
   type CustomRoleView,
 } from '@/lib/auth/custom-roles';
-import { normalizeAccess, normalizeLeadScope, SECTIONS, type Access, type LeadScope } from '@/lib/auth/roles';
+import {
+  normalizeAccess,
+  normalizeLeadScope,
+  PERSONAL_KEY,
+  SECTIONS,
+  type Access,
+  type LeadScope,
+} from '@/lib/auth/roles';
 import { listCentreOptions } from '@/lib/leads/centre-scope';
 import type { AdminUser } from '@/lib/db/schema';
 import { recordAudit } from '@/lib/audit/log';
@@ -47,9 +54,37 @@ const CUSTOM_PREFIX = 'custom:';
 
 type ResolvedRole =
   | { kind: 'builtin'; role: Role; label: string; needsCentre: boolean }
-  | { kind: 'custom'; role: CustomRoleView; label: string; needsCentre: boolean };
+  | { kind: 'custom'; role: CustomRoleView; label: string; needsCentre: boolean }
+  | { kind: 'personal'; access: Access; leadScope: LeadScope; label: string; needsCentre: boolean };
 
-async function resolveRole(key: string): Promise<ResolvedRole | null> {
+/** Access ticked for one person: `{ access: { content: 'edit', … }, leadScope }`, from the form as JSON or an object. */
+export interface PersonalInput {
+  access: Record<string, string>;
+  leadScope: string;
+  label: string;
+}
+
+function parsePersonal(raw: unknown): PersonalInput | null {
+  try {
+    const value = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (value && typeof value === 'object' && 'access' in value) return value as PersonalInput;
+  } catch {
+    /* fall through */
+  }
+  return null;
+}
+
+async function resolveRole(key: string, personalRaw?: unknown): Promise<ResolvedRole | null> {
+  if (key === PERSONAL_KEY) {
+    const input = parsePersonal(personalRaw);
+    if (!input) return null;
+    const access = normalizeAccess(input.access);
+    if (SECTIONS.every((s) => access[s] === 'none')) return null;
+    const name = String(input.label ?? '').trim().replace(/\s+/g, ' ');
+    if (name.length < 2 || name.length > 40) return null;
+    const leadScope = normalizeLeadScope(input.leadScope);
+    return { kind: 'personal', access, leadScope, label: name, needsCentre: leadScope === 'centre' && access.leads !== 'none' };
+  }
   if (isRole(key)) return { kind: 'builtin', role: key, label: ROLE_LABEL[key], needsCentre: key === 'centre_staff' };
   if (key.startsWith(CUSTOM_PREFIX)) {
     const id = key.slice(CUSTOM_PREFIX.length);
@@ -99,6 +134,9 @@ function roleFields(resolved: ResolvedRole, centreSlug: string) {
   return {
     role: resolved.kind === 'builtin' ? resolved.role : ('custom' as const),
     customRoleId: resolved.kind === 'custom' ? resolved.role.id : null,
+    personalAccess: resolved.kind === 'personal' ? resolved.access : null,
+    personalLeadScope: resolved.kind === 'personal' ? resolved.leadScope : null,
+    personalLabel: resolved.kind === 'personal' ? resolved.label : null,
     centreSlug: resolved.needsCentre ? centreSlug : null,
   };
 }
@@ -116,9 +154,11 @@ export async function inviteUser(
 
   if (!name) return { ok: false, error: 'Name is required.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Enter a valid email.' };
-  if (password.length < 8) return { ok: false, error: 'Password must be at least 8 characters.' };
-  const resolved = await resolveRole(roleRaw);
-  if (!resolved) return { ok: false, error: 'Invalid role.' };
+  if (password.length < 10) return { ok: false, error: 'Password must be at least 10 characters.' };
+  const resolved = await resolveRole(roleRaw, formData.get('personal'));
+  if (!resolved) {
+    return { ok: false, error: roleRaw === PERSONAL_KEY ? 'Name this access (2–40 characters) and tick at least one section.' : 'Invalid role.' };
+  }
   if (resolved.needsCentre) {
     if (!centreSlug) return { ok: false, error: resolved.kind === 'builtin' ? 'Centre staff need a centre.' : 'This role needs a centre.' };
     const centreError = await assertRealCentre(centreSlug);
@@ -138,6 +178,9 @@ export async function inviteUser(
       role: fields.role,
       centreSlug: fields.centreSlug ?? undefined,
       customRoleId: fields.customRoleId ?? undefined,
+      personalAccess: fields.personalAccess ?? undefined,
+      personalLeadScope: fields.personalLeadScope ?? undefined,
+      personalLabel: fields.personalLabel ?? undefined,
     });
     void recordAudit(me, 'team.invite', 'user', user.id, `Invited ${user.name} (${resolved.label})`);
     // Best effort: the account exists either way; the admin is told whether the email went out.
@@ -155,11 +198,14 @@ export async function changeUserRole(
   id: string,
   roleKey: string,
   centreSlug: string,
+  personal?: PersonalInput,
 ): Promise<{ ok: true; user: AdminUser } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
   if (!UUID_RE.test(id)) return NOT_FOUND;
-  const resolved = await resolveRole(typeof roleKey === 'string' ? roleKey : '');
-  if (!resolved) return { ok: false, error: 'Invalid role.' };
+  const resolved = await resolveRole(typeof roleKey === 'string' ? roleKey : '', personal);
+  if (!resolved) {
+    return { ok: false, error: roleKey === PERSONAL_KEY ? 'Name this access (2–40 characters) and tick at least one section.' : 'Invalid role.' };
+  }
   const slug = typeof centreSlug === 'string' ? centreSlug.trim() : '';
   if (resolved.needsCentre) {
     if (!slug) return { ok: false, error: resolved.kind === 'builtin' ? 'Centre staff need a centre.' : 'This role needs a centre.' };
@@ -205,7 +251,7 @@ export async function adminResetPassword(
   newPassword: string,
 ): Promise<{ ok: true; email: EmailStatus } | { ok: false; error: string }> {
   const me = await requireRole(['admin']);
-  if (newPassword.length < 8) return { ok: false, error: 'Password must be at least 8 characters.' };
+  if (newPassword.length < 10) return { ok: false, error: 'Password must be at least 10 characters.' };
   if (!UUID_RE.test(id)) return NOT_FOUND;
   const target = await getUserById(id);
   if (!target) return NOT_FOUND;

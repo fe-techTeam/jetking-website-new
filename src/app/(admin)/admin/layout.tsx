@@ -53,9 +53,9 @@ const COLLECTION_NAV: NavItem[] = COLLECTIONS.map(
     group: c.group,
     roles: c.roles,
     section: c.roles ? undefined : 'content',
-    // Collections the website does not render say so in the sidebar, not only on their own page. The
-    // Jetking Guide group's heading already says it, so only the others need a tag.
-    tag: c.live || c.group === GROUP.guide ? undefined : 'Not live',
+    // Collections the website does not render sit under the "Background data" heading, which says so.
+    // A stray not-live collection in any other group still gets a tag.
+    tag: c.live || c.group === GROUP.background || c.group === GROUP.guide ? undefined : 'Not live',
   }),
 );
 /** The assistant's own screens, listed at the top of the Chatbot group. */
@@ -64,14 +64,14 @@ const CHATBOT_TOOLS: NavItem[] = [
   { href: '/admin/chatbot-questions' as Route, label: 'Unanswered questions', icon: 'Inbox', group: GROUP.guide, section: 'chatbot' },
 ];
 
-const lastWebsite = COLLECTION_NAV.map((i) => i.group).lastIndexOf(GROUP.website);
-const firstGuide = COLLECTION_NAV.findIndex((i) => i.group === GROUP.guide);
+const inGroup = (group: string) => COLLECTION_NAV.filter((i) => i.group === group);
 const CONTENT_NAV: NavItem[] = [
-  ...COLLECTION_NAV.slice(0, lastWebsite + 1),
+  ...inGroup(GROUP.website),
   ...WEBSITE_TOOLS,
-  ...COLLECTION_NAV.slice(lastWebsite + 1, firstGuide),
+  ...inGroup(GROUP.personalisation),
   ...CHATBOT_TOOLS,
-  ...COLLECTION_NAV.slice(firstGuide),
+  ...inGroup(GROUP.guide),
+  ...inGroup(GROUP.background),
 ];
 
 const NAV: NavItem[] = [

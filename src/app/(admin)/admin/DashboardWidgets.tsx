@@ -152,7 +152,7 @@ export function BarChartCard({
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-[#f97066] to-[var(--accent)]"
-                  style={{ width: `${Math.max((bar.value / max) * 100, bar.value > 0 ? 3 : 0)}%` }}
+                  style={{ width: `${Math.max((Math.sqrt(bar.value) / Math.sqrt(max)) * 100, bar.value > 0 ? 3 : 0)}%` }}
                 />
               </div>
               <span className="numeral w-9 shrink-0 text-right text-sm font-bold text-foreground">
@@ -199,7 +199,7 @@ export function DonutChartCard({
       <h2 className="text-base font-bold tracking-tight text-foreground">{title}</h2>
       <p className="mt-1 text-sm text-foreground-muted">{description}</p>
 
-      <div className="mt-6 flex flex-col items-center gap-6 sm:flex-row">
+      <div className="mt-6 flex flex-col items-center gap-6 xl:flex-row">
         <div className="relative h-40 w-40 shrink-0">
           <svg aria-hidden="true" viewBox="0 0 160 160" className="h-full w-full -rotate-90">
             <circle cx="80" cy="80" r={radius} fill="none" stroke="var(--color-surface)" strokeWidth={strokeWidth} />
@@ -231,12 +231,12 @@ export function DonutChartCard({
               <p className="numeral text-[1.75rem] leading-none font-extrabold tracking-[-0.03em] text-foreground">
                 {total}
               </p>
-              <p className="mt-1 text-xs font-medium text-foreground-muted">records</p>
+              <p className="mt-1 text-xs font-medium text-foreground-muted">items</p>
             </div>
           </div>
         </div>
 
-        <ul className="flex w-full flex-1 flex-col gap-2">
+        <ul className="flex w-full min-w-0 flex-1 flex-col gap-2">
           {segments.map((seg) => (
             <li
               key={seg.label}

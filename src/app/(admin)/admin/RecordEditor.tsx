@@ -43,6 +43,14 @@ const HIDDEN_FIELD_KEYS = ['personaRelevance'];
 const NAME_KEYS = ["title", "name", "question", "message", "headline", "label"];
 const PAGE_SIZE = 25;
 
+/** "Cities" → "city", "Blog posts" → "blog post", "FAQs" → "faq". Used in "New …" buttons and headings. */
+function singularOf(title: string): string {
+  const lower = title.toLowerCase();
+  if (/ies$/.test(lower)) return lower.replace(/ies$/, "y");
+  if (/s$/.test(lower) && !/(ss|us)$/.test(lower)) return lower.replace(/s$/, "");
+  return lower;
+}
+
 /** The human name of a record for the list and page heading — its title when it has one, else its id. */
 function displayName(item: Rec, fallback: string): string {
   for (const key of NAME_KEYS) {
@@ -58,6 +66,7 @@ export function RecordEditor({
   idKey,
   initial,
   title,
+  eyebrow,
   description = "Edit as a form and save — no JSON required.",
   live = true,
   appearsOn = [],
@@ -72,6 +81,8 @@ export function RecordEditor({
   idKey: string;
   initial: unknown[];
   title: string;
+  /** Small label above the page title (the menu group). Falls back to the collection name. */
+  eyebrow?: string;
   description?: string;
   /** False when the website does not render this collection — the strip below the heading says so. */
   live?: boolean;
@@ -127,7 +138,7 @@ export function RecordEditor({
   const [view, setView] = useState<"list" | "edit">(
     mode === "singleton" || openId || prefill ? "edit" : "list",
   );
-  const singular = title.replace(/s$/, "").replace(/ies$/, "y").toLowerCase();
+  const singular = singularOf(title);
   /** Anything that changes the live website waits for an explicit yes. */
   const [confirm, setConfirm] = useState<
     { kind: "save" } | { kind: "toggle"; id: string; current: string } | null
@@ -384,7 +395,7 @@ export function RecordEditor({
         {view === "list" ? (
           <>
             <AdminPageHeader
-              eyebrow={collection.replace(/_/g, " ")}
+              eyebrow={eyebrow ?? collection.replace(/_/g, " ")}
               title={title}
               description={description}
               actions={
@@ -464,7 +475,7 @@ export function RecordEditor({
             ) : null}
 
             <div className="adm-card mt-4 overflow-hidden">
-              <div className="hidden grid-cols-[minmax(0,1fr)_9rem_14rem] gap-4 border-b border-border bg-surface/70 px-5 py-3 text-xs font-bold tracking-wide text-foreground-muted uppercase md:grid">
+              <div className="hidden grid-cols-[minmax(0,1fr)_9rem_19rem] gap-4 border-b border-border bg-surface/70 px-5 py-3 text-xs font-bold tracking-wide text-foreground-muted uppercase md:grid">
                 <span>{title}</span>
                 <span>Status</span>
                 <span className="text-right">Actions</span>
@@ -489,6 +500,7 @@ export function RecordEditor({
                         <button
                           type="button"
                           onClick={() => loadRecord(item)}
+                          title={name !== id ? `${name}\n${id}` : name}
                           className="min-w-0 cursor-pointer text-left focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
                         >
                           <span className="block truncate text-[15px] font-semibold text-foreground hover:text-[var(--accent-ink)]">
@@ -681,14 +693,6 @@ export function RecordEditor({
                       ) : null}
                     </>
                   ) : null}
-                  <button
-                    type="button"
-                    disabled={pending}
-                    onClick={requestSave}
-                    className="adm-btn-primary inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--admin-radius)] px-6 text-sm font-bold disabled:opacity-45"
-                  >
-                    <Save aria-hidden="true" className="h-4 w-4" />{pending ? "Saving…" : "Save"}
-                  </button>
                 </div>
               </div>
               {error ? (
@@ -697,11 +701,6 @@ export function RecordEditor({
                   className="mt-3 text-sm font-medium text-[var(--color-error-600)]"
                 >
                   {error}
-                </p>
-              ) : null}
-              {message ? (
-                <p aria-live="polite" className="mt-3 text-sm text-growth-600">
-                  {message}
                 </p>
               ) : null}
             </div>
@@ -785,10 +784,11 @@ export function RecordEditor({
             {/* Sticks to the bottom of the viewport on a long form, so Save is never more than a glance away. */}
             <div className="adm-card sticky bottom-4 z-10 mt-5 flex items-center justify-between gap-3 !bg-background/90 px-4 py-3 shadow-[var(--adm-shadow-lift)] backdrop-blur-md">
               <span
-                className={`inline-flex items-center gap-2 text-sm font-semibold ${isDirty ? "text-[#b54708]" : "text-foreground-muted"}`}
+                aria-live="polite"
+                className={`inline-flex items-center gap-2 text-sm font-semibold ${isDirty ? "text-[#b54708]" : message ? "text-growth-600" : "text-foreground-muted"}`}
               >
                 <span aria-hidden="true" className="adm-dot" />
-                {isDirty ? "Unsaved changes" : "All changes saved"}
+                {isDirty ? "Unsaved changes" : (message ?? "All changes saved")}
               </span>
               <button
                 type="button"
@@ -804,14 +804,18 @@ export function RecordEditor({
         <AdminConfirmDialog
           open={pendingDeleteId !== null}
           onOpenChange={(open) => !open && setPendingDeleteId(null)}
-          title="Delete record"
+          title={`Delete this ${singular}?`}
+          confirmLabel="Delete"
           description={
             <>
               Delete{" "}
               <span className="font-semibold text-foreground">
-                {pendingDeleteId}
-              </span>{" "}
-              from {collection}? You can bring it back from “Deleted records”.
+                {(() => {
+                  const rec = items.find((r) => String(r[idKey]) === pendingDeleteId);
+                  return rec ? displayName(rec, String(pendingDeleteId)) : pendingDeleteId;
+                })()}
+              </span>
+              ? It disappears from the website straight away. You can bring it back from “Deleted records”.
             </>
           }
           pending={pending}
@@ -824,11 +828,11 @@ export function RecordEditor({
           title={
             confirm?.kind === "toggle"
               ? confirm.current === "published"
-                ? "Take this page offline?"
-                : "Publish this record?"
+                ? `Take this ${singular} offline?`
+                : `Publish this ${singular}?`
               : draft.status === "published"
                 ? "Publish changes to the live site?"
-                : "Take this record offline?"
+                : `Take this ${singular} offline?`
           }
           description={
             confirm?.kind === "toggle" ? (

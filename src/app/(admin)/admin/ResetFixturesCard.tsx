@@ -48,16 +48,16 @@ export function ResetFixturesCard({ action }: { action: () => Promise<void> }) {
         </span>
         <div>
           <h2 id="reset-fixtures-heading" className="text-base font-bold tracking-tight text-foreground">
-            Reset from fixtures
+            Restore starter content
           </h2>
           <p className="mt-1 max-w-prose text-sm text-foreground-secondary">
-            Replaces every CMS record with the in-repo fixture set. Use on staging when seeding a fresh
-            environment — it discards unsaved editorial work.
+            Throws away everything edited in this admin and puts back the original starter content. Meant
+            for a fresh or test site — never use it on the live site once real content has been entered.
           </p>
           {done ? (
             <p aria-live="polite" className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[#067647]">
               <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
-              CMS reset from fixtures.
+              Starter content restored.
             </p>
           ) : null}
           {error ? (
@@ -77,7 +77,7 @@ export function ResetFixturesCard({ action }: { action: () => Promise<void> }) {
         }}
         className="inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center rounded-[var(--admin-radius)] border border-[var(--color-error-600)]/40 bg-white px-5 text-sm font-bold text-[#b42318] transition-colors hover:border-[var(--color-error-600)] hover:bg-[var(--color-error-600)] hover:text-white focus-visible:outline-2 focus-visible:outline-[var(--color-error-600)]"
       >
-        Reset CMS from fixtures
+        Restore starter content
       </button>
 
       <AdminConfirmDialog

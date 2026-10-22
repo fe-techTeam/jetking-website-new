@@ -5,7 +5,9 @@
   "description": "Jetking adaptive website — Phase 1. Persona-adaptive, SEO-safe, AI-guided.",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/build-site-images.mjs",
     "build": "next build",
+    "build:site-images": "node scripts/build-site-images.mjs",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -20,6 +22,7 @@
     "reconcile:crm-leads": "tsx scripts/reconcile-crm-leads.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate-db.ts",
+    "setup:db": "npm run db:migrate && npm run seed:locations",
     "create:admin": "tsx scripts/create-admin-user.ts",
     "migrate:blog": "tsx scripts/migrate-blog.ts",
     "sync:investors": "node scripts/sync-investor-disclosures.mjs",

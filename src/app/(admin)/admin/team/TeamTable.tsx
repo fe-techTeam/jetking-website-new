@@ -10,7 +10,19 @@ import {
   adminResetPassword,
   removeUser,
 } from './actions';
-import { ROLES, ROLE_DESCRIPTION, ROLE_LABEL, SECTIONS, SECTION_LABEL, type Role } from '@/lib/auth/roles';
+import {
+  PERSONAL_KEY,
+  PERSONAL_LABEL,
+  ROLES,
+  ROLE_DESCRIPTION,
+  ROLE_LABEL,
+  SECTIONS,
+  SECTION_LABEL,
+  normalizeAccess,
+  normalizeLeadScope,
+  type Role,
+} from '@/lib/auth/roles';
+import { BLANK_PERSONAL, PersonalAccessFields, personalComplete, type PersonalState } from './PersonalAccessFields';
 import type { CustomRoleView } from '@/lib/auth/custom-roles';
 import type { AdminUser } from '@/lib/db/schema';
 import type { CentreOption } from '@/lib/leads/centre-scope';
@@ -25,22 +37,42 @@ function formatDate(value: Date | string | null): string {
 
 /** A role is picked as one string: a built-in (`editor`) or `custom:<role id>`. */
 function userRoleKey(u: AdminUser): string {
-  return u.role === 'custom' ? `custom:${u.customRoleId ?? ''}` : u.role;
+  if (u.role !== 'custom') return u.role;
+  return !u.customRoleId && u.personalAccess ? PERSONAL_KEY : `custom:${u.customRoleId ?? ''}`;
 }
 
+/** The ticked sections saved on a person who has their own access. */
+function personalOf(u: AdminUser): PersonalState {
+  return { access: normalizeAccess(u.personalAccess), leadScope: normalizeLeadScope(u.personalLeadScope), label: u.personalLabel ?? '' };
+}
+
+/** A person's role name — their own access shows the name it was given. */
+function userRoleLabel(u: AdminUser, roles: CustomRoleView[]): string {
+  const key = userRoleKey(u);
+  return key === PERSONAL_KEY ? u.personalLabel || PERSONAL_LABEL : roleLabelOf(key, roles);
+}
+
+const describePersonal = (p: PersonalState) =>
+  SECTIONS.filter((s) => p.access[s] !== 'none')
+    .map((s) => `${SECTION_LABEL[s]} (${p.access[s]})`)
+    .join(', ');
+
 function roleLabelOf(key: string, roles: CustomRoleView[]): string {
+  if (key === PERSONAL_KEY) return PERSONAL_LABEL;
   if (key.startsWith('custom:')) return roles.find((r) => `custom:${r.id}` === key)?.name ?? 'No role';
   return ROLE_LABEL[key as Role] ?? key;
 }
 
 /** Does this role limit leads to one centre (so the person needs a centre)? */
-function needsCentre(key: string, roles: CustomRoleView[]): boolean {
+function needsCentre(key: string, roles: CustomRoleView[], personal?: PersonalState): boolean {
   if (key === 'centre_staff') return true;
+  if (key === PERSONAL_KEY) return !!personal && personal.leadScope === 'centre' && personal.access.leads !== 'none';
   const custom = key.startsWith('custom:') ? roles.find((r) => `custom:${r.id}` === key) : undefined;
   return !!custom && custom.leadScope === 'centre' && custom.access.leads !== 'none';
 }
 
-function roleDescription(key: string, roles: CustomRoleView[]): string {
+function roleDescription(key: string, roles: CustomRoleView[], personal?: PersonalState): string {
+  if (key === PERSONAL_KEY) return personal ? describePersonal(personal) || 'Tick what this person can use.' : '';
   if (key.startsWith('custom:')) {
     const role = roles.find((r) => `custom:${r.id}` === key);
     if (!role) return '';
@@ -53,7 +85,7 @@ function roleDescription(key: string, roles: CustomRoleView[]): string {
 }
 
 function roleCounts(users: AdminUser[], roles: CustomRoleView[]): string {
-  const keys = [...ROLES, ...roles.map((r) => `custom:${r.id}`)];
+  const keys = [...ROLES, ...roles.map((r) => `custom:${r.id}`), PERSONAL_KEY];
   const parts = keys
     .map((key) => {
       const n = users.filter((u) => userRoleKey(u) === key).length;
@@ -84,6 +116,9 @@ function RoleOptions({ roles }: { roles: CustomRoleView[] }) {
           ))}
         </optgroup>
       ) : null}
+      <optgroup label="One person only">
+        <option value={PERSONAL_KEY}>{PERSONAL_LABEL} — tick sections</option>
+      </optgroup>
     </>
   );
 }
@@ -118,12 +153,14 @@ export function TeamTable({
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [showInvite, setShowInvite] = useState(false);
   const [inviteRole, setInviteRole] = useState<string>('editor');
+  const [invitePersonal, setInvitePersonal] = useState<PersonalState>(BLANK_PERSONAL);
   const [invitePassword, setInvitePassword] = useState('');
   const [pendingRemove, setPendingRemove] = useState<AdminUser | null>(null);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
     user: AdminUser;
     role: string;
     centreSlug: string;
+    personal: PersonalState;
   } | null>(null);
   const [pendingDisable, setPendingDisable] = useState<AdminUser | null>(null);
   const [resetPasswordFor, setResetPasswordFor] = useState<AdminUser | null>(null);
@@ -158,17 +195,18 @@ export function TeamTable({
       }
       setUsers((prev) => [result.user, ...prev]);
       setMessage(
-        `Created ${result.user.name} as ${roleLabelOf(userRoleKey(result.user), roles)}. ${emailNote(result.email, result.user.email)} Add another account below, or close the form.`,
+        `Created ${result.user.name} as ${userRoleLabel(result.user, roles)}. ${emailNote(result.email, result.user.email)} Add another account below, or close the form.`,
       );
       formRef.current?.reset();
       setInvitePassword('');
       setInviteRole('editor');
+      setInvitePersonal(BLANK_PERSONAL);
     });
   }
 
   function handleRoleChange(user: AdminUser, role: string, centreSlug: string) {
     start(async () => {
-      const result = await changeUserRole(user.id, role, centreSlug);
+      const result = await changeUserRole(user.id, role, centreSlug, role === PERSONAL_KEY ? personalOf(user) : undefined);
       if (!result.ok) {
         setError(result.error);
         return;
@@ -192,9 +230,9 @@ export function TeamTable({
 
   function confirmRoleChange() {
     if (!pendingRoleChange) return;
-    const { user, role, centreSlug } = pendingRoleChange;
+    const { user, role, centreSlug, personal } = pendingRoleChange;
     start(async () => {
-      const result = await changeUserRole(user.id, role, centreSlug);
+      const result = await changeUserRole(user.id, role, centreSlug, role === PERSONAL_KEY ? personal : undefined);
       if (!result.ok) {
         setError(result.error);
         setPendingRoleChange(null);
@@ -246,11 +284,7 @@ export function TeamTable({
           <p className="adm-eyebrow">team</p>
           <h1 className="adm-title mt-3">Team &amp; access</h1>
           <p className="adm-lede mt-3">
-            Create as many staff accounts as you need. Use a built-in role, or build your own under{' '}
-            <button type="button" onClick={() => setTab('roles')} className="cursor-pointer font-semibold text-[var(--accent)] underline-offset-2 hover:underline">
-              Roles
-            </button>{' '}
-            and choose exactly what each one can see and edit. Each person signs in with their own email.
+            Add the people who work on the website and choose what each can do. Everyone signs in with their own email.
           </p>
           <p className="mt-2 text-sm text-foreground-muted">{roleCounts(users, roles)}</p>
         </div>
@@ -319,11 +353,11 @@ export function TeamTable({
                 name="password"
                 type="text"
                 required
-                minLength={8}
+                minLength={10}
                 value={invitePassword}
                 onChange={(e) => setInvitePassword(e.target.value)}
                 className="admin-input min-w-0 flex-1"
-                placeholder="At least 8 characters"
+                placeholder="At least 10 characters"
                 autoComplete="new-password"
               />
               <button
@@ -345,9 +379,15 @@ export function TeamTable({
             >
               <RoleOptions roles={roles} />
             </select>
-            <span className="text-xs text-foreground-muted">{roleDescription(inviteRole, roles)}</span>
+            <span className="text-xs text-foreground-muted">{roleDescription(inviteRole, roles, invitePersonal)}</span>
           </label>
-          {needsCentre(inviteRole, roles) ? (
+          {inviteRole === PERSONAL_KEY ? (
+            <div className="sm:col-span-2">
+              <input type="hidden" name="personal" value={JSON.stringify(invitePersonal)} />
+              <PersonalAccessFields value={invitePersonal} onChange={setInvitePersonal} />
+            </div>
+          ) : null}
+          {needsCentre(inviteRole, roles, invitePersonal) ? (
             <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
               <span className="label-mono">Centre</span>
               {centres.length > 0 ? (
@@ -371,7 +411,7 @@ export function TeamTable({
           <div className="sm:col-span-2">
             <button
               type="submit"
-              disabled={pending || (needsCentre(inviteRole, roles) && centres.length === 0)}
+              disabled={pending || (needsCentre(inviteRole, roles, invitePersonal) && centres.length === 0) || (inviteRole === PERSONAL_KEY && !personalComplete(invitePersonal))}
               className="adm-btn-primary font-bold inline-flex h-11 cursor-pointer items-center rounded-[var(--admin-radius)] px-6 text-sm disabled:opacity-45"
             >
               {pending ? 'Creating…' : 'Create account'}
@@ -404,7 +444,9 @@ export function TeamTable({
             <FilterChip active={roleFilter === 'all'} onClick={() => setRoleFilter('all')}>
               All roles
             </FilterChip>
-            {[...ROLES.map((r) => r as string), ...roles.map((r) => `custom:${r.id}`)].map((key) => (
+            {[...ROLES.map((r) => r as string), ...roles.map((r) => `custom:${r.id}`), PERSONAL_KEY]
+              .filter((key) => key !== PERSONAL_KEY || users.some((u) => userRoleKey(u) === PERSONAL_KEY))
+              .map((key) => (
               <FilterChip
                 key={key}
                 active={roleFilter === key}
@@ -435,8 +477,8 @@ export function TeamTable({
       </div>
 
       <div className="mt-3 overflow-x-auto adm-card">
-        <table className="adm-table w-full min-w-[62rem] border-collapse text-sm">
-          <thead>
+        <table className="adm-table w-full border-collapse text-sm md:min-w-[44rem]">
+          <thead className="hidden md:table-header-group">
             <tr className="border-b border-border text-left">
               {['Name', 'Role', 'Centre', 'Status', 'Last active', ''].map((h) => (
                 <th key={h} className="label-mono px-4 py-3 font-medium">
@@ -447,8 +489,8 @@ export function TeamTable({
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b border-border last:border-none">
-                <td className="px-4 py-3">
+              <tr key={user.id} className="border-b border-border last:border-none block px-1 py-2 md:table-row md:p-0">
+                <td className="block px-4 py-3 md:table-cell">
                   <div className="flex items-center gap-3">
                     <span
                       aria-hidden="true"
@@ -462,17 +504,19 @@ export function TeamTable({
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-3">
+                <td className="block px-4 py-3 md:table-cell">
                   <select
                     value={userRoleKey(user)}
                     disabled={pending}
                     onChange={(e) => {
                       const role = e.target.value;
                       if (role === userRoleKey(user)) return;
+                      const personal = user.personalAccess ? personalOf(user) : BLANK_PERSONAL;
                       setPendingRoleChange({
                         user,
                         role,
-                        centreSlug: needsCentre(role, roles) ? (user.centreSlug ?? '') : '',
+                        centreSlug: needsCentre(role, roles, personal) ? (user.centreSlug ?? '') : '',
+                        personal,
                       });
                     }}
                     className="admin-input h-9 w-auto py-0 text-xs"
@@ -483,9 +527,21 @@ export function TeamTable({
                     ) : null}
                     <RoleOptions roles={roles} />
                   </select>
+                  {userRoleKey(user) === PERSONAL_KEY ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPendingRoleChange({ user, role: PERSONAL_KEY, centreSlug: user.centreSlug ?? '', personal: personalOf(user) })
+                      }
+                      className="mt-1 block cursor-pointer text-xs font-semibold text-[var(--accent-ink)] hover:underline"
+                      title={describePersonal(personalOf(user))}
+                    >
+                      {user.personalLabel ? `${user.personalLabel} · ` : ''}Edit access
+                    </button>
+                  ) : null}
                 </td>
-                <td className="px-4 py-3">
-                  {needsCentre(userRoleKey(user), roles) ? (
+                <td className="block px-4 py-3 md:table-cell">
+                  {needsCentre(userRoleKey(user), roles, personalOf(user)) ? (
                     <select
                       value={user.centreSlug ?? ''}
                       disabled={pending}
@@ -505,7 +561,7 @@ export function TeamTable({
                     <span className="text-foreground-muted">All</span>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td className="block px-4 py-3 md:table-cell">
                   <button
                     type="button"
                     disabled={pending}
@@ -521,24 +577,26 @@ export function TeamTable({
                     {user.status}
                   </button>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-foreground-muted">
+                <td className="block px-4 py-3 md:table-cell font-mono text-xs text-foreground-muted">
                   {formatDate(user.lastActiveAt)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="block px-4 py-3 md:table-cell">
                   <div className="flex items-center justify-end gap-1">
                     <button
                       type="button"
                       onClick={() => setResetPasswordFor(user)}
+                      title="Reset password"
                       className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold text-foreground-secondary transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)]"
                     >
-                      <KeyRound aria-hidden="true" className="h-4 w-4" />Reset password
+                      <KeyRound aria-hidden="true" className="h-4 w-4" /><span className="sr-only xl:not-sr-only">Reset password</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPendingRemove(user)}
+                      title="Remove"
                       className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-[10px] px-3 text-sm font-semibold text-foreground-muted transition-colors hover:bg-[var(--color-error-50)] hover:text-[#b42318] focus-visible:outline-2 focus-visible:outline-[var(--color-error-600)]"
                     >
-                      <Trash2 aria-hidden="true" className="h-4 w-4" />Remove
+                      <Trash2 aria-hidden="true" className="h-4 w-4" /><span className="sr-only xl:not-sr-only">Remove</span>
                     </button>
                   </div>
                 </td>
@@ -582,11 +640,11 @@ export function TeamTable({
               Change <span className="font-semibold text-foreground">{pendingRoleChange.user.name}</span>
               &apos;s role from{' '}
               <span className="font-semibold text-foreground">
-                {roleLabelOf(userRoleKey(pendingRoleChange.user), roles)}
+                {userRoleLabel(pendingRoleChange.user, roles)}
               </span>{' '}
-              to <span className="font-semibold text-foreground">{roleLabelOf(pendingRoleChange.role, roles)}</span>?
+              to <span className="font-semibold text-foreground">{pendingRoleChange.role === PERSONAL_KEY ? pendingRoleChange.personal.label.trim() || PERSONAL_LABEL : roleLabelOf(pendingRoleChange.role, roles)}</span>?
               <span className="mt-2 block text-foreground-muted">
-                {roleDescription(pendingRoleChange.role, roles)}
+                {pendingRoleChange.role === PERSONAL_KEY ? null : roleDescription(pendingRoleChange.role, roles)}
               </span>
             </>
           ) : null
@@ -595,11 +653,21 @@ export function TeamTable({
         tone="default"
         pending={pending}
         confirmDisabled={
-          !!pendingRoleChange && needsCentre(pendingRoleChange.role, roles) && !pendingRoleChange.centreSlug
+          !!pendingRoleChange &&
+          ((needsCentre(pendingRoleChange.role, roles, pendingRoleChange.personal) && !pendingRoleChange.centreSlug) ||
+            (pendingRoleChange.role === PERSONAL_KEY && !personalComplete(pendingRoleChange.personal)))
         }
         onConfirm={confirmRoleChange}
       >
-        {pendingRoleChange && needsCentre(pendingRoleChange.role, roles) ? (
+        {pendingRoleChange?.role === PERSONAL_KEY ? (
+          <div className="mt-4">
+            <PersonalAccessFields
+              value={pendingRoleChange.personal}
+              onChange={(personal) => setPendingRoleChange((prev) => (prev ? { ...prev, personal } : prev))}
+            />
+          </div>
+        ) : null}
+        {pendingRoleChange && needsCentre(pendingRoleChange.role, roles, pendingRoleChange.personal) ? (
           <label className="mt-4 flex flex-col gap-1.5 text-sm">
             <span className="label-mono">Centre</span>
             {centres.length > 0 ? (
@@ -709,7 +777,7 @@ function ResetPasswordDialog({
             type="text"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="New password (min. 8 characters)"
+            placeholder="New password (min. 10 characters)"
             className="admin-input mt-4"
           />
           {error ? <p className="mt-2 text-sm font-medium text-[var(--color-error-600)]">{error}</p> : null}
@@ -724,7 +792,7 @@ function ResetPasswordDialog({
             </Dialog.Close>
             <button
               type="button"
-              disabled={pending || password.length < 8}
+              disabled={pending || password.length < 10}
               onClick={submit}
               className="adm-btn-primary font-bold min-h-11 cursor-pointer rounded-[var(--admin-radius)] px-4 text-sm disabled:opacity-45"
             >

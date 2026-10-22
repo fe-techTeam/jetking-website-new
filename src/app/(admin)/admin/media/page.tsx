@@ -15,14 +15,10 @@ export default async function MediaPage() {
       <AdminPageHeader
         eyebrow="Media"
         title="Media library"
-        description="Upload images and PDFs once, then pick them in any image field. Copy a file’s URL to use it anywhere."
+        description="Upload your own images and PDFs, or browse the images already on the website. Pick any of them in an image field."
       />
       <div className="mt-6">
-        {isDatabaseConfigured() ? (
-          <MediaGrid initial={items} />
-        ) : (
-          <p className="adm-card p-5 text-sm text-foreground-secondary">The media library stores files in the database — set DATABASE_URL to enable it.</p>
-        )}
+        <MediaGrid initial={items} uploadsEnabled={isDatabaseConfigured()} />
       </div>
     </div>
   );

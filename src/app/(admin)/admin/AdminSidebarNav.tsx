@@ -77,6 +77,9 @@ const ICONS: Record<string, LucideIcon> = {
   Bot,
 };
 
+/** Menu groups that start folded for a new browser — data the website does not show. */
+const FOLDED_BY_DEFAULT = ['Background data'];
+
 type NavEntry = { href: Route; label: string; icon: string; group?: string; tag?: string };
 
 /** Consecutive items sharing a group become one group (the list is already ordered the way the menu reads). */
@@ -100,18 +103,22 @@ export function AdminSidebarNav({
   const scrollRef = useRef<HTMLElement>(null);
   const [more, setMore] = useState({ above: false, below: false });
   const [filter, setFilter] = useState('');
+  const currentGroup = items.find((i) => (i.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(i.href)))?.group;
   /** Menu groups the editor has folded away. Remembered per browser; a group holding the current page opens itself. */
   const [folded, setFolded] = useState<string[]>([]);
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('jk-admin-nav-folded') ?? '[]') as unknown;
-      if (Array.isArray(saved)) setFolded(saved.filter((g): g is string => typeof g === 'string')); // eslint-disable-line react-hooks/set-state-in-effect
+      const raw = localStorage.getItem('jk-admin-nav-folded');
+      // First visit: rarely-needed groups start folded. After that, whatever the editor chose is remembered.
+      const saved = raw === null ? FOLDED_BY_DEFAULT : (JSON.parse(raw) as unknown);
+      // The group holding the page you landed on is always open, whatever was saved.
+      if (Array.isArray(saved)) setFolded(saved.filter((g): g is string => typeof g === 'string' && g !== currentGroup)); // eslint-disable-line react-hooks/set-state-in-effect
     } catch {
       /* storage blocked */
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- read the saved folds once, on arrival
   }, []);
   // Arriving on a page opens the group it lives in — but only on arrival, so you can still fold that group afterwards.
-  const currentGroup = items.find((i) => (i.href === '/admin' ? pathname === '/admin' : pathname?.startsWith(i.href)))?.group;
   const [seenPath, setSeenPath] = useState(pathname);
   if (pathname !== seenPath) {
     setSeenPath(pathname);
@@ -187,7 +194,7 @@ export function AdminSidebarNav({
                   type="button"
                   onClick={() => toggleGroup(group)}
                   aria-expanded={open}
-                  className="adm-sidebar-group flex w-full cursor-pointer items-center justify-between text-left first:pt-2 hover:text-white/80"
+                  className="adm-sidebar-group flex w-full cursor-pointer items-center justify-between text-left"
                 >
                   <span>{group}</span>
                   <ChevronDown aria-hidden="true" className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? '' : '-rotate-90'}`} strokeWidth={2.5} />

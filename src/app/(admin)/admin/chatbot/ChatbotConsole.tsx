@@ -10,14 +10,13 @@ export function ChatbotConsole({
   build: initialBuild,
   needsRebuild,
   builtLabel,
-  embedModel,
   breakdown,
   chats,
 }: {
   build: BuildState;
   needsRebuild: boolean;
   builtLabel: string;
-  embedModel: string;
+  embedModel?: string;
   /** Pre-formatted on the server so Node vs browser `toLocaleString` cannot hydrate-mismatch. */
   breakdown: Array<[string, string]>;
   chats: ChatSummary[];
@@ -64,7 +63,7 @@ export function ChatbotConsole({
             <h2 id="knowledge-h" className="flex items-center gap-2 text-base font-bold text-foreground"><Sparkles aria-hidden="true" className="h-4 w-4 text-[var(--accent)]" />Knowledge</h2>
             <p className="mt-1 max-w-2xl text-sm text-foreground-muted">
               Everything published on the website is gathered into the assistant’s knowledge. After you edit courses, centres, FAQs, pages or Custom answers, rebuild so the assistant learns the changes.
-              Last rebuilt <strong className="text-foreground">{builtLabel}</strong> · {embedModel}.
+              Last rebuilt <strong className="text-foreground">{builtLabel}</strong>.
             </p>
           </div>
           <button
@@ -83,10 +82,14 @@ export function ChatbotConsole({
         ) : null}
         {!build.canRun ? <p className="mt-3 text-sm text-foreground-muted">{build.reason}</p> : null}
         {error ? <p role="alert" className="mt-3 text-sm font-medium text-[var(--color-error-600)]">{error}</p> : null}
+        {build.running ? <p aria-live="polite" className="mt-3 text-sm font-medium text-foreground-secondary">Rebuilding… this takes about a minute. You can leave this page.</p> : null}
         {build.log ? (
-          <pre className="mt-4 max-h-56 overflow-auto rounded-[var(--admin-radius)] bg-[#0e1424] p-3 text-xs leading-relaxed whitespace-pre-wrap text-white/85" aria-label="Rebuild log">
-            {build.log}
-          </pre>
+          <details className="mt-4">
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-sm font-semibold text-foreground-muted hover:text-foreground">Technical details (for developers)</summary>
+            <pre className="mt-2 max-h-56 overflow-auto rounded-[var(--admin-radius)] bg-[#0e1424] p-3 text-xs leading-relaxed whitespace-pre-wrap text-white/85" aria-label="Rebuild log">
+              {build.log}
+            </pre>
+          </details>
         ) : null}
         {breakdown.length > 0 ? (
           <ul className="mt-5 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">

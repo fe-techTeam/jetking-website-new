@@ -79,8 +79,8 @@ export default async function ChatbotOverviewPage() {
           hint={settings.enabled ? settings.name : 'Hidden everywhere — turn on in Assistant settings'}
         />
         <Stat label="Knowledge" value={`${index.passages.toLocaleString('en-IN')} passages`} hint={`Rebuilt ${builtLabel}`} />
-        <Stat label="Answers come from" value={index.generalAnswers ? 'Site + general' : 'Website only'} tone={index.generalAnswers ? 'warn' : 'good'} hint={`Match threshold ${index.answerGate}`} />
-        <Stat label="Language model" value={ollama.up ? 'Connected' : 'Not running'} hint={ollama.up ? ollama.models[0] ?? 'Ollama' : 'Answers use the passages directly'} />
+        <Stat label="Answers come from" value={index.generalAnswers ? 'Site + general' : 'Website only'} tone={index.generalAnswers ? 'warn' : 'good'} hint="Replies only when it is sure" />
+        <Stat label="AI writing helper" value={ollama.up ? 'On' : 'Off'} hint={ollama.up ? 'Replies are written in natural language' : 'Replies quote your website directly. This is fine.'} />
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">

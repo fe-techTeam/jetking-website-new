@@ -66,7 +66,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
             </label>
             <label className="flex items-center gap-2 text-sm text-foreground-secondary sm:col-span-2">
               <input type="checkbox" checked={form.permanent} onChange={(e) => setForm({ ...form, permanent: e.target.checked })} className="h-4 w-4 accent-[var(--accent)]" />
-              Permanent (SEO-safe 301-style). Untick for a temporary redirect.
+              Permanent — recommended when the old page is gone for good. Untick if it is only a short-term redirect.
             </label>
             {error ? (
               <p role="alert" className="text-sm font-medium text-[var(--color-error-600)] sm:col-span-2">
@@ -133,7 +133,7 @@ export function RedirectsManager({ initial, staticCount }: { initial: RedirectIt
           </ul>
         )}
         <p className="border-t border-border px-4 py-3 text-xs text-foreground-muted">
-          {staticCount} build-time redirects also load from redirects.json (same list the deploy uses). Add runtime rules here to change behaviour without a redeploy.
+          {staticCount} more redirects are built into the website. Anything you add here takes effect within about 30 seconds.
         </p>
       </section>
 

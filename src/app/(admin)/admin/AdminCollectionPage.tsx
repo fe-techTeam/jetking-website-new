@@ -43,6 +43,7 @@ export async function AdminCollectionPage({
       idKey={meta.idKey}
       initial={items}
       title={meta.label}
+      eyebrow={meta.group}
       description={meta.description}
       live={meta.live}
       appearsOn={meta.appearsOn}

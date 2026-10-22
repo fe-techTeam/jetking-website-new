@@ -9,6 +9,10 @@ export type Role = (typeof ROLES)[number];
 /** What `admin_users.role` can hold: a built-in preset, or `custom` (the permissions then come from the user's custom role). */
 export type UserRole = Role | 'custom';
 
+/** The role-picker value meaning "tick the sections for this one person" (no shared role behind it). */
+export const PERSONAL_KEY = 'personal';
+export const PERSONAL_LABEL = 'Custom access';
+
 export const ROLE_LABEL: Record<Role, string> = {
   admin: 'Admin',
   editor: 'Editor',

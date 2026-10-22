@@ -112,6 +112,11 @@ export const adminUsers = pgTable(
     sessionVersion: integer('session_version').notNull().default(0),
     /** Only meaningful for role='custom' — the admin-defined role whose permissions apply. */
     customRoleId: uuid('custom_role_id').references(() => customRoles.id, { onDelete: 'restrict' }),
+    /** role='custom' with no `customRoleId`: access ticked for this one person ({ [section]: 'view' | 'edit' }). */
+    personalAccess: jsonb('personal_access').$type<Record<string, string>>(),
+    personalLeadScope: text('personal_lead_scope'),
+    /** The name given to this person's own access (shown instead of a role name), e.g. "Blog writer". */
+    personalLabel: text('personal_label'),
   },
   (table) => [index('admin_users_role_idx').on(table.role)],
 );

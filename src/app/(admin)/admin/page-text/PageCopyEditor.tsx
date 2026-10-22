@@ -57,6 +57,10 @@ function describeKey(key: string): { section: string; label: string } {
 /** Copy keys that hold an image path: `hero.image`, `seo.ogImage`, `affiliation.0.logo`… */
 const IMAGE_KEY = /(^|\.)(image|photo|logo|avatar|poster|src|ogImage)$/i;
 
+/** A value that is itself an image file path (`/home/centre-exterior.jpg`), whatever its key is called. */
+const IMAGE_VALUE = /^(\/|https?:\/\/)\S+\.(jpe?g|png|webp|avif|gif|svg)(\?\S*)?$/i;
+const isImageField = (key: string, defaultValue: string) => IMAGE_KEY.test(key) || IMAGE_VALUE.test(defaultValue.trim());
+
 const LONG_KEY = /description|body|lede|intro|text|paragraph|answer|summary|quote|disclaimer|note/i;
 
 export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePage[]; initialOverrides: Overrides }) {
@@ -389,7 +393,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                       const changed = value.trim() !== '' && value !== defaultValue;
                       const long = defaultValue.length > 90 || value.length > 90 || LONG_KEY.test(key);
                       // Anything longer than a short label gets the full width — a half-width box hides the text it is for.
-                      const wide = long || defaultValue.length > 26 || value.length > 26 || IMAGE_KEY.test(key);
+                      const wide = long || defaultValue.length > 26 || value.length > 26 || isImageField(key, defaultValue);
                       const id = `copy-${page.id}-${key}`;
                       return (
                         <div key={key} className={wide ? 'sm:col-span-2' : ''}>
@@ -412,7 +416,7 @@ export function PageCopyEditor({ pages, initialOverrides }: { pages: EditablePag
                               </button>
                             ) : null}
                           </div>
-                          {IMAGE_KEY.test(key) ? (
+                          {isImageField(key, defaultValue) ? (
                             <div className="flex items-start gap-3">
                               {value ? (
                                 // eslint-disable-next-line @next/next/no-img-element -- admin preview of an arbitrary path
