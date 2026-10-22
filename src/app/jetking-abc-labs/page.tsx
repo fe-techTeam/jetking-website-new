@@ -11,7 +11,7 @@ import { seoFromCopy } from '@/lib/content/copy/seo';
 import { isSectionVisible } from '@/lib/content/copy/sections';
 
 /**
- * Jetking ABC Labs — the ABC of the digital future: AI, Blockchain & Cybersecurity.
+ * Jetking ABC Labs — the ABC of the digital future: AI, Blockchain & Cyberspace.
  *
  * Copy and section visibility live in Page text (`abc-labs`). Kept out of search (`noindex`)
  * until the copy has been reviewed — clear `seo.noindex` then.

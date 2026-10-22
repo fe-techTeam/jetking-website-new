@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Building2, ChevronDown, LocateFixed, Map as MapIcon, MapPin, Phone, Search, X } from 'lucide-react';
+import { useSiteCopy } from '@/components/providers/site-copy';
 import { track } from '@/lib/analytics';
 import { centrePath } from '@/lib/centre-path';
 import { usePersona } from '@/persona/PersonaProvider';
@@ -875,9 +876,9 @@ function CentreCard({
 }) {
   const centreVisible =
     !needle || matchesCentre(centre, needle) || matchesCity(city, needle);
-  const telHref = centre.phone
-    ? `tel:${centre.phone.replace(/[^\d+]/g, '').split('/')[0]}`
-    : null;
+  // Cards show the national toll-free line, not the centre's local number.
+  const tollFree = useSiteCopy()['contact.phone'];
+  const telHref = tollFree ? `tel:${tollFree.replace(/[^\d+]/g, '')}` : null;
   // A few centres (Balasore, Orai) sit in a city of the same name — collapse
   // "Balasore, Balasore" down to the one distinct value.
   const localityCityLabel =
@@ -948,7 +949,7 @@ function CentreCard({
         ) : null}
       </address>
 
-      {centre.phone ? (
+      {tollFree ? (
         <p className="mt-3 flex flex-wrap items-center gap-2 text-[14px]">
           <Phone
             className="h-3.5 w-3.5 text-[var(--dc-accent-soft)]"
@@ -966,11 +967,11 @@ function CentreCard({
                 track('phone_clicked', { centre_slug: centre.slug })
               }
             >
-              {centre.phone}
+              {tollFree}
             </a>
           ) : (
             <span className="numeral font-semibold text-[var(--dc-ink)]">
-              {centre.phone}
+              {tollFree}
             </span>
           )}
         </p>

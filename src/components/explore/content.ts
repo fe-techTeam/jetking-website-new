@@ -80,4 +80,5 @@ export const UNIVERSITY_PARTNERS = [
   { name: 'State University of New York', src: '/university-partners/suny.png' },
   { name: 'Pearson', src: '/university-partners/pearson.png' },
   { name: 'Lincoln University College', src: '/university-partners/lincoln-university.png' },
+  { name: 'Massachusetts Institute of Technology (MIT)', src: '/university-partners/mit.png' },
 ] as const;

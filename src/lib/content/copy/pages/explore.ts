@@ -143,6 +143,8 @@ export const exploreCopy = definePageCopy({
     'universities.2.image': '/university-partners/pearson.png',
     'universities.3.name': 'Lincoln University College',
     'universities.3.image': '/university-partners/lincoln-university.png',
+    'universities.4.name': 'Massachusetts Institute of Technology (MIT)',
+    'universities.4.image': '/university-partners/mit.png',
 
     // Certifications
     'certs.title': 'Certifications you can train towards',

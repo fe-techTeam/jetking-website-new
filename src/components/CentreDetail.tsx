@@ -13,7 +13,6 @@ import {
   Compass,
   Cpu,
   GraduationCap,
-  Headphones,
   Mail,
   MapPin,
   Navigation,
@@ -39,7 +38,7 @@ import { CentreGallery, CentreReasons, type GallerySlot, type ReasonTile } from 
 import { CardSlider } from '@/components/centres/CardSlider';
 import { PlacementSlider } from '@/components/centres/PlacementSlider';
 import { StickyCentreBar } from '@/components/centres/StickyCentreBar';
-import { TrackedAnchor } from '@/components/TrackedAnchor';
+import { TollFreePhone } from '@/components/centres/TollFreePhone';
 import { legacyStats, type NetworkCounts } from '@/lib/brand-facts';
 import { fill } from '@/lib/content/copy/define';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
@@ -71,12 +70,6 @@ export function CentreDetail({
 }) {
   const offered = courses.filter((c) => centre.coursesOffered.includes(c.slug));
   const siblings = siblingCentres.filter((c) => c.slug !== centre.slug);
-  const phoneHref = centre.phone
-    ? `tel:${centre.phone.replace(/[^\d+]/g, '').split('/')[0]}`
-    : null;
-  const helplineHref = centre.helpline
-    ? `tel:${centre.helpline.replace(/[^\d+]/g, '')}`
-    : null;
 
   const featured = centre.featuredProgrammes ?? [];
   const eligibility = centre.eligibility ?? [];
@@ -331,8 +324,6 @@ export function CentreDetail({
 
             <CentreHeroForm
               centreSlug={centre.slug}
-              phone={centre.phone}
-              phoneHref={phoneHref}
               programmes={offered.map((c) => ({ slug: c.slug, title: c.title }))}
               titleId="centre-form-heading"
               copy={{
@@ -677,66 +668,18 @@ export function CentreDetail({
             </a>
 
             <dl className="mt-6 space-y-5 border-t border-[var(--k-line)] pt-6">
-              {centre.phone ? (
-                <div className="flex gap-3">
-                  <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
-                  <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.phone']}</dt>
-                    <dd>
-                      {phoneHref ? (
-                        <TrackedAnchor
-                          href={phoneHref}
-                          event="phone_clicked"
-                          props={{ centre_slug: centre.slug }}
-                          className="tap numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)] hover:text-[var(--k-red)]"
-                        >
-                          {centre.phone}
-                        </TrackedAnchor>
-                      ) : (
-                        <span className="numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)]">{centre.phone}</span>
-                      )}
-                    </dd>
-                  </div>
+              <div className="flex gap-3">
+                <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
+                <div>
+                  <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.phone']}</dt>
+                  <dd>
+                    <TollFreePhone
+                      centreSlug={centre.slug}
+                      className="tap numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)] hover:text-[var(--k-red)]"
+                    />
+                  </dd>
                 </div>
-              ) : showPlaceholders ? (
-                <div className="flex gap-3">
-                  <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
-                  <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.phone']}</dt>
-                    <dd className="mt-0.5 text-[16px] font-semibold text-[var(--k-red)] italic">{copy['centrePlaceholder.text']}</dd>
-                  </div>
-                </div>
-              ) : null}
-              {centre.helpline ? (
-                <div className="flex gap-3">
-                  <Headphones className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
-                  <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.helpline']}</dt>
-                    <dd>
-                      {helplineHref ? (
-                        <TrackedAnchor
-                          href={helplineHref}
-                          event="phone_clicked"
-                          props={{ centre_slug: centre.slug, type: 'helpline' }}
-                          className="tap numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)] hover:text-[var(--k-red)]"
-                        >
-                          {centre.helpline}
-                        </TrackedAnchor>
-                      ) : (
-                        <span className="numeral mt-0.5 block text-[16px] font-semibold text-[var(--k-ink)]">{centre.helpline}</span>
-                      )}
-                    </dd>
-                  </div>
-                </div>
-              ) : showPlaceholders ? (
-                <div className="flex gap-3">
-                  <Headphones className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />
-                  <div>
-                    <dt className="text-[12.5px] font-bold tracking-[0.08em] text-[var(--k-ink-3)] uppercase">{copy['centreVisit.helpline']}</dt>
-                    <dd className="mt-0.5 text-[16px] font-semibold text-[var(--k-red)] italic">{copy['centrePlaceholder.text']}</dd>
-                  </div>
-                </div>
-              ) : null}
+              </div>
               {centre.email ? (
                 <div className="flex gap-3">
                   <Mail className="mt-1 h-5 w-5 shrink-0 text-[var(--k-red)]" strokeWidth={2} aria-hidden="true" />

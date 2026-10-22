@@ -207,7 +207,7 @@ export function centreSchema(centre: Centre, cityName: string): JsonLd {
       postalCode: centre.pincode,
       addressCountry: 'IN',
     },
-    ...(centre.phone ? { telephone: centre.phone } : {}),
+    telephone: siteConfig.phone || siteConfig.helpline,
     ...(centre.geo
       ? { geo: { '@type': 'GeoCoordinates', latitude: centre.geo.lat, longitude: centre.geo.lng } }
       : {}),

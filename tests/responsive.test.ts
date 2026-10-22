@@ -103,7 +103,7 @@ describe('sections stay on the page (placeholder, never hidden) when their data 
     expect(t).toContain('faqs.length || showPlaceholders');
     expect(t).toContain("centrePlaceholder.admissionsTitle");
     expect(t).toContain("centrePlaceholder.faqQuestion");
-    expect((t.match(/showPlaceholders \? \(\s*<div className="flex gap-3">/g) ?? []).length).toBeGreaterThanOrEqual(3);
+    expect((t.match(/showPlaceholders \? \(\s*<div className="flex gap-3">/g) ?? []).length).toBeGreaterThanOrEqual(1); // the email block; the phone is the national toll-free line, so it is never empty
   });
 
   it('home sections keep their heading and show an empty-state message', () => {

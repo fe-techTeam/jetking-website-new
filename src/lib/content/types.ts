@@ -420,7 +420,7 @@ export interface SeoSettings {
 
 /**
  * How the public centre directory (and other centre lists) are ordered — one document (id `centres`).
- * Manual order uses each centre’s `sortOrder`; shuffle reshuffles on a fixed day interval.
+ * Manual order uses each centre’s `sortOrder`; shuffle reshuffles centres within each city on a fixed day interval.
  */
 export interface CentresSettings {
   id: 'centres';

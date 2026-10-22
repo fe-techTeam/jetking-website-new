@@ -223,7 +223,7 @@ export function ExploreLanding({
     label: byKey[`orbit.${i}.label`] ?? '',
     detail: byKey[`orbit.${i}.detail`] ?? '',
   }));
-  const universityPartners = Array.from({ length: 4 }, (_, i) => ({
+  const universityPartners = Array.from({ length: 5 }, (_, i) => ({
     name: byKey[`universities.${i}.name`] ?? '',
     src: byKey[`universities.${i}.image`] ?? '',
   })).filter((p) => p.name.trim());

@@ -32,21 +32,20 @@ export interface CentreFormCopy {
  */
 export function CentreHeroForm({
   centreSlug,
-  phone,
-  phoneHref,
   programmes,
   copy,
   titleId,
 }: {
   centreSlug: string;
-  phone?: string;
-  phoneHref: string | null;
   programmes: { slug: string; title: string }[];
   copy: CentreFormCopy;
   titleId: string;
 }) {
   const id = useId();
   const site = useSiteCopy();
+  // Visitors always call the national toll-free line, never the centre's local number.
+  const phone = site['contact.phone'];
+  const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, '')}` : null;
   const successRef = useRef<HTMLDivElement>(null);
   const { classification, visitor, record } = usePersona();
   const [status, setStatus] = useState<Status>('idle');

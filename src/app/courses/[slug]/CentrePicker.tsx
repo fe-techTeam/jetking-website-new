@@ -1,5 +1,6 @@
 'use client';
 
+import { useSiteCopy } from '@/components/providers/site-copy';
 import { useId, useState } from 'react';
 import { ChevronDown, MapPin, Navigation, Phone } from 'lucide-react';
 import { fill } from '@/lib/content/copy/define';
@@ -34,6 +35,7 @@ export function CentrePicker({
   centreCount: number;
   fallbackPhone: string;
 }) {
+  const tollFree = useSiteCopy()['contact.phone'];
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(cities[0]?.slug ?? '');
   const panelId = useId();
@@ -116,7 +118,7 @@ export function CentrePicker({
         {active ? (
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {active.centres.map((centre) => {
-              const phone = centre.phone || fallbackPhone;
+              const phone = tollFree || fallbackPhone;
               const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Jetking ${centre.name} ${centre.address}`)}`;
               return (
                 <li key={centre.slug} className="rounded-2xl border border-[var(--cp-line)] bg-[var(--cp-grey)] p-4">

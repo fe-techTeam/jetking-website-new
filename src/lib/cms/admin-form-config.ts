@@ -639,13 +639,16 @@ const centres_settings: AdminFormConfig = {
     status: 'published',
   }),
   lockedFields: ['id'],
+  fieldLabels: {
+    shuffleEveryDays: 'Reshuffle every N days (city-wise)',
+  },
   selectFields: {
     listSort: {
       label: 'List sort',
       options: [
         { value: 'name', label: 'Name (A–Z)' },
         { value: 'manual', label: 'Manual (sort order on each centre)' },
-        { value: 'shuffle', label: 'Shuffle (changes every N days)' },
+        { value: 'shuffle', label: 'Shuffle within each city (every N days)' },
       ],
     },
   },

@@ -110,11 +110,11 @@ const ALL_COLLECTIONS: AdminCollection[] = [
     icon: 'SlidersHorizontal',
     group: GROUP.website,
     description:
-      'How centres appear in the public directory and other centre lists: A–Z, manual sort order, or a shuffle that changes every N days.',
+      'How centres appear in the public directory and other centre lists: A–Z, manual sort order, or a city-wise shuffle that changes every N days.',
     live: true,
     mode: 'singleton',
     appearsOn: [{ label: 'Centre directory', href: '/centres' }, { label: 'Enquiry form', href: '/enquiry' }],
-    note: 'Shuffle keeps the same order for the number of days you set, then reshuffles. Manual uses the Sort order number on each centre (lower first).',
+    note: 'Shuffle reorders centres within each city (e.g. all Delhi centres among themselves), keeps that order for the days you set, then reshuffles. Manual uses the Sort order number on each centre (lower first).',
   },
   {
     key: 'cities',

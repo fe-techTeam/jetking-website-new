@@ -16,12 +16,12 @@ export const abcLabsCopy = definePageCopy({
   path: '/jetking-abc-labs',
   group: 'Pages',
   description:
-    'AI, Blockchain and Cybersecurity labs landing. Use Show or hide sections to turn blocks on or off.',
+    'AI, Blockchain and Cyberspace labs landing. Use Show or hide sections to turn blocks on or off.',
   defaults: {
     ...sectionVisibilityDefaults(ABC_LABS_SECTIONS),
     ...seoFieldDefaults({ noindex: true }),
 
-    'seo.title': 'Jetking ABC Labs — AI, Blockchain & Cybersecurity | Jetking',
+    'seo.title': 'Jetking ABC Labs — AI, Blockchain & Cyberspace | Jetking',
     'seo.description': 'Building future-ready skills to power the next generation of digital innovation.',
 
     'breadcrumb.label': 'Jetking ABC Labs',
@@ -29,7 +29,7 @@ export const abcLabsCopy = definePageCopy({
     'hero.image': '/abc-labs/hero.jpg',
     'hero.eyebrow': 'Jetking ABC Labs',
     'hero.titleLead': 'Jetking is working on the ABC of the Digital Future:',
-    'hero.titleAccent': 'AI, Blockchain & Cybersecurity',
+    'hero.titleAccent': 'AI, Blockchain & Cyberspace',
     'hero.body': 'Building future-ready skills to power the next generation of digital innovation.',
     'hero.cta': 'Enquire Now',
 

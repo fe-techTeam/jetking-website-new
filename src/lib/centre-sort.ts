@@ -1,6 +1,7 @@
 /**
  * Shared centre-list ordering for CMS settings: name, manual sortOrder, or a
- * deterministic shuffle that stays fixed for N days then reshuffles.
+ * city-wise shuffle that stays fixed for N days then reshuffles centres within
+ * each city (Delhi’s centres among themselves, Mumbai’s among themselves, …).
  */
 
 export type CentresListSort = 'name' | 'manual' | 'shuffle';
@@ -19,6 +20,8 @@ export const CENTRES_SORT_DEFAULTS: CentresSortSettings = {
 type SortableCentre = {
   slug: string;
   name: string;
+  /** City grouping for shuffle — centres without a city share one bucket. */
+  citySlug?: string | null;
   sortOrder?: number | null;
 };
 
@@ -64,6 +67,33 @@ export function seededShuffle<T extends { slug: string }>(items: T[], seed: numb
   return out;
 }
 
+function cityKey(c: SortableCentre): string {
+  return (c.citySlug ?? '').trim() || '_';
+}
+
+/**
+ * Shuffle centres within each city; cities stay A–Z by slug so Delhi’s list
+ * reshuffles among Delhi centres only, without mixing cities together.
+ */
+function shuffleByCity<T extends SortableCentre>(centres: T[], bucket: number): T[] {
+  const byCity = new Map<string, T[]>();
+  for (const centre of centres) {
+    const key = cityKey(centre);
+    const list = byCity.get(key);
+    if (list) list.push(centre);
+    else byCity.set(key, [centre]);
+  }
+
+  const cityKeys = [...byCity.keys()].sort((a, b) => a.localeCompare(b));
+  const out: T[] = [];
+  for (const key of cityKeys) {
+    const group = byCity.get(key)!;
+    const seed = hashSeed(['centres-shuffle-city', key, String(bucket), ...group.map((c) => c.slug).sort()]);
+    out.push(...seededShuffle(group, seed));
+  }
+  return out;
+}
+
 export function sortCentresList<T extends SortableCentre>(
   centres: T[],
   settings: CentresSortSettings = CENTRES_SORT_DEFAULTS,
@@ -82,8 +112,7 @@ export function sortCentresList<T extends SortableCentre>(
 
   if (mode === 'shuffle') {
     const bucket = shuffleBucket(settings.shuffleEveryDays ?? 1, nowMs);
-    const seed = hashSeed(['centres-shuffle', String(bucket), ...centres.map((c) => c.slug).sort()]);
-    return seededShuffle(centres, seed);
+    return shuffleByCity(centres, bucket);
   }
 
   return centres.slice().sort((a, b) => a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug));
