@@ -3343,6 +3343,54 @@
       },
       "updatedAt": "2026-10-16",
       "status": "published"
+    },
+    {
+      "slug": "hanoi",
+      "name": "Hanoi",
+      "state": "Hanoi",
+      "intro": "Jetking learning centre in Hanoi, Vietnam, offering IT training with placement support.",
+      "seo": {
+        "title": "IT Courses in Hanoi, Vietnam | Jetking",
+        "description": "Jetking learning centre in Hanoi, Vietnam. Find the address and enquire about IT training."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "ho-chi-minh",
+      "name": "Ho Chi Minh",
+      "state": "Hanoi",
+      "intro": "Jetking learning centre in Ho Chi Minh, Vietnam, offering IT training with placement support.",
+      "seo": {
+        "title": "IT Courses in Ho Chi Minh, Vietnam | Jetking",
+        "description": "Jetking learning centre in Ho Chi Minh, Vietnam. Find the address and enquire about IT training."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "da-nang",
+      "name": "Da Nang",
+      "state": "Hanoi",
+      "intro": "Jetking learning centre in Da Nang, Vietnam, offering IT training with placement support.",
+      "seo": {
+        "title": "IT Courses in Da Nang, Vietnam | Jetking",
+        "description": "Jetking learning centre in Da Nang, Vietnam. Find the address and enquire about IT training."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "can-tho",
+      "name": "Can Tho",
+      "state": "Hanoi",
+      "intro": "Jetking learning centre in Can Tho, Vietnam, offering IT training with placement support.",
+      "seo": {
+        "title": "IT Courses in Can Tho, Vietnam | Jetking",
+        "description": "Jetking learning centre in Can Tho, Vietnam. Find the address and enquire about IT training."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
     }
   ],
   "centres": [
@@ -10459,6 +10507,78 @@
         "description": "Jetking Ghaziabad learning centre at Sharnam Plaza, RDC Raj Nagar. BCA, cloud computing, cyber security and networking courses with placement support."
       },
       "updatedAt": "2026-10-16",
+      "status": "published"
+    },
+    {
+      "slug": "hanoi",
+      "name": "Jetking Hanoi Learning Centre",
+      "citySlug": "hanoi",
+      "country": "Vietnam",
+      "centreCode": "AA",
+      "addressLine": "Detech Building, No. 8 Ton That Thuyet Street, My Dinh, Tu Liem District, Hanoi City.",
+      "locality": "My Dinh",
+      "state": "Hanoi",
+      "pincode": "N/A",
+      "coursesOffered": [],
+      "seo": {
+        "title": "Jetking Hanoi Learning Centre \u2014 IT Training in Hanoi, Vietnam",
+        "description": "Jetking Hanoi Learning Centre at Detech Building, No. 8 Ton That Thuyet Street, My Dinh, Tu Liem District, Hanoi City. Enquire about IT training at Jetking Hanoi."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "ho-chi-minh",
+      "name": "Jetking Ho Chi Minh Learning Centre",
+      "citySlug": "ho-chi-minh",
+      "country": "Vietnam",
+      "centreCode": "HA",
+      "addressLine": "Building 5 floors GenPacific, No. 391A, Avenue Nam Ky Khoi Nghia, District 3, Ho Chi Minh City.",
+      "locality": "District 3",
+      "state": "Hanoi",
+      "pincode": "N/A",
+      "coursesOffered": [],
+      "seo": {
+        "title": "Jetking Ho Chi Minh Learning Centre \u2014 IT Training in Ho Chi Minh, Vietnam",
+        "description": "Jetking Ho Chi Minh Learning Centre at Building 5 floors GenPacific, No. 391A, Avenue Nam Ky Khoi Nghia, District 3, Ho Chi Minh City. Enquire about IT training at Jetking Ho Chi Minh."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "da-nang",
+      "name": "Jetking Da Nang Learning Centre",
+      "citySlug": "da-nang",
+      "country": "Vietnam",
+      "centreCode": "JDN",
+      "addressLine": "Zone K, FU, FPT Technology, Urban Zone, Ngu Hanh Son Ward, Da Nang City, Vietnam",
+      "locality": "Ngu Hanh Son Ward",
+      "state": "Hanoi",
+      "pincode": "N/A",
+      "coursesOffered": [],
+      "seo": {
+        "title": "Jetking Da Nang Learning Centre \u2014 IT Training in Da Nang, Vietnam",
+        "description": "Jetking Da Nang Learning Centre at Zone K, FU, FPT Technology, Urban Zone, Ngu Hanh Son Ward, Da Nang City, Vietnam Enquire about IT training at Jetking Da Nang."
+      },
+      "updatedAt": "2026-10-23",
+      "status": "published"
+    },
+    {
+      "slug": "can-tho",
+      "name": "Jetking Can Tho Learning Centre",
+      "citySlug": "can-tho",
+      "country": "Vietnam",
+      "centreCode": "JCT",
+      "addressLine": "600 Nguyen Van Cu, An Binh Ward, Can Tho City, Vietnam",
+      "locality": "An Binh Ward",
+      "state": "Hanoi",
+      "pincode": "N/A",
+      "coursesOffered": [],
+      "seo": {
+        "title": "Jetking Can Tho Learning Centre \u2014 IT Training in Can Tho, Vietnam",
+        "description": "Jetking Can Tho Learning Centre at 600 Nguyen Van Cu, An Binh Ward, Can Tho City, Vietnam Enquire about IT training at Jetking Can Tho."
+      },
+      "updatedAt": "2026-10-23",
       "status": "published"
     }
   ],

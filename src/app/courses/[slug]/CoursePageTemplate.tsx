@@ -352,7 +352,7 @@ export function CoursePageTemplate({
         />
         <div className="shell relative">
           <Breadcrumbs trail={trail} />
-          <div className="mt-7 grid gap-8 min-[880px]:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] min-[880px]:items-start min-[880px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_minmax(0,14rem)_minmax(0,24rem)] xl:gap-10">
+          <div className="mt-7 grid gap-8 min-[880px]:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] min-[880px]:items-start min-[880px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-12 xl:gap-10">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex min-h-9 items-center rounded-full bg-[var(--cp-red-fill)] px-3.5 text-[12px] font-bold tracking-[0.08em] text-white uppercase">
@@ -405,11 +405,6 @@ export function CoursePageTemplate({
                   </>
                 )}
               </div>
-            </div>
-
-            {/* A clear, unblurred face between the programme name and the form (wide screens). */}
-            <div className="relative hidden aspect-[3/4] w-56 shrink-0 self-center overflow-hidden rounded-[24px] border-4 border-white shadow-[0_18px_40px_-20px_rgba(17,24,39,0.45)] xl:block">
-              <Image src={copy['courseBanner.faceImage']} alt={copy['courseBanner.faceAlt']} fill priority sizes="224px" className="object-cover object-top" />
             </div>
 
             {show('courseEnquiry') ? (

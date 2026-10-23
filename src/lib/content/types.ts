@@ -254,6 +254,10 @@ export interface Centre {
   locality: string;
   /** @grounded */
   state: string;
+  /** Country the centre is in. Empty = India. Stored in centre `details` jsonb — no DB migration. */
+  country?: string;
+  /** Short internal centre code, e.g. "JDN". */
+  centreCode?: string;
   /** @grounded */
   pincode: string;
   phone?: string;

@@ -10,6 +10,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { PersonaInspector } from '@/components/PersonaInspector';
 import { ExitIntentPopup } from '@/components/ExitIntentPopup';
 import { MobileContactBar } from '@/components/MobileContactBar';
+import { FloatingContact } from '@/components/FloatingContact';
 import { EnquirySheetServer } from '@/components/EnquirySheetServer';
 import { AccountProvider } from '@/components/account/AccountProvider';
 import { JsonLd } from '@/components/ui';
@@ -125,6 +126,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                         <SiteFooter />
                       </FooterChrome>
                     ) : null}
+                    <SiteChrome>
+                      <FloatingContact />
+                    </SiteChrome>
                     {showChrome('mobileBar') || showChrome('exitIntent') || showInspector ? (
                       <SiteChrome>
                         {showChrome('mobileBar') ? <MobileContactBar /> : null}

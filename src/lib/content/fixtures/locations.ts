@@ -7435,3 +7435,94 @@ centres.push(
     updatedAt: addedAt,
   },
 );
+
+/**
+ * Vietnam learning centres (supplied by the business, 2026-10-23). Every centre carries
+ * `country: 'Vietnam'` — centres without a country are treated as India. No phone, email or
+ * postal code was supplied, so those are left empty / "N/A": add them in Admin → Centres.
+ */
+const vietnamAddedAt = '2026-10-23';
+
+const vietnamCity = (slug: string, name: string): City => ({
+  slug,
+  name,
+  state: 'Hanoi',
+  intro: `Jetking learning centre in ${name}, Vietnam, offering IT training with placement support.`,
+  seo: {
+    title: `IT Courses in ${name}, Vietnam | Jetking`,
+    description: `Jetking learning centre in ${name}, Vietnam. Find the address and enquire about IT training.`,
+  },
+  updatedAt: vietnamAddedAt,
+});
+
+const vietnamCentre = (
+  slug: string,
+  name: string,
+  citySlug: string,
+  cityName: string,
+  centreCode: string,
+  addressLine: string,
+  locality: string,
+): Centre => ({
+  slug,
+  name,
+  citySlug,
+  country: 'Vietnam',
+  centreCode,
+  addressLine,
+  locality,
+  state: 'Hanoi',
+  pincode: 'N/A',
+  coursesOffered: [],
+  seo: {
+    title: `${name} — IT Training in ${cityName}, Vietnam`,
+    description: `${name} at ${addressLine} Enquire about IT training at Jetking ${cityName}.`,
+  },
+  updatedAt: vietnamAddedAt,
+});
+
+cities.push(
+  vietnamCity('hanoi', 'Hanoi'),
+  vietnamCity('ho-chi-minh', 'Ho Chi Minh'),
+  vietnamCity('da-nang', 'Da Nang'),
+  vietnamCity('can-tho', 'Can Tho'),
+);
+
+centres.push(
+  vietnamCentre(
+    'hanoi',
+    'Jetking Hanoi Learning Centre',
+    'hanoi',
+    'Hanoi',
+    'AA',
+    'Detech Building, No. 8 Ton That Thuyet Street, My Dinh, Tu Liem District, Hanoi City.',
+    'My Dinh',
+  ),
+  vietnamCentre(
+    'ho-chi-minh',
+    'Jetking Ho Chi Minh Learning Centre',
+    'ho-chi-minh',
+    'Ho Chi Minh',
+    'HA',
+    'Building 5 floors GenPacific, No. 391A, Avenue Nam Ky Khoi Nghia, District 3, Ho Chi Minh City.',
+    'District 3',
+  ),
+  vietnamCentre(
+    'da-nang',
+    'Jetking Da Nang Learning Centre',
+    'da-nang',
+    'Da Nang',
+    'JDN',
+    'Zone K, FU, FPT Technology, Urban Zone, Ngu Hanh Son Ward, Da Nang City, Vietnam',
+    'Ngu Hanh Son Ward',
+  ),
+  vietnamCentre(
+    'can-tho',
+    'Jetking Can Tho Learning Centre',
+    'can-tho',
+    'Can Tho',
+    'JCT',
+    '600 Nguyen Van Cu, An Binh Ward, Can Tho City, Vietnam',
+    'An Binh Ward',
+  ),
+);

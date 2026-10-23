@@ -49,7 +49,7 @@ export const COURSE_TECHNOLOGIES: ReadonlyArray<{ id: CourseTechnologyId; label:
   { id: 'cloud', label: 'Cloud' },
   { id: 'cyber-security', label: 'Cyber Security' },
   { id: 'networking', label: 'Networking' },
-  { id: 'data', label: 'Data' },
+  { id: 'data', label: 'Data AI' },
   { id: 'design-gaming', label: 'Design & Gaming' },
   { id: 'marketing', label: 'Marketing' },
   { id: 'hardware-os', label: 'Hardware & OS' },

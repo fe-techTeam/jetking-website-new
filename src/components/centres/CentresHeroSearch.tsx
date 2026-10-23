@@ -2,6 +2,7 @@
 
 import { FormEvent, useId, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { track } from '@/lib/analytics';
 import { usePersona } from '@/persona/PersonaProvider';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
@@ -31,6 +32,14 @@ export function CentresHeroSearch({ initialQuery = '', copy }: { initialQuery?: 
   const { classification } = usePersona();
   const [value, setValue] = useState(initialQuery);
   const trackedRef = useRef('');
+
+  // Keep the box in step with a same-page /centres?q=… link (see CentresIndex).
+  const urlQuery = useSearchParams().get('q') ?? '';
+  const [syncedUrlQuery, setSyncedUrlQuery] = useState(urlQuery);
+  if (urlQuery !== syncedUrlQuery) {
+    setSyncedUrlQuery(urlQuery);
+    if (urlQuery !== value.trim()) setValue(urlQuery);
+  }
 
   function applySearch(next: string, scroll: boolean) {
     const trimmed = next.trim();

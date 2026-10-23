@@ -23,6 +23,10 @@ export default async function CentresPage({
   const { q: rawQuery } = await searchParams;
   const copy = await loadCopy(centresCopy);
   const [cities, centres] = await Promise.all([content.listCities(), content.listCentres()]);
+  // A centre with no country is an Indian one; a city takes the country of its centres.
+  const countryOf = (c: { country?: string }) => c.country?.trim() || 'India';
+  const cityCountry = new Map<string, string>();
+  for (const c of centres) if (!cityCountry.has(c.citySlug)) cityCountry.set(c.citySlug, countryOf(c));
 
   const trail: Crumb[] = [
     { name: copy['breadcrumb.home'], path: '/' },
@@ -34,7 +38,7 @@ export default async function CentresPage({
       <JsonLd data={breadcrumbSchema(trail)} />
       <CentresLanding
         copy={copy}
-        cities={cities.map((c) => ({ slug: c.slug, name: c.name, state: c.state }))}
+        cities={cities.map((c) => ({ slug: c.slug, name: c.name, state: c.state, country: cityCountry.get(c.slug) ?? 'India' }))}
         centres={centres.map((c) => ({
           slug: c.slug,
           name: c.name,
@@ -43,6 +47,7 @@ export default async function CentresPage({
           addressLine: c.addressLine,
           locality: c.locality,
           state: c.state,
+          country: countryOf(c),
           pincode: c.pincode,
           phone: c.phone,
           geo: c.geo,

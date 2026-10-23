@@ -12,7 +12,7 @@ import { CentresHero } from './CentresHero';
 import { CentresIndex } from './CentresIndex';
 import { isSectionVisible } from '@/lib/content/copy/sections';
 
-type CitySummary = { slug: string; name: string; state: string };
+type CitySummary = { slug: string; name: string; state: string; country?: string };
 type CentreSummary = {
   slug: string;
   name: string;
@@ -21,6 +21,7 @@ type CentreSummary = {
   addressLine: string;
   locality: string;
   state: string;
+  country?: string;
   pincode: string;
   phone?: string;
   geo?: { lat: number; lng: number } | null;
@@ -106,13 +107,16 @@ export function CentresLanding({
   initialQuery?: string;
 }) {
   const show = (id: string) => isSectionVisible(copy, id);
+  // The hero's headline figures describe the Indian network; Vietnam is browsed via the Country filter.
+  const indiaCentres = centres.filter((c) => (c.country ?? 'India') === 'India');
+  const indiaCityCount = cities.filter((c) => (c.country ?? 'India') === 'India').length;
   return (
     <div className="centres-page relative">
       {show('hero') ? (
         <CentresHero
           copy={copy}
-          cityCount={cities.length}
-          centreCount={centres.length}
+          cityCount={indiaCityCount}
+          centreCount={indiaCentres.length}
           centres={toEnquiryCentres(centres, cities)}
           nearMeCentres={centres}
           initialQuery={initialQuery}

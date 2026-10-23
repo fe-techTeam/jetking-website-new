@@ -112,6 +112,8 @@ const centreSchema = withStatus({
   addressLine: z.string().min(1),
   locality: z.string().min(1),
   state: z.string().min(1),
+  country: z.string().optional(),
+  centreCode: z.string().optional(),
   pincode: z.string().min(1),
   phone: z.string().optional(),
   email: z.string().optional(),

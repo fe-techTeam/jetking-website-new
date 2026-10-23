@@ -204,8 +204,8 @@ export function centreSchema(centre: Centre, cityName: string): JsonLd {
       streetAddress: centre.addressLine,
       addressLocality: cityName,
       addressRegion: centre.state,
-      postalCode: centre.pincode,
-      addressCountry: 'IN',
+      ...(centre.pincode !== 'N/A' ? { postalCode: centre.pincode } : {}),
+      addressCountry: centre.country === 'Vietnam' ? 'VN' : 'IN',
     },
     telephone: siteConfig.phone || siteConfig.helpline,
     ...(centre.geo

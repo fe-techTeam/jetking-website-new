@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import type { Route } from 'next';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Building2, ChevronDown, LocateFixed, Map as MapIcon, MapPin, Phone, Search, X } from 'lucide-react';
+import { Building2, ChevronDown, Globe, LocateFixed, Map as MapIcon, MapPin, Phone, Search, X } from 'lucide-react';
 import { useSiteCopy } from '@/components/providers/site-copy';
 import { track } from '@/lib/analytics';
 import { centrePath } from '@/lib/centre-path';
@@ -17,7 +18,7 @@ import {
 import { fill } from '@/lib/content/copy/define';
 import type { centresCopy } from '@/lib/content/copy/pages/centres';
 
-type CitySummary = { slug: string; name: string; state: string };
+type CitySummary = { slug: string; name: string; state: string; country?: string };
 type CentreSummary = {
   slug: string;
   name: string;
@@ -26,10 +27,13 @@ type CentreSummary = {
   addressLine: string;
   locality: string;
   state: string;
+  country?: string;
   pincode: string;
   phone?: string;
   geo?: { lat: number; lng: number } | null;
 };
+
+const DEFAULT_COUNTRY = 'India';
 
 function matchesCity(city: CitySummary, needle: string): boolean {
   if (!needle) return true;
@@ -73,8 +77,8 @@ function cityMatchesFilters(
  * Every city and centre stays in the HTML for crawlers.
  */
 export function CentresIndex({
-  cities,
-  centres,
+  cities: allCities,
+  centres: allCentres,
   initialQuery = '',
   copy,
 }: {
@@ -86,9 +90,31 @@ export function CentresIndex({
   const inputId = useId();
   const { classification, hydrated } = usePersona();
   const [query, setQuery] = useState(initialQuery);
+  const [activeCountry, setActiveCountry] = useState<string>(DEFAULT_COUNTRY);
   const [activeState, setActiveState] = useState<string | null>(null);
   const [activeCity, setActiveCity] = useState<string | null>(null);
   const [nearMe, setNearMe] = useState<NearMeDetail | null>(null);
+
+  /*
+   * A link to /centres?q=… clicked while already on /centres (e.g. the footer's city links) is a
+   * soft navigation: this component stays mounted, so `initialQuery` alone never re-applies.
+   * Follow the URL's `q` instead, and start that search from a clean slate, like a fresh load.
+   * Our own replaceState calls (typing in the search box) also update `q`; they already match
+   * `query`, so they are skipped.
+   */
+  const urlQuery = useSearchParams().get('q') ?? '';
+  const [syncedUrlQuery, setSyncedUrlQuery] = useState(urlQuery);
+  if (urlQuery !== syncedUrlQuery) {
+    setSyncedUrlQuery(urlQuery);
+    if (urlQuery !== query.trim()) {
+      const needleCity = urlQuery.trim().toLowerCase();
+      setQuery(urlQuery);
+      setNearMe(null);
+      setActiveState(null);
+      setActiveCity(null);
+      setActiveCountry(allCities.find((c) => c.name.toLowerCase() === needleCity)?.country || DEFAULT_COUNTRY);
+    }
+  }
   const trackedRef = useRef('');
 
   /*
@@ -98,8 +124,22 @@ export function CentresIndex({
    * opening one closes the other, so the sidebar never shows both long lists
    * stacked at once.
    */
-  const [openFacet, setOpenFacet] = useState<'state' | 'city' | null>(null);
+  const [openFacet, setOpenFacet] = useState<'country' | 'state' | 'city' | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  // Country is the outermost filter: everything below (states, cities, counts, results) is scoped to it.
+  const countries = useMemo(() => {
+    const seen = new Set<string>(allCentres.map((c) => c.country || DEFAULT_COUNTRY));
+    return [DEFAULT_COUNTRY, ...[...seen].filter((c) => c !== DEFAULT_COUNTRY).sort()].filter((c) => seen.has(c));
+  }, [allCentres]);
+  const cities = useMemo(
+    () => allCities.filter((c) => (c.country || DEFAULT_COUNTRY) === activeCountry),
+    [allCities, activeCountry],
+  );
+  const centres = useMemo(
+    () => allCentres.filter((c) => (c.country || DEFAULT_COUNTRY) === activeCountry),
+    [allCentres, activeCountry],
+  );
 
   // First appearance in the CMS-ordered centres list drives city/state order
   // (name / manual / shuffle from Centres settings).
@@ -218,6 +258,7 @@ export function CentresIndex({
       subscribeCentresNearMe((detail) => {
         setQuery('');
         setNearMe(detail);
+        setActiveCountry(allCentres.find((c) => c.slug === detail.slug)?.country || DEFAULT_COUNTRY);
         setActiveState(detail.state);
         setActiveCity(detail.citySlug);
         setOpenResultStates({ [detail.state]: true });
@@ -231,7 +272,7 @@ export function CentresIndex({
           }, 80);
         });
       }),
-    [],
+    [allCentres],
   );
 
   const needle = query.trim().toLowerCase();
@@ -303,6 +344,18 @@ export function CentresIndex({
         persona: classification.persona,
       });
     }
+  }
+
+  function changeCountry(country: string) {
+    if (country === activeCountry) return;
+    setNearMe(null);
+    setActiveCountry(country);
+    setActiveState(null);
+    setActiveCity(null);
+    // Open the first group of the newly chosen country, as on first load.
+    const first = allCentres.find((c) => (c.country || DEFAULT_COUNTRY) === country);
+    setOpenResultStates(first ? { [first.state]: true } : {});
+    setOpenResultCities(first ? { [first.citySlug]: true } : {});
   }
 
   function clearFilters() {
@@ -408,6 +461,29 @@ export function CentresIndex({
 
           {/* Scrollable: state + city lists */}
           <div className="centres-filter-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+            {countries.length > 1 ? (
+              <FilterGroup
+                label={copy['directoryIndex.countryLabel']}
+                icon={Globe}
+                value={activeCountry}
+                className="mb-4"
+                allLabel={copy['directoryIndex.allShort']}
+                selectedLabel={copy['directoryIndex.selected']}
+                open={openFacet === 'country'}
+                onToggle={() => setOpenFacet((v) => (v === 'country' ? null : 'country'))}
+              >
+                {countries.map((country) => (
+                  <li key={country}>
+                    <FilterButton
+                      active={activeCountry === country}
+                      onClick={() => changeCountry(country)}
+                      label={country}
+                      count={allCentres.filter((c) => (c.country || DEFAULT_COUNTRY) === country).length}
+                    />
+                  </li>
+                ))}
+              </FilterGroup>
+            ) : null}
             <FilterGroup
               label={copy['directoryIndex.stateLabel']}
               icon={MapIcon}
@@ -538,6 +614,19 @@ export function CentresIndex({
                 open={sheetOpen}
                 onOpenChange={setSheetOpen}
               >
+                {countries.length > 1 ? (
+                  <SheetFacet label={copy['directoryIndex.countryLabel']}>
+                    {countries.map((country) => (
+                      <SheetChip
+                        key={country}
+                        active={activeCountry === country}
+                        onClick={() => changeCountry(country)}
+                        label={country}
+                        count={allCentres.filter((c) => (c.country || DEFAULT_COUNTRY) === country).length}
+                      />
+                    ))}
+                  </SheetFacet>
+                ) : null}
                 <SheetFacet label={copy['directoryIndex.stateLabel']}>
                   <SheetChip
                     active={!activeState}
@@ -892,7 +981,7 @@ function CentreCard({
     .filter((part, i, all) => all.findIndex((x) => x.trim().toLowerCase() === part.trim().toLowerCase()) === i)
     .filter((part) => !inAddress(part))
     .join(', ');
-  const addressTail = [inAddress(centre.state) ? '' : centre.state, inAddress(centre.pincode) ? '' : centre.pincode]
+  const addressTail = [inAddress(centre.state) ? '' : centre.state, inAddress(centre.pincode) || centre.pincode === 'N/A' ? '' : centre.pincode]
     .filter(Boolean)
     .join(' ');
 

@@ -57,7 +57,7 @@ export const homeCopy = definePageCopy({
     'hero.headline.accent': 'Power of Three',
     'hero.headline.tail': 'at',
     'hero.pillar1': 'Industry aligned courses in‑demand skills',
-    'hero.pillar2': 'Work on real projects in our Adv Labs',
+    'hero.pillar2': 'Work on real projects in our Advance Labs',
     'hero.pillar3': 'Placement support that delivers',
 
     // ── Placement band (solid red, straight after the banner) ─────────────
@@ -96,7 +96,7 @@ export const homeCopy = definePageCopy({
     'how.icons.1': '/icons/home/02_practice.svg',
     'how.icons.2': '/icons/home/03_certify.svg',
     'how.icons.3': '/icons/home/04_place.svg',
-    'how.steps.0.title': 'Learn',
+    'how.steps.0.title': 'Learn & get 100% Job guarantee',
     'how.steps.0.points.0': 'Start from the fundamentals, whatever your background',
     'how.steps.0.points.1': 'Real-world tools from day one',
     'how.steps.0.points.2': 'Classroom or hybrid, at a centre near you',

@@ -132,7 +132,7 @@ export const coursesCopy = definePageCopy({
 
     // ── Course page: at a glance ────────────────────────────────────────
     'courseFacts.aria': 'Course at a glance',
-    'courseFacts.jobGuaranteeTitle': '100% Job Guarantee',
+    'courseFacts.jobGuaranteeTitle': 'Learn & get 100% Job guarantee',
     'courseFacts.jobGuaranteeBody': 'Assured placement support',
     'courseFacts.degreeTitle': 'Degree',
     'courseFacts.degreeBody': 'From Top University',

@@ -175,7 +175,7 @@ export function CentreDetail({
   const addressLower = centre.addressLine.toLowerCase();
   const inAddress = (part: string) => addressLower.includes(part.trim().toLowerCase());
   const missingPlace = [...new Set([centre.locality, city.name])].filter((part) => part && !inAddress(part));
-  const addressTail = [inAddress(centre.state) ? '' : centre.state, centre.pincode].filter(Boolean).join(' ');
+  const addressTail = [inAddress(centre.state) ? '' : centre.state, centre.pincode === 'N/A' ? '' : centre.pincode].filter(Boolean).join(' ');
   const addressLines = [centre.addressLine];
   if (missingPlace.length) addressLines.push(missingPlace.join(', '));
   if (addressTail) {
