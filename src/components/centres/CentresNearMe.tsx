@@ -124,7 +124,7 @@ export function CentresNearMe({
         type="button"
         onClick={locate}
         disabled={status === 'locating'}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/18 bg-white/8 px-4 py-2.5 text-[13.5px] font-bold text-white backdrop-blur-md transition-colors hover:border-[var(--dc-accent-soft)]/55 hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)] disabled:cursor-wait disabled:opacity-80"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--dc-hairline-strong)] bg-[var(--dc-card)] px-4 py-2.5 text-[13.5px] font-bold text-[var(--dc-ink)] shadow-sm transition-colors hover:border-[var(--dc-accent-soft)]/55 hover:bg-[var(--dc-accent-tint)] hover:text-[var(--dc-accent-soft)] disabled:cursor-wait disabled:opacity-80"
       >
         {status === 'locating' ? (
           <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.25} aria-hidden="true" />
@@ -135,7 +135,7 @@ export function CentresNearMe({
       </button>
 
       {statusMessage ? (
-        <p role="status" className="mt-2.5 max-w-[42ch] text-[13px] leading-snug text-white/70">
+        <p role="status" className="mt-2.5 max-w-[42ch] text-[13px] leading-snug text-[var(--dc-ink-muted)]">
           {statusMessage}
         </p>
       ) : null}

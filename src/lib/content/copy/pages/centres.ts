@@ -39,7 +39,7 @@ export const centresCopy = definePageCopy({
 
     // ── Directory: banner and search ────────────────────────────────────
     'directoryHero.image': '/centres/hero.jpg',
-    'directoryHero.eyebrow': '{centres} Centres · Nationwide',
+    'directoryHero.eyebrow': '{centres} Centres · India & Vietnam',
     'directoryHero.title': 'Find a Jetking centre',
     'directoryHero.titleAccent': 'near you.',
     'directoryHero.sub':

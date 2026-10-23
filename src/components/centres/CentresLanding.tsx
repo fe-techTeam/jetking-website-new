@@ -107,16 +107,13 @@ export function CentresLanding({
   initialQuery?: string;
 }) {
   const show = (id: string) => isSectionVisible(copy, id);
-  // The hero's headline figures describe the Indian network; Vietnam is browsed via the Country filter.
-  const indiaCentres = centres.filter((c) => (c.country ?? 'India') === 'India');
-  const indiaCityCount = cities.filter((c) => (c.country ?? 'India') === 'India').length;
   return (
     <div className="centres-page relative">
       {show('hero') ? (
         <CentresHero
           copy={copy}
-          cityCount={indiaCityCount}
-          centreCount={indiaCentres.length}
+          cityCount={cities.length}
+          centreCount={centres.length}
           centres={toEnquiryCentres(centres, cities)}
           nearMeCentres={centres}
           initialQuery={initialQuery}
